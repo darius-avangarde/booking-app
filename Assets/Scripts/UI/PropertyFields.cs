@@ -12,8 +12,8 @@ public class PropertyFields : MonoBehaviour
     [SerializeField]
     private Text propertyDoubleBedsRoom;
     
-    public void Initialize(Property property)
+    public void Initialize(IProperty property)
     {
-        proprietyName.text = property.name;
+        //proprietyName.text = property.name;
     }
 }

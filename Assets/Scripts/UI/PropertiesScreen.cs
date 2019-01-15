@@ -16,21 +16,15 @@ public class PropertiesScreen : MonoBehaviour
 
     public void AddPropertyItem()
     {
-        PropertyData data = PropertyDataManager.GetPropertyData();
-        Property propertyItem = new Property();
-        data.properties.Add(propertyItem);
-        PropertyDataManager.SetPropertyData(data);
+        IProperty property = PropertyDataManager.AddProperty();
     }
 
     private void InstantiateProperties()
     {
-        //if (PropertyDataManager.GetPropertyData().properties != null)
+        foreach (var property in PropertyDataManager.GetProperties())
         {
-            foreach (var property in PropertyDataManager.GetPropertyData().properties)
-            {
-                GameObject propertyButton = Instantiate(propertyPrefabButton, propertyInfoContent);
-                propertyButton.GetComponent<PropertyFields>().Initialize(property);
-            }
+            GameObject propertyButton = Instantiate(propertyPrefabButton, propertyInfoContent);
+            propertyButton.GetComponent<PropertyFields>().Initialize(property);
         }
     }
 }
