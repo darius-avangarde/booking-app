@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UINavigation;
 
 public class PropertyFields : MonoBehaviour
 {
     [SerializeField]
-    private Text proprietyName;
-    [SerializeField]
-    private Text propertySingleBedsRoom;
-    [SerializeField]
-    private Text propertyDoubleBedsRoom;
+    private Text propertyName;
     
     public void Initialize(IProperty property)
     {
-        //proprietyName.text = property.name;
+        propertyName.text = "property.Name";
+        GetComponent<Button>().onClick.AddListener(() => OpenPropertyAdminScreen(property));
+    }
+    private void OpenPropertyAdminScreen(IProperty property)
+    {
+        PropertyAdminScreen.currentProperty = property;
     }
 }

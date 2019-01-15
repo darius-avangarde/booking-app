@@ -5,9 +5,9 @@ using UnityEngine;
 public class PropertiesScreen : MonoBehaviour
 {
     [SerializeField]
-    public GameObject propertyPrefabButton;
+    private GameObject propertyPrefabButton;
     [SerializeField]
-    public Transform propertyInfoContent; 
+    private Transform propertyInfoContent; 
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +17,7 @@ public class PropertiesScreen : MonoBehaviour
     public void AddPropertyItem()
     {
         IProperty property = PropertyDataManager.AddProperty();
+        PropertyAdminScreen.currentProperty = property;
     }
 
     private void InstantiateProperties()
