@@ -19,11 +19,11 @@ public class ClickedWaveAnimation : MonoBehaviour {
 		poolClass.CreatePool(WaveObject, PoolSize);
 	}
 
-	void Update () 
+	void Update ()
 	{
-		if (Input.GetMouseButtonDown(0) 
+		if (Input.GetMouseButtonDown(0)
 #if UNITY_EDITOR
-		    || Input.GetMouseButtonDown(1) 
+		    || Input.GetMouseButtonDown(1)
 #endif
 		    )
 		{
@@ -61,17 +61,27 @@ public class ClickedWaveAnimation : MonoBehaviour {
 	{
 		PointerEventData pe = new PointerEventData(EventSystem.current);
 		pe.position =  Input.mousePosition;
-		
+
 		List<RaycastResult> hits = new List<RaycastResult>();
 		EventSystem.current.RaycastAll( pe, hits );
 
 		for (int i = 0; i < hits.Count ; i++)
 		{
-			if (hits[i].gameObject.GetComponent<Button>() && hits[i].gameObject.GetComponent<Mask>())
+			if (hits[i].gameObject.GetComponent<Button>())
 			{
-				return hits[i].gameObject;
+				// prevent ripple animation from playing on button in the background
+				// if the clicked button doesn't have the animation
+				return hits[i].gameObject.GetComponent<Mask>() ? hits[i].gameObject : null;
 			}
 		}
+
+		// for (int i = 0; i < hits.Count ; i++)
+		// {
+		// 	if (hits[i].gameObject.GetComponent<Button>() && hits[i].gameObject.GetComponent<Mask>())
+		// 	{
+		// 		return hits[i].gameObject;
+		// 	}
+		// }
 
 		return null;
 	}
