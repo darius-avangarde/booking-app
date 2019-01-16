@@ -34,7 +34,7 @@ public class PropertiesScreen : MonoBehaviour
         foreach (var property in PropertyDataManager.GetProperties())
         {
             GameObject propertyButton = Instantiate(propertyPrefabButton, propertyInfoContent);
-            propertyButton.GetComponent<PropertyFields>().Initialize(property, () => OpenPropertyAdminScreen(property));
+            propertyButton.GetComponent<PropertyItem>().Initialize(property, () => OpenPropertyAdminScreen(property));
             propertyButtons.Add(propertyButton);
         }
     }

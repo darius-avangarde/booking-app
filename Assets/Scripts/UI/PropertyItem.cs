@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System;
 
-public class PropertyFields : MonoBehaviour
+public class PropertyItem : MonoBehaviour
 {
     [SerializeField]
     private Text propertyName;
