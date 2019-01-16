@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
-    public static IProperty currentProperty;
+    public IProperty currentProperty;
     [SerializeField]
     private Text propertyScreenTitle;
     [SerializeField]
@@ -20,9 +20,21 @@ public class PropertyAdminScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //propertyScreenTitle.text = currentProperty.Name == "" ? propertyScreenTitle.text : currentProperty.Name;
         propertyNameInputField.onValueChanged.AddListener(delegate { OnValueChanged();});
         InstantiateRooms();
+    }
+
+    public void UpdatePropertyFields(IProperty property)
+    {
+        currentProperty = property;
+        propertyScreenTitle.text = currentProperty.Name ?? "Denumire";
+        propertyNamePlaceholder.text = currentProperty.Name ?? "Denumire";
+        propertyNameInputField.text = currentProperty.Name ?? "";
+    }
+
+    public void SaveProperty()
+    {
+        currentProperty.Name = propertyScreenTitle.text;
     }
 
     public void AddRoomItem()

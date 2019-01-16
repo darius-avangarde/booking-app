@@ -1,21 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UINavigation;
+using System;
 
 public class PropertyFields : MonoBehaviour
 {
     [SerializeField]
     private Text propertyName;
     
-    public void Initialize(IProperty property)
+    public void Initialize(IProperty property, Action callback)
     {
-        propertyName.text = "property.Name";
-        GetComponent<Button>().onClick.AddListener(() => OpenPropertyAdminScreen(property));
-    }
-    private void OpenPropertyAdminScreen(IProperty property)
-    {
-        PropertyAdminScreen.currentProperty = property;
+        propertyName.text = property.Name;
+        GetComponent<Button>().onClick.AddListener(() => callback());
     }
 }
