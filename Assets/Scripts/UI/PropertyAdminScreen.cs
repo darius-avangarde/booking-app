@@ -8,7 +8,11 @@ public class PropertyAdminScreen : MonoBehaviour
 {
     public IProperty currentProperty;
     [SerializeField]
+    private ConfirmationDialog confirmationDialog;
+    [SerializeField]
     private Navigator navigator;
+    [SerializeField]
+    private Transform propertiesScreenTransform;
     [SerializeField]
     private Transform roomAdminScreenTransform;
     [SerializeField]
@@ -18,9 +22,9 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField propertyNameInputField;
     [SerializeField]
-    private GameObject roomPrefabButton;
+    private GameObject roomPrefabButton = null;
     [SerializeField]
-    private Transform roomsContentScrollView;
+    private Transform roomsContentScrollView = null;
     private List<GameObject> roomButtons = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
@@ -37,13 +41,17 @@ public class PropertyAdminScreen : MonoBehaviour
     }
     public void AddRoomItem()
     {
-        IRoom room = PropertyDataManager.GetProperty(currentProperty.ID).AddRoom();
+        IRoom room = currentProperty.AddRoom();
         roomAdminScreenTransform.GetComponent<RoomAdminScreen>().UpdateRoomFields(currentProperty, room);
     }
 
     public void DeleteProperty()
     {
-        PropertyDataManager.DeleteProperty(currentProperty.ID);
+        confirmationDialog.Show(() => {
+            PropertyDataManager.DeleteProperty(currentProperty.ID);
+            navigator.GoTo(propertiesScreenTransform.GetComponent<NavScreen>());
+            propertiesScreenTransform.GetComponent<PropertiesScreen>().InstantiateProperties();
+        }, null);
     }
     
     public void OnValueChanged(string value)
@@ -60,7 +68,7 @@ public class PropertyAdminScreen : MonoBehaviour
         }
         if (currentProperty != null)
         {
-            foreach (var room in PropertyDataManager.GetProperty(currentProperty.ID).Rooms)
+            foreach (var room in currentProperty.Rooms)
             {
                 GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
                 roomButton.GetComponent<RoomItem>().Initialize(room, () => OpenRoomAdminScreen(currentProperty, room));

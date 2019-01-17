@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,23 +9,27 @@ public class RoomAdminScreen : MonoBehaviour
     public IProperty currentProperty;
     private IRoom currentRoom;
     [SerializeField]
+    private ConfirmationDialog confirmationDialog;
+    [SerializeField]
+    private Navigator navigator;
+    [SerializeField]
+    private Transform propertyAdminScreenTransform;
+    [SerializeField]
     private Text roomAdminScreenTitle;
     [SerializeField]
-    private InputField roomNameInputField;
+    private InputField roomNameInputField = null;
     [SerializeField]
     private InputField roomSingleBedQuantityInputField;
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-       
-    }
-
+    
     public void DeleteRoom()
     {
-        PropertyDataManager.GetProperty(currentProperty.ID).DeleteRoom(currentRoom.ID);
+        confirmationDialog.Show(() => {
+            PropertyDataManager.GetProperty(currentProperty.ID).DeleteRoom(currentRoom.ID);
+            navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+            propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().InstantiateRooms();
+        }, null);
     }
 
     public void UpdateRoomFields(IProperty property, IRoom room)
