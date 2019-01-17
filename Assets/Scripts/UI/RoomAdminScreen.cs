@@ -31,17 +31,25 @@ public class RoomAdminScreen : MonoBehaviour
     {
         currentProperty = property;
         currentRoom = room;
-        roomNameInputField.text = currentRoom.Name ?? Constants.defaultRoomName;
+        roomNameInputField.text = currentRoom.Name ?? "";
         roomSingleBedQuantityInputField.text = room.SingleBeds.ToString();
         roomDoubleBedQuantityInputField.text = room.DoubleBeds.ToString();
         roomAdminScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
     }
 
-    private void OnValueChanged(string value)
+    public void OnRoomNameValueChanged(string value)
     {
         roomAdminScreenTitle.text = value;
         currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.defaultRoomAdminScreenName : value;
-        currentRoom.SingleBeds = int.Parse(roomSingleBedQuantityInputField.text == "" ? "Cantitate pat single" : roomSingleBedQuantityInputField.text);
-        currentRoom.DoubleBeds = int.Parse(roomDoubleBedQuantityInputField.text == "" ? "Cantitate pat dublu" : roomDoubleBedQuantityInputField.text);
+    }
+
+    public void OnRoomSingleBedQuantityValueChanged(string value)
+    {
+        currentRoom.SingleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
+    }
+
+    public void OnRoomDoubleBedQuantityValueChanged(string value)
+    {
+        currentRoom.DoubleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
 }

@@ -6,5 +6,4 @@ public class Constants : MonoBehaviour
 {
     public const string defaultProperyAdminScreenName = "Proprietate noua";
     public const string defaultRoomAdminScreenName = "Camera noua";
-    public const string defaultRoomName = "Camera01";
 }

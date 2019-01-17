@@ -13,8 +13,8 @@ public class RoomItem : MonoBehaviour
 
     public void Initialize(IRoom room, Action callback)
     {
-        roomName.text = room.Name;
-        personsNumber.text = personsNumber.text + ": " + room.Persons.ToString();
+        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
+        personsNumber.text = personsNumber.text + " " + room.Persons.ToString();
         GetComponent<Button>().onClick.AddListener(() => callback());
     }
 }
