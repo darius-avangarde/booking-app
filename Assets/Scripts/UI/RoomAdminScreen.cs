@@ -50,11 +50,51 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void OnRoomSingleBedQuantityValueChanged(string value)
     {
+        if (value == "-")
+        {
+            roomSingleBedQuantityInputField.text = "";
+            return;
+        }
         currentRoom.SingleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
 
     public void OnRoomDoubleBedQuantityValueChanged(string value)
     {
+        if (value == "-")
+        {
+            roomDoubleBedQuantityInputField.text = "";
+            return;
+        }
         currentRoom.DoubleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
+    }
+
+    public void ChangeSingleBedQuantity(string sign)
+    {
+        if (sign == "+")
+        {
+            roomSingleBedQuantityInputField.text = (++currentRoom.SingleBeds).ToString();
+        }
+        else
+        {
+            if (roomSingleBedQuantityInputField.text != "0")
+            {
+                roomSingleBedQuantityInputField.text = (--currentRoom.SingleBeds).ToString();
+            }
+        }
+    }
+
+    public void ChangeDoubleBedQuantity(string sign)
+    {
+        if (sign == "+")
+        {
+            roomDoubleBedQuantityInputField.text = (++currentRoom.DoubleBeds).ToString();
+        }
+        else
+        {
+            if (roomDoubleBedQuantityInputField.text != "0")
+            {
+                roomDoubleBedQuantityInputField.text = (--currentRoom.DoubleBeds).ToString();
+            }
+        }
     }
 }
