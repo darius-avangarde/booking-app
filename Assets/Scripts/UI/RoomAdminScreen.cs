@@ -9,20 +9,20 @@ public class RoomAdminScreen : MonoBehaviour
     public IProperty currentProperty;
     private IRoom currentRoom;
     [SerializeField]
-    private ConfirmationDialog confirmationDialog;
+    private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
-    private Navigator navigator;
+    private Navigator navigator = null;
     [SerializeField]
-    private Transform propertyAdminScreenTransform;
+    private Transform propertyAdminScreenTransform = null;
     [SerializeField]
-    private Text roomAdminScreenTitle;
+    private Text roomAdminScreenTitle = null;
     [SerializeField]
     private InputField roomNameInputField = null;
     [SerializeField]
-    private InputField roomSingleBedQuantityInputField;
+    private InputField roomSingleBedQuantityInputField = null;
     [SerializeField]
-    private InputField roomDoubleBedQuantityInputField;
-    
+    private InputField roomDoubleBedQuantityInputField = null;
+
     public void DeleteRoom()
     {
         confirmationDialog.Show(() => {

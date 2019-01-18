@@ -5,8 +5,8 @@ using System;
 public class PropertyItem : MonoBehaviour
 {
     [SerializeField]
-    private Text propertyName;
-    
+    private Text propertyName = null;
+
     public void Initialize(IProperty property, Action callback)
     {
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
