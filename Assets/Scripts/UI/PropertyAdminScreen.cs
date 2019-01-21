@@ -8,19 +8,19 @@ public class PropertyAdminScreen : MonoBehaviour
 {
     public IProperty currentProperty;
     [SerializeField]
-    private ConfirmationDialog confirmationDialog;
+    private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
-    private Navigator navigator;
+    private Navigator navigator = null;
     [SerializeField]
-    private Transform propertiesScreenTransform;
+    private Transform propertiesScreenTransform = null;
     [SerializeField]
-    private Transform roomAdminScreenTransform;
+    private Transform roomAdminScreenTransform = null;
     [SerializeField]
-    private Text propertyScreenTitle;
+    private Text propertyScreenTitle = null;
     [SerializeField]
     private Text propertyNamePlaceholder;
     [SerializeField]
-    private InputField propertyNameInputField;
+    private InputField propertyNameInputField = null;
     [SerializeField]
     private GameObject roomPrefabButton = null;
     [SerializeField]

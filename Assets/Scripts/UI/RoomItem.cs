@@ -7,9 +7,9 @@ using UnityEngine.UI;
 public class RoomItem : MonoBehaviour
 {
     [SerializeField]
-    private Text roomName;
+    private Text roomName = null;
     [SerializeField]
-    private Text personsNumber;
+    private Text personsNumber = null;
 
     public void Initialize(IRoom room, Action callback)
     {

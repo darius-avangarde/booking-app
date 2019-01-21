@@ -5,13 +5,13 @@ using UnityEngine;
 public class PropertiesScreen : MonoBehaviour
 {
     [SerializeField]
-    private Navigator navigator;
+    private Navigator navigator = null;
     [SerializeField]
-    private Transform propertyAdminScreenTransform;
+    private Transform propertyAdminScreenTransform = null;
     [SerializeField]
-    private GameObject propertyPrefabButton;
+    private GameObject propertyPrefabButton = null;
     [SerializeField]
-    private Transform propertyInfoContent;
+    private Transform propertyInfoContent = null;
     private List<GameObject> propertyButtons = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
