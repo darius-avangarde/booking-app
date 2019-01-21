@@ -11,11 +11,12 @@ public class DayItem : MonoBehaviour
     public Image DayReservationStatusText;
     public DateTime dayItemDateTime;
 
-    public void UpdateDayItem(DateTime dateTime)
+    public void UpdateDayItem(DateTime dateTime, bool interactableState)
     {
+        GetComponent<Button>().interactable = interactableState;
         showIsTodayImage.gameObject.SetActive(false);
 
-        if (dateTime.Day == DateTime.Now.Day && dateTime.Month == DateTime.Now.Month && dateTime.Year == DateTime.Now.Year)
+        if (dateTime == DateTime.Today)
         {
             showIsTodayImage.gameObject.SetActive(true);
         }

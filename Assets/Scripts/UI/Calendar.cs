@@ -13,7 +13,6 @@ public class Calendar : MonoBehaviour
     private DateTime dateTime;
     private DateTime previousMonthDateTime;
     private DateTime nextMonthDateTime;
-    private DateTime now = DateTime.Now;
     private int thisMonthIndex;
     private string[] monthNames = {"Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
         "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"};
@@ -22,20 +21,28 @@ public class Calendar : MonoBehaviour
     void Start()
     {
         thisMonthIndex = 0;
-        dateTime = now;
+        dateTime = DateTime.Today;
         previousMonthDateTime = dateTime.AddMonths(-1);
         nextMonthDateTime = dateTime.AddMonths(1);
         UpdateCalendar(dateTime);
     }
 
-    public void NextMonth()
+    public void ShowPreviousMonth()
     {
-        UpdateCalendar(dateTime.AddMonths(++thisMonthIndex));
+        --thisMonthIndex;
+        previousMonthDateTime = dateTime.AddMonths(thisMonthIndex - 1);
+        nextMonthDateTime = dateTime.AddMonths(thisMonthIndex + 1);
+        UpdateCalendar(dateTime.AddMonths(thisMonthIndex));
     }
-    public void PreviousMonth()
+
+    public void ShowNextMonth()
     {
-        UpdateCalendar(dateTime.AddMonths(--thisMonthIndex));
+        ++thisMonthIndex;
+        previousMonthDateTime = dateTime.AddMonths(thisMonthIndex - 1);
+        nextMonthDateTime = dateTime.AddMonths(thisMonthIndex + 1);
+        UpdateCalendar(dateTime.AddMonths(thisMonthIndex));
     }
+
     private void UpdateCalendar(DateTime dateTime)
     {
         for (int i = 0; i < dayItemsInCalendarPanel.childCount; i++)
@@ -45,33 +52,34 @@ public class Calendar : MonoBehaviour
 
         int day = 1;
         DateTime firstDay = new DateTime(dateTime.Year, dateTime.Month, day, 0, 0, 0, DateTimeKind.Local);
-        //set in current UICalendar previous month days
-        //previousMonthDateTime = previousMonthDateTime.AddMonths(-1);
-        //int daysInPreviousMonth = DateTime.DaysInMonth(previousMonthDateTime.Year, previousMonthDateTime.Month);
-        //for (int p = GetDay(firstDay.DayOfWeek) - 1; p >= 0; --p)
-        //{
-        //    previousMonthDateTime = new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, daysInPreviousMonth, 0, 0, 0, DateTimeKind.Local);
-        //    dayItemsInCalendarPanel.GetChild(p).GetComponent<DayItem>().UpdateDayItem(previousMonthDateTime);
-        //    daysInPreviousMonth--;
-        //}
+        
+        int daysInPreviousMonth = DateTime.DaysInMonth(previousMonthDateTime.Year, previousMonthDateTime.Month);
+        for (int p = GetDay(firstDay.DayOfWeek) - 1; p >= 0; --p)
+        {
+            previousMonthDateTime = new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, daysInPreviousMonth, 0, 0, 0, DateTimeKind.Local);
+            dayItemsInCalendarPanel.GetChild(p).GetComponent<DayItem>().UpdateDayItem(previousMonthDateTime, false);
+            daysInPreviousMonth--;
+        }
+
         //set and show current month days in UI
         monthName.text = GetNameOfMonth(dateTime.Month) + " " + dateTime.Year;
         for (int i = GetDay(firstDay.DayOfWeek); i < DateTime.DaysInMonth(dateTime.Year, dateTime.Month) + GetDay(firstDay.DayOfWeek); i++)
         {
             dateTime = new DateTime(dateTime.Year, dateTime.Month, day, 0, 0, 0, DateTimeKind.Local);
-            dayItemsInCalendarPanel.GetChild(i).GetComponent<DayItem>().UpdateDayItem(dateTime);
+            dayItemsInCalendarPanel.GetChild(i).GetComponent<DayItem>().UpdateDayItem(dateTime, true);
             day++;
         }
 
         //set in current UICalendar next month days
-        //nextMonthDateTime.AddMonths(1);
-        //int daysInNextMonth = DateTime.DaysInMonth(nextMonthDateTime.Year, nextMonthDateTime.Month);
-        //for (int n = 42 - GetDay(firstDay.DayOfWeek); n <= 42; n++)
-        //{
-        //    nextMonthDateTime = new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, daysInNextMonth, 0, 0, 0, DateTimeKind.Local);
-        //    dayItemsInCalendarPanel.GetChild(n).GetComponent<DayItem>().UpdateDayItem(nextMonthDateTime);
-        //    daysInNextMonth++;
-        //}
+        int firstDayInNextMonth = 1;
+        DateTime firstDayFromNextMonth = new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, firstDayInNextMonth, 0, 0, 0, DateTimeKind.Local);
+        for (int n = DateTime.DaysInMonth(dateTime.Year, dateTime.Month) + GetDay(firstDay.DayOfWeek); n < dayItemsInCalendarPanel.childCount; n++)
+        {
+            nextMonthDateTime = new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, firstDayInNextMonth, 0, 0, 0, DateTimeKind.Local);
+            print(nextMonthDateTime);
+            dayItemsInCalendarPanel.GetChild(n).GetComponent<DayItem>().UpdateDayItem(nextMonthDateTime, false);
+            firstDayInNextMonth++;
+        }
     }
 
     private int GetDay(DayOfWeek day)
