@@ -124,6 +124,11 @@ public static class ReservationDataManager
             set
             {
                 startTicks = value.Ticks;
+                if (startTicks > endTicks)
+                {
+                    endTicks = startTicks;
+                }
+
                 WriteReservationData();
             }
         }
@@ -135,6 +140,10 @@ public static class ReservationDataManager
             set
             {
                 endTicks = value.Ticks;
+                if (endTicks < startTicks)
+                {
+                    startTicks = endTicks;
+                }
                 WriteReservationData();
             }
         }
