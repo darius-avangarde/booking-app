@@ -37,6 +37,8 @@ public static class PropertyDataManager
         File.WriteAllText(filePath, dataAsJson);
     }
 
+    // we're using interfaces to restrict data mutation to methods and properties that we control
+    // this allows us to make sure that the data file is updated automatically with each change
     public static IEnumerable<IProperty> GetProperties()
     {
         PropertyData data = GetPropertyData();
@@ -71,8 +73,6 @@ public static class PropertyDataManager
         public List<Property> properties;
 
         public PropertyData() => this.properties = new List<Property>();
-
-        public PropertyData(List<Property> properties) => this.properties = properties;
     }
 
     [Serializable]
@@ -94,13 +94,13 @@ public static class PropertyDataManager
         }
         public IEnumerable<IRoom> Rooms => rooms;
 
-        public Property() => id = Guid.NewGuid().ToString();
+        public Property() => this.id = Guid.NewGuid().ToString();
 
         public IRoom GetRoom(string ID) => rooms.Find(r => r.ID.Equals(ID));
 
         public IRoom AddRoom()
         {
-            Room newRoom = new Room();
+            Room newRoom = new Room(id);
             rooms.Add(newRoom);
             WritePropertyData();
 
@@ -117,12 +117,13 @@ public static class PropertyDataManager
     [Serializable]
     private class Room : IRoom
     {
-        public string id;
-        public string name;
-        public int singleBeds;
-        public int doubleBeds;
+        public string propertyID;
+        public string PropertyID => propertyID;
 
+        public string id;
         public string ID => id;
+
+        public string name;
         public string Name
         {
             get => name;
@@ -132,6 +133,8 @@ public static class PropertyDataManager
                 WritePropertyData();
             }
         }
+
+        public int singleBeds;
         public int SingleBeds
         {
             get => singleBeds;
@@ -141,6 +144,8 @@ public static class PropertyDataManager
                 WritePropertyData();
             }
         }
+
+        public int doubleBeds;
         public int DoubleBeds
         {
             get => doubleBeds;
@@ -150,8 +155,13 @@ public static class PropertyDataManager
                 WritePropertyData();
             }
         }
+
         public int Persons => singleBeds + 2 * doubleBeds;
 
-        public Room() => id = Guid.NewGuid().ToString();
+        public Room(string propertyID)
+        {
+            this.id = Guid.NewGuid().ToString();
+            this.propertyID = propertyID;
+        }
     }
 }
