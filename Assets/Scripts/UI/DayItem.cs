@@ -9,22 +9,21 @@ public class DayItem : MonoBehaviour
     public Image showIsTodayImage;
     public Text dayText;
     public Image DayReservationStatusText;
-    public DateTime dayItemDateTime;
 
-    public void UpdateDayItem(DateTime dateTime, bool interactableState)
+    private Image dayItemImage;
+    private Color dayItemImageColor;
+
+    private void Start()
     {
-        GetComponent<Button>().interactable = interactableState;
-        showIsTodayImage.gameObject.SetActive(false);
-
-        if (dateTime == DateTime.Today)
-        {
-            showIsTodayImage.gameObject.SetActive(true);
-        }
-        dayItemDateTime = dateTime;
-        dayText.text = dateTime.Day.ToString();
+        dayItemImage = GetComponent<Image>();
+        dayItemImageColor = dayItemImage.color;
     }
-    public void Clear()
+
+    public void UpdateDayItem(DateTime dateTime, bool isSelectedMonth)
     {
-        dayText.text = "*";
+        dayItemImage.color = isSelectedMonth? dayItemImageColor : Color.gray;
+        
+        showIsTodayImage.gameObject.SetActive(dateTime == DateTime.Today);
+        dayText.text = dateTime.Day.ToString();
     }
 }
