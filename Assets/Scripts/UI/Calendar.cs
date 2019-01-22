@@ -13,26 +13,24 @@ public class Calendar : MonoBehaviour
     private DateTime selectedDateTime;
     private DateTime previousMonthDateTime;
     private DateTime nextMonthDateTime;
-    private int selectedMonthIndex;
     private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
-                                                                {
-                                                                    {1,"Ianuarie"},
-                                                                    {2, "Februarie"},
-                                                                    {3,"Martie"},
-                                                                    {4,"Aprilie"},
-                                                                    {5,"Mai"},
-                                                                    {6,"Iunie"},
-                                                                    {7,"Iulie"},
-                                                                    {8,"August"},
-                                                                    {9,"Septembrie"},
-                                                                    {10,"Octombrie"},
-                                                                    {11,"Noiembrie"},
-                                                                    {12,"Decembrie"}
-                                                                };
+    {
+        {1,"Ianuarie"},
+        {2, "Februarie"},
+        {3,"Martie"},
+        {4,"Aprilie"},
+        {5,"Mai"},
+        {6,"Iunie"},
+        {7,"Iulie"},
+        {8,"August"},
+        {9,"Septembrie"},
+        {10,"Octombrie"},
+        {11,"Noiembrie"},
+        {12,"Decembrie"}
+    };
     // Start is called before the first frame update
     void Start()
     {
-        selectedMonthIndex = 0;
         selectedDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
     }
@@ -98,7 +96,7 @@ public class Calendar : MonoBehaviour
 
     private void SetDayItemsForPreviousMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-        previousMonthDateTime = selectedDateTime.AddMonths(selectedMonthIndex - 1);
+        previousMonthDateTime = selectedDateTime.AddMonths(-1);
         int dayVisibleFromPreviousMonth = DateTime.DaysInMonth(previousMonthDateTime.Year, previousMonthDateTime.Month);
 
         for (int p = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek) - 1; p >= 0; --p)
