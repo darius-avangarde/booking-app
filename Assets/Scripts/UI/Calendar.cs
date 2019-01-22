@@ -11,8 +11,6 @@ public class Calendar : MonoBehaviour
     [SerializeField]
     private Transform dayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
-    private DateTime previousMonthDateTime;
-    private DateTime nextMonthDateTime;
     private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
     {
         {1,"Ianuarie"},
@@ -60,7 +58,8 @@ public class Calendar : MonoBehaviour
 
     private void SetDayItemsForNextMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-        nextMonthDateTime = selectedDateTime.AddMonths(1);
+
+        DateTime nextMonthDateTime = selectedDateTime.AddMonths(1);
         int daysInSelectedMonth = DateTime.DaysInMonth(selectedDateTime.Year, selectedDateTime.Month);
         int daysVisibleFromPreviousMonth = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek);
         int firstDayFromNextMonthIndex = daysInSelectedMonth + daysVisibleFromPreviousMonth;
@@ -96,7 +95,7 @@ public class Calendar : MonoBehaviour
 
     private void SetDayItemsForPreviousMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-        previousMonthDateTime = selectedDateTime.AddMonths(-1);
+        DateTime previousMonthDateTime = selectedDateTime.AddMonths(-1);
         int dayVisibleFromPreviousMonth = DateTime.DaysInMonth(previousMonthDateTime.Year, previousMonthDateTime.Month);
 
         for (int p = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek) - 1; p >= 0; --p)
