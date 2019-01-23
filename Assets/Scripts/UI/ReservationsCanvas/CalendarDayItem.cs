@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DayItem : MonoBehaviour
+public class CalendarDayItem : MonoBehaviour
 {
     public Image showIsTodayImage;
     public Text dayText;

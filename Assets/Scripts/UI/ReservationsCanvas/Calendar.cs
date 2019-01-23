@@ -69,7 +69,7 @@ public class Calendar : MonoBehaviour
         {
             nextMonthDateTime =
                 new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, dayVisibleFromNextMonth, 0, 0, 0, DateTimeKind.Local);
-            DayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<DayItem>();
+            CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<CalendarDayItem>();
             dayItem.UpdateDayItem(nextMonthDateTime, false);
             dayVisibleFromNextMonth++;
         }
@@ -87,7 +87,7 @@ public class Calendar : MonoBehaviour
         {
             selectedDateTime = 
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
-            DayItem dayItem = dayItemsInCalendarPanel.GetChild(i).GetComponent<DayItem>();
+            CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(i).GetComponent<CalendarDayItem>();
             dayItem.UpdateDayItem(selectedDateTime, true);
             dayVisibleFromSelectedMonth++;
         }
@@ -102,7 +102,7 @@ public class Calendar : MonoBehaviour
         {
             previousMonthDateTime = 
                 new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, dayVisibleFromPreviousMonth, 0, 0, 0, DateTimeKind.Local);
-            DayItem dayItem = dayItemsInCalendarPanel.GetChild(p).GetComponent<DayItem>();
+            CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(p).GetComponent<CalendarDayItem>();
             dayItem.UpdateDayItem(previousMonthDateTime, false);
             dayVisibleFromPreviousMonth--;
         }
