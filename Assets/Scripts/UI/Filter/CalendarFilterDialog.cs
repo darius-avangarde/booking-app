@@ -21,10 +21,10 @@ public class CalendarFilterDialog : MonoBehaviour
         this.filter = filter;
         this.doneCallback = doneCallback;
 
-        propertyDropdown.SelectedProperty = PropertyDataManager.GetProperty(filter?.PropertyID);
-        roomCapacitySelector.Value = filter?.RoomCapacity ?? 0;
-        singleBedCountSelector.Value = filter?.SingleBeds ?? 0;
-        doubleBedCountSelector.Value = filter?.DoubleBeds ?? 0;
+        propertyDropdown.SelectedProperty = PropertyDataManager.GetProperty(filter.PropertyID);
+        roomCapacitySelector.Value = filter.RoomCapacity;
+        singleBedCountSelector.Value = filter.SingleBeds;
+        doubleBedCountSelector.Value = filter.DoubleBeds;
     }
 
     public void ResetFilter()
@@ -34,7 +34,7 @@ public class CalendarFilterDialog : MonoBehaviour
 
     public void CloseDialog()
     {
-        filter.PropertyID = propertyDropdown.SelectedProperty?.ID;
+        filter.PropertyID = propertyDropdown.SelectedProperty.ID;
         filter.RoomCapacity = roomCapacitySelector.Value;
         filter.SingleBeds = singleBedCountSelector.Value;
         filter.DoubleBeds = doubleBedCountSelector.Value;

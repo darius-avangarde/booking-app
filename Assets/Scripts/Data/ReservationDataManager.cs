@@ -128,7 +128,6 @@ public static class ReservationDataManager
                 {
                     endTicks = startTicks;
                 }
-
                 WriteReservationData();
             }
         }
