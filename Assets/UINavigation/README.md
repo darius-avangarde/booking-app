@@ -61,3 +61,9 @@ See SlideTransition.cs or FadeTransition.cs for more details.
 ## To do
 
 * add reset history functionality to Navigator
+
+### Potential performance improvements
+
+* improve writing: debounce data file write
+* improve reading: use dictionaries keyed by reservation/room ID
+* improve processing: use sorted lists
