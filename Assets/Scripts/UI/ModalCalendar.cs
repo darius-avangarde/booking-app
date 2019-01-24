@@ -14,6 +14,11 @@ public class ModalCalendar : MonoBehaviour
     [SerializeField]
     private Transform modalDayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
+    private DateTime startReservationPeriodDateTime;
+    private DateTime finishReservationPriodDateTime;
+    private bool isSetStartDay = false;
+    private bool isSetFinishDay = false;
+
     private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
     {
         {1,"Ianuarie"},
@@ -33,8 +38,19 @@ public class ModalCalendar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        InstantiateModalCalendarDayItems();
         selectedDateTime = DateTime.Today;
+        startReservationPeriodDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
+    }
+
+    private void InstantiateModalCalendarDayItems()
+    {
+        for (int dayItemIndex = 0; dayItemIndex < modalDayItemsInCalendarPanel.childCount; dayItemIndex++)
+        {
+            ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<ModalCalendarDayItem>();
+            dayItem.Initialize((dt) => SetReservationPeriod(dt));
+        }
     }
 
     public void ShowTest() { easyTween.OpenCloseObjectAnimation(); }
@@ -44,6 +60,7 @@ public class ModalCalendar : MonoBehaviour
         easyTween.OpenCloseObjectAnimation();
         ConfirmCallback = confirmCallback;
         CancelCallback = cancelCallback;
+        UpdateCalendar(startReservationPeriodDateTime);
     }
 
     public void Confirm()
@@ -106,7 +123,7 @@ public class ModalCalendar : MonoBehaviour
             nextMonthDateTime =
                 new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, dayVisibleFromNextMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<ModalCalendarDayItem>();
-            dayItem.UpdateDayItem(nextMonthDateTime, true);
+            dayItem.UpdateModalDayItem(nextMonthDateTime, true);
             dayVisibleFromNextMonth++;
         }
     }
@@ -124,7 +141,7 @@ public class ModalCalendar : MonoBehaviour
             selectedDateTime =
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(i).GetComponent<ModalCalendarDayItem>();
-            dayItem.UpdateDayItem(selectedDateTime, selectedDateTime > DateTime.Today);
+            dayItem.UpdateModalDayItem(selectedDateTime, selectedDateTime > DateTime.Today);
             dayVisibleFromSelectedMonth++;
         }
     }
@@ -139,8 +156,27 @@ public class ModalCalendar : MonoBehaviour
             previousMonthDateTime =
                 new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, dayVisibleFromPreviousMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(p).GetComponent<ModalCalendarDayItem>();
-            dayItem.UpdateDayItem(previousMonthDateTime, selectedDateTime > DateTime.Today);
+            dayItem.UpdateModalDayItem(previousMonthDateTime, selectedDateTime > DateTime.Today);
             dayVisibleFromPreviousMonth--;
+        }
+    }
+
+    private void SetReservationPeriod(DateTime dateTime)
+    {
+        if (!isSetStartDay)
+        {
+            startReservationPeriodDateTime = dateTime;
+            print(startReservationPeriodDateTime);
+            isSetStartDay = true;
+        }
+        else if (!isSetFinishDay)
+        {
+            finishReservationPriodDateTime = dateTime;
+            print(finishReservationPriodDateTime);
+            isSetFinishDay = true;
+            Cancel();
+            isSetStartDay = false;
+            isSetFinishDay = false;
         }
     }
 

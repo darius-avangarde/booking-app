@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,21 +6,24 @@ public class ModalCalendarDayItem : MonoBehaviour
 {
     public Text dayText;
 
-    private Image dayItemImage;
-    private Color dayItemImageColor;
-    private Button dayItemButton;
+    private Image modalCalendarDayItemImage;
+    private Color modalCalendarDayItemImageColor;
+    private Button modalCalendarDayItemButton;
+    private DateTime modalCalendarDayItemDateTime;
 
-    private void Start()
+    public void Initialize(Action<DateTime> callback)
     {
-        dayItemImage = GetComponent<Image>();
-        dayItemButton = GetComponent<Button>();
-        dayItemImageColor = dayItemImage.color;
+        modalCalendarDayItemImage = GetComponent<Image>();
+        modalCalendarDayItemButton = GetComponent<Button>();
+        modalCalendarDayItemImageColor = modalCalendarDayItemImage.color;
+        GetComponent<Button>().onClick.AddListener(() => callback(modalCalendarDayItemDateTime));
     }
 
-    public void UpdateDayItem(DateTime dateTime, bool isInteractableDay)
+    public void UpdateModalDayItem(DateTime dateTime, bool isInteractableDay)
     {
-        dayItemImage.color = isInteractableDay ? dayItemImageColor : Color.gray;
-        dayItemButton.interactable = isInteractableDay;
+        modalCalendarDayItemDateTime = dateTime;
+        modalCalendarDayItemImage.color = isInteractableDay ? modalCalendarDayItemImageColor : Color.gray;
+        modalCalendarDayItemButton.interactable = isInteractableDay;
         dayText.text = dateTime.Day.ToString();
     }
 }
