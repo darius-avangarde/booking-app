@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
@@ -25,6 +26,11 @@ public class DayScreen : MonoBehaviour
             GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
             dayScreenItem.GetComponent<DayScreenPropertyItem>().Initialize(property, () => OpenRoomReservationScreen(property));
         }
+    }
+
+    public void UpdateDayScreenInfo(DateTime dateTime)
+    {
+        dayScreenTitle.text = dateTime.Day + " " + Constants.monthNamesDict[dateTime.Month] + " " + dateTime.Year;
     }
 
     private void OpenRoomReservationScreen(IProperty property)

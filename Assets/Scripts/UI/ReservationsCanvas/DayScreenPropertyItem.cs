@@ -6,6 +6,10 @@ public class DayScreenPropertyItem : MonoBehaviour
 {
     [SerializeField]
     private Text propertyName = null;
+    [SerializeField]
+    private Text roomName = null;
+    [SerializeField]
+    private Text bedQuantity = null;
 
     public void Initialize(IProperty property, Action callback)
     {

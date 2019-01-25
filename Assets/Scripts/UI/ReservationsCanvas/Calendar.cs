@@ -1,34 +1,25 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Calendar : MonoBehaviour
 {
     [SerializeField]
+    private Navigator navigator = null;
+    [SerializeField]
+    private Transform dayScreen = null;
+    [SerializeField]
     private Text monthName = null;
     [SerializeField]
     private Transform dayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
-    private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
-    {
-        {1,"Ianuarie"},
-        {2, "Februarie"},
-        {3,"Martie"},
-        {4,"Aprilie"},
-        {5,"Mai"},
-        {6,"Iunie"},
-        {7,"Iulie"},
-        {8,"August"},
-        {9,"Septembrie"},
-        {10,"Octombrie"},
-        {11,"Noiembrie"},
-        {12,"Decembrie"}
-    };
     // Start is called before the first frame update
     void Start()
     {
+        InstantiateCalendarDayItems();
         selectedDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
     }
@@ -43,6 +34,21 @@ public class Calendar : MonoBehaviour
     {
         selectedDateTime = selectedDateTime.AddMonths(1);
         UpdateCalendar(selectedDateTime);
+    }
+
+    private void InstantiateCalendarDayItems()
+    {
+        for (int dayItemIndex = 0; dayItemIndex < dayItemsInCalendarPanel.childCount; dayItemIndex++)
+        {
+            CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<CalendarDayItem>();
+            dayItem.Initialize((dt) => OpenDayScreen(dt));
+        }
+    }
+
+    private void OpenDayScreen(DateTime dateTime)
+    {
+        dayScreen.GetComponent<DayScreen>().UpdateDayScreenInfo(dateTime);
+        navigator.GoTo(dayScreen.GetComponent<NavScreen>());
     }
 
     private void UpdateCalendar(DateTime selectedDateTime)
@@ -77,7 +83,7 @@ public class Calendar : MonoBehaviour
 
     private void SetDayItemsForCurrentMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-        monthName.text = monthNamesDict[selectedDateTime.Month] + " " + selectedDateTime.Year;
+        monthName.text = Constants.monthNamesDict[selectedDateTime.Month] + " " + selectedDateTime.Year;
         int daysInMonth = DateTime.DaysInMonth(selectedDateTime.Year, selectedDateTime.Month);
         int daysVisibleFromPreviousMonth = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek);
         int daysVisibleInCurrentMonth = daysInMonth + daysVisibleFromPreviousMonth;
