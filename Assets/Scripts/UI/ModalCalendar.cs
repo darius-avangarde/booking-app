@@ -1,16 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Calendar : MonoBehaviour
+public class ModalCalendar : MonoBehaviour
 {
+    public EasyTween easyTween;
+
+    private Action ConfirmCallback;
+    private Action CancelCallback;
     [SerializeField]
     private Text monthName = null;
     [SerializeField]
-    private Transform dayItemsInCalendarPanel = null;
+    private Transform modalDayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
+    private DateTime startReservationPeriodDateTime;
+    private DateTime finishReservationPriodDateTime;
+    private bool isSetStartDay = false;
+    private bool isSetFinishDay = false;
+
     private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
     {
         {1,"Ianuarie"},
@@ -26,17 +34,62 @@ public class Calendar : MonoBehaviour
         {11,"Noiembrie"},
         {12,"Decembrie"}
     };
+
     // Start is called before the first frame update
     void Start()
     {
+        InstantiateModalCalendarDayItems();
         selectedDateTime = DateTime.Today;
+        startReservationPeriodDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
     }
 
+    private void InstantiateModalCalendarDayItems()
+    {
+        for (int dayItemIndex = 0; dayItemIndex < modalDayItemsInCalendarPanel.childCount; dayItemIndex++)
+        {
+            ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<ModalCalendarDayItem>();
+            dayItem.Initialize((dt) => SetReservationPeriod(dt));
+        }
+    }
+
+    public void ShowTest() { easyTween.OpenCloseObjectAnimation(); }
+
+    public void Show(Action confirmCallback, Action cancelCallback)
+    {
+        easyTween.OpenCloseObjectAnimation();
+        ConfirmCallback = confirmCallback;
+        CancelCallback = cancelCallback;
+        UpdateCalendar(startReservationPeriodDateTime);
+    }
+
+    public void Confirm()
+    {
+        ConfirmCallback?.Invoke();
+
+        ConfirmCallback = null;
+        CancelCallback = null;
+
+        easyTween.OpenCloseObjectAnimation();
+    }
+
+    public void Cancel()
+    {
+        CancelCallback?.Invoke();
+
+        ConfirmCallback = null;
+        CancelCallback = null;
+
+        easyTween.OpenCloseObjectAnimation();
+    }
+   
     public void ShowPreviousMonth()
     {
-        selectedDateTime = selectedDateTime.AddMonths(-1);
-        UpdateCalendar(selectedDateTime);
+        if (selectedDateTime > DateTime.Today)
+        {
+            selectedDateTime = selectedDateTime.AddMonths(-1);
+            UpdateCalendar(selectedDateTime);
+        }
     }
 
     public void ShowNextMonth()
@@ -48,11 +101,11 @@ public class Calendar : MonoBehaviour
     private void UpdateCalendar(DateTime selectedDateTime)
     {
         DateTime firstDayOfMonthInSelectedDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
-        
+
         SetDayItemsForPreviousMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
-        
+
         SetDayItemsForCurrentMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
-        
+
         SetDayItemsForNextMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
     }
 
@@ -65,12 +118,12 @@ public class Calendar : MonoBehaviour
         int firstDayFromNextMonthIndex = daysInSelectedMonth + daysVisibleFromPreviousMonth;
         int dayVisibleFromNextMonth = 1;
 
-        for (int dayItemIndex = firstDayFromNextMonthIndex; dayItemIndex < dayItemsInCalendarPanel.childCount; dayItemIndex++)
+        for (int dayItemIndex = firstDayFromNextMonthIndex; dayItemIndex < modalDayItemsInCalendarPanel.childCount; dayItemIndex++)
         {
             nextMonthDateTime =
                 new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, dayVisibleFromNextMonth, 0, 0, 0, DateTimeKind.Local);
-            DayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<DayItem>();
-            dayItem.UpdateDayItem(nextMonthDateTime, false);
+            ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<ModalCalendarDayItem>();
+            dayItem.UpdateModalDayItem(nextMonthDateTime, true);
             dayVisibleFromNextMonth++;
         }
     }
@@ -85,10 +138,10 @@ public class Calendar : MonoBehaviour
 
         for (int i = daysVisibleFromPreviousMonth; i < daysVisibleInCurrentMonth; i++)
         {
-            selectedDateTime = 
+            selectedDateTime =
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
-            DayItem dayItem = dayItemsInCalendarPanel.GetChild(i).GetComponent<DayItem>();
-            dayItem.UpdateDayItem(selectedDateTime, true);
+            ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(i).GetComponent<ModalCalendarDayItem>();
+            dayItem.UpdateModalDayItem(selectedDateTime, selectedDateTime > DateTime.Today);
             dayVisibleFromSelectedMonth++;
         }
     }
@@ -100,11 +153,30 @@ public class Calendar : MonoBehaviour
 
         for (int p = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek) - 1; p >= 0; --p)
         {
-            previousMonthDateTime = 
+            previousMonthDateTime =
                 new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, dayVisibleFromPreviousMonth, 0, 0, 0, DateTimeKind.Local);
-            DayItem dayItem = dayItemsInCalendarPanel.GetChild(p).GetComponent<DayItem>();
-            dayItem.UpdateDayItem(previousMonthDateTime, false);
+            ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(p).GetComponent<ModalCalendarDayItem>();
+            dayItem.UpdateModalDayItem(previousMonthDateTime, selectedDateTime > DateTime.Today);
             dayVisibleFromPreviousMonth--;
+        }
+    }
+
+    private void SetReservationPeriod(DateTime dateTime)
+    {
+        if (!isSetStartDay)
+        {
+            startReservationPeriodDateTime = dateTime;
+            print(startReservationPeriodDateTime);
+            isSetStartDay = true;
+        }
+        else if (!isSetFinishDay)
+        {
+            finishReservationPriodDateTime = dateTime;
+            print(finishReservationPriodDateTime);
+            isSetFinishDay = true;
+            Cancel();
+            isSetStartDay = false;
+            isSetFinishDay = false;
         }
     }
 
