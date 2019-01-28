@@ -526,6 +526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d1dcc1ce05b5b242980518a2cbecf3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  easyTween: {fileID: 0}
   propertyDropdown: {fileID: 7662643852747673}
   roomCapacitySelector: {fileID: 1823130415431809893}
   singleBedCountSelector: {fileID: 8474594637149780439}
@@ -2430,7 +2431,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 166258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Name
-      value: Button Ripple Right
+      value: Close Button Ripple Right
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2576,6 +2577,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoubleBeds Filter
       objectReference: {fileID: 0}
+    - target: {fileID: 6110428608140779874, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2972460159673464188, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2681,6 +2687,21 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4211035398612572557, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372695269686521284, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349418171148070418, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1829791255111294615, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
@@ -2692,6 +2713,11 @@ PrefabInstance:
       value: Paturi double
       objectReference: {fileID: 0}
     - target: {fileID: 611217165461129722, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7231240303663725503, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
       value: 0
@@ -2751,31 +2777,6 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8372695269686521284, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4349418171148070418, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4211035398612572557, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7231240303663725503, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6110428608140779874, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bd97f672ab0bb8489a997affd4ba1f5, type: 3}
 --- !u!224 &875792939082678592 stripped
@@ -2805,7 +2806,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 166258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Name
-      value: Button Ripple Left
+      value: Reset Button Ripple Left
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2959,6 +2960,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PersonsPerRoom Filter
       objectReference: {fileID: 0}
+    - target: {fileID: 6110428608140779874, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2972460159673464188, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3064,12 +3070,32 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4211035398612572557, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372695269686521284, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349418171148070418, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1829791255111294615, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 611217165461129722, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7231240303663725503, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
       value: 0
@@ -3129,31 +3155,6 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8372695269686521284, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4349418171148070418, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4211035398612572557, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7231240303663725503, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6110428608140779874, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bd97f672ab0bb8489a997affd4ba1f5, type: 3}
 --- !u!224 &1273782388194676228 stripped
@@ -3185,6 +3186,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SingleBeds Filter
+      objectReference: {fileID: 0}
+    - target: {fileID: 6110428608140779874, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2972460159673464188, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
@@ -3291,6 +3297,21 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4211035398612572557, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8372695269686521284, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4349418171148070418, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1829791255111294615, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
@@ -3302,6 +3323,11 @@ PrefabInstance:
       value: Paturi single
       objectReference: {fileID: 0}
     - target: {fileID: 611217165461129722, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7231240303663725503, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
       value: 0
@@ -3357,31 +3383,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5651363115579080184, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8372695269686521284, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4349418171148070418, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4211035398612572557, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7231240303663725503, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6110428608140779874, guid: 1bd97f672ab0bb8489a997affd4ba1f5,
         type: 3}
       propertyPath: m_Color.a
       value: 0

@@ -10,6 +10,8 @@ public class DayScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private CalendarScreen calendarScreen = null;
+    [SerializeField]
     private Transform filteredPropertiesContent = null;
     [SerializeField]
     private GameObject dayScreenItemPrefab = null;
@@ -17,25 +19,33 @@ public class DayScreen : MonoBehaviour
     private Transform roomScreen = null;
     [SerializeField]
     private Text dayScreenTitle = null;
+    private List<GameObject> dayScreenItems = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
-        foreach (var property in PropertyDataManager.GetProperties())
-        {
-            GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
-            dayScreenItem.GetComponent<DayScreenPropertyItem>().Initialize(property, () => OpenRoomReservationScreen(property));
-        }
+
     }
 
     public void UpdateDayScreenInfo(DateTime dateTime)
     {
+        foreach (var dayScreenItem in dayScreenItems)
+        {
+            Destroy(dayScreenItem);
+        }
+
         dayScreenTitle.text = dateTime.Day + " " + Constants.monthNamesDict[dateTime.Month] + " " + dateTime.Year;
+        foreach (IRoom room in calendarScreen.roomList)
+        {
+            GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
+            dayScreenItem.GetComponent<DayScreenPropertyItem>().Initialize(room, () => OpenRoomReservationScreen(room));
+            dayScreenItems.Add(dayScreenItem);
+        }
     }
 
-    private void OpenRoomReservationScreen(IProperty property)
+    private void OpenRoomReservationScreen(IRoom room)
     {
-        roomScreen.GetComponent<RoomScreen>().UpdatePropertyFields(property);
+        roomScreen.GetComponent<RoomScreen>().UpdatePropertyFields(room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 }

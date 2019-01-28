@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CalendarFilterDialog : MonoBehaviour
 {
+    public EasyTween easyTween;
     [SerializeField]
     private PropertyDropdown propertyDropdown = null;
     [SerializeField]
@@ -17,6 +18,7 @@ public class CalendarFilterDialog : MonoBehaviour
 
     public void Show(RoomFilter filter, Action<RoomFilter> doneCallback)
     {
+        easyTween.OpenCloseObjectAnimation();
         propertyDropdown.Initialize();
         this.filter = filter;
         this.doneCallback = doneCallback;
@@ -42,5 +44,6 @@ public class CalendarFilterDialog : MonoBehaviour
         doneCallback?.Invoke(filter);
         filter = null;
         doneCallback = null;
+        easyTween.OpenCloseObjectAnimation();
     }
 }
