@@ -20,21 +20,20 @@ public class DayScreen : MonoBehaviour
     [SerializeField]
     private Text dayScreenTitle = null;
     private List<GameObject> dayScreenItems = new List<GameObject>();
-
-    // Start is called before the first frame update
-    void Start()
+    
+    public void UpdateDayScreenInfo(DateTime dateTime)
     {
-
+        dayScreenTitle.text = dateTime.Day + " " + Constants.monthNamesDict[dateTime.Month] + " " + dateTime.Year;
+        UpdateFilteredPropertiesContent();
     }
 
-    public void UpdateDayScreenInfo(DateTime dateTime)
+    public void UpdateFilteredPropertiesContent()
     {
         foreach (var dayScreenItem in dayScreenItems)
         {
             Destroy(dayScreenItem);
         }
 
-        dayScreenTitle.text = dateTime.Day + " " + Constants.monthNamesDict[dateTime.Month] + " " + dateTime.Year;
         foreach (IRoom room in calendarScreen.roomList)
         {
             GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
@@ -45,7 +44,7 @@ public class DayScreen : MonoBehaviour
 
     private void OpenRoomReservationScreen(IRoom room)
     {
-        roomScreen.GetComponent<RoomScreen>().UpdatePropertyFields(room);
+        roomScreen.GetComponent<RoomScreen>().UpdateRoomDetailsFields(room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 }

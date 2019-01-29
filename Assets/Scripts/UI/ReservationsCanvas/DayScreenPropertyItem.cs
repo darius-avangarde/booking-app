@@ -16,7 +16,7 @@ public class DayScreenPropertyItem : MonoBehaviour
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
-        bedQuantity.text = room.SingleBeds.ToString() + " paturi single" + " si" + room.DoubleBeds.ToString() + " paturi duble";
+        bedQuantity.text = room.SingleBeds.ToString() + " paturi single " + " si " + room.DoubleBeds.ToString() + " paturi duble ";
         GetComponent<Button>().onClick.AddListener(() => callback());
     }
 }
