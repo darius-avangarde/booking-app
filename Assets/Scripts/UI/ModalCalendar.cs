@@ -7,8 +7,7 @@ public class ModalCalendar : MonoBehaviour
 {
     public EasyTween easyTween;
 
-    private Action ConfirmCallback;
-    private Action CancelCallback;
+    private Action DoneCallback;
     [SerializeField]
     private Text monthName = null;
     [SerializeField]
@@ -18,7 +17,7 @@ public class ModalCalendar : MonoBehaviour
     private DateTime finishReservationPriodDateTime;
     private bool isSetStartDay = false;
     private bool isSetFinishDay = false;
-
+    private IReservation currentReservation;
     private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
     {
         {1,"Ianuarie"},
@@ -49,40 +48,27 @@ public class ModalCalendar : MonoBehaviour
         for (int dayItemIndex = 0; dayItemIndex < modalDayItemsInCalendarPanel.childCount; dayItemIndex++)
         {
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<ModalCalendarDayItem>();
-            dayItem.Initialize((dt) => SetReservationPeriod(dt));
+            dayItem.Initialize(SetReservationPeriod);
         }
     }
-
-    public void ShowTest() { easyTween.OpenCloseObjectAnimation(); }
-
-    public void Show(Action confirmCallback, Action cancelCallback)
+    
+    public void Show(IReservation reservation, Action doneCallback)
     {
+        currentReservation = reservation;
         easyTween.OpenCloseObjectAnimation();
-        ConfirmCallback = confirmCallback;
-        CancelCallback = cancelCallback;
-        UpdateCalendar(startReservationPeriodDateTime);
+        DoneCallback = doneCallback;
+        UpdateCalendar(DateTime.Today);
     }
 
-    public void Confirm()
+    public void Done()
     {
-        ConfirmCallback?.Invoke();
+        DoneCallback?.Invoke();
 
-        ConfirmCallback = null;
-        CancelCallback = null;
+        DoneCallback = null;
 
         easyTween.OpenCloseObjectAnimation();
     }
 
-    public void Cancel()
-    {
-        CancelCallback?.Invoke();
-
-        ConfirmCallback = null;
-        CancelCallback = null;
-
-        easyTween.OpenCloseObjectAnimation();
-    }
-   
     public void ShowPreviousMonth()
     {
         if (selectedDateTime > DateTime.Today)
@@ -165,16 +151,18 @@ public class ModalCalendar : MonoBehaviour
     {
         if (!isSetStartDay)
         {
+            currentReservation.Period.Start = dateTime;
             startReservationPeriodDateTime = dateTime;
             print(startReservationPeriodDateTime);
             isSetStartDay = true;
         }
         else if (!isSetFinishDay)
         {
+            currentReservation.Period.End = dateTime;
             finishReservationPriodDateTime = dateTime;
             print(finishReservationPriodDateTime);
             isSetFinishDay = true;
-            Cancel();
+            Done();
             isSetStartDay = false;
             isSetFinishDay = false;
         }

@@ -41,7 +41,7 @@ public class Calendar : MonoBehaviour
         for (int dayItemIndex = 0; dayItemIndex < dayItemsInCalendarPanel.childCount; dayItemIndex++)
         {
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<CalendarDayItem>();
-            dayItem.Initialize((dt) => OpenDayScreen(dt));
+            dayItem.Initialize(OpenDayScreen);
         }
     }
 

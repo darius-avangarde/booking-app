@@ -19,6 +19,8 @@ public class ReservationScreen : MonoBehaviour
     [SerializeField]
     private Text roomTitleField = null;
     [SerializeField]
+    private Text reservationPeriodText = null;
+    [SerializeField]
     private ModalCalendar modalCalendarDialog = null;
     private IReservation currentReservation;
     
@@ -29,15 +31,16 @@ public class ReservationScreen : MonoBehaviour
         IProperty property = PropertyDataManager.GetProperty(reservation.PropertyID);
         propertyTitleField.text = property.Name ?? Constants.defaultProperyAdminScreenName;
         roomTitleField.text = property.GetRoom(reservation.RoomID).Name ?? Constants.defaultRoomAdminScreenName;
+        string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
+        string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
+        reservationPeriodText.text = startPeriod + "  -  " + endPeriod;
     }
 
     public void ShowModalCalendar()
     {
-        modalCalendarDialog.Show(() => {
-            
-        }, null);
+        modalCalendarDialog.Show(currentReservation, ShowReservationPeriod);
     }
-
+    
     public void OnValueChanged(string value)
     {
         currentReservation.CustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
@@ -50,5 +53,12 @@ public class ReservationScreen : MonoBehaviour
             navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
             roomScreenTransform.GetComponent<RoomScreen>().InstantiateReservations();
         }, null);
+    }
+
+    private void ShowReservationPeriod()
+    {
+        string startPeriod = currentReservation.Period.Start.ToString("dd/MM/yy");
+        string endPeriod = currentReservation.Period.End.ToString("dd/MM/yy");
+        reservationPeriodText.text = startPeriod + "  -  " + endPeriod;
     }
 }

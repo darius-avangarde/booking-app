@@ -23,7 +23,7 @@ public class RoomScreen : MonoBehaviour
 
     private void Start()
     {
-        InstantiateReservations();
+        //InstantiateReservations();
     }
 
     public void UpdateRoomDetailsFields(IRoom room)
@@ -45,15 +45,18 @@ public class RoomScreen : MonoBehaviour
 
     public void InstantiateReservations()
     {
-        foreach (var reservationyButton in reservationButtons)
+        foreach (var reservationButton in reservationButtons)
         {
-            Destroy(reservationyButton);
+            Destroy(reservationButton);
         }
         foreach (var reservation in ReservationDataManager.GetReservations())
         {
-            GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
-            reservationButtons.Add(reservationButton);
+            if (reservation.RoomID == currentRoom.ID)
+            {
+                GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
+                reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
+                reservationButtons.Add(reservationButton);
+            }
         }
     }
 

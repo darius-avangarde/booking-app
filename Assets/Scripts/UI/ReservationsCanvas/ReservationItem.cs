@@ -14,10 +14,9 @@ public class ReservationItem : MonoBehaviour
     public void Initialize(IReservation reservation, Action callback)
     {
         customerName.text = reservation.CustomerName;
-        if (reservation.Period != null)
-        {
-            reservationPeriod.text = reservation.Period.Start.ToString();
-        }
+        string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
+        string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
+        reservationPeriod.text = startPeriod + "  -  " + endPeriod;
         GetComponent<Button>().onClick.AddListener(() => callback());
     }
 }
