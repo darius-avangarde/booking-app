@@ -7,20 +7,19 @@ using UnityEngine.UI;
 public class CalendarDayItem : MonoBehaviour
 {
     [SerializeField]
-    private Image showIsTodayImage;
+    private Image showIsTodayImage = null;
     [SerializeField]
-    private Text dayText;
+    private Text dayText = null;
     [SerializeField]
     private Image dayReservationStatusImage;
-    [SerializeField]
-    private CalendarScreen calendarScreen;
 
     private Image dayItemImage;
     private Color dayItemImageColor;
     private Color dayReservationStatusImageColor;
     private Button dayItemButton;
     private DateTime dayItemDateTime;
-    private List<IReservation> reservationsWithDayInPeriod;
+    private List<IReservation> currentDayReservations;
+    private List<IRoom> filteredRooms;
 
     private void Start()
     {
@@ -31,43 +30,59 @@ public class CalendarDayItem : MonoBehaviour
         dayItemButton = GetComponent<Button>();
     }
 
-    public void Initialize(Action<DateTime> callback)
+    public void Initialize(Action<DateTime, List<IRoom>> callback)
     {
-        dayItemButton.onClick.AddListener(() => callback(dayItemDateTime));
+        dayItemButton.onClick.AddListener(() => callback(dayItemDateTime, GetReservedRoomsInCurrentDay()));
     }
 
-    public void UpdateDayItem(DateTime dateTime, bool isSelectedMonth)
+    public void UpdateDayItem(DateTime dateTime, bool isSelectedMonth, List<IRoom> filteredRooms)
     {
         dayItemDateTime = dateTime;
-        dayItemImage.color = isSelectedMonth? dayItemImageColor : Color.gray;
+        dayItemImage.color = isSelectedMonth ? dayItemImageColor : Color.gray;
         showIsTodayImage.gameObject.SetActive(dateTime == DateTime.Today);
         dayText.text = dateTime.Day.ToString();
+        ShowDayItemStatus(filteredRooms);
+    }
 
-        reservationsWithDayInPeriod = new List<IReservation>();
-
+    private void ShowDayItemStatus(List<IRoom> rooms)
+    {
+        filteredRooms = rooms;
+        currentDayReservations = new List<IReservation>();
         foreach (var reservation in ReservationDataManager.GetReservations())
         {
             bool isDayReserved = dayItemDateTime >= reservation.Period.Start && dayItemDateTime <= reservation.Period.End;
-            bool areFreeRoomsInThisDay = AreFreeRoomsInThisDay();
+
             if (isDayReserved)
             {
-                reservationsWithDayInPeriod.Add(reservation);
-            }
-            else
-            {
-                dayReservationStatusImage.color = dayReservationStatusImageColor;
+                currentDayReservations.Add(reservation);
             }
         }
 
-        foreach (var item in reservationsWithDayInPeriod)
+        if (GetReservedRoomsInCurrentDay().Count == 0)
+        {
+            dayReservationStatusImage.color = dayReservationStatusImageColor;
+        }
+        else if (GetReservedRoomsInCurrentDay().Count < filteredRooms.Count)
+        {
+            dayReservationStatusImage.color = Color.yellow;
+        }
+        else
         {
             dayReservationStatusImage.color = Color.red;
         }
     }
 
-    private bool AreFreeRoomsInThisDay()
+    private List<IRoom> GetReservedRoomsInCurrentDay()
     {
-        return true;
+        List<IRoom> reservedRoomsInCurrentDay = filteredRooms.FindAll(room =>
+        {
+            List<IReservation> reservationsForThisRoom = currentDayReservations.FindAll(reservation => reservation.RoomID == room.ID);
+            return reservationsForThisRoom.Exists(reservation =>
+            {
+                bool reservationIsForCurrentDay = dayItemDateTime >= reservation.Period.Start && dayItemDateTime <= reservation.Period.End;
+                return reservationIsForCurrentDay;
+            });
+        });
+        return reservedRoomsInCurrentDay;
     }
-
 }

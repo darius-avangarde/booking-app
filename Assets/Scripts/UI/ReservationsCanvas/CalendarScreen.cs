@@ -7,11 +7,13 @@ using UnityEngine.UI;
 public class CalendarScreen : MonoBehaviour
 {
     [SerializeField]
+    private Calendar calendar = null;
+    [SerializeField]
     private Text filterInfoButtonText = null;
     [SerializeField]
     private Text filterInfoButtonTextInDayScreen = null;
     [HideInInspector]
-    public List<IRoom> roomList = new List<IRoom>();
+    public List<IRoom> filteredRooms = new List<IRoom>();
     [SerializeField]
     private CalendarFilterDialog modalCalendarFilterDialog = null;
     private RoomFilter filter = null;
@@ -20,13 +22,18 @@ public class CalendarScreen : MonoBehaviour
     {
         filter = new RoomFilter();
         UpdateFilterButtonText();
+    }
+
+    public List<IRoom> AddRoomsInFilteredRoomsList()
+    {
         foreach (IProperty property in PropertyDataManager.GetProperties())
         {
             foreach (IRoom room in property.Rooms)
             {
-                roomList.Add(room);
+                filteredRooms.Add(room);
             }
         }
+        return filteredRooms;
     }
 
     public void ShowModalCalendar()
@@ -54,14 +61,15 @@ public class CalendarScreen : MonoBehaviour
 
     private void FilterList(RoomFilter updatedFilter)
     {
-        roomList = new List<IRoom>();
+        filteredRooms = new List<IRoom>();
         foreach (IProperty property in PropertyDataManager.GetProperties())
         {
             foreach (IRoom room in property.Rooms)
             {
-                roomList.Add(room);
+                filteredRooms.Add(room);
             }
         }
-        roomList = updatedFilter.Apply(roomList);
+        filteredRooms = updatedFilter.Apply(filteredRooms);
+        calendar.UpdateCalendarAfterFiltering();
     }
 }
