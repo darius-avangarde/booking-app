@@ -20,14 +20,16 @@ public class DayScreen : MonoBehaviour
     [SerializeField]
     private Text dayScreenTitle = null;
     private List<GameObject> dayScreenItems = new List<GameObject>();
-    
+    private List<IRoom> reservedRooms = new List<IRoom>();
+
     public void UpdateDayScreenInfo(DateTime dateTime, List<IRoom> rooms)
     {
         dayScreenTitle.text = dateTime.Day + " " + Constants.monthNamesDict[dateTime.Month] + " " + dateTime.Year;
-        UpdateFilteredPropertiesContent(rooms);
+        reservedRooms = rooms;
+        UpdateFilteredDayScreenPropertyItemsContent();
     }
 
-    public void UpdateFilteredPropertiesContent(List<IRoom> reservedRooms)
+    public void UpdateFilteredDayScreenPropertyItemsContent()
     {
         foreach (var dayScreenItem in dayScreenItems)
         {

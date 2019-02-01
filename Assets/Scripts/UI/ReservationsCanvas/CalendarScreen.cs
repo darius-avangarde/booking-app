@@ -16,24 +16,12 @@ public class CalendarScreen : MonoBehaviour
     public List<IRoom> filteredRooms = new List<IRoom>();
     [SerializeField]
     private CalendarFilterDialog modalCalendarFilterDialog = null;
-    private RoomFilter filter = null;
+    private RoomFilter filter = new RoomFilter();
+
     // Start is called before the first frame update
     void Start()
     {
-        filter = new RoomFilter();
         UpdateFilterButtonText();
-    }
-
-    public List<IRoom> AddRoomsInFilteredRoomsList()
-    {
-        foreach (IProperty property in PropertyDataManager.GetProperties())
-        {
-            foreach (IRoom room in property.Rooms)
-            {
-                filteredRooms.Add(room);
-            }
-        }
-        return filteredRooms;
     }
 
     public void ShowModalCalendar()
@@ -47,8 +35,8 @@ public class CalendarScreen : MonoBehaviour
     {
         string propertyInfo = "";
         string roomCapacityInfo = "    Persoane:    " + filter.RoomCapacity.ToString();
-        string singleBedInfo = "    Paturi single:  " + filter.SingleBeds;
-        string doubleBedInfo = "    Paturi duble:   " + filter.DoubleBeds;
+        string singleBedInfo = Constants.SingleBed + filter.SingleBeds;
+        string doubleBedInfo = Constants.DoubleBed + filter.DoubleBeds;
 
         if (!string.IsNullOrEmpty(filter.PropertyID))
         {
@@ -57,6 +45,18 @@ public class CalendarScreen : MonoBehaviour
 
         filterInfoButtonText.text = propertyInfo + roomCapacityInfo + singleBedInfo + doubleBedInfo;
         filterInfoButtonTextInDayScreen.text = filterInfoButtonText.text;
+    }
+
+    public List<IRoom> GetRoomsInFilteredRoomsList()
+    {
+        foreach (IProperty property in PropertyDataManager.GetProperties())
+        {
+            foreach (IRoom room in property.Rooms)
+            {
+                filteredRooms.Add(room);
+            }
+        }
+        return filteredRooms;
     }
 
     private void FilterList(RoomFilter updatedFilter)

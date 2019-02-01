@@ -19,10 +19,11 @@ public class Calendar : MonoBehaviour
     private Transform dayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
     private List<IRoom> filteredRooms;
+
     // Start is called before the first frame update
     void Start()
     {
-        filteredRooms = calendarScreen.AddRoomsInFilteredRoomsList();
+        filteredRooms = calendarScreen.GetRoomsInFilteredRoomsList();
         InstantiateCalendarDayItems();
         selectedDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
@@ -32,6 +33,13 @@ public class Calendar : MonoBehaviour
     {
         filteredRooms = calendarScreen.filteredRooms;
         UpdateCalendar(selectedDateTime);
+    }
+
+    public void UpdateCalendarOnNewReservation()
+    {
+        filteredRooms = calendarScreen.filteredRooms;
+        UpdateCalendar(selectedDateTime);
+        dayScreen.GetComponent<DayScreen>().UpdateFilteredDayScreenPropertyItemsContent();
     }
 
     public void ShowPreviousMonth()

@@ -127,7 +127,7 @@ public class ModalCalendar : MonoBehaviour
             selectedDateTime =
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(i).GetComponent<ModalCalendarDayItem>();
-            dayItem.UpdateModalDayItem(selectedDateTime, selectedDateTime > DateTime.Today);
+            dayItem.UpdateModalDayItem(selectedDateTime, selectedDateTime >= DateTime.Today);
             dayVisibleFromSelectedMonth++;
         }
     }

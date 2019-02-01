@@ -32,8 +32,8 @@ public class RoomScreen : MonoBehaviour
         currentRoom = room;
         string propertyName = property.Name ?? Constants.defaultProperyAdminScreenName;
         string roomName = room.Name ?? Constants.defaultRoomAdminScreenName;
-        propertyAndRoomScreenTitle.text = propertyName + "-" + roomName;
-        roomDetails.text = room.SingleBeds.ToString() + " paturi single" + " si " + room.DoubleBeds.ToString() + " paturi duble";
+        propertyAndRoomScreenTitle.text = propertyName + Constants.V + roomName;
+        roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.V + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
     }
 

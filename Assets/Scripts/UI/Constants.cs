@@ -6,7 +6,12 @@ public class Constants : MonoBehaviour
 {
     public const string defaultProperyAdminScreenName = "Proprietate noua";
     public const string defaultRoomAdminScreenName = "Camera noua";
-    public const string defaultCustomerName = "Client01";
+    public const string defaultCustomerName = "NumeClient";
+    public const string SingleBed = "    Paturi single:  ";
+    public const string DoubleBed = "    Paturi duble:   ";
+
+    public const string Format = "dd/MM/yy";
+    public const string V = "  -  ";
 
     public static Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
     {
