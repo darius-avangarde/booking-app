@@ -20,12 +20,7 @@ public class RoomScreen : MonoBehaviour
     private Transform reservationsContent = null;
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IRoom currentRoom;
-
-    private void Start()
-    {
-        //InstantiateReservations();
-    }
-
+    
     public void UpdateRoomDetailsFields(IRoom room)
     {
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
