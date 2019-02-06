@@ -10,18 +10,36 @@ public class Calendar : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private CalendarScreen calendarScreen = null;
+    [SerializeField]
     private Transform dayScreen = null;
     [SerializeField]
     private Text monthName = null;
     [SerializeField]
     private Transform dayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
+    private List<IRoom> filteredRoomList;
+
     // Start is called before the first frame update
     void Start()
     {
+        filteredRoomList = calendarScreen.GetRoomsInFilteredRoomsList();
         InstantiateCalendarDayItems();
         selectedDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
+    }
+
+    public void UpdateCalendarAfterFiltering()
+    {
+        filteredRoomList = calendarScreen.GetFilteredRooms();
+        UpdateCalendar(selectedDateTime);
+    }
+
+    public void UpdateCalendarOnNewReservation()
+    {
+        filteredRoomList = calendarScreen.GetFilteredRooms();
+        UpdateCalendar(selectedDateTime);
+        dayScreen.GetComponent<DayScreen>().UpdateFilteredDayScreenPropertyItemsContent();
     }
 
     public void ShowPreviousMonth()
@@ -41,13 +59,13 @@ public class Calendar : MonoBehaviour
         for (int dayItemIndex = 0; dayItemIndex < dayItemsInCalendarPanel.childCount; dayItemIndex++)
         {
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<CalendarDayItem>();
-            dayItem.Initialize((dt) => OpenDayScreen(dt));
+            dayItem.Initialize(OpenDayScreen);
         }
     }
 
-    private void OpenDayScreen(DateTime dateTime)
+    private void OpenDayScreen(DateTime dateTime, List<IRoom> rooms)
     {
-        dayScreen.GetComponent<DayScreen>().UpdateDayScreenInfo(dateTime);
+        dayScreen.GetComponent<DayScreen>().UpdateDayScreenInfo(dateTime, rooms);
         navigator.GoTo(dayScreen.GetComponent<NavScreen>());
     }
 
@@ -76,14 +94,14 @@ public class Calendar : MonoBehaviour
             nextMonthDateTime =
                 new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, dayVisibleFromNextMonth, 0, 0, 0, DateTimeKind.Local);
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<CalendarDayItem>();
-            dayItem.UpdateDayItem(nextMonthDateTime, false);
+            dayItem.UpdateDayItem(nextMonthDateTime, false, filteredRoomList);
             dayVisibleFromNextMonth++;
         }
     }
 
     private void SetDayItemsForCurrentMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-        monthName.text = Constants.monthNamesDict[selectedDateTime.Month] + " " + selectedDateTime.Year;
+        monthName.text = Constants.MonthNamesDict[selectedDateTime.Month] + " " + selectedDateTime.Year;
         int daysInMonth = DateTime.DaysInMonth(selectedDateTime.Year, selectedDateTime.Month);
         int daysVisibleFromPreviousMonth = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek);
         int daysVisibleInCurrentMonth = daysInMonth + daysVisibleFromPreviousMonth;
@@ -94,7 +112,7 @@ public class Calendar : MonoBehaviour
             selectedDateTime = 
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(i).GetComponent<CalendarDayItem>();
-            dayItem.UpdateDayItem(selectedDateTime, true);
+            dayItem.UpdateDayItem(selectedDateTime, true, filteredRoomList);
             dayVisibleFromSelectedMonth++;
         }
     }
@@ -109,7 +127,7 @@ public class Calendar : MonoBehaviour
             previousMonthDateTime = 
                 new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, dayVisibleFromPreviousMonth, 0, 0, 0, DateTimeKind.Local);
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(p).GetComponent<CalendarDayItem>();
-            dayItem.UpdateDayItem(previousMonthDateTime, false);
+            dayItem.UpdateDayItem(previousMonthDateTime, false, filteredRoomList);
             dayVisibleFromPreviousMonth--;
         }
     }

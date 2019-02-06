@@ -98,7 +98,7 @@ public static class ReservationDataManager
             }
         }
 
-        DateTimePeriod period;
+        public DateTimePeriod period;
         public IDateTimePeriod Period
         {
             get => period;

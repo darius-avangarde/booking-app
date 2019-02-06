@@ -10,6 +10,8 @@ public class DayScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private CalendarScreen calendarScreen = null;
+    [SerializeField]
     private Transform filteredPropertiesContent = null;
     [SerializeField]
     private GameObject dayScreenItemPrefab = null;
@@ -17,25 +19,34 @@ public class DayScreen : MonoBehaviour
     private Transform roomScreen = null;
     [SerializeField]
     private Text dayScreenTitle = null;
+    private List<GameObject> dayScreenItemList = new List<GameObject>();
+    private List<IRoom> reservedRoomList = new List<IRoom>();
 
-    // Start is called before the first frame update
-    void Start()
+    public void UpdateDayScreenInfo(DateTime dateTime, List<IRoom> rooms)
     {
-        foreach (var property in PropertyDataManager.GetProperties())
+        dayScreenTitle.text = dateTime.Day + " " + Constants.MonthNamesDict[dateTime.Month] + " " + dateTime.Year;
+        reservedRoomList = rooms;
+        UpdateFilteredDayScreenPropertyItemsContent();
+    }
+
+    public void UpdateFilteredDayScreenPropertyItemsContent()
+    {
+        foreach (var dayScreenItem in dayScreenItemList)
+        {
+            Destroy(dayScreenItem);
+        }
+
+        foreach (IRoom room in calendarScreen.GetFilteredRooms())
         {
             GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
-            dayScreenItem.GetComponent<DayScreenPropertyItem>().Initialize(property, () => OpenRoomReservationScreen(property));
+            dayScreenItem.GetComponent<DayScreenPropertyItem>().Initialize(room, reservedRoomList, () => OpenRoomReservationScreen(room));
+            dayScreenItemList.Add(dayScreenItem);
         }
     }
 
-    public void UpdateDayScreenInfo(DateTime dateTime)
+    private void OpenRoomReservationScreen(IRoom room)
     {
-        dayScreenTitle.text = dateTime.Day + " " + Constants.monthNamesDict[dateTime.Month] + " " + dateTime.Year;
-    }
-
-    private void OpenRoomReservationScreen(IProperty property)
-    {
-        roomScreen.GetComponent<RoomScreen>().UpdatePropertyFields(property);
+        roomScreen.GetComponent<RoomScreen>().UpdateRoomDetailsFields(room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 }

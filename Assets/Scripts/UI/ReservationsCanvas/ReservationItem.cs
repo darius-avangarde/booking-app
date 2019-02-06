@@ -1,18 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ReservationItem : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private Text customerName = null;
+    [SerializeField]
+    private Text reservationPeriod = null;
 
-    // Update is called once per frame
-    void Update()
+    public void Initialize(IReservation reservation, Action callback)
     {
-        
+        customerName.text = reservation.CustomerName;
+        string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
+        string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
+        reservationPeriod.text = startPeriod + "  -  " + endPeriod;
+        GetComponent<Button>().onClick.AddListener(() => callback());
     }
 }
