@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class CalendarFilterDialog : MonoBehaviour
 {
-    public EasyTween easyTween;
+    [SerializeField]
+    private EasyTween easyTween = null;
     [SerializeField]
     private PropertyDropdown propertyDropdown = null;
     [SerializeField]

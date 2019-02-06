@@ -18,7 +18,7 @@ public class RoomScreen : MonoBehaviour
     private GameObject reservationPrefabButton = null;
     [SerializeField]
     private Transform reservationsContent = null;
-    private List<GameObject> reservationButtons = new List<GameObject>();
+    private List<GameObject> reservationButtonList = new List<GameObject>();
     private IRoom currentRoom;
     
     public void UpdateRoomDetailsFields(IRoom room)
@@ -27,8 +27,8 @@ public class RoomScreen : MonoBehaviour
         currentRoom = room;
         string propertyName = property.Name ?? Constants.defaultProperyAdminScreenName;
         string roomName = room.Name ?? Constants.defaultRoomAdminScreenName;
-        propertyAndRoomScreenTitle.text = propertyName + Constants.V + roomName;
-        roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.V + Constants.DoubleBed + room.DoubleBeds.ToString();
+        propertyAndRoomScreenTitle.text = propertyName + Constants.And + roomName;
+        roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.And + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
     }
 
@@ -40,7 +40,7 @@ public class RoomScreen : MonoBehaviour
 
     public void InstantiateReservations()
     {
-        foreach (var reservationButton in reservationButtons)
+        foreach (var reservationButton in reservationButtonList)
         {
             Destroy(reservationButton);
         }
@@ -50,7 +50,7 @@ public class RoomScreen : MonoBehaviour
             {
                 GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
                 reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
-                reservationButtons.Add(reservationButton);
+                reservationButtonList.Add(reservationButton);
             }
         }
     }

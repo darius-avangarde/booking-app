@@ -17,17 +17,16 @@ public class DayScreenPropertyItem : MonoBehaviour
     
     public void Initialize(IRoom room, List<IRoom> reservedRooms, Action callback)
     {
-        itemStatusImage = itemStatusImage.GetComponent<Image>();
         itemStatusImageColor = itemStatusImage.color;
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
-        bedQuantity.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.V + Constants.DoubleBed + room.DoubleBeds.ToString();
+        bedQuantity.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.And + Constants.DoubleBed + room.DoubleBeds.ToString();
         GetComponent<Button>().onClick.AddListener(() => callback());
 
         if (IsRoomReserved(room, reservedRooms))
         {
-            itemStatusImage.color = Color.red;
+            itemStatusImage.color = Constants.reservedItemColor;
         }
         else
         {
@@ -35,11 +34,11 @@ public class DayScreenPropertyItem : MonoBehaviour
         }
     }
 
-    private bool IsRoomReserved(IRoom currentRoom, List<IRoom> reservedRooms)
+    private bool IsRoomReserved(IRoom currentRoom, List<IRoom> reservedRoomList)
     {
-        foreach (var reservedRoom in reservedRooms)
+        foreach (var item in reservedRoomList)
         {
-            if (currentRoom.Equals(reservedRoom))
+            if (currentRoom.Equals(item))
             {
                 return true;
             }

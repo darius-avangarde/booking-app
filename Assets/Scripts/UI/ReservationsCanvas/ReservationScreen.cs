@@ -31,9 +31,9 @@ public class ReservationScreen : MonoBehaviour
         IProperty property = PropertyDataManager.GetProperty(reservation.PropertyID);
         propertyTitleField.text = property.Name ?? Constants.defaultProperyAdminScreenName;
         roomTitleField.text = property.GetRoom(reservation.RoomID).Name ?? Constants.defaultRoomAdminScreenName;
-        string startPeriod = reservation.Period.Start.ToString(Constants.Format);
-        string endPeriod = reservation.Period.End.ToString(Constants.Format);
-        reservationPeriodText.text = startPeriod + Constants.V + endPeriod;
+        string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
+        string endPeriod = reservation.Period.End.ToString(Constants.DateTimePrintFormat);
+        reservationPeriodText.text = startPeriod + Constants.And + endPeriod;
     }
 
     public void ShowModalCalendar()
@@ -57,8 +57,8 @@ public class ReservationScreen : MonoBehaviour
 
     private void ShowReservationPeriod()
     {
-        string startPeriod = currentReservation.Period.Start.ToString(Constants.Format);
-        string endPeriod = currentReservation.Period.End.ToString(Constants.Format);
-        reservationPeriodText.text = startPeriod + Constants.V + endPeriod;
+        string startPeriod = currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat);
+        string endPeriod = currentReservation.Period.End.ToString(Constants.DateTimePrintFormat);
+        reservationPeriodText.text = startPeriod + Constants.And + endPeriod;
     }
 }
