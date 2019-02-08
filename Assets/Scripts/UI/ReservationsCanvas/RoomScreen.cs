@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
@@ -20,26 +21,35 @@ public class RoomScreen : MonoBehaviour
     private Transform reservationsContent = null;
     private List<GameObject> reservationButtonList = new List<GameObject>();
     private IRoom currentRoom;
-    
+    private IReservation currentReservation;
+
     public void UpdateRoomDetailsFields(IRoom room)
     {
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
         string propertyName = property.Name ?? Constants.defaultProperyAdminScreenName;
         string roomName = room.Name ?? Constants.defaultRoomAdminScreenName;
-        propertyAndRoomScreenTitle.text = propertyName + Constants.And + roomName;
-        roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.And + Constants.DoubleBed + room.DoubleBeds.ToString();
+        propertyAndRoomScreenTitle.text = propertyName + Constants.AndDelimiter + roomName;
+        roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
+
         InstantiateReservations();
     }
 
     public void CreateNewReservation()
     {
         IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
+        currentReservation = reservation;
         reservationScreen.UpdateReservationFields(reservation);
     }
 
     public void InstantiateReservations()
     {
+        //delete reservation without setted period
+        if (currentReservation != null && currentReservation.Period.Start == DateTime.MinValue)
+        {
+            ReservationDataManager.DeleteReservation(currentReservation.ID);
+        }
+
         foreach (var reservationButton in reservationButtonList)
         {
             Destroy(reservationButton);
@@ -54,7 +64,7 @@ public class RoomScreen : MonoBehaviour
             }
         }
     }
-
+    
     private void OpenReservationScreen(IReservation reservation)
     {
         reservationScreen.GetComponent<ReservationScreen>().UpdateReservationFields(reservation);

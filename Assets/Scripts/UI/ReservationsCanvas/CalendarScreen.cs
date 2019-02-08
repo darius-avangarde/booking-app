@@ -31,7 +31,7 @@ public class CalendarScreen : MonoBehaviour
     [SerializeField]
     private Text doubleBedDayScreenText = null;
 
-    private List<IRoom> filteredRooms = new List<IRoom>();
+    private List<IRoom> filteredRoomList = new List<IRoom>();
     private RoomFilter filter = new RoomFilter();
 
     // Start is called before the first frame update
@@ -42,7 +42,7 @@ public class CalendarScreen : MonoBehaviour
 
     public List<IRoom> GetFilteredRooms()
     {
-        return filteredRooms;
+        return filteredRoomList;
     }
 
     public void ShowModalCalendar()
@@ -79,19 +79,19 @@ public class CalendarScreen : MonoBehaviour
     {
         foreach (IProperty property in PropertyDataManager.GetProperties())
         {
-            filteredRooms.AddRange(property.Rooms);
+            filteredRoomList.AddRange(property.Rooms);
         }
-        return filteredRooms;
+        return filteredRoomList;
     }
 
     private void FilterList(RoomFilter updatedFilter)
     {
-        filteredRooms = new List<IRoom>();
+        filteredRoomList = new List<IRoom>();
         foreach (IProperty property in PropertyDataManager.GetProperties())
         {
-            filteredRooms.AddRange(property.Rooms);
+            filteredRoomList.AddRange(property.Rooms);
         }
-        filteredRooms = updatedFilter.Apply(filteredRooms);
+        filteredRoomList = updatedFilter.Apply(filteredRoomList);
         calendar.UpdateCalendarAfterFiltering();
     }
 }

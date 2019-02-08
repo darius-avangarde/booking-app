@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +25,8 @@ public class ReservationScreen : MonoBehaviour
     [SerializeField]
     private ModalCalendar modalCalendarDialog = null;
     private IReservation currentReservation;
-    
+    private List<IReservation> roomReservationList = new List<IReservation>();
+
     public void UpdateReservationFields(IReservation reservation)
     {
         currentReservation = reservation;
@@ -33,12 +36,13 @@ public class ReservationScreen : MonoBehaviour
         roomTitleField.text = property.GetRoom(reservation.RoomID).Name ?? Constants.defaultRoomAdminScreenName;
         string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
         string endPeriod = reservation.Period.End.ToString(Constants.DateTimePrintFormat);
-        reservationPeriodText.text = startPeriod + Constants.And + endPeriod;
+        roomReservationList = GetRoomReservations(currentReservation).OrderBy(res => res.Period.Start).ToList();
+        reservationPeriodText.text = currentReservation.Period.Start != DateTime.MinValue ? startPeriod + Constants.AndDelimiter + endPeriod : "Seteaza Perioda";
     }
 
     public void ShowModalCalendar()
     {
-        modalCalendarDialog.Show(currentReservation, ShowReservationPeriod);
+        modalCalendarDialog.Show(currentReservation, roomReservationList, ShowReservationPeriod);
     }
     
     public void OnValueChanged(string value)
@@ -59,6 +63,23 @@ public class ReservationScreen : MonoBehaviour
     {
         string startPeriod = currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat);
         string endPeriod = currentReservation.Period.End.ToString(Constants.DateTimePrintFormat);
-        reservationPeriodText.text = startPeriod + Constants.And + endPeriod;
+        reservationPeriodText.text = startPeriod + Constants.AndDelimiter + endPeriod;
     }
+    
+    private List<IReservation> GetRoomReservations(IReservation currentReservation)
+    {
+        List<IReservation> roomReservationList = new List<IReservation>();
+        if (currentReservation != null)
+        {
+            foreach (var reservation in ReservationDataManager.GetReservations())
+            {
+                if (reservation.RoomID == currentReservation.RoomID)
+                {
+                    roomReservationList.Add(reservation);
+                }
+            }
+        }
+        return roomReservationList;
+    }
+
 }

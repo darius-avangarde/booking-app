@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class ModalCalendar : MonoBehaviour
 {
-    public EasyTween easyTween;
+    [SerializeField]
+    private EasyTween easyTween = null;
 
     private Action DoneCallback;
     [SerializeField]
@@ -14,25 +15,9 @@ public class ModalCalendar : MonoBehaviour
     private Transform modalDayItemsInCalendarPanel = null;
     private DateTime selectedDateTime = DateTime.Today;
     private bool isSetStartDay = false;
-    private bool isSetFinishDay = false;
     private IReservation currentReservation;
-    private List<IReservation> roomReservations = new List<IReservation>();
-
-    private Dictionary<int, string> monthNamesDict = new Dictionary<int, string>()
-    {
-        {1,"Ianuarie"},
-        {2, "Februarie"},
-        {3,"Martie"},
-        {4,"Aprilie"},
-        {5,"Mai"},
-        {6,"Iunie"},
-        {7,"Iulie"},
-        {8,"August"},
-        {9,"Septembrie"},
-        {10,"Octombrie"},
-        {11,"Noiembrie"},
-        {12,"Decembrie"}
-    };
+    private List<IReservation> roomReservationList = new List<IReservation>();
+    private Color selectedItemColor = Color.cyan;
 
     // Start is called before the first frame update
     void Start()
@@ -50,23 +35,21 @@ public class ModalCalendar : MonoBehaviour
         }
     }
     
-    public void Show(IReservation reservation, Action doneCallback)
+    public void Show(IReservation reservation, List<IReservation> reservationList, Action doneCallback)
     {
         currentReservation = reservation;
-        roomReservations = GetRoomReservations(currentReservation);
+        roomReservationList = reservationList;
         easyTween.OpenCloseObjectAnimation();
         DoneCallback = doneCallback;
-        selectedDateTime = currentReservation.Period.Start;
+        if (currentReservation.Period.Start == DateTime.MinValue)
+        {
+            selectedDateTime = DateTime.Today;
+        }
+        else
+        {
+            selectedDateTime = currentReservation.Period.Start;
+        }
         UpdateCalendar(selectedDateTime);
-    }
-
-    public void Done()
-    {
-        DoneCallback?.Invoke();
-
-        DoneCallback = null;
-
-        easyTween.OpenCloseObjectAnimation();
     }
 
     public void ShowPreviousMonth()
@@ -84,6 +67,15 @@ public class ModalCalendar : MonoBehaviour
         UpdateCalendar(selectedDateTime);
     }
 
+    private void Done()
+    {
+        DoneCallback?.Invoke();
+
+        DoneCallback = null;
+
+        easyTween.OpenCloseObjectAnimation();
+    }
+
     private void UpdateCalendar(DateTime selectedDateTime)
     {
         DateTime firstDayOfMonthInSelectedDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
@@ -97,7 +89,6 @@ public class ModalCalendar : MonoBehaviour
 
     private void SetDayItemsForNextMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-
         DateTime nextMonthDateTime = selectedDateTime.AddMonths(1);
         int daysInSelectedMonth = DateTime.DaysInMonth(selectedDateTime.Year, selectedDateTime.Month);
         int daysVisibleFromPreviousMonth = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek);
@@ -109,16 +100,17 @@ public class ModalCalendar : MonoBehaviour
             nextMonthDateTime =
                 new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, dayVisibleFromNextMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<ModalCalendarDayItem>();
-            bool isInteractableDay = true;
-            bool isReservedDay = IsReservedDayInRoomReservations(nextMonthDateTime);
-            dayItem.UpdateModalDayItem(nextMonthDateTime, isInteractableDay, isReservedDay, currentReservation);
+            bool isAvailableDay = true;
+            bool isReservedDay = IsDayReservedInRoomReservations(nextMonthDateTime);
+            bool isReservedDayAvailable = IsReservedDayAvailableInRoomReservations(nextMonthDateTime);
+            dayItem.UpdateModalDayItem(nextMonthDateTime, currentReservation, isAvailableDay, isReservedDay, isReservedDayAvailable);
             dayVisibleFromNextMonth++;
         }
     }
 
     private void SetDayItemsForCurrentMonth(DateTime selectedDateTime, DateTime firstDayOfMonthInSelectedDate)
     {
-        monthName.text = monthNamesDict[selectedDateTime.Month] + " " + selectedDateTime.Year;
+        monthName.text = Constants.MonthNamesDict[selectedDateTime.Month] + " " + selectedDateTime.Year;
         int daysInMonth = DateTime.DaysInMonth(selectedDateTime.Year, selectedDateTime.Month);
         int daysVisibleFromPreviousMonth = GetDaysVisibleFromPreviousMonth(firstDayOfMonthInSelectedDate.DayOfWeek);
         int daysVisibleInCurrentMonth = daysInMonth + daysVisibleFromPreviousMonth;
@@ -129,9 +121,10 @@ public class ModalCalendar : MonoBehaviour
             selectedDateTime =
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(i).GetComponent<ModalCalendarDayItem>();
-            bool isInteractableDay = selectedDateTime >= DateTime.Today;
-            bool isReservedDay = IsReservedDayInRoomReservations(selectedDateTime);
-            dayItem.UpdateModalDayItem(selectedDateTime, isInteractableDay, isReservedDay, currentReservation);
+            bool isAvailableDay = selectedDateTime >= DateTime.Today;
+            bool isReservedDay = IsDayReservedInRoomReservations(selectedDateTime);
+            bool isReservedDayAvailable = IsReservedDayAvailableInRoomReservations(selectedDateTime);
+            dayItem.UpdateModalDayItem(selectedDateTime, currentReservation, isAvailableDay, isReservedDay, isReservedDayAvailable);
             dayVisibleFromSelectedMonth++;
         }
     }
@@ -146,40 +139,12 @@ public class ModalCalendar : MonoBehaviour
             previousMonthDateTime =
                 new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, dayVisibleFromPreviousMonth, 0, 0, 0, DateTimeKind.Local);
             ModalCalendarDayItem dayItem = modalDayItemsInCalendarPanel.GetChild(p).GetComponent<ModalCalendarDayItem>();
-            bool isInteractableDay = selectedDateTime > DateTime.Today && selectedDateTime.Month != DateTime.Today.Month;
-            bool isReservedDay = IsReservedDayInRoomReservations(previousMonthDateTime);
-            dayItem.UpdateModalDayItem(previousMonthDateTime, isInteractableDay, isReservedDay, currentReservation);
+            bool isAvailableDay = selectedDateTime > DateTime.Today && selectedDateTime.Month != DateTime.Today.Month;
+            bool isReservedDay = IsDayReservedInRoomReservations(previousMonthDateTime);
+            bool isReservedDayAvailable = IsReservedDayAvailableInRoomReservations(previousMonthDateTime);
+            dayItem.UpdateModalDayItem(previousMonthDateTime, currentReservation, isAvailableDay, isReservedDay, isReservedDayAvailable);
             dayVisibleFromPreviousMonth--;
         }
-    }
-
-    private void SetReservationPeriod(DateTime dateTime)
-    {
-        if (!isSetStartDay)
-        {
-            currentReservation.Period.Start = dateTime;
-            isSetStartDay = true;
-        }
-        else if (!isSetFinishDay)
-        {
-            currentReservation.Period.End = dateTime;
-            isSetFinishDay = true;
-            Done();
-            isSetStartDay = false;
-            isSetFinishDay = false;
-        }
-    }
-
-    private bool IsCurrentReservationDayReserved(DateTime modalDayDateTime)
-    {
-        if (currentReservation != null)
-        {
-            if (modalDayDateTime > currentReservation.Period.Start && modalDayDateTime < currentReservation.Period.End)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     private int GetDaysVisibleFromPreviousMonth(DayOfWeek day)
@@ -198,26 +163,106 @@ public class ModalCalendar : MonoBehaviour
         return 0;
     }
 
-    private List<IReservation> GetRoomReservations(IReservation currentReservation)
+    private void SetReservationPeriod(DateTime dateTime, Image modalCalendarDayItemImage, bool isReserved, bool isReservedDayAvailable)
     {
-        if (currentReservation != null)
+        bool isDateTimeInReservationPeriod = dateTime >= currentReservation.Period.Start && dateTime <= currentReservation.Period.End;
+        
+        if (isDateTimeInReservationPeriod || !isReserved || isReservedDayAvailable)
         {
-            foreach (var reservation in ReservationDataManager.GetReservations())
+            if (!isSetStartDay && !IsDateTimeStartOfAnyReservationPeriod(dateTime))
             {
-                if (reservation.RoomID == currentReservation.RoomID)
+                SetStartPeriodDateTime(dateTime);
+                ShowSelectedDayItem(modalCalendarDayItemImage);
+            }
+            else if (isSetStartDay && dateTime > currentReservation.Period.Start && IsEndPeriodAvailableOnSelect(dateTime))
+            {
+                SetEndPeriodDateTime(dateTime);
+                ShowSelectedDayItem(modalCalendarDayItemImage);
+            }
+        }
+    }
+
+    private void ShowSelectedDayItem(Image modalCalendarDayItemImage)
+    {
+        modalCalendarDayItemImage.color = selectedItemColor;
+    }
+
+    private void SetEndPeriodDateTime(DateTime dateTime)
+    {
+        currentReservation.Period.End = dateTime;
+        Done();
+        isSetStartDay = false;
+    }
+
+    private void SetStartPeriodDateTime(DateTime dateTime)
+    {
+        currentReservation.Period.Start = dateTime;
+        isSetStartDay = true;
+    }
+
+    private bool IsDayReservedInRoomReservations(DateTime itemDateTime)
+    {
+        foreach (var reservation in roomReservationList)
+        {
+            bool isDateTimeInReservationPriod = itemDateTime >= reservation.Period.Start && itemDateTime <= reservation.Period.End;
+            if (isDateTimeInReservationPriod)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsReservedDayAvailableInRoomReservations(DateTime itemDateTime)
+    {
+        foreach (var reservation in roomReservationList)
+        {
+            if (reservation != currentReservation)
+            {
+                if (reservation.Period.Start == itemDateTime || reservation.Period.End == itemDateTime)
                 {
-                    roomReservations.Add(reservation);
+                    return true;
                 }
             }
         }
-        return roomReservations;
+        return false;
     }
 
-    private bool IsReservedDayInRoomReservations(DateTime itemDateTime)
+    private bool IsDateTimeStartOfAnyReservationPeriod(DateTime itemDateTime)
     {
-        foreach (var reservation in roomReservations)
+        foreach (var reservation in roomReservationList)
         {
-            if (reservation.Period.Start <= itemDateTime && itemDateTime <= reservation.Period.End)
+            if (reservation != currentReservation)
+            {
+                if (itemDateTime == reservation.Period.Start)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private bool IsEndPeriodAvailableOnSelect(DateTime itemDateTime)
+    {
+        if (roomReservationList.Count == 1)
+        {
+            return true;
+        }
+        for (int i = 0; i < roomReservationList.Count-1; i++)
+        {
+            if (currentReservation.Period.Start < roomReservationList[1].Period.Start && itemDateTime <= roomReservationList[1].Period.Start)
+            {
+                return true;
+            }
+
+            if (currentReservation.Period.Start >= roomReservationList[i].Period.End && itemDateTime > roomReservationList[i].Period.End 
+                && itemDateTime <= roomReservationList[i + 1].Period.Start)
+            {
+                return true;
+            }
+
+            if (currentReservation.Period.Start >= roomReservationList[roomReservationList.Count - 1].Period.End && itemDateTime > roomReservationList[roomReservationList.Count - 1].Period.End)
             {
                 return true;
             }
