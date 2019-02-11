@@ -109,7 +109,7 @@ public static class ReservationDataManager
             this.id = Guid.NewGuid().ToString();
             this.propertyID = room.PropertyID;
             this.roomID = room.ID;
-            this.period = new DateTimePeriod(new DateTime(), new DateTime());
+            this.period = new DateTimePeriod();
             WriteReservationData();
         }
     }
@@ -147,10 +147,10 @@ public static class ReservationDataManager
             }
         }
 
-        public DateTimePeriod(DateTime start, DateTime end)
+        public DateTimePeriod()
         {
-            startTicks = start.Ticks;
-            endTicks = end.Ticks;
+            startTicks = DateTime.MinValue.Ticks;
+            endTicks = DateTime.MinValue.Ticks;
         }
     }
 }
