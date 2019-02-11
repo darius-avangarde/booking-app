@@ -37,19 +37,11 @@ public class RoomScreen : MonoBehaviour
 
     public void CreateNewReservation()
     {
-        IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
-        currentReservation = reservation;
-        reservationScreen.UpdateReservationFields(reservation);
+        reservationScreen.UpdateReservationScreen(null, currentRoom);
     }
 
     public void InstantiateReservations()
     {
-        //delete reservation without setted period
-        if (currentReservation != null && currentReservation.Period.Start == DateTime.MinValue)
-        {
-            ReservationDataManager.DeleteReservation(currentReservation.ID);
-        }
-
         foreach (var reservationButton in reservationButtonList)
         {
             Destroy(reservationButton);
@@ -67,7 +59,7 @@ public class RoomScreen : MonoBehaviour
     
     private void OpenReservationScreen(IReservation reservation)
     {
-        reservationScreen.GetComponent<ReservationScreen>().UpdateReservationFields(reservation);
+        reservationScreen.GetComponent<ReservationScreen>().UpdateReservationScreen(reservation, currentRoom);
         navigator.GoTo(reservationScreen.GetComponent<NavScreen>());
     }
 }

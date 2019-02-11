@@ -50,7 +50,7 @@ public class ModalCalendarDayItem : MonoBehaviour
         if (currentReservation != null)
         {
             bool isDateTimeItemInReservationPeriod = modalCalendarItemDateTime >= currentReservation.Period.Start 
-                                                     && modalCalendarItemDateTime <= currentReservation.Period.End;
+                                                  && modalCalendarItemDateTime <= currentReservation.Period.End;
             if (isDateTimeItemInReservationPeriod)
             {
                 modalCalendarDayItemImage.color = reservedItemColor;

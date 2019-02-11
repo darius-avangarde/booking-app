@@ -305,6 +305,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 107.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5332462722718696137, guid: a234522123b667f44a3541020ca806f3,
+        type: 3}
+      propertyPath: calendarScreen
+      value: 
+      objectReference: {fileID: 6439754279526095111}
+    - target: {fileID: 5332462722718696137, guid: a234522123b667f44a3541020ca806f3,
+        type: 3}
+      propertyPath: dayScreen
+      value: 
+      objectReference: {fileID: 5128066075950620773}
     - target: {fileID: 9124807718855139167, guid: a234522123b667f44a3541020ca806f3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -340,16 +350,6 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 5332462722718696137, guid: a234522123b667f44a3541020ca806f3,
-        type: 3}
-      propertyPath: calendarScreen
-      value: 
-      objectReference: {fileID: 6439754279526095111}
-    - target: {fileID: 5332462722718696137, guid: a234522123b667f44a3541020ca806f3,
-        type: 3}
-      propertyPath: dayScreen
-      value: 
-      objectReference: {fileID: 5128066075950620773}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a234522123b667f44a3541020ca806f3, type: 3}
 --- !u!224 &2363268121839599539 stripped
@@ -620,6 +620,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5035695959240820036, guid: e5ef10be5df65e3419c4f251e95762df,
+        type: 3}
+      propertyPath: m_Name
+      value: DetailsText
+      objectReference: {fileID: 0}
+    - target: {fileID: 8371556749960861416, guid: e5ef10be5df65e3419c4f251e95762df,
+        type: 3}
+      propertyPath: m_Name
+      value: ReservationsContent
+      objectReference: {fileID: 0}
     - target: {fileID: 1084296646116561276, guid: e5ef10be5df65e3419c4f251e95762df,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -670,11 +680,6 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5035695959240820036, guid: e5ef10be5df65e3419c4f251e95762df,
-        type: 3}
-      propertyPath: m_Name
-      value: DetailsText
-      objectReference: {fileID: 0}
     - target: {fileID: 7424522057725096064, guid: e5ef10be5df65e3419c4f251e95762df,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -714,11 +719,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 8371556749960861416, guid: e5ef10be5df65e3419c4f251e95762df,
-        type: 3}
-      propertyPath: m_Name
-      value: ReservationsContent
       objectReference: {fileID: 0}
     - target: {fileID: 1449943372129942974, guid: e5ef10be5df65e3419c4f251e95762df,
         type: 3}
@@ -1259,6 +1259,16 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0.69411767
       objectReference: {fileID: 0}
+    - target: {fileID: 5698106295969603532, guid: 344c3550ddd07aa47a0d3618d96ef625,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2558795950975708853}
+    - target: {fileID: 5698106295969603532, guid: 344c3550ddd07aa47a0d3618d96ef625,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnValueChanged
+      objectReference: {fileID: 0}
     - target: {fileID: 5698106294274135894, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
       propertyPath: m_Padding.m_Bottom
@@ -1334,15 +1344,25 @@ PrefabInstance:
       propertyPath: m_Text
       value: Rezervare
       objectReference: {fileID: 0}
-    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
+    - target: {fileID: 5503778750335755057, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 3
+      propertyPath: m_Name
+      value: ReservationPeriodText
       objectReference: {fileID: 0}
     - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2558795950975708853}
+    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: GoBack
+      value: SaveNewReservation
       objectReference: {fileID: 0}
     - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
@@ -1363,11 +1383,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 7269578741557809787}
+      objectReference: {fileID: 8672055691441901844}
     - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: InstantiateReservations
+      value: UpdateCalendarOnNewReservation
       objectReference: {fileID: 0}
     - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
@@ -1382,31 +1402,6 @@ PrefabInstance:
     - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
-      objectReference: {fileID: 8672055691441901844}
-    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
-      value: UpdateCalendarOnNewReservation
-      objectReference: {fileID: 0}
-    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 1528294512496279739, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1022335900891631472, guid: 344c3550ddd07aa47a0d3618d96ef625,
@@ -1443,21 +1438,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: InstantiateReservations
-      objectReference: {fileID: 0}
-    - target: {fileID: 5698106295969603532, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 2558795950975708853}
-    - target: {fileID: 5698106295969603532, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnValueChanged
-      objectReference: {fileID: 0}
-    - target: {fileID: 5503778750335755057, guid: 344c3550ddd07aa47a0d3618d96ef625,
-        type: 3}
-      propertyPath: m_Name
-      value: ReservationPeriodText
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 344c3550ddd07aa47a0d3618d96ef625, type: 3}
