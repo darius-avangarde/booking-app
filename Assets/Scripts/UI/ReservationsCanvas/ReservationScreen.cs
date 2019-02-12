@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,27 +25,79 @@ public class ReservationScreen : MonoBehaviour
     [SerializeField]
     private ModalCalendar modalCalendarDialog = null;
     private IReservation currentReservation;
-    
-    public void UpdateReservationFields(IReservation reservation)
+    private IRoom currentRoom;
+    private List<IReservation> roomReservationList = new List<IReservation>();
+    private string reservationCustomerName;
+    private DateTime startPeriod;
+    private DateTime endPeriod;
+
+    public void UpdateReservationScreen(IReservation reservation, IRoom room)
     {
         currentReservation = reservation;
-        customerNameInputField.text = string.IsNullOrEmpty(currentReservation.CustomerName) ? Constants.defaultCustomerName : currentReservation.CustomerName;
-        IProperty property = PropertyDataManager.GetProperty(reservation.PropertyID);
-        propertyTitleField.text = property.Name ?? Constants.defaultProperyAdminScreenName;
-        roomTitleField.text = property.GetRoom(reservation.RoomID).Name ?? Constants.defaultRoomAdminScreenName;
+        currentRoom = room;
+        roomReservationList = GetRoomReservations().OrderBy(res => res.Period.Start).ToList();
+        if (currentReservation != null)
+        {
+            UpdateCurrentReservationFields(reservation);
+        }
+        else
+        {
+            modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, ShowUpdatedReservationPeriod);
+            UpdateNewReservationFields();
+        }
+    }
+
+    private void UpdateNewReservationFields()
+    {
+        customerNameInputField.text = Constants.defaultCustomerName;
+        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
+        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+    }
+
+    private void UpdateCurrentReservationFields(IReservation reservation)
+    {
+        customerNameInputField.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : currentReservation.CustomerName;
+        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
+        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
         string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
         string endPeriod = reservation.Period.End.ToString(Constants.DateTimePrintFormat);
-        reservationPeriodText.text = startPeriod + Constants.And + endPeriod;
+        reservationPeriodText.text = startPeriod + Constants.AndDelimiter + endPeriod;
     }
 
     public void ShowModalCalendar()
     {
-        modalCalendarDialog.Show(currentReservation, ShowReservationPeriod);
+        modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, ShowUpdatedReservationPeriod);
     }
-    
+
+    public void SaveReservation()
+    {
+        if (currentReservation == null)
+        {
+            AddNewReservation(startPeriod, endPeriod);
+        }
+        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
+        roomScreenTransform.GetComponent<RoomScreen>().InstantiateReservations();
+    }
+
     public void OnValueChanged(string value)
     {
-        currentReservation.CustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
+        if (currentReservation != null)
+        {
+            currentReservation.CustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
+        }
+        else
+        {
+            reservationCustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
+        }
+    }
+    
+    private void AddNewReservation(DateTime start, DateTime end)
+    {
+        IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
+        reservation.CustomerName = reservationCustomerName;
+        reservation.Period.Start = start;
+        reservation.Period.End = end;
+        currentReservation = reservation;
     }
 
     public void DeleteReservation()
@@ -55,10 +109,31 @@ public class ReservationScreen : MonoBehaviour
         }, null);
     }
 
-    private void ShowReservationPeriod()
+    private void ShowUpdatedReservationPeriod(DateTime start, DateTime end)
     {
-        string startPeriod = currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat);
-        string endPeriod = currentReservation.Period.End.ToString(Constants.DateTimePrintFormat);
-        reservationPeriodText.text = startPeriod + Constants.And + endPeriod;
+        startPeriod = start;
+        endPeriod = end;
+        if (currentReservation != null)
+        {
+            currentReservation.Period.Start = startPeriod;
+            currentReservation.Period.End = endPeriod;
+        }
+        reservationPeriodText.text = startPeriod.ToString(Constants.DateTimePrintFormat)
+                                   + Constants.AndDelimiter
+                                   + endPeriod.ToString(Constants.DateTimePrintFormat);
     }
+    
+    private List<IReservation> GetRoomReservations()
+    {
+        List<IReservation> roomReservationList = new List<IReservation>();
+        foreach (var reservation in ReservationDataManager.GetReservations())
+        {
+            if (reservation.RoomID == currentRoom.ID)
+            {
+                roomReservationList.Add(reservation);
+            }
+        }
+        return roomReservationList;
+    }
+
 }

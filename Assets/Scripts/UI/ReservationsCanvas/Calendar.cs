@@ -19,8 +19,8 @@ public class Calendar : MonoBehaviour
     private Transform dayItemsInCalendarPanel = null;
     private DateTime selectedDateTime;
     private List<IRoom> filteredRoomList;
+    
 
-    // Start is called before the first frame update
     void Start()
     {
         filteredRoomList = calendarScreen.GetRoomsInFilteredRoomsList();

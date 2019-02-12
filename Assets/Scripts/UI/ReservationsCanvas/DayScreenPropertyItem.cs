@@ -21,12 +21,12 @@ public class DayScreenPropertyItem : MonoBehaviour
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
-        bedQuantity.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.And + Constants.DoubleBed + room.DoubleBeds.ToString();
+        bedQuantity.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         GetComponent<Button>().onClick.AddListener(() => callback());
 
         if (IsRoomReserved(room, reservedRooms))
         {
-            itemStatusImage.color = Constants.reservedItemColor;
+            itemStatusImage.color = Constants.reservedUnavailableItemColor;
         }
         else
         {

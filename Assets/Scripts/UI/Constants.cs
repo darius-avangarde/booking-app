@@ -13,9 +13,9 @@ public class Constants : MonoBehaviour
     public const string DoubleBed = "Paturi duble: ";
 
     public const string DateTimePrintFormat = "dd/MM/yy";
-    public const string And = "  -  ";
+    public const string AndDelimiter = "  -  ";
 
-    public static Color reservedItemColor = Color.red;
+    public static Color reservedUnavailableItemColor = Color.red;
     public static Color reservedAvailableItemColor = Color.yellow;
     public static Color unavailableItemColor = Color.gray;
 

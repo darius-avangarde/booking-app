@@ -5,48 +5,55 @@ using UnityEngine.UI;
 
 public class ModalCalendarDayItem : MonoBehaviour
 {
-    public Text dayText;
+    [SerializeField]
+    private Text dayText = null;
 
     private Image modalCalendarDayItemImage;
     private Color modalCalendarDayItemImageColor;
-    private Color unavailableColor = Color.gray;
-    private Color reservedColor = Color.blue;
+    private Color reservedItemColor = Color.blue;
     private Button modalCalendarDayItemButton;
-    private DateTime modalCalendarDayItemDateTime;
+    private DateTime modalCalendarItemDateTime;
     private bool isReserved = false;
+    private bool isReservedDayAvailable = false;
+    private IReservation currentReservation;
 
-    public void Initialize(Action<DateTime> callback)
+    public void Initialize(Action<DateTime,Image, bool, bool> callback)
     {
         modalCalendarDayItemImage = GetComponent<Image>();
         modalCalendarDayItemButton = GetComponent<Button>();
         modalCalendarDayItemImageColor = modalCalendarDayItemImage.color;
-        GetComponent<Button>().onClick.AddListener(() => callback(modalCalendarDayItemDateTime));
-        callback += ColorSelectedDayItem;
+        GetComponent<Button>().onClick.AddListener(() => 
+        callback(modalCalendarItemDateTime, modalCalendarDayItemImage, isReserved, isReservedDayAvailable));
     }
 
-    public void UpdateModalDayItem(DateTime dateTime, bool isInteractableDay, bool isReservedDay, IReservation currentReservation)
+    public void UpdateModalDayItem(DateTime dateTime, IReservation reservation, bool isAvailableDay, bool isReservedDay, bool isReservedAvailable)
     {
-        modalCalendarDayItemDateTime = dateTime;
-        modalCalendarDayItemImage.color = isInteractableDay ? modalCalendarDayItemImageColor : unavailableColor;
-        modalCalendarDayItemButton.interactable = isInteractableDay;
+        SetLocalFields(dateTime, reservation, isReservedDay, isReservedAvailable);
+
+        modalCalendarDayItemImage.color = isAvailableDay ? modalCalendarDayItemImageColor : Constants.unavailableItemColor;
+        modalCalendarDayItemButton.interactable = isAvailableDay;
+        modalCalendarDayItemImage.color = isReservedDay ? Constants.reservedUnavailableItemColor : modalCalendarDayItemImage.color;
+        ShowCurrentReservationReservedPeriod();
+    }
+
+    private void SetLocalFields(DateTime dateTime, IReservation reservation, bool isReservedDay, bool isReservedAvailable)
+    {
+        currentReservation = reservation;
         isReserved = isReservedDay;
-        modalCalendarDayItemImage.color = isReservedDay ? reservedColor : modalCalendarDayItemImage.color;
+        isReservedDayAvailable = isReservedAvailable;
+        modalCalendarItemDateTime = dateTime;
         dayText.text = dateTime.Day.ToString();
-        ShowCurrentReservationReservedPeriod(currentReservation);
-    }
-
-    private void ColorSelectedDayItem(DateTime modalCalendarDayItemDateTime)
-    {
-        modalCalendarDayItemImage.color = modalCalendarDayItemButton.interactable ? Color.cyan : modalCalendarDayItemImageColor;
     }
     
-    private void ShowCurrentReservationReservedPeriod(IReservation currentReservation)
+    private void ShowCurrentReservationReservedPeriod()
     {
         if (currentReservation != null)
         {
-            if (modalCalendarDayItemDateTime >= currentReservation.Period.Start && modalCalendarDayItemDateTime <= currentReservation.Period.End)
+            bool isDateTimeItemInReservationPeriod = modalCalendarItemDateTime >= currentReservation.Period.Start 
+                                                  && modalCalendarItemDateTime <= currentReservation.Period.End;
+            if (isDateTimeItemInReservationPeriod)
             {
-                modalCalendarDayItemImage.color = Color.red;
+                modalCalendarDayItemImage.color = reservedItemColor;
             }
         }
     }

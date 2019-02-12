@@ -68,7 +68,7 @@ public class CalendarDayItem : MonoBehaviour
         }
         else
         {
-            dayReservationStatusImage.color = Constants.reservedItemColor;
+            dayReservationStatusImage.color = Constants.reservedUnavailableItemColor;
         }
     }
 
