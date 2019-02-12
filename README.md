@@ -25,3 +25,9 @@ Have a separate canvas for large UI elements or elements with a lot of animation
 
 * [Google Material Design package on asset store](https://assetstore.unity.com/packages/tools/particles-effects/google-material-design-47141) - google material design UI controls and animations
 * [UI Tween](https://assetstore.unity.com/packages/tools/animation/ui-tween-38583) - the Google Material Design package is dependent on this
+
+## Potential performance improvements
+
+* improve writing: debounce data file write
+* improve reading: use dictionaries keyed by reservation/room ID
+* improve processing: use sorted lists

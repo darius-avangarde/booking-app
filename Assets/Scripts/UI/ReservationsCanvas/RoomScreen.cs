@@ -56,7 +56,7 @@ public class RoomScreen : MonoBehaviour
             }
         }
     }
-    
+
     private void OpenReservationScreen(IReservation reservation)
     {
         reservationScreen.GetComponent<ReservationScreen>().UpdateReservationScreen(reservation, currentRoom);
