@@ -1,7 +1,7 @@
 using UINavigation;
 using UnityEngine;
 
-public class SectionCanvasManager : MonoBehaviour
+public class SideMenu : MonoBehaviour
 {
     [SerializeField]
     private EasyTween sideMenu = null;
@@ -132,6 +132,11 @@ public class SectionCanvasManager : MonoBehaviour
         infoButton.Active = true;
         currentlyActiveButton = infoButton;
 
+        sideMenu.OpenCloseObjectAnimation();
+    }
+
+    public void Show()
+    {
         sideMenu.OpenCloseObjectAnimation();
     }
 }

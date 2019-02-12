@@ -27,7 +27,7 @@ public class RoomAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(() => {
             PropertyDataManager.GetProperty(currentProperty.ID).DeleteRoom(currentRoom.ID);
-            navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+            navigator.GoBack();
             propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().InstantiateRooms();
         }, null);
     }

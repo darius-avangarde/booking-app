@@ -265,7 +265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -430, y: 0}
   m_SizeDelta: {x: 430, y: 0}
   m_Pivot: {x: 0.00000022351742, y: 0.5}
 --- !u!222 &1056467876
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.35686275, b: 0.2901961, a: 1}
+  m_Color: {r: 0, g: 0.35686275, b: 0.2901961, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -414,7 +414,7 @@ MonoBehaviour:
     SaveState: 0
     AtomicAnimation: 0
     ObjectState: 1
-    EndState: 0
+    EndState: 2
     CallCallback: 8
     IntroEvents:
       m_PersistentCalls:
@@ -612,14 +612,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sideMenu: {fileID: 1056467874}
   reservationsCanvas: {fileID: 0}
-  propertiesCanvas: {fileID: 0}
-  statisticsCanvas: {fileID: 0}
-  settingsCanvas: {fileID: 0}
-  infoCanvas: {fileID: 0}
+  reservationsNavigator: {fileID: 0}
   reservationsButton: {fileID: 4052378386653607346}
+  propertiesCanvas: {fileID: 0}
+  propertiesNavigator: {fileID: 0}
   propertiesButton: {fileID: 4721952939992650341}
+  statisticsCanvas: {fileID: 0}
+  statisticsNavigator: {fileID: 0}
   statisticsButton: {fileID: 2764568955601718305}
+  settingsCanvas: {fileID: 0}
+  settingsNavigator: {fileID: 0}
   settingsButton: {fileID: 7064771573347042851}
+  infoCanvas: {fileID: 0}
+  infoNavigator: {fileID: 0}
   infoButton: {fileID: 5613922072983581907}
 --- !u!1 &1878838004
 GameObject:
@@ -715,7 +720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -838,7 +843,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1008,6 +1013,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1047247122940835941, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6081325108683368570, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1017,6 +1027,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowReservations
+      objectReference: {fileID: 0}
+    - target: {fileID: 4801444504974406702, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0add1e9c83eedf498425407f0e9af46, type: 3}
@@ -1155,6 +1175,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1047247122940835941, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6081325108683368570, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1164,6 +1189,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowStatistics
+      objectReference: {fileID: 0}
+    - target: {fileID: 4801444504974406702, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
@@ -1307,6 +1342,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1047247122940835941, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6081325108683368570, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1316,6 +1356,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowSettings
+      objectReference: {fileID: 0}
+    - target: {fileID: 4801444504974406702, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
@@ -1459,6 +1509,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1047247122940835941, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6081325108683368570, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1468,6 +1523,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowProperties
+      objectReference: {fileID: 0}
+    - target: {fileID: 4801444504974406702, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
@@ -1611,6 +1676,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1047247122940835941, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6081325108683368570, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1620,6 +1690,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ShowInfo
+      objectReference: {fileID: 0}
+    - target: {fileID: 4801444504974406702, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 463775749091424922, guid: f0add1e9c83eedf498425407f0e9af46,
         type: 3}

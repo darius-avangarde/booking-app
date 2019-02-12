@@ -13,8 +13,6 @@ public class ReservationScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Transform roomScreenTransform = null;
-    [SerializeField]
     private InputField customerNameInputField = null;
     [SerializeField]
     private Text propertyTitleField = null;
@@ -75,8 +73,6 @@ public class ReservationScreen : MonoBehaviour
         {
             AddNewReservation(startPeriod, endPeriod);
         }
-        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
-        roomScreenTransform.GetComponent<RoomScreen>().InstantiateReservations();
     }
 
     public void OnValueChanged(string value)
@@ -90,7 +86,7 @@ public class ReservationScreen : MonoBehaviour
             reservationCustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
         }
     }
-    
+
     private void AddNewReservation(DateTime start, DateTime end)
     {
         IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
@@ -104,8 +100,7 @@ public class ReservationScreen : MonoBehaviour
     {
         confirmationDialog.Show(() => {
             ReservationDataManager.DeleteReservation(currentReservation.ID);
-            navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
-            roomScreenTransform.GetComponent<RoomScreen>().InstantiateReservations();
+            navigator.GoBack();
         }, null);
     }
 
@@ -122,7 +117,7 @@ public class ReservationScreen : MonoBehaviour
                                    + Constants.AndDelimiter
                                    + endPeriod.ToString(Constants.DateTimePrintFormat);
     }
-    
+
     private List<IReservation> GetRoomReservations()
     {
         List<IReservation> roomReservationList = new List<IReservation>();

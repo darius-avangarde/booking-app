@@ -49,11 +49,11 @@ public class PropertyAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(() => {
             PropertyDataManager.DeleteProperty(currentProperty.ID);
-            navigator.GoTo(propertiesScreenTransform.GetComponent<NavScreen>());
+            navigator.GoBack();
             propertiesScreenTransform.GetComponent<PropertiesScreen>().InstantiateProperties();
         }, null);
     }
-    
+
     public void OnValueChanged(string value)
     {
         propertyScreenTitle.text = value;
