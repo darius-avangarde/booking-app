@@ -13,6 +13,8 @@ public class ReservationScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private Calendar calendar = null;
+    [SerializeField]
     private InputField customerNameInputField = null;
     [SerializeField]
     private Text propertyTitleField = null;
@@ -40,7 +42,7 @@ public class ReservationScreen : MonoBehaviour
         }
         else
         {
-            modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, ShowUpdatedReservationPeriod);
+            modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, SaveAndShowUpdatedReservationPeriod);
             UpdateNewReservationFields();
         }
     }
@@ -64,7 +66,10 @@ public class ReservationScreen : MonoBehaviour
 
     public void ShowModalCalendar()
     {
-        modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, ShowUpdatedReservationPeriod);
+        roomReservationList = GetRoomReservations()
+                            .Where(res => res != currentReservation)
+                            .OrderBy(res => res.Period.Start).ToList();
+        modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, SaveAndShowUpdatedReservationPeriod);
     }
 
     public void SaveReservation()
@@ -98,13 +103,23 @@ public class ReservationScreen : MonoBehaviour
 
     public void DeleteReservation()
     {
-        confirmationDialog.Show(() => {
-            ReservationDataManager.DeleteReservation(currentReservation.ID);
-            navigator.GoBack();
-        }, null);
+        if (currentReservation != null)
+        {
+            confirmationDialog.Show(() => {
+                ReservationDataManager.DeleteReservation(currentReservation.ID);
+                navigator.GoBack();
+                calendar.UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange();
+            }, null);
+        }
+        else
+        {
+            confirmationDialog.Show(() => {
+                navigator.GoBack();
+            }, null);
+        }
     }
 
-    private void ShowUpdatedReservationPeriod(DateTime start, DateTime end)
+    private void SaveAndShowUpdatedReservationPeriod(DateTime start, DateTime end)
     {
         startPeriod = start;
         endPeriod = end;

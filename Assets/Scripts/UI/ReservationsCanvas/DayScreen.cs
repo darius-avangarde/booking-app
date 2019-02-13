@@ -20,12 +20,12 @@ public class DayScreen : MonoBehaviour
     [SerializeField]
     private Text dayScreenTitle = null;
     private List<GameObject> dayScreenItemList = new List<GameObject>();
-    private List<IRoom> reservedRoomList = new List<IRoom>();
+    private DateTime dayDateTime;
 
-    public void UpdateDayScreenInfo(DateTime dateTime, List<IRoom> rooms)
+    public void UpdateDayScreenInfo(DateTime dateTime)
     {
+        dayDateTime = dateTime;
         dayScreenTitle.text = dateTime.Day + " " + Constants.MonthNamesDict[dateTime.Month] + " " + dateTime.Year;
-        reservedRoomList = rooms;
         UpdateFilteredDayScreenPropertyItemsContent();
     }
 
@@ -39,7 +39,8 @@ public class DayScreen : MonoBehaviour
         foreach (IRoom room in calendarScreen.GetFilteredRooms())
         {
             GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
-            dayScreenItem.GetComponent<DayScreenPropertyItem>().Initialize(room, reservedRoomList, () => OpenRoomReservationScreen(room));
+            dayScreenItem.GetComponent<DayScreenPropertyItem>()
+                .Initialize(room, calendarScreen.GetReservedRoomsInCurrentDay(dayDateTime), () => OpenRoomReservationScreen(room));
             dayScreenItemList.Add(dayScreenItem);
         }
     }

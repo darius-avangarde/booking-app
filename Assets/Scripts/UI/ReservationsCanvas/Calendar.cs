@@ -35,9 +35,8 @@ public class Calendar : MonoBehaviour
         UpdateCalendar(selectedDateTime);
     }
 
-    public void UpdateCalendarOnNewReservation()
+    public void UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange()
     {
-        filteredRoomList = calendarScreen.GetFilteredRooms();
         UpdateCalendar(selectedDateTime);
         dayScreen.GetComponent<DayScreen>().UpdateFilteredDayScreenPropertyItemsContent();
     }
@@ -63,9 +62,9 @@ public class Calendar : MonoBehaviour
         }
     }
 
-    private void OpenDayScreen(DateTime dateTime, List<IRoom> rooms)
+    private void OpenDayScreen(DateTime dateTime)
     {
-        dayScreen.GetComponent<DayScreen>().UpdateDayScreenInfo(dateTime, rooms);
+        dayScreen.GetComponent<DayScreen>().UpdateDayScreenInfo(dateTime);
         navigator.GoTo(dayScreen.GetComponent<NavScreen>());
     }
 
@@ -94,7 +93,7 @@ public class Calendar : MonoBehaviour
             nextMonthDateTime =
                 new DateTime(nextMonthDateTime.Year, nextMonthDateTime.Month, dayVisibleFromNextMonth, 0, 0, 0, DateTimeKind.Local);
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(dayItemIndex).GetComponent<CalendarDayItem>();
-            dayItem.UpdateDayItem(nextMonthDateTime, false, filteredRoomList);
+            dayItem.UpdateDayItem(nextMonthDateTime, false, filteredRoomList, calendarScreen.GetReservedRoomsInCurrentDay(nextMonthDateTime));
             dayVisibleFromNextMonth++;
         }
     }
@@ -112,7 +111,7 @@ public class Calendar : MonoBehaviour
             selectedDateTime = 
                 new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(i).GetComponent<CalendarDayItem>();
-            dayItem.UpdateDayItem(selectedDateTime, true, filteredRoomList);
+            dayItem.UpdateDayItem(selectedDateTime, true, filteredRoomList, calendarScreen.GetReservedRoomsInCurrentDay(selectedDateTime));
             dayVisibleFromSelectedMonth++;
         }
     }
@@ -127,7 +126,7 @@ public class Calendar : MonoBehaviour
             previousMonthDateTime = 
                 new DateTime(previousMonthDateTime.Year, previousMonthDateTime.Month, dayVisibleFromPreviousMonth, 0, 0, 0, DateTimeKind.Local);
             CalendarDayItem dayItem = dayItemsInCalendarPanel.GetChild(p).GetComponent<CalendarDayItem>();
-            dayItem.UpdateDayItem(previousMonthDateTime, false, filteredRoomList);
+            dayItem.UpdateDayItem(previousMonthDateTime, false, filteredRoomList, calendarScreen.GetReservedRoomsInCurrentDay(previousMonthDateTime));
             dayVisibleFromPreviousMonth--;
         }
     }

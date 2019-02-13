@@ -94,4 +94,29 @@ public class CalendarScreen : MonoBehaviour
         filteredRoomList = updatedFilter.Apply(filteredRoomList);
         calendar.UpdateCalendarAfterFiltering();
     }
+
+    public List<IRoom> GetReservedRoomsInCurrentDay(DateTime dayItemDateTime)
+    {
+        List<IReservation> currentDayReservationList = new List<IReservation>();
+        foreach (var reservation in ReservationDataManager.GetReservations())
+        {
+            bool isDayReserved = dayItemDateTime >= reservation.Period.Start && dayItemDateTime <= reservation.Period.End;
+
+            if (isDayReserved)
+            {
+                currentDayReservationList.Add(reservation);
+            }
+        }
+
+        List<IRoom> reservedRoomsInCurrentDay = filteredRoomList.FindAll(room =>
+        {
+            List<IReservation> reservationsForThisRoom = currentDayReservationList.FindAll(reservation => reservation.RoomID == room.ID);
+            return reservationsForThisRoom.Exists(reservation =>
+            {
+                bool reservationIsForCurrentDay = dayItemDateTime >= reservation.Period.Start && dayItemDateTime <= reservation.Period.End;
+                return reservationIsForCurrentDay;
+            });
+        });
+        return reservedRoomsInCurrentDay;
+    }
 }

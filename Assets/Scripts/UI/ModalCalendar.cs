@@ -253,30 +253,27 @@ public class ModalCalendar : MonoBehaviour
         {
             return true;
         }
+
+        if (newReservationStartDateTime < roomReservationList[0].Period.Start
+            && itemDateTime <= roomReservationList[0].Period.Start)
+        {
+            return true;
+        }
+
+        if (newReservationStartDateTime >= roomReservationList[roomReservationList.Count - 1].Period.End
+            && itemDateTime > roomReservationList[roomReservationList.Count - 1].Period.End)
+        {
+            return true;
+        }
+
         for (int i = 0; i < roomReservationList.Count; i++)
         {
-            if (newReservationStartDateTime < roomReservationList[0].Period.Start 
-             && itemDateTime <= roomReservationList[0].Period.Start)
-            {
-                return true;
-            }
-
-            if (newReservationStartDateTime >= roomReservationList[roomReservationList.Count-1].Period.End 
-             && itemDateTime > roomReservationList[roomReservationList.Count-1].Period.End)
-            {
-                return true;
-            }
-            
-            if (newReservationStartDateTime >= roomReservationList[i].Period.End && itemDateTime > roomReservationList[i].Period.End
+            if (newReservationStartDateTime >= roomReservationList[i].Period.End 
+                && itemDateTime > roomReservationList[i].Period.End
                 && itemDateTime <= roomReservationList[i + 1].Period.Start)
             {
                 return true;
             }
-
-            //if (currentReservation == roomReservationList[i])
-            //{
-            //    return true;
-            //}
         }
         return false;
     }
