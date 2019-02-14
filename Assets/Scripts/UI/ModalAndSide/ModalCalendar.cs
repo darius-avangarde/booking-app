@@ -20,7 +20,6 @@ public class ModalCalendar : MonoBehaviour
     private IReservation currentReservation;
     private IRoom currentRoom;
     private List<IReservation> roomReservationList = new List<IReservation>();
-    private Color selectedItemColor = Color.cyan;
     private DateTime currentReservationStartPeriod;
 
     // Start is called before the first frame update
@@ -188,7 +187,7 @@ public class ModalCalendar : MonoBehaviour
 
     private void ShowSelectedDayItem(Image modalCalendarDayItemImage)
     {
-        modalCalendarDayItemImage.color = selectedItemColor;
+        modalCalendarDayItemImage.color = Constants.selectedItemColor;
     }
 
     private void SetEndPeriodDateTime(DateTime dateTime)

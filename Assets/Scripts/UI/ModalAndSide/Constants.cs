@@ -18,6 +18,7 @@ public class Constants : MonoBehaviour
     public static Color reservedUnavailableItemColor = Color.red;
     public static Color reservedAvailableItemColor = Color.yellow;
     public static Color unavailableItemColor = Color.gray;
+    public static Color selectedItemColor = Color.cyan;
 
     public static Dictionary<int, string> MonthNamesDict = new Dictionary<int, string>()
     {

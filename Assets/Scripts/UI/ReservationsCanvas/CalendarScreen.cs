@@ -45,7 +45,7 @@ public class CalendarScreen : MonoBehaviour
         return filteredRoomList;
     }
 
-    public void ShowModalCalendar()
+    public void ShowFilterDialog()
     {
         modalCalendarFilterDialog.Show(filter, (updatedFilter) => {
             FilterList(updatedFilter);
