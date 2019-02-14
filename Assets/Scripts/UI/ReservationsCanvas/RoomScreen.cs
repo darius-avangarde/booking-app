@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ public class RoomScreen : MonoBehaviour
     private List<GameObject> reservationButtonList = new List<GameObject>();
     private IRoom currentRoom;
     private IReservation currentReservation;
+    private List<IReservation> roomReservations = new List<IReservation>();
 
     public void UpdateRoomDetailsFields(IRoom room)
     {
@@ -42,18 +44,20 @@ public class RoomScreen : MonoBehaviour
 
     public void InstantiateReservations()
     {
+        List<IReservation> orderedRoomReservationList = ReservationDataManager.GetReservations()
+                                                    .Where(res => res.RoomID == currentRoom.ID)
+                                                    .OrderBy(res => res.Period.Start).ToList();
+
         foreach (var reservationButton in reservationButtonList)
         {
             Destroy(reservationButton);
         }
-        foreach (var reservation in ReservationDataManager.GetReservations())
+
+        foreach (var reservation in orderedRoomReservationList)
         {
-            if (reservation.RoomID == currentRoom.ID)
-            {
-                GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-                reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
-                reservationButtonList.Add(reservationButton);
-            }
+            GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
+            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
+            reservationButtonList.Add(reservationButton);
         }
     }
 
