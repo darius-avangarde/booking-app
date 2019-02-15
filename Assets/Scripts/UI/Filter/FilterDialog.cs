@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class CalendarFilterDialog : MonoBehaviour
+public class FilterDialog : MonoBehaviour
 {
     [SerializeField]
     private EasyTween easyTween = null;
