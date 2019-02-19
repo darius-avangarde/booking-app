@@ -35,4 +35,12 @@ public class Constants : MonoBehaviour
         {11,"Noiembrie"},
         {12,"Decembrie"}
     };
+
+    public static Dictionary<int, string> XAxisDict = new Dictionary<int, string>()
+    {
+        {0,"Timp"},
+        {1,"Locatie"},
+        {2,"Categorie de camera"},
+        {3,"Camera"}
+    };
 }
