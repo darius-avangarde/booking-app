@@ -42,7 +42,13 @@ public static class PropertyDataManager
     public static IEnumerable<IProperty> GetProperties()
     {
         PropertyData data = GetPropertyData();
-        return data.properties;
+        return data.properties.FindAll(p => !p.deleted);
+    }
+
+    public static IEnumerable<IProperty> GetDeletedProperties()
+    {
+        PropertyData data = GetPropertyData();
+        return data.properties.FindAll(p => p.deleted);
     }
 
     public static IProperty GetProperty(string ID)
@@ -53,8 +59,9 @@ public static class PropertyDataManager
 
     public static IProperty AddProperty()
     {
+        PropertyData data = GetPropertyData();
         Property newProperty = new Property();
-        GetPropertyData().properties.Add(newProperty);
+        data.properties.Add(newProperty);
         WritePropertyData();
 
         return newProperty;
@@ -63,8 +70,12 @@ public static class PropertyDataManager
     public static void DeleteProperty(string ID)
     {
         PropertyData data = GetPropertyData();
-        GetPropertyData().properties.RemoveAll(p => p.ID.Equals(ID));
-        WritePropertyData();
+        Property property = data.properties.Find(p => p.id.Equals(ID));
+        if (property != null)
+        {
+            property.deleted = true;
+            WritePropertyData();
+        }
     }
 
     [Serializable]
@@ -79,10 +90,9 @@ public static class PropertyDataManager
     private class Property : IProperty
     {
         public string id;
-        public string name;
-        public List<Room> rooms = new List<Room>();
-
         public string ID => id;
+
+        public string name;
         public string Name
         {
             get => name;
@@ -92,7 +102,12 @@ public static class PropertyDataManager
                 WritePropertyData();
             }
         }
-        public IEnumerable<IRoom> Rooms => rooms;
+
+        public bool deleted = false;
+
+        public List<Room> rooms = new List<Room>();
+        public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.deleted);
+        public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.deleted);
 
         public Property() => this.id = Guid.NewGuid().ToString();
 
@@ -109,8 +124,12 @@ public static class PropertyDataManager
 
         public void DeleteRoom(string ID)
         {
-            rooms.RemoveAll(r => r.ID.Equals(ID));
-            WritePropertyData();
+            Room room = rooms.Find(r => r.id.Equals(ID));
+            if (room != null)
+            {
+                room.deleted = true;
+                WritePropertyData();
+            }
         }
     }
 
@@ -133,6 +152,8 @@ public static class PropertyDataManager
                 WritePropertyData();
             }
         }
+
+        public bool deleted = false;
 
         public int singleBeds;
         public int SingleBeds

@@ -42,7 +42,13 @@ public static class ReservationDataManager
     public static IEnumerable<IReservation> GetReservations()
     {
         ReservationData data = GetReservationData();
-        return data.reservations;
+        return data.reservations.FindAll(r => !r.deleted);
+    }
+
+    public static IEnumerable<IReservation> GetDeletedReservations()
+    {
+        ReservationData data = GetReservationData();
+        return data.reservations.FindAll(r => r.deleted);
     }
 
     public static IReservation GetReservation(string ID)
@@ -63,8 +69,12 @@ public static class ReservationDataManager
     public static void DeleteReservation(string ID)
     {
         ReservationData data = GetReservationData();
-        GetReservationData().reservations.RemoveAll(r => r.ID.Equals(ID));
-        WriteReservationData();
+        Reservation reservation = data.reservations.Find(r => r.id.Equals(ID));
+        if (reservation != null)
+        {
+            reservation.deleted = true;
+            WriteReservationData();
+        }
     }
 
     [Serializable]
@@ -80,6 +90,8 @@ public static class ReservationDataManager
     {
         public string id;
         public string ID => id;
+
+        public bool deleted = false;
 
         public string propertyID;
         public string PropertyID => propertyID;
