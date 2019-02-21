@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class ReservationDataManager
 {
-    private const string FILE_NAME = "reservationData.json";
+    public const string DATA_FILE_NAME = "reservationData.json";
 
     private static ReservationData cache;
 
@@ -13,7 +13,7 @@ public static class ReservationDataManager
     {
         if (cache == null)
         {
-            string filePath = Path.Combine(Application.dataPath, FILE_NAME);
+            string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
             if (File.Exists(filePath))
             {
                 string dataAsJson = File.ReadAllText(filePath);
@@ -33,7 +33,7 @@ public static class ReservationDataManager
         ReservationData data = GetReservationData();
         string dataAsJson = JsonUtility.ToJson(data);
 
-        string filePath = Path.Combine(Application.dataPath, FILE_NAME);
+        string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
     }
 
@@ -129,13 +129,16 @@ public static class ReservationDataManager
     [Serializable]
     private class DateTimePeriod : IDateTimePeriod
     {
+        // we store the DateTimes as UTC,
+        // this ensures that the serialized data is the same regardless of timezone.
+        // we simply convert to local time on deserialization
         public long startTicks;
         public DateTime Start
         {
-            get => new DateTime(startTicks, DateTimeKind.Local);
+            get => new DateTime(startTicks, DateTimeKind.Utc).ToLocalTime();
             set
             {
-                startTicks = value.Ticks;
+                startTicks = value.ToUniversalTime().Ticks;
                 if (startTicks > endTicks)
                 {
                     endTicks = startTicks;
@@ -147,10 +150,10 @@ public static class ReservationDataManager
         public long endTicks;
         public DateTime End
         {
-            get => new DateTime(endTicks, DateTimeKind.Local);
+            get => new DateTime(endTicks, DateTimeKind.Utc).ToLocalTime();
             set
             {
-                endTicks = value.Ticks;
+                endTicks = value.ToUniversalTime().Ticks;
                 if (endTicks < startTicks)
                 {
                     startTicks = endTicks;

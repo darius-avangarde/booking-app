@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class PropertyDataManager
 {
-    private const string FILE_NAME = "propertyData.json";
+    public const string DATA_FILE_NAME = "propertyData.json";
 
     private static PropertyData cache;
 
@@ -13,7 +13,7 @@ public static class PropertyDataManager
     {
         if (cache == null)
         {
-            string filePath = Path.Combine(Application.dataPath, FILE_NAME);
+            string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
             if (File.Exists(filePath))
             {
                 string dataAsJson = File.ReadAllText(filePath);
@@ -33,7 +33,7 @@ public static class PropertyDataManager
         PropertyData data = GetPropertyData();
         string dataAsJson = JsonUtility.ToJson(data);
 
-        string filePath = Path.Combine(Application.dataPath, FILE_NAME);
+        string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
     }
 
