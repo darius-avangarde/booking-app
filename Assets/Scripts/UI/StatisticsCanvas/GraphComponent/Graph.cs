@@ -44,11 +44,13 @@ public class Graph : MonoBehaviour, IGraph
         {
             GameObject.Destroy(child.gameObject);
         }
+
+        float barWidth = barsContainer.GetComponent<RectTransform>().rect.width / data.Count;
         foreach (var item in data)
         {
             GameObject bar = Instantiate(barPrefab, barsContainer);
-            float barWidth = barsContainer.GetComponent<RectTransform>().rect.width / data.Count;
-            float barHeight = barsContainer.GetComponent<RectTransform>().rect.height * item / 100;
+            float barHeight = barsContainer.GetComponent<RectTransform>().rect.height * item;
+
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
             Color barColor = new Color(
                   UnityEngine.Random.Range(0f, 1f),

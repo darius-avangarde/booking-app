@@ -28,7 +28,7 @@ public class GraphComponent : MonoBehaviour
                 ShowGraphWithXAxisLocation(filteredRoomList, startDateTime, endDateTime, reservationList);
                 break;
             case 2:
-                print("Categorie de camera");
+                ShowGraphWithXAxisRoomCategory(filteredRoomList, startDateTime, endDateTime, reservationList);
                 break;
             case 3:
                 print("Camera");
@@ -44,7 +44,7 @@ public class GraphComponent : MonoBehaviour
         List<float> data = new List<float>();
         for (DateTime datetime = startDateTime; datetime.Date < endDateTime; datetime = datetime.AddDays(1))
         {
-            int roomsQuantityInThisDay = 0;
+            float roomsQuantityInThisDay = 0;
             foreach (IReservation resItem in reservationList)
             {
                 foreach (var roomItem in filteredRoomList)
@@ -55,13 +55,12 @@ public class GraphComponent : MonoBehaviour
                     }
                 }
             }
-            float roomsPercentInThisDay = (filteredRoomList.Count != 0) ? 100 * roomsQuantityInThisDay / filteredRoomList.Count : 0;
+            float roomsPercentInThisDay = (filteredRoomList.Count != 0) ? roomsQuantityInThisDay / filteredRoomList.Count : 0;
             data.Add(roomsPercentInThisDay);
         }
         graph.Data = data;
     }
-
-
+    
     private void ShowGraphWithXAxisLocation(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
     {
         List<float> data = new List<float>();
@@ -100,8 +99,23 @@ public class GraphComponent : MonoBehaviour
         graph.Data = data;
     }
 
-    private void ShowGraphWithXAxisRoomCategory()
+    private void ShowGraphWithXAxisRoomCategory(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
     {
+        List<IReservation> reservationInSelectedPeriodList = new List<IReservation>();
 
+        for (DateTime datetime = startDateTime; datetime.Date <= endDateTime; datetime = datetime.AddDays(1))
+        {
+            foreach (IReservation resItem in reservationList)
+            {
+                if (datetime >= resItem.Period.Start && datetime < resItem.Period.End)
+                {
+                    reservationInSelectedPeriodList.Add(resItem);
+                }
+            }
+        }
+        foreach (var item in filteredRoomList)
+        {
+
+        }
     }
 }
