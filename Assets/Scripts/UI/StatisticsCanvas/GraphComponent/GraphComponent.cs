@@ -93,7 +93,7 @@ public class GraphComponent : MonoBehaviour
             });
             int totalReservations = reservationList.Count;
             int reservationsInThisPropery = reservationFilteredRoomsList.Count;
-            float reservationsPercentInThisPropery = (totalReservations != 0) ? 100 * reservationsInThisPropery / totalReservations : 0;
+            float reservationsPercentInThisPropery = (totalReservations != 0) ? reservationsInThisPropery / totalReservations : 0;
             data.Add(reservationsPercentInThisPropery);
         }
         graph.Data = data;
