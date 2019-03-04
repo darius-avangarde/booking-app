@@ -20,9 +20,11 @@ public class ModalCalendarStatistics : MonoBehaviour
     private bool isSetStartDay = false;
 
     private Action<DateTime, DateTime> DoneCallback;
+    private Color itemCalendarColor;
 
     void Start()
     {
+        itemCalendarColor = modalItemsCalendarPanel.GetComponentInChildren<Image>().color;
         InstantiateModalCalendarDayItems();
         UpdateCalendar(selectedDateTime);
     }
@@ -41,6 +43,10 @@ public class ModalCalendarStatistics : MonoBehaviour
 
     public void Show(Action<DateTime, DateTime> doneCallback)
     {
+        foreach (Transform child in modalItemsCalendarPanel)
+        {
+            child.GetComponent<Image>().color = itemCalendarColor;
+        }
         easyTween.OpenCloseObjectAnimation();
         DoneCallback = doneCallback;
     }
