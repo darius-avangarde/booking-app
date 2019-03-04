@@ -18,6 +18,7 @@ public class Constants : MonoBehaviour
     public static Color reservedUnavailableItemColor = Color.red;
     public static Color reservedAvailableItemColor = Color.yellow;
     public static Color unavailableItemColor = Color.gray;
+    public static Color selectedItemColor = Color.cyan;
 
     public static Dictionary<int, string> MonthNamesDict = new Dictionary<int, string>()
     {
@@ -33,5 +34,13 @@ public class Constants : MonoBehaviour
         {10,"Octombrie"},
         {11,"Noiembrie"},
         {12,"Decembrie"}
+    };
+
+    public static Dictionary<int, string> XAxisDict = new Dictionary<int, string>()
+    {
+        {0,"Timp"},
+        {1,"Locatie"},
+        {2,"Categorie de camera"},
+        {3,"Camera"}
     };
 }

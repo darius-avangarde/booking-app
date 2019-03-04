@@ -9,7 +9,7 @@ public class CalendarScreen : MonoBehaviour
     [SerializeField]
     private Calendar calendar = null;
     [SerializeField]
-    private CalendarFilterDialog modalCalendarFilterDialog = null;
+    private FilterDialog modalFilterDialog = null;
 
     [Header("Filter Button Text Components In Calendar Screen")]
     [SerializeField]
@@ -45,9 +45,9 @@ public class CalendarScreen : MonoBehaviour
         return filteredRoomList;
     }
 
-    public void ShowModalCalendar()
+    public void ShowFilterDialog()
     {
-        modalCalendarFilterDialog.Show(filter, (updatedFilter) => {
+        modalFilterDialog.Show(filter, (updatedFilter) => {
             FilterList(updatedFilter);
         });
     }
