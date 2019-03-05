@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GraphComponent : MonoBehaviour
 {
     [SerializeField]
-    private Graph graph;
-    private int totalDaysPeriod = 0;
-    private int maxItemsForShowingAbout = 20;
+    private Graph graph = null;
 
     private void Start()
     {
@@ -79,7 +78,7 @@ public class GraphComponent : MonoBehaviour
                 }
             }
         }
-
+        reservationInSelectedPeriodList = reservationInSelectedPeriodList.Distinct().ToList();
         foreach (var propertyItem in propertyList)
         {
             List<IReservation> reservationFilteredRoomsList = reservationInSelectedPeriodList.FindAll(reservation =>
@@ -91,8 +90,8 @@ public class GraphComponent : MonoBehaviour
                     return isRoomInReservation;
                 });
             });
-            int totalReservations = reservationList.Count;
-            int reservationsInThisPropery = reservationFilteredRoomsList.Count;
+            float totalReservations = reservationList.Count;
+            float reservationsInThisPropery = reservationFilteredRoomsList.Count;
             float reservationsPercentInThisPropery = (totalReservations != 0) ? reservationsInThisPropery / totalReservations : 0;
             data.Add(reservationsPercentInThisPropery);
         }
@@ -101,8 +100,8 @@ public class GraphComponent : MonoBehaviour
 
     private void ShowGraphWithXAxisRoomCategory(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
     {
+        List<float> data = new List<float>();
         List<IReservation> reservationInSelectedPeriodList = new List<IReservation>();
-
         for (DateTime datetime = startDateTime; datetime.Date <= endDateTime; datetime = datetime.AddDays(1))
         {
             foreach (IReservation resItem in reservationList)
@@ -113,9 +112,27 @@ public class GraphComponent : MonoBehaviour
                 }
             }
         }
-        foreach (var item in filteredRoomList)
-        {
 
+        reservationInSelectedPeriodList = reservationInSelectedPeriodList.Distinct().ToList();
+
+        var maxQuantityPersons = filteredRoomList.Count != 0 ? filteredRoomList.Max(room => room.Persons) : 0;
+        for (int i = 1; i <= maxQuantityPersons; i++)
+        {
+            List<IReservation> reservationsInRoomCategoryList = reservationInSelectedPeriodList.FindAll(reservation =>
+            {
+                return filteredRoomList.Exists(room =>
+                {
+                    bool isRoomInReservation = room.ID == reservation.RoomID
+                                               && room.Persons == i;
+                    return isRoomInReservation;
+                });
+            });
+            float reservationsInRoomCategory = reservationsInRoomCategoryList.Count;
+            if (reservationsInRoomCategory != 0)
+            {
+                data.Add(reservationsInRoomCategory / reservationList.Count);
+            }
         }
+        graph.Data = data;
     }
 }

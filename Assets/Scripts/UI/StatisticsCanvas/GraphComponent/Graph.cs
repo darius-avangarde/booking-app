@@ -42,15 +42,16 @@ public class Graph : MonoBehaviour, IGraph
     {
         foreach (Transform child in barsContainer)
         {
-            GameObject.Destroy(child.gameObject);
+            Destroy(child.gameObject);
         }
 
         float barWidth = barsContainer.GetComponent<RectTransform>().rect.width / data.Count;
+        float barsContainerHeight = barsContainer.GetComponent<RectTransform>().rect.height;
+        float barHeight = 0;
         foreach (var item in data)
         {
             GameObject bar = Instantiate(barPrefab, barsContainer);
-            float barHeight = barsContainer.GetComponent<RectTransform>().rect.height * item;
-
+            barHeight = barsContainerHeight * item;
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
             Color barColor = new Color(
                   UnityEngine.Random.Range(0f, 1f),
