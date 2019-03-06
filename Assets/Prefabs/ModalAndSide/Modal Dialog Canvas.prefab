@@ -523,9 +523,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   easyTween: {fileID: 227940378}
-  message: {fileID: 44953765}
+  messageText: {fileID: 44953765}
   cancelButtonText: {fileID: 3365622105175199475}
   confirmButtonText: {fileID: 1183496509751215961}
+  defaultMessage: "Sunte\u021Bi sigur?"
+  defaultConfirmButtonText: "Confirma\u021Bi"
+  defaultCancelButtonText: "Anula\u021Bi"
 --- !u!1 &759990152
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,6 +954,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Confirm Text
       objectReference: {fileID: 0}
+    - target: {fileID: 11466254, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -974,10 +981,6 @@ PrefabInstance:
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 11466254, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_Color.a
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11466260, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Text
@@ -1106,6 +1109,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cancel Text
       objectReference: {fileID: 0}
+    - target: {fileID: 11466254, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -1129,10 +1136,6 @@ PrefabInstance:
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 11466254, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_Color.a
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11466260, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Text
