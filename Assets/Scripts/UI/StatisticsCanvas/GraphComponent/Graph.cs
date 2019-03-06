@@ -45,7 +45,7 @@ public class Graph : MonoBehaviour, IGraph
             Destroy(child.gameObject);
         }
 
-        float barWidth = barsContainer.GetComponent<RectTransform>().rect.width / data.Count;
+        float barWidth = (barsContainer.GetComponent<RectTransform>().rect.width - 10) / data.Count;
         float barsContainerHeight = barsContainer.GetComponent<RectTransform>().rect.height;
         float barHeight = 0;
         foreach (var item in data)
