@@ -21,6 +21,16 @@ public class Graph : MonoBehaviour, IGraph
         }
     }
 
+    private List<string> xValue;
+    public List<string> XValue
+    {
+        get => xValue;
+        set
+        {
+            xValue = value;
+        }
+    }
+
     public string XAxisLabel
     {
         get => xAxisText.text;
@@ -48,10 +58,10 @@ public class Graph : MonoBehaviour, IGraph
         float barWidth = (barsContainer.GetComponent<RectTransform>().rect.width - 10) / data.Count;
         float barsContainerHeight = barsContainer.GetComponent<RectTransform>().rect.height;
 
-        foreach (var item in data)
+        for (int i = 0; i < data.Count; i++)
         {
             GameObject bar = Instantiate(barPrefab, barsContainer);
-            float barHeight = barsContainerHeight * item;
+            float barHeight = barsContainerHeight * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
             Color barColor = new Color(
                   UnityEngine.Random.Range(0f, 1f),
@@ -59,6 +69,23 @@ public class Graph : MonoBehaviour, IGraph
                   UnityEngine.Random.Range(0f, 1f)
               );
             bar.GetComponent<Image>().color = barColor;
+            print(xValue.Count + "    " + data.Count);
+            SetTextXValue(bar, i);
+        }
+    }
+
+    private void SetTextXValue(GameObject bar, int itemIndex)
+    {
+        int maxItemsForShowingAbout = 20;
+        if (xValue.Count < maxItemsForShowingAbout)
+        {
+            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+            bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";
+        }
+        else
+        {
+            bar.GetComponentInChildren<Text>().text = "";
+            bar.transform.GetChild(1).GetComponent<Text>().text = "";
         }
     }
 }
