@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GraphComponent : MonoBehaviour
 {
     [SerializeField]
-    private Graph graph;
-    private int totalDaysPeriod = 0;
-    private int maxItemsForShowingAbout = 20;
+    private Graph graph = null;
 
     private void Start()
     {
@@ -31,7 +29,7 @@ public class GraphComponent : MonoBehaviour
                 ShowGraphWithXAxisRoomCategory(filteredRoomList, startDateTime, endDateTime, reservationList);
                 break;
             case 3:
-                print("Camera");
+                ShowGraphWithXAxisDaysReservationsRoom(filteredRoomList, startDateTime, endDateTime, reservationList);
                 break;
             default:
                 print("Something Wrong");
@@ -42,12 +40,13 @@ public class GraphComponent : MonoBehaviour
     private void ShowGraphWithXAxisTime(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
     {
         List<float> data = new List<float>();
+        float roomsPercentInThisDay = 0;
         for (DateTime datetime = startDateTime; datetime.Date < endDateTime; datetime = datetime.AddDays(1))
         {
             float roomsQuantityInThisDay = 0;
             foreach (IReservation resItem in reservationList)
             {
-                foreach (var roomItem in filteredRoomList)
+                foreach (IRoom roomItem in filteredRoomList)
                 {
                     if (datetime >= resItem.Period.Start && datetime < resItem.Period.End && resItem.RoomID == roomItem.ID)
                     {
@@ -55,18 +54,15 @@ public class GraphComponent : MonoBehaviour
                     }
                 }
             }
-            float roomsPercentInThisDay = (filteredRoomList.Count != 0) ? roomsQuantityInThisDay / filteredRoomList.Count : 0;
+            bool isDenominatorNonZero = filteredRoomList.Count != 0;
+            roomsPercentInThisDay = isDenominatorNonZero ? roomsQuantityInThisDay / filteredRoomList.Count : 0;
             data.Add(roomsPercentInThisDay);
         }
         graph.Data = data;
     }
-    
-    private void ShowGraphWithXAxisLocation(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
-    {
-        List<float> data = new List<float>();
-        List<IProperty> propertyList = new List<IProperty>();
-        propertyList.AddRange(PropertyDataManager.GetProperties());
 
+    private static List<IReservation> GetReservationInSelectedPeriodList(DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
+    {
         List<IReservation> reservationInSelectedPeriodList = new List<IReservation>();
 
         for (DateTime datetime = startDateTime; datetime.Date <= endDateTime; datetime = datetime.AddDays(1))
@@ -79,10 +75,25 @@ public class GraphComponent : MonoBehaviour
                 }
             }
         }
+        reservationInSelectedPeriodList = reservationInSelectedPeriodList.Distinct().ToList();
+        return reservationInSelectedPeriodList;
+    }
+
+    private void ShowGraphWithXAxisLocation(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
+    {
+        List<float> data = new List<float>();
+        List<IProperty> propertyList = new List<IProperty>();
+        propertyList.AddRange(PropertyDataManager.GetProperties());
+
+        List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
+
+        float totalReservations = 0;
+        float reservationsInThisPropery = 0;
+        float reservationsPercentInThisPropery = 0;
 
         foreach (var propertyItem in propertyList)
         {
-            List<IReservation> reservationFilteredRoomsList = reservationInSelectedPeriodList.FindAll(reservation =>
+            List<IReservation> reservationsInProperyList = reservationInSelectedPeriodList.FindAll(reservation =>
             {
                 return filteredRoomList.Exists(room =>
                 {
@@ -91,31 +102,71 @@ public class GraphComponent : MonoBehaviour
                     return isRoomInReservation;
                 });
             });
-            int totalReservations = reservationList.Count;
-            int reservationsInThisPropery = reservationFilteredRoomsList.Count;
-            float reservationsPercentInThisPropery = (totalReservations != 0) ? reservationsInThisPropery / totalReservations : 0;
+            totalReservations = reservationList.Count;
+            reservationsInThisPropery = reservationsInProperyList.Count;
+            bool isDenominatorNonZero = totalReservations != 0;
+            reservationsPercentInThisPropery = isDenominatorNonZero ? reservationsInThisPropery / totalReservations : 0;
             data.Add(reservationsPercentInThisPropery);
         }
         graph.Data = data;
     }
-
+    
     private void ShowGraphWithXAxisRoomCategory(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
     {
-        List<IReservation> reservationInSelectedPeriodList = new List<IReservation>();
+        List<float> data = new List<float>();
+        List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
 
-        for (DateTime datetime = startDateTime; datetime.Date <= endDateTime; datetime = datetime.AddDays(1))
+        int maxQuantityPersons = filteredRoomList.Count != 0 ? filteredRoomList.Max(room => room.Persons) : 0;
+       
+        for (int i = 1; i <= maxQuantityPersons; i++)
         {
-            foreach (IReservation resItem in reservationList)
+            List<IReservation> reservationsInRoomCategoryList = reservationInSelectedPeriodList.FindAll(reservation =>
             {
-                if (datetime >= resItem.Period.Start && datetime < resItem.Period.End)
+                return filteredRoomList.Exists(room =>
                 {
-                    reservationInSelectedPeriodList.Add(resItem);
-                }
+                    bool isRoomInReservation = room.ID == reservation.RoomID
+                                               && room.Persons == i;
+                    return isRoomInReservation;
+                });
+            });
+            float reservationsInRoomCategory = reservationsInRoomCategoryList.Count;
+            if (reservationsInRoomCategory != 0)
+            {
+                bool isDenominatorNonZero = reservationList.Count != 0;
+                float reservationsPercentInRoomCategory = isDenominatorNonZero ? reservationsInRoomCategory / reservationList.Count : 0;
+                data.Add(reservationsPercentInRoomCategory);
             }
         }
-        foreach (var item in filteredRoomList)
-        {
+        graph.Data = data;
+    }
 
+    private void ShowGraphWithXAxisDaysReservationsRoom(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
+    {
+        List<float> data = new List<float>();
+        List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
+        
+        List<int> reservedDaysInRoomList = new List<int>();
+        foreach (IRoom roomItem in filteredRoomList)
+        {
+            int reservedDaysInRoom = 0;
+            foreach (IReservation reservationItem in reservationInSelectedPeriodList)
+            {
+                if (roomItem.ID == reservationItem.RoomID)
+                {
+                    reservedDaysInRoom += (reservationItem.Period.End - reservationItem.Period.Start).Days;
+                }
+            }
+            reservedDaysInRoomList.Add(reservedDaysInRoom);
         }
+
+        int maxReservedDays = reservedDaysInRoomList.Count != 0 ? reservedDaysInRoomList.Max(d => d) : 0;
+        float reservedDaysPercentInRoom = 0;
+        bool isDenominatorNonZero = maxReservedDays != 0;
+        foreach (var item in reservedDaysInRoomList)
+        {
+            reservedDaysPercentInRoom = isDenominatorNonZero ? (float)item / maxReservedDays : 0;
+            data.Add(reservedDaysPercentInRoom);
+        }
+        graph.Data = data;
     }
 }

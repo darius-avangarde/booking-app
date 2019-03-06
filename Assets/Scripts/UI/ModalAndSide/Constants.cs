@@ -41,6 +41,6 @@ public class Constants : MonoBehaviour
         {0,"Timp"},
         {1,"Locatie"},
         {2,"Categorie de camera"},
-        {3,"Camera"}
+        {3,"Zile Rezervate in Camera"}
     };
 }
