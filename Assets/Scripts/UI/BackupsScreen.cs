@@ -25,7 +25,6 @@ public class BackupsScreen : MonoBehaviour
 
     public void Initialize()
     {
-        Debug.Log("[DEBUG] BackupScreen.Initialize ");
         CleanUp();
 
         BackupData[] backups = backupManager.GetBackups();
@@ -38,7 +37,6 @@ public class BackupsScreen : MonoBehaviour
 
     public void CleanUp()
     {
-        Debug.Log("[DEBUG] BackupScreen.CleanUp ");
         foreach (var backupButton in backupButtons)
         {
             Destroy(backupButton);
