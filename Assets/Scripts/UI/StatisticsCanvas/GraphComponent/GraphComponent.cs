@@ -7,7 +7,7 @@ public class GraphComponent : MonoBehaviour
 {
     [SerializeField]
     private Graph graph = null;
-    private bool isDenominatorNonZero;
+
     private void Start()
     {
         graph.XAxisLabel = Constants.XAxisDict[0];
@@ -54,7 +54,7 @@ public class GraphComponent : MonoBehaviour
                     }
                 }
             }
-            isDenominatorNonZero = filteredRoomList.Count != 0;
+            bool isDenominatorNonZero = filteredRoomList.Count != 0;
             roomsPercentInThisDay = isDenominatorNonZero ? roomsQuantityInThisDay / filteredRoomList.Count : 0;
             data.Add(roomsPercentInThisDay);
         }
@@ -104,7 +104,7 @@ public class GraphComponent : MonoBehaviour
             });
             totalReservations = reservationList.Count;
             reservationsInThisPropery = reservationsInProperyList.Count;
-            isDenominatorNonZero = totalReservations != 0;
+            bool isDenominatorNonZero = totalReservations != 0;
             reservationsPercentInThisPropery = isDenominatorNonZero ? reservationsInThisPropery / totalReservations : 0;
             data.Add(reservationsPercentInThisPropery);
         }
@@ -117,8 +117,7 @@ public class GraphComponent : MonoBehaviour
         List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
 
         int maxQuantityPersons = filteredRoomList.Count != 0 ? filteredRoomList.Max(room => room.Persons) : 0;
-        float reservationsPercentInRoomCategory = 0;
-        float reservationsInRoomCategory = 0;
+       
         for (int i = 1; i <= maxQuantityPersons; i++)
         {
             List<IReservation> reservationsInRoomCategoryList = reservationInSelectedPeriodList.FindAll(reservation =>
@@ -130,11 +129,11 @@ public class GraphComponent : MonoBehaviour
                     return isRoomInReservation;
                 });
             });
-            reservationsInRoomCategory = reservationsInRoomCategoryList.Count;
+            float reservationsInRoomCategory = reservationsInRoomCategoryList.Count;
             if (reservationsInRoomCategory != 0)
             {
-                isDenominatorNonZero = reservationList.Count != 0;
-                reservationsPercentInRoomCategory = isDenominatorNonZero ? reservationsInRoomCategory / reservationList.Count : 0;
+                bool isDenominatorNonZero = reservationList.Count != 0;
+                float reservationsPercentInRoomCategory = isDenominatorNonZero ? reservationsInRoomCategory / reservationList.Count : 0;
                 data.Add(reservationsPercentInRoomCategory);
             }
         }
@@ -145,12 +144,11 @@ public class GraphComponent : MonoBehaviour
     {
         List<float> data = new List<float>();
         List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
-
-        int reservedDaysInRoom = 0;
+        
         List<int> reservedDaysInRoomList = new List<int>();
         foreach (IRoom roomItem in filteredRoomList)
         {
-            reservedDaysInRoom = 0;
+            int reservedDaysInRoom = 0;
             foreach (IReservation reservationItem in reservationInSelectedPeriodList)
             {
                 if (roomItem.ID == reservationItem.RoomID)
@@ -163,7 +161,7 @@ public class GraphComponent : MonoBehaviour
 
         int maxReservedDays = reservedDaysInRoomList.Count != 0 ? reservedDaysInRoomList.Max(d => d) : 0;
         float reservedDaysPercentInRoom = 0;
-        isDenominatorNonZero = maxReservedDays != 0;
+        bool isDenominatorNonZero = maxReservedDays != 0;
         foreach (var item in reservedDaysInRoomList)
         {
             reservedDaysPercentInRoom = isDenominatorNonZero ? (float)item / maxReservedDays : 0;
