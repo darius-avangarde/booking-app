@@ -75,8 +75,8 @@ public class Graph : MonoBehaviour, IGraph
 
     private void SetTextXValue(GameObject bar, int itemIndex)
     {
-        int maxItemsForShowingAbout = 20;
-        if (xValue.Count < maxItemsForShowingAbout)
+        int maxItemsForShowingAbout = 31;
+        if (xValue.Count <= maxItemsForShowingAbout)
         {
             bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
             bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";
