@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO: something like RoomButton might better indicate what this component does
 public class RoomItem : MonoBehaviour
 {
     [SerializeField]

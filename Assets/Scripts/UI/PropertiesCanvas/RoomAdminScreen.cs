@@ -25,13 +25,19 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void DeleteRoom()
     {
+        // TODO: made the cancelCallback optional, we can remove the second argument
         confirmationDialog.Show(() => {
+            // TODO: we already have a reference to currentProperty, no need to get it again
             PropertyDataManager.GetProperty(currentProperty.ID).DeleteRoom(currentRoom.ID);
             navigator.GoBack();
+            // TODO: we can probably remove this, PropertyAdminScreen should deal with initializing itself through NavScreen.Showing
             propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().InstantiateRooms();
         }, null);
     }
 
+    // TODO: we should let RoomAdminScreen initialize itself (through NavScreen.Showing)
+    // this way we can limit other scrips' access to simply setting the current property
+    // This means we should probably have something like a SetRoom method called by PropertyAdminScreen and an Initialize method called through NavScreen.Showing
     public void UpdateRoomFields(IProperty property, IRoom room)
     {
         currentProperty = property;
@@ -48,6 +54,7 @@ public class RoomAdminScreen : MonoBehaviour
         currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.defaultRoomAdminScreenName : value;
     }
 
+    // TODO: maybe calling this OnSingleBedsChanged is easier to read but still tells us enough information about what it does
     public void OnRoomSingleBedQuantityValueChanged(string value)
     {
         if (value == "-")
@@ -58,6 +65,7 @@ public class RoomAdminScreen : MonoBehaviour
         currentRoom.SingleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
 
+    // TODO: OnDoubleBedsChanged maybe?
     public void OnRoomDoubleBedQuantityValueChanged(string value)
     {
         if (value == "-")
@@ -68,6 +76,7 @@ public class RoomAdminScreen : MonoBehaviour
         currentRoom.DoubleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
 
+    // TODO: is this used anywhere? we should remove it if not
     public void ChangeSingleBedQuantity(string sign)
     {
         if (sign == "+")
@@ -83,6 +92,7 @@ public class RoomAdminScreen : MonoBehaviour
         }
     }
 
+    // TODO: is this used anywhere? we should remove it if not
     public void ChangeDoubleBedQuantity(string sign)
     {
         if (sign == "+")

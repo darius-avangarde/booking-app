@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System;
 
+// TODO: something like PropertyButton might better indicate what this component does
 public class PropertyItem : MonoBehaviour
 {
     [SerializeField]
