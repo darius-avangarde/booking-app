@@ -22,25 +22,25 @@ public class Constants : MonoBehaviour
 
     public static Dictionary<int, string> MonthNamesDict = new Dictionary<int, string>()
     {
-        {1,"Ianuarie"},
+        {1, "Ianuarie"},
         {2, "Februarie"},
-        {3,"Martie"},
-        {4,"Aprilie"},
-        {5,"Mai"},
-        {6,"Iunie"},
-        {7,"Iulie"},
-        {8,"August"},
-        {9,"Septembrie"},
-        {10,"Octombrie"},
-        {11,"Noiembrie"},
-        {12,"Decembrie"}
+        {3, "Martie"},
+        {4, "Aprilie"},
+        {5, "Mai"},
+        {6, "Iunie"},
+        {7, "Iulie"},
+        {8, "August"},
+        {9, "Septembrie"},
+        {10, "Octombrie"},
+        {11, "Noiembrie"},
+        {12, "Decembrie"}
     };
 
     public static Dictionary<int, string> XAxisDict = new Dictionary<int, string>()
     {
-        {0,"Timp"},
-        {1,"Locatie"},
-        {2,"Categorie de camera"},
-        {3,"Zile Rezervate in Camera"}
+        {0, "Timp"},
+        {1, "Locatie"},
+        {2, "Categorie de camera"},
+        {3, "Zile Rezervate in Camera"}
     };
 }

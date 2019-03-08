@@ -25,6 +25,7 @@ public class RoomScreen : MonoBehaviour
     private IReservation currentReservation;
     private List<IReservation> roomReservations = new List<IReservation>();
 
+    // TODO: RoomScreen should initialize its fields on NavScreen.Showing, not when it receives Reservation and Room data
     public void UpdateRoomDetailsFields(IRoom room)
     {
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
@@ -39,6 +40,8 @@ public class RoomScreen : MonoBehaviour
 
     public void CreateNewReservation()
     {
+        // TODO: RoomScreen shouldn't have to tell ReservationScreen to open the calendar modal and create a new reservation
+        // that logic should be in this script
         reservationScreen.UpdateReservationScreen(null, currentRoom);
     }
 
@@ -56,6 +59,7 @@ public class RoomScreen : MonoBehaviour
         foreach (var reservation in orderedRoomReservationList)
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
+            // TODO: it's possible to replace the annonymous function with OpenReservationScreen
             reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
             reservationButtonList.Add(reservationButton);
         }

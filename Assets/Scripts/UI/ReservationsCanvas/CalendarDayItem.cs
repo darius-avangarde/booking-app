@@ -23,8 +23,12 @@ public class CalendarDayItem : MonoBehaviour
 
     private void Start()
     {
+        // TODO: if we set dayItemImage and dayItemButton in the inspector it will be cleaner (references to components are all in one place, near declaration)
+        // and we can get rid of initialization in Start()
         dayItemImage = GetComponent<Image>();
+        // TODO: can we simply specify the color instead of getting it from the image? maybe have it be editable in the inspector
         dayItemImageColor = dayItemImage.color;
+        // TODO: this seems unnecessary
         dayReservationStatusImage = dayReservationStatusImage.GetComponent<Image>();
         dayReservationStatusImageColor = dayReservationStatusImage.color;
         dayItemButton = GetComponent<Button>();
@@ -35,6 +39,9 @@ public class CalendarDayItem : MonoBehaviour
         dayItemButton.onClick.AddListener(() => callback(dayItemDateTime));
     }
 
+    // TODO: we could merge the method above and this one so there is only one place CalendarDayItem is initialized
+    // there is similar initialization logic in other button scripts, like RoomItem/RoomButton, DayScreenPropertyItem
+    // we just need to take extra care with the onClick listeners
     public void UpdateDayItem(DateTime dateTime, bool isSelectedMonth, List<IRoom> filteredRooms, List<IRoom> reservedRoomsInCurrentDay)
     {
         dayItemDateTime = dateTime;
@@ -46,8 +53,9 @@ public class CalendarDayItem : MonoBehaviour
 
     private void ShowDayItemStatus(List<IRoom> filteredRooms, List<IRoom> reservedRoomsInCurrentDay)
     {
+        // TODO: we don't seem to be using filteredRoomList for anything else, can we remove it and just use filteredRooms instead?
         filteredRoomList = filteredRooms;
-        
+
         if (reservedRoomsInCurrentDay.Count == 0)
         {
             dayReservationStatusImage.color = dayReservationStatusImageColor;

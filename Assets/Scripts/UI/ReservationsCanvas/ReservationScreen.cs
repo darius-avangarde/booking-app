@@ -30,6 +30,9 @@ public class ReservationScreen : MonoBehaviour
     private DateTime startPeriod;
     private DateTime endPeriod;
 
+    // TODO: ReservationScreen should initialize its fields on NavScreen.Showing, not when it receives Reservation and Room data
+    // making this change might need us to change how we create new reservations
+    // Let's discuss before working on this part
     public void UpdateReservationScreen(IReservation reservation, IRoom room)
     {
         currentReservation = reservation;
@@ -79,6 +82,7 @@ public class ReservationScreen : MonoBehaviour
         }
     }
 
+    // TODO: prefer naming event handlers HandleSomething. OnSomething should either be an event or a method that raises an event
     public void OnValueChanged(string value)
     {
         if (currentReservation != null)
@@ -104,14 +108,17 @@ public class ReservationScreen : MonoBehaviour
     {
         if (currentReservation != null)
         {
+            // TODO: second parameter is optional
             confirmationDialog.Show(() => {
                 ReservationDataManager.DeleteReservation(currentReservation.ID);
                 navigator.GoBack();
+                // TODO: we shouldn't need to do this, Calendar itself or its container screen (CalendarScreen) should update it
                 calendar.UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange();
             }, null);
         }
         else
         {
+            // TODO: second parameter is optional
             confirmationDialog.Show(() => {
                 navigator.GoBack();
             }, null);
@@ -132,6 +139,8 @@ public class ReservationScreen : MonoBehaviour
                                    + endPeriod.ToString(Constants.DateTimePrintFormat);
     }
 
+    // TODO: we can use IEnumerable.Where instead of iterating ourselves
+    // it may be worth replacing calls to this method with ReservationDataManager.GetReservations().Where(...)
     private List<IReservation> GetRoomReservations()
     {
         List<IReservation> roomReservationList = new List<IReservation>();

@@ -14,7 +14,7 @@ public class DayScreenPropertyItem : MonoBehaviour
     [SerializeField]
     private Image itemStatusImage = null;
     private Color itemStatusImageColor;
-    
+
     public void Initialize(IRoom room, List<IRoom> reservedRooms, Action callback)
     {
         itemStatusImageColor = itemStatusImage.color;
@@ -22,8 +22,11 @@ public class DayScreenPropertyItem : MonoBehaviour
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
         bedQuantity.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
+        // TODO: does a new listener get added every time we Initialize this? we may need to remove old listeners before adding new ones
+        // in most places where we add a listener to a button item, the item gets destroyed before the container is re-initialized, but DayScreenPropertyItem doesn't get destroyed
         GetComponent<Button>().onClick.AddListener(() => callback());
 
+        // TODO: you can check if a list contains an object with List.Contains
         if (IsRoomReserved(room, reservedRooms))
         {
             itemStatusImage.color = Constants.reservedUnavailableItemColor;

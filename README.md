@@ -30,4 +30,4 @@ Have a separate canvas for large UI elements or elements with a lot of animation
 
 * improve writing: debounce data file write
 * improve reading: use dictionaries keyed by reservation/room ID
-* improve processing: use sorted lists
+* improve processing: use sorted lists, use LINQ queries/lazy evaluation
