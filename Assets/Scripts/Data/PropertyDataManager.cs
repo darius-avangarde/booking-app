@@ -9,29 +9,31 @@ public static class PropertyDataManager
 
     private static PropertyData cache;
 
-    private static PropertyData GetPropertyData()
+    private static PropertyData Data
     {
-        if (cache == null)
+        get
         {
-            string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
-            if (File.Exists(filePath))
+            if (cache == null)
             {
-                string dataAsJson = File.ReadAllText(filePath);
-                cache = JsonUtility.FromJson<PropertyData>(dataAsJson);
+                string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
+                if (File.Exists(filePath))
+                {
+                    string dataAsJson = File.ReadAllText(filePath);
+                    cache = JsonUtility.FromJson<PropertyData>(dataAsJson);
+                }
+                else
+                {
+                    cache = new PropertyData();
+                }
             }
-            else
-            {
-                cache = new PropertyData();
-            }
-        }
 
-        return cache;
+            return cache;
+        }
     }
 
     private static void WritePropertyData()
     {
-        PropertyData data = GetPropertyData();
-        string dataAsJson = JsonUtility.ToJson(data);
+        string dataAsJson = JsonUtility.ToJson(Data);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
@@ -41,27 +43,23 @@ public static class PropertyDataManager
     // this allows us to make sure that the data file is updated automatically with each change
     public static IEnumerable<IProperty> GetProperties()
     {
-        PropertyData data = GetPropertyData();
-        return data.properties.FindAll(p => !p.deleted);
+        return Data.properties.FindAll(p => !p.Deleted);
     }
 
     public static IEnumerable<IProperty> GetDeletedProperties()
     {
-        PropertyData data = GetPropertyData();
-        return data.properties.FindAll(p => p.deleted);
+        return Data.properties.FindAll(p => p.Deleted);
     }
 
     public static IProperty GetProperty(string ID)
     {
-        PropertyData data = GetPropertyData();
-        return data.properties.Find(p => p.ID.Equals(ID));
+        return Data.properties.Find(p => p.ID.Equals(ID));
     }
 
     public static IProperty AddProperty()
     {
-        PropertyData data = GetPropertyData();
         Property newProperty = new Property();
-        data.properties.Add(newProperty);
+        Data.properties.Add(newProperty);
         WritePropertyData();
 
         return newProperty;
@@ -69,11 +67,10 @@ public static class PropertyDataManager
 
     public static void DeleteProperty(string ID)
     {
-        PropertyData data = GetPropertyData();
-        Property property = data.properties.Find(p => p.id.Equals(ID));
+        Property property = Data.properties.Find(p => p.ID.Equals(ID));
         if (property != null)
         {
-            property.deleted = true;
+            property.Deleted = true;
             WritePropertyData();
         }
     }
@@ -83,16 +80,21 @@ public static class PropertyDataManager
     {
         public List<Property> properties;
 
-        public PropertyData() => this.properties = new List<Property>();
+        public PropertyData()
+        {
+            this.properties = new List<Property>();
+        }
     }
 
     [Serializable]
     private class Property : IProperty
     {
-        public string id;
+        [SerializeField]
+        private string id;
         public string ID => id;
 
-        public string name;
+        [SerializeField]
+        private string name;
         public string Name
         {
             get => name;
@@ -103,13 +105,27 @@ public static class PropertyDataManager
             }
         }
 
-        public bool deleted = false;
+        [SerializeField]
+        private bool deleted = false;
+        public bool Deleted
+        {
+            get => deleted;
+            set
+            {
+                deleted = value;
+                WritePropertyData();
+            }
+        }
 
-        public List<Room> rooms = new List<Room>();
-        public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.deleted);
-        public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.deleted);
+        [SerializeField]
+        private List<Room> rooms = new List<Room>();
+        public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
+        public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
 
-        public Property() => this.id = Guid.NewGuid().ToString();
+        public Property()
+        {
+            this.id = Guid.NewGuid().ToString();
+        }
 
         public IRoom GetRoom(string ID) => rooms.Find(r => r.ID.Equals(ID));
 
@@ -124,10 +140,10 @@ public static class PropertyDataManager
 
         public void DeleteRoom(string ID)
         {
-            Room room = rooms.Find(r => r.id.Equals(ID));
+            Room room = rooms.Find(r => r.ID.Equals(ID));
             if (room != null)
             {
-                room.deleted = true;
+                room.Deleted = true;
                 WritePropertyData();
             }
         }
@@ -136,13 +152,16 @@ public static class PropertyDataManager
     [Serializable]
     private class Room : IRoom
     {
-        public string propertyID;
+        [SerializeField]
+        private string propertyID;
         public string PropertyID => propertyID;
 
-        public string id;
+        [SerializeField]
+        private string id;
         public string ID => id;
 
-        public string name;
+        [SerializeField]
+        private string name;
         public string Name
         {
             get => name;
@@ -153,9 +172,20 @@ public static class PropertyDataManager
             }
         }
 
-        public bool deleted = false;
+        [SerializeField]
+        private bool deleted = false;
+        public bool Deleted
+        {
+            get => deleted;
+            set
+            {
+                deleted = value;
+                WritePropertyData();
+            }
+        }
 
-        public int singleBeds;
+        [SerializeField]
+        private int singleBeds;
         public int SingleBeds
         {
             get => singleBeds;
@@ -166,7 +196,8 @@ public static class PropertyDataManager
             }
         }
 
-        public int doubleBeds;
+        [SerializeField]
+        private int doubleBeds;
         public int DoubleBeds
         {
             get => doubleBeds;
