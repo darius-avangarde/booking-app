@@ -7,6 +7,9 @@ public class PropertyDropdown : MonoBehaviour
     [SerializeField]
     private Dropdown propertiesDropdown = null;
 
+    [SerializeField]
+    private Button clearButton = null;
+
     private List<IProperty> propertyOptions = new List<IProperty>();
 
     public IProperty SelectedProperty
@@ -14,12 +17,8 @@ public class PropertyDropdown : MonoBehaviour
         get => propertyOptions[propertiesDropdown.value];
         set => propertiesDropdown.value = propertyOptions.IndexOf(value);
     }
-    public PropertyUnityEvent OnSelectionChanged;
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
+    public PropertyUnityEvent OnSelectionChanged;
 
     public void Initialize()
     {
@@ -36,6 +35,15 @@ public class PropertyDropdown : MonoBehaviour
     public void HandleValueChanged()
     {
         OnSelectionChanged.Invoke(SelectedProperty);
+
+        if (SelectedProperty == null)
+        {
+            clearButton.interactable = false;
+        }
+        else if (!clearButton.interactable)
+        {
+            clearButton.interactable = true;
+        }
     }
 
     public void ClearSelection()
