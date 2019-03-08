@@ -8,30 +8,31 @@ public static class ReservationDataManager
     public const string DATA_FILE_NAME = "reservationData.json";
 
     private static ReservationData cache;
-
-    private static ReservationData GetReservationData()
+    private static ReservationData Data
     {
-        if (cache == null)
+        get
         {
-            string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
-            if (File.Exists(filePath))
+            if (cache == null)
             {
-                string dataAsJson = File.ReadAllText(filePath);
-                cache = JsonUtility.FromJson<ReservationData>(dataAsJson);
+                string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
+                if (File.Exists(filePath))
+                {
+                    string dataAsJson = File.ReadAllText(filePath);
+                    cache = JsonUtility.FromJson<ReservationData>(dataAsJson);
+                }
+                else
+                {
+                    cache = new ReservationData();
+                }
             }
-            else
-            {
-                cache = new ReservationData();
-            }
-        }
 
-        return cache;
+            return cache;
+        }
     }
 
     private static void WriteReservationData()
     {
-        ReservationData data = GetReservationData();
-        string dataAsJson = JsonUtility.ToJson(data);
+        string dataAsJson = JsonUtility.ToJson(Data);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
@@ -41,26 +42,23 @@ public static class ReservationDataManager
     // this allows us to make sure that the data file is updated automatically with each change
     public static IEnumerable<IReservation> GetReservations()
     {
-        ReservationData data = GetReservationData();
-        return data.reservations.FindAll(r => !r.deleted);
+        return Data.reservations.FindAll(r => !r.Deleted);
     }
 
     public static IEnumerable<IReservation> GetDeletedReservations()
     {
-        ReservationData data = GetReservationData();
-        return data.reservations.FindAll(r => r.deleted);
+        return Data.reservations.FindAll(r => r.Deleted);
     }
 
     public static IReservation GetReservation(string ID)
     {
-        ReservationData data = GetReservationData();
-        return data.reservations.Find(r => r.ID.Equals(ID));
+        return Data.reservations.Find(r => r.ID.Equals(ID));
     }
 
     public static IReservation AddReservation(IRoom room)
     {
         Reservation newReservation = new Reservation(room);
-        GetReservationData().reservations.Add(newReservation);
+        Data.reservations.Add(newReservation);
         WriteReservationData();
 
         return newReservation;
@@ -68,11 +66,10 @@ public static class ReservationDataManager
 
     public static void DeleteReservation(string ID)
     {
-        ReservationData data = GetReservationData();
-        Reservation reservation = data.reservations.Find(r => r.id.Equals(ID));
+        Reservation reservation = Data.reservations.Find(r => r.ID.Equals(ID));
         if (reservation != null)
         {
-            reservation.deleted = true;
+            reservation.Deleted = true;
             WriteReservationData();
         }
     }
@@ -88,18 +85,32 @@ public static class ReservationDataManager
     [Serializable]
     private class Reservation : IReservation
     {
-        public string id;
+        [SerializeField]
+        private string id;
         public string ID => id;
 
-        public bool deleted = false;
+        [SerializeField]
+        private bool deleted = false;
+        public bool Deleted
+        {
+            get => deleted;
+            set
+            {
+                deleted = value;
+                WriteReservationData();
+            }
+        }
 
-        public string propertyID;
+        [SerializeField]
+        private string propertyID;
         public string PropertyID => propertyID;
 
-        public string roomID;
+        [SerializeField]
+        private string roomID;
         public string RoomID => roomID;
 
-        public string customerName;
+        [SerializeField]
+        private string customerName;
         public string CustomerName
         {
             get => customerName;
@@ -110,7 +121,8 @@ public static class ReservationDataManager
             }
         }
 
-        public DateTimePeriod period;
+        [SerializeField]
+        private DateTimePeriod period;
         public IDateTimePeriod Period
         {
             get => period;
