@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GraphComponent : MonoBehaviour
 {
@@ -65,20 +64,18 @@ public class GraphComponent : MonoBehaviour
         SetDataInGraph(data, dateTimeDayList);
     }
 
-    private static List<IReservation> GetReservationInSelectedPeriodList(DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
+    private static List<IReservation> GetReservationInSelectedPeriodList(DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
     {
         List<IReservation> reservationInSelectedPeriodList = new List<IReservation>();
 
-        for (DateTime datetime = startDateTime; datetime.Date <= endDateTime; datetime = datetime.AddDays(1))
+        foreach (IReservation resItem in reservationList)
         {
-            foreach (IReservation resItem in reservationList)
+            if (resItem.Period.Start >= selectedStartDateTime && resItem.Period.End < selectedEndDateTime)
             {
-                if (datetime >= resItem.Period.Start && datetime < resItem.Period.End)
-                {
-                    reservationInSelectedPeriodList.Add(resItem);
-                }
+                reservationInSelectedPeriodList.Add(resItem);
             }
         }
+
         reservationInSelectedPeriodList = reservationInSelectedPeriodList.Distinct().ToList();
         return reservationInSelectedPeriodList;
     }

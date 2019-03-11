@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OccupancyGraphScreen : MonoBehaviour
+public class AggregateOccupancyGraphScreen : MonoBehaviour
 {
     [SerializeField]
     private ModalCalendarStatistics modalCalendar = null;
     [SerializeField]
     private FilterDialog modalFilterDialog = null;
     [SerializeField]
-    private GraphComponent graphComponent = null;
+    private AggregateGraphComponent graphComponent = null;
     [SerializeField]
     private FilterButton filterButton = null;
     [SerializeField]
@@ -38,7 +37,7 @@ public class OccupancyGraphScreen : MonoBehaviour
         graphComponent.UpdateGraph(filteredRoomList, startDateTimePeriod, endDateTimePeriod, reservationList, xAxisTypeValueIndex);
     }
 
-    public void UpdateOccupancyGraphScreen()
+    public void UpdateAggregateOccupancyGraphScreen()
     {
         reservationList = new List<IReservation>();
         reservationList.AddRange(ReservationDataManager.GetReservations());
@@ -78,7 +77,7 @@ public class OccupancyGraphScreen : MonoBehaviour
     private void InitializeDropdown()
     {
         xAxisTypeValueDropdown.ClearOptions();
-        xAxisTypeValueList.AddRange(Constants.XAxisDict.Values);
+        xAxisTypeValueList.AddRange(Constants.AggregateXAxisDict.Values);
         xAxisTypeValueDropdown.AddOptions(xAxisTypeValueList);
     }
 
@@ -94,3 +93,4 @@ public class OccupancyGraphScreen : MonoBehaviour
         graphComponent.UpdateGraph(filteredRoomList, startDateTimePeriod, endDateTimePeriod, reservationList, xAxisTypeValueIndex);
     }
 }
+
