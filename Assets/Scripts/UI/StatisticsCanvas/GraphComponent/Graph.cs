@@ -68,15 +68,19 @@ public class Graph : MonoBehaviour, IGraph
                   UnityEngine.Random.Range(0f, 1f)
               );
             bar.GetComponent<Image>().color = barColor;
-            print(xValue.Count + "    " + data.Count);
             SetTextXValue(bar, i);
         }
     }
 
     private void SetTextXValue(GameObject bar, int itemIndex)
     {
-        int maxItemsForShowingAbout = 31;
-        if (xValue.Count <= maxItemsForShowingAbout)
+        int maxItemsForShowing = 20;
+        if (xValue.Count > maxItemsForShowing && itemIndex % 5 == 0)
+        {
+            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+            bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";
+        }
+        else if (xValue.Count < maxItemsForShowing)
         {
             bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
             bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";

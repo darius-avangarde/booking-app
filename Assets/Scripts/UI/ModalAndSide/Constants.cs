@@ -59,7 +59,6 @@ public class Constants : MonoBehaviour
     {
         {0,"Saptamana"},
         {1,"Luna"},
-        {2,"An"},
-        {3,"Tip de Camera"}
+        {2,"An"}
     };
 }

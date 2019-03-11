@@ -16,9 +16,7 @@ public class AggregateGraphComponent : MonoBehaviour
     public void UpdateGraph(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList, int xAxisTypeValueIndex)
     {
         graph.XAxisLabel = Constants.AggregateXAxisDict[xAxisTypeValueIndex];
-
-        var watch = System.Diagnostics.Stopwatch.StartNew();
-        // the code that you want to measure comes here
+        
         switch (xAxisTypeValueIndex)
         {
             case 0:
@@ -30,16 +28,9 @@ public class AggregateGraphComponent : MonoBehaviour
             case 2:
                 ShowAggregateGraphYear(filteredRoomList, startDateTime, endDateTime, reservationList);
                 break;
-            case 3:
-                ShowAggregateGraphRoomType(filteredRoomList, startDateTime, endDateTime, reservationList);
-                break;
             default:
-                print("Something Wrong");
                 break;
         }
-        watch.Stop();
-        var elapsedMs = watch.ElapsedMilliseconds;
-        print(elapsedMs);
     }
 
     private void ShowAggregateGraphWeek(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
@@ -49,7 +40,7 @@ public class AggregateGraphComponent : MonoBehaviour
         int daysOfWeek = 7;
         List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList);
 
-        Dictionary<int, int> roomCountInDayOfWeek = new Dictionary<int, int>();
+        Dictionary<int, int> reservationCountInDayOfWeek = new Dictionary<int, int>();
 
         foreach (IReservation resItem in filteredReservationList)
         {
@@ -60,21 +51,21 @@ public class AggregateGraphComponent : MonoBehaviour
             {
                 for (DateTime datetime = start; datetime.Date < end; datetime = datetime.AddDays(1))
                 {
-                    if (!roomCountInDayOfWeek.ContainsKey(GetIndexDayOfWeek(datetime.DayOfWeek)))
+                    if (!reservationCountInDayOfWeek.ContainsKey(GetIndexDayOfWeek(datetime.DayOfWeek)))
                     {
-                        roomCountInDayOfWeek.Add(GetIndexDayOfWeek(datetime.DayOfWeek), 0);
+                        reservationCountInDayOfWeek.Add(GetIndexDayOfWeek(datetime.DayOfWeek), 0);
                     }
-                    roomCountInDayOfWeek[GetIndexDayOfWeek(datetime.DayOfWeek)]++;
+                    reservationCountInDayOfWeek[GetIndexDayOfWeek(datetime.DayOfWeek)]++;
                 }
             }
         }
-        bool isDenominatorNonZero = filteredRoomList.Count != 0;
+        bool isDenominatorNonZero = filteredReservationList.Count != 0;
         for (int i = 1; i <= daysOfWeek; i++)
         {
             float roomsPercentInThisDay = 0;
-            if (roomCountInDayOfWeek.ContainsKey(i))
+            if (reservationCountInDayOfWeek.ContainsKey(i))
             {
-                roomsPercentInThisDay = isDenominatorNonZero ? (float)roomCountInDayOfWeek[i] / filteredRoomList.Count : 0;
+                roomsPercentInThisDay = isDenominatorNonZero ? (float)reservationCountInDayOfWeek[i] / filteredReservationList.Count : 0;
             }
             data.Add(roomsPercentInThisDay);
             daysOfWeekList.Add(Constants.DayOfWeekNamesDict[i].Substring(0,3));
@@ -89,7 +80,7 @@ public class AggregateGraphComponent : MonoBehaviour
         int daysOfMonth = 31;
         List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList);
 
-        Dictionary<int, int> roomCountInDayOfMonth = new Dictionary<int, int>();
+        Dictionary<int, int> reservationCountInDayOfMonth = new Dictionary<int, int>();
 
         foreach (IReservation resItem in filteredReservationList)
         {
@@ -100,21 +91,21 @@ public class AggregateGraphComponent : MonoBehaviour
             {
                 for (DateTime datetime = start; datetime.Date < end; datetime = datetime.AddDays(1))
                 {
-                    if (!roomCountInDayOfMonth.ContainsKey(datetime.Day))
+                    if (!reservationCountInDayOfMonth.ContainsKey(datetime.Day))
                     {
-                        roomCountInDayOfMonth.Add(datetime.Day, 0);
+                        reservationCountInDayOfMonth.Add(datetime.Day, 0);
                     }
-                    roomCountInDayOfMonth[datetime.Day]++;
+                    reservationCountInDayOfMonth[datetime.Day]++;
                 }
             }
         }
-        bool isDenominatorNonZero = filteredRoomList.Count != 0;
+        bool isDenominatorNonZero = filteredReservationList.Count != 0;
         for (int i = 1; i <= daysOfMonth; i++)
         {
             float roomsPercentInThisDay = 0;
-            if (roomCountInDayOfMonth.ContainsKey(i))
+            if (reservationCountInDayOfMonth.ContainsKey(i))
             {
-                roomsPercentInThisDay = isDenominatorNonZero ? (float)roomCountInDayOfMonth[i] / filteredRoomList.Count : 0;
+                roomsPercentInThisDay = isDenominatorNonZero ? (float)reservationCountInDayOfMonth[i] / filteredReservationList.Count : 0;
             }
             data.Add(roomsPercentInThisDay);
             daysOfMonthList.Add(i.ToString());
@@ -124,42 +115,43 @@ public class AggregateGraphComponent : MonoBehaviour
 
     private void ShowAggregateGraphYear(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
     {
-        //List<float> data = new List<float>();
-        //List<string> monthOfYearList = new List<string>();
-        //int monthOfYear = 12;
-        //List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList);
+        List<float> data = new List<float>();
+        List<string> monthOfYearList = new List<string>();
+        int monthOfYear = 12;
+        List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList);
 
-        //Dictionary<int, int> roomCountInMonthOfYear = new Dictionary<int, int>();
+        Dictionary<int, int> reservationCountInMonthOfYear = new Dictionary<int, int>();
 
-        //foreach (IReservation resItem in filteredReservationList)
-        //{
-        //    DateTime start = resItem.Period.Start;
-        //    DateTime end = resItem.Period.End;
+        foreach (IReservation resItem in filteredReservationList)
+        {
+            DateTime start = resItem.Period.Start;
+            DateTime end = resItem.Period.End;
 
-        //    if (resItem.Period.Start >= selectedStartDateTime && resItem.Period.End < selectedEndDateTime)
-        //    {
-        //        for (DateTime datetime = start; datetime.Date < end; datetime = datetime.AddDays(1))
-        //        {
-        //            if (!roomCountInMonthOfYear.ContainsKey(datetime.Month))
-        //            {
-        //                roomCountInMonthOfYear.Add(datetime.Month, 0);
-        //            }
-        //        }
-        //    }
-        //}
-        //bool isDenominatorNonZero = filteredRoomList.Count != 0;
-        //for (int i = 1; i <= monthOfYear; i++)
-        //{
-        //    float roomsPercentInThisDay = 0;
-        //    if (roomCountInMonthOfYear.ContainsKey(i))
-        //    {
-        //        roomsPercentInThisDay = isDenominatorNonZero ? (float)roomCountInMonthOfYear[i] / filteredRoomList.Count : 0;
-        //    }
-        //    data.Add(roomsPercentInThisDay);
-        //    monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
+            if (resItem.Period.Start >= selectedStartDateTime && resItem.Period.End < selectedEndDateTime)
+            {
+                for (int datetimeMonth = start.Month; datetimeMonth <= end.Month; datetimeMonth++)
+                {
+                    if (!reservationCountInMonthOfYear.ContainsKey(datetimeMonth))
+                    {
+                        reservationCountInMonthOfYear.Add(datetimeMonth, 0);
+                    }
+                    reservationCountInMonthOfYear[datetimeMonth]++;
+                }
+            }
+        }
+        bool isDenominatorNonZero = filteredReservationList.Count != 0;
+        for (int i = 1; i <= monthOfYear; i++)
+        {
+            float roomsPercentInThisDay = 0;
+            if (reservationCountInMonthOfYear.ContainsKey(i))
+            {
+                roomsPercentInThisDay = isDenominatorNonZero ? (float)reservationCountInMonthOfYear[i] / filteredReservationList.Count : 0;
+            }
+            data.Add(roomsPercentInThisDay);
+            monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
 
-        //}
-        //SetDataInGraph(data, monthOfYearList);
+        }
+        SetDataInGraph(data, monthOfYearList);
     }
     
     private void ShowAggregateGraphRoomType(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
