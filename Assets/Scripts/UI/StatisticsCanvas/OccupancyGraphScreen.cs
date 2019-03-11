@@ -12,15 +12,8 @@ public class OccupancyGraphScreen : MonoBehaviour
     private FilterDialog modalFilterDialog = null;
     [SerializeField]
     private GraphComponent graphComponent = null;
-    [Header("Filter Button Text Components In Occupancy Graph Screen")]
     [SerializeField]
-    private Text propertyInfoText = null;
-    [SerializeField]
-    private Text roomCapacityText = null;
-    [SerializeField]
-    private Text singleBedText = null;
-    [SerializeField]
-    private Text doubleBedText = null;
+    private FilterButton filterButton = null;
     [SerializeField]
     private Text statisticsPeriodText = null;
     [SerializeField]
@@ -40,7 +33,7 @@ public class OccupancyGraphScreen : MonoBehaviour
             filteredRoomList.AddRange(property.Rooms);
         }
         reservationList.AddRange(ReservationDataManager.GetReservations());
-        UpdateFilterButtonText();
+        filterButton.UpdateFilterButtonText(filter);
         InitializeDropdown();
         graphComponent.UpdateGraph(filteredRoomList, startDateTimePeriod, endDateTimePeriod, reservationList, xAxisTypeValueIndex);
     }
@@ -71,24 +64,6 @@ public class OccupancyGraphScreen : MonoBehaviour
         graphComponent.UpdateGraph(filteredRoomList, startDateTimePeriod, endDateTimePeriod, reservationList, xAxisTypeValueIndex);
     }
 
-    private void UpdateFilterButtonText()
-    {
-        string propertyInfo = "";
-        string roomCapacityInfo = Constants.Persoane + filter.RoomCapacity.ToString();
-        string singleBedInfo = Constants.SingleBed + filter.SingleBeds;
-        string doubleBedInfo = Constants.DoubleBed + filter.DoubleBeds;
-
-        if (!string.IsNullOrEmpty(filter.PropertyID))
-        {
-            propertyInfo = Constants.Proprietate + PropertyDataManager.GetProperty(filter.PropertyID).Name;
-        }
-
-        propertyInfoText.text = propertyInfo;
-        roomCapacityText.text = roomCapacityInfo;
-        singleBedText.text = singleBedInfo;
-        doubleBedText.text = doubleBedInfo;
-    }
-
     private void ShowUpdatedStatisticsPeriod(DateTime startDateTime, DateTime endDateTime)
     {
         startDateTimePeriod = startDateTime;
@@ -115,7 +90,7 @@ public class OccupancyGraphScreen : MonoBehaviour
             filteredRoomList.AddRange(property.Rooms);
         }
         filteredRoomList = updatedFilter.Apply(filteredRoomList);
-        UpdateFilterButtonText();
+        filterButton.UpdateFilterButtonText(updatedFilter);
         graphComponent.UpdateGraph(filteredRoomList, startDateTimePeriod, endDateTimePeriod, reservationList, xAxisTypeValueIndex);
     }
 }
