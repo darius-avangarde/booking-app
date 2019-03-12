@@ -13,7 +13,6 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Transform propertyInfoContent = null;
     private List<GameObject> propertyButtons = new List<GameObject>();
-    private IProperty currentProperty;
 
     public void InstantiateProperties()
     {
@@ -32,14 +31,9 @@ public class PropertiesScreen : MonoBehaviour
     public void AddPropertyItem()
     {
         IProperty property = PropertyDataManager.AddProperty();
-        currentProperty = property;
+        OpenPropertyAdminScreen(property);
     }
-
-    public void OpenPropertyAdminScreen()
-    {
-        OpenPropertyAdminScreen(currentProperty);
-    }
-
+    
     private void OpenPropertyAdminScreen(IProperty property)
     {
         propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().SetCurrentProperty(property);

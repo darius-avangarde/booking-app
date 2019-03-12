@@ -22,7 +22,6 @@ public class PropertyAdminScreen : MonoBehaviour
     private Transform roomsContentScrollView = null;
     private List<GameObject> roomButtons = new List<GameObject>();
     private IProperty currentProperty;
-    private IRoom currentRoom;
 
     public void SetCurrentProperty(IProperty property)
     {
@@ -55,12 +54,7 @@ public class PropertyAdminScreen : MonoBehaviour
     public void AddRoomItem()
     {
         IRoom room = currentProperty.AddRoom();
-        currentRoom = room;
-    }
-
-    public void OpenRoomAdminScreen()
-    {
-        OpenRoomAdminScreen(currentRoom);
+        OpenRoomAdminScreen(room);
     }
 
     public void DeleteProperty()
