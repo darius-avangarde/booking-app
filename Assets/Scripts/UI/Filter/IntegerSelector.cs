@@ -7,6 +7,9 @@ public class IntegerSelector : MonoBehaviour
     [SerializeField]
     private Text text = null;
 
+    [SerializeField]
+    private Button clearButton = null;
+
     public IntUnityEvent OnChangeValue;
 
     private Color enabledColor = new Color(0.2f, 0.2f, 0.2f, 1f);
@@ -22,6 +25,11 @@ public class IntegerSelector : MonoBehaviour
             text.color = this.value > 0 ? enabledColor : disabledColor;
             text.text = this.value.ToString();
             OnChangeValue.Invoke(this.value);
+
+            if (clearButton != null)
+            {
+                clearButton.interactable = this.value > 0;
+            }
         }
     }
 

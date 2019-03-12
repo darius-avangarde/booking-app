@@ -10,26 +10,10 @@ public class CalendarScreen : MonoBehaviour
     private Calendar calendar = null;
     [SerializeField]
     private FilterDialog modalFilterDialog = null;
-
-    [Header("Filter Button Text Components In Calendar Screen")]
     [SerializeField]
-    private Text propertyInfoText = null;
+    private FilterButton filterButtonCalendarScreen = null;
     [SerializeField]
-    private Text roomCapacityText = null;
-    [SerializeField]
-    private Text singleBedText = null;
-    [SerializeField]
-    private Text doubleBedText = null;
-
-    [Header("Filter Button Text Components In Day Screen")]
-    [SerializeField]
-    private Text propertyInfoDayScreenText = null;
-    [SerializeField]
-    private Text roomCapacityDayScreenText = null;
-    [SerializeField]
-    private Text singleBedDayScreenText = null;
-    [SerializeField]
-    private Text doubleBedDayScreenText = null;
+    private FilterButton filterButtonDayScreen = null;
 
     private List<IRoom> filteredRoomList = new List<IRoom>();
     private RoomFilter filter = new RoomFilter();
@@ -37,7 +21,14 @@ public class CalendarScreen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateFilterButtonText();
+        filterButtonCalendarScreen.UpdateFilterButtonText(filter);
+        filterButtonDayScreen.UpdateFilterButtonText(filter);
+    }
+
+    public void UpdateFilterButtonText()
+    {
+        filterButtonCalendarScreen.UpdateFilterButtonText(filter);
+        filterButtonDayScreen.UpdateFilterButtonText(filter);
     }
 
     public List<IRoom> GetFilteredRooms()
@@ -50,29 +41,6 @@ public class CalendarScreen : MonoBehaviour
         modalFilterDialog.Show(filter, (updatedFilter) => {
             FilterList(updatedFilter);
         });
-    }
-
-    public void UpdateFilterButtonText()
-    {
-        string propertyInfo = "";
-        string roomCapacityInfo = Constants.Persoane + filter.RoomCapacity.ToString();
-        string singleBedInfo = Constants.SingleBed + filter.SingleBeds;
-        string doubleBedInfo = Constants.DoubleBed + filter.DoubleBeds;
-
-        if (!string.IsNullOrEmpty(filter.PropertyID))
-        {
-            propertyInfo = Constants.Proprietate + PropertyDataManager.GetProperty(filter.PropertyID).Name;
-        }
-
-        propertyInfoText.text = propertyInfo;
-        roomCapacityText.text = roomCapacityInfo;
-        singleBedText.text = singleBedInfo;
-        doubleBedText.text = doubleBedInfo;
-
-        propertyInfoDayScreenText.text = propertyInfo;
-        roomCapacityDayScreenText.text = roomCapacityInfo;
-        singleBedDayScreenText.text = singleBedInfo;
-        doubleBedDayScreenText.text = doubleBedInfo;
     }
 
     public List<IRoom> GetRoomsInFilteredRoomsList()
