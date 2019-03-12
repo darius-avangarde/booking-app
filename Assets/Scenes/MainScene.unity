@@ -8151,6 +8151,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &525676213 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5774031325262837802, guid: ea2da83adea88e045a4bb4ba86282cca,
+    type: 3}
+  m_PrefabInstance: {fileID: 5774031324552314179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd3e9a2ce7b45a84c890dec5fe5a6f26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &651105611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8753,6 +8765,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 772145169}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &832739458 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5774031324675351697, guid: ea2da83adea88e045a4bb4ba86282cca,
+    type: 3}
+  m_PrefabInstance: {fileID: 5774031324552314179}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb1ec4e40448dc34caa2b79c751ed240, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &844866643
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12359,13 +12383,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5774031325444493049, guid: ea2da83adea88e045a4bb4ba86282cca,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774031325444493049, guid: ea2da83adea88e045a4bb4ba86282cca,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 5774031324552314180}
+      objectReference: {fileID: 832739458}
     - target: {fileID: 5774031325444493049, guid: ea2da83adea88e045a4bb4ba86282cca,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: GoTo
+      value: OpenRoomAdminScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774031325444493049, guid: ea2da83adea88e045a4bb4ba86282cca,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3967520130940178567, guid: ea2da83adea88e045a4bb4ba86282cca,
         type: 3}
@@ -12436,11 +12470,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 5774031324552314180}
+      objectReference: {fileID: 525676213}
     - target: {fileID: 5774031323508338812, guid: ea2da83adea88e045a4bb4ba86282cca,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: GoTo
+      value: OpenPropertyAdminScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5774031323508338812, guid: ea2da83adea88e045a4bb4ba86282cca,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5774031324675351694, guid: ea2da83adea88e045a4bb4ba86282cca,
         type: 3}

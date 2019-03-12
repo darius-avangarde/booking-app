@@ -6,19 +6,14 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
-    public IProperty currentProperty;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Transform propertiesScreenTransform = null;
-    [SerializeField]
     private Transform roomAdminScreenTransform = null;
     [SerializeField]
     private Text propertyScreenTitle = null;
-    [SerializeField]
-    private Text propertyNamePlaceholder;
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
@@ -26,38 +21,17 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private Transform roomsContentScrollView = null;
     private List<GameObject> roomButtons = new List<GameObject>();
-    // Start is called before the first frame update
-    void Start()
-    {
-        InstantiateRooms();
-    }
+    private IProperty currentProperty;
 
-    public void UpdatePropertyFields(IProperty property)
+    public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
+    }
+
+    public void SetPropertyFieldsText()
+    {
         propertyNameInputField.text = currentProperty.Name ?? "";
         propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
-        InstantiateRooms();
-    }
-    public void AddRoomItem()
-    {
-        IRoom room = currentProperty.AddRoom();
-        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().UpdateRoomFields(currentProperty, room);
-    }
-
-    public void DeleteProperty()
-    {
-        confirmationDialog.Show(() => {
-            PropertyDataManager.DeleteProperty(currentProperty.ID);
-            navigator.GoBack();
-            propertiesScreenTransform.GetComponent<PropertiesScreen>().InstantiateProperties();
-        }, null);
-    }
-
-    public void OnValueChanged(string value)
-    {
-        propertyScreenTitle.text = value;
-        currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;
     }
 
     public void InstantiateRooms()
@@ -71,15 +45,35 @@ public class PropertyAdminScreen : MonoBehaviour
             foreach (var room in currentProperty.Rooms)
             {
                 GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
-                roomButton.GetComponent<RoomItem>().Initialize(room, () => OpenRoomAdminScreen(currentProperty, room));
+                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomAdminScreen);
                 roomButtons.Add(roomButton);
             }
         }
     }
 
-    private void OpenRoomAdminScreen(IProperty property, IRoom room)
+    public void AddRoomItem()
     {
-        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().UpdateRoomFields(property, room);
+        IRoom room = currentProperty.AddRoom();
+        OpenRoomAdminScreen(room);
+    }
+
+    public void DeleteProperty()
+    {
+        confirmationDialog.Show(() => {
+            PropertyDataManager.DeleteProperty(currentProperty.ID);
+            navigator.GoBack();
+        });
+    }
+
+    public void OnNameChanged(string value)
+    {
+        propertyScreenTitle.text = value;
+        currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;
+    }
+    
+    private void OpenRoomAdminScreen(IRoom room)
+    {
+        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(currentProperty, room);
         navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
     }
 }

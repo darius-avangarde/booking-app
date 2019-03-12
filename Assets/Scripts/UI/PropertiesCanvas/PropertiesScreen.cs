@@ -13,18 +13,7 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Transform propertyInfoContent = null;
     private List<GameObject> propertyButtons = new List<GameObject>();
-    // Start is called before the first frame update
-    void Start()
-    {
-        InstantiateProperties();
-    }
 
-    public void AddPropertyItem()
-    {
-        IProperty property = PropertyDataManager.AddProperty();
-        propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().UpdatePropertyFields(property);
-    }
-    
     public void InstantiateProperties()
     {
         foreach (var propertyButton in propertyButtons)
@@ -34,14 +23,20 @@ public class PropertiesScreen : MonoBehaviour
         foreach (var property in PropertyDataManager.GetProperties())
         {
             GameObject propertyButton = Instantiate(propertyPrefabButton, propertyInfoContent);
-            propertyButton.GetComponent<PropertyItem>().Initialize(property, () => OpenPropertyAdminScreen(property));
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen);
             propertyButtons.Add(propertyButton);
         }
     }
 
+    public void AddPropertyItem()
+    {
+        IProperty property = PropertyDataManager.AddProperty();
+        OpenPropertyAdminScreen(property);
+    }
+    
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().UpdatePropertyFields(property);
+        propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().SetCurrentProperty(property);
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 }

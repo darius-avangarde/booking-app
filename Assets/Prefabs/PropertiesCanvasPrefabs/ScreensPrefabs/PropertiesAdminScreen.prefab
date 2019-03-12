@@ -357,7 +357,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4218377308114067375}
-        m_MethodName: OnValueChanged
+        m_MethodName: OnNameChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -751,10 +751,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   confirmationDialog: {fileID: 0}
   navigator: {fileID: 0}
-  propertiesScreenTransform: {fileID: 0}
   roomAdminScreenTransform: {fileID: 0}
   propertyScreenTitle: {fileID: 1149506259637574500}
-  propertyNamePlaceholder: {fileID: 4218377308084526001}
   propertyNameInputField: {fileID: 4218377307564257564}
   roomPrefabButton: {fileID: 863656070, guid: c4bfd08dd39708842ad4523d6d77c65c, type: 3}
   roomsContentScrollView: {fileID: 4218377308731661429}
@@ -772,7 +770,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Showing:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4218377308114067375}
+        m_MethodName: SetPropertyFieldsText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4218377308114067375}
+        m_MethodName: InstantiateRooms
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   Shown:
@@ -1110,11 +1130,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4218377308114067379}
     m_Modifications:
-    - target: {fileID: 974249659242075498, guid: e11fde6d1775e1f478ed57646fe07c50,
-        type: 3}
-      propertyPath: m_Name
-      value: HeaderBar
-      objectReference: {fileID: 0}
     - target: {fileID: 974249659242075493, guid: e11fde6d1775e1f478ed57646fe07c50,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1224,6 +1239,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Proprietate noua
+      objectReference: {fileID: 0}
+    - target: {fileID: 974249659242075498, guid: e11fde6d1775e1f478ed57646fe07c50,
+        type: 3}
+      propertyPath: m_Name
+      value: HeaderBar
       objectReference: {fileID: 0}
     - target: {fileID: 5138296729358881299, guid: e11fde6d1775e1f478ed57646fe07c50,
         type: 3}
@@ -1434,9 +1454,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3824332718551698000, guid: ca0a8f14da543744ea7a1f4cec582b3a,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3824332718551698000, guid: ca0a8f14da543744ea7a1f4cec582b3a,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 4218377308114067375}
+    - target: {fileID: 3824332718551698000, guid: ca0a8f14da543744ea7a1f4cec582b3a,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 4218377308114067375}
+    - target: {fileID: 3824332718551698000, guid: ca0a8f14da543744ea7a1f4cec582b3a,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: OpenRoomAdminScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 3824332718551698000, guid: ca0a8f14da543744ea7a1f4cec582b3a,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3824332718551698000, guid: ca0a8f14da543744ea7a1f4cec582b3a,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 5925837933942402284, guid: ca0a8f14da543744ea7a1f4cec582b3a,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
