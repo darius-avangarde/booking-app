@@ -31,10 +31,13 @@ public class Calendar : MonoBehaviour
 
     private void SetGridLayoutGroupCellSize()
     {
-        float width =GetComponent<RectTransform>().rect.width;
+        GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
         float height = GetComponent<RectTransform>().rect.height;
-        Vector2 newSize = new Vector2(150, height / 6.5f);
-        GetComponent<GridLayoutGroup>().cellSize = newSize;
+        const int CELL_WIDTHX= 150;
+        const int NUMBER_OF_ROWS = 6;
+        float spacing = gridLayoutGroup.spacing.y * (NUMBER_OF_ROWS - 1);
+        Vector2 newSize = new Vector2(CELL_WIDTHX, (height - spacing) / NUMBER_OF_ROWS);
+        gridLayoutGroup.cellSize = newSize;
         filteredRoomList = calendarScreen.GetRoomsInFilteredRoomsList();
     }
 
