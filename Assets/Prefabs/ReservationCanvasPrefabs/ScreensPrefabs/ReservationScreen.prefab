@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 446404825625362603}
   - component: {fileID: 8236989453691564641}
   m_Layer: 5
-  m_Name: PropertyName
+  m_Name: PropertyTitleField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -565,7 +565,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Rezervare Noua
+  m_Text: Rezervare
 --- !u!1 &5698106293894503041
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,8 +705,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 550, y: -457.8}
-  m_SizeDelta: {x: 900, y: 500}
+  m_AnchoredPosition: {x: 550, y: -700}
+  m_SizeDelta: {x: 900, y: 650}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5698106294274135896
 CanvasRenderer:
@@ -761,7 +761,7 @@ MonoBehaviour:
     m_Left: 20
     m_Right: 0
     m_Top: 50
-    m_Bottom: 0
+    m_Bottom: 25
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
@@ -1089,7 +1089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23137257, g: 0.67058825, b: 0.5803922, a: 1}
+  m_Color: {r: 0.27450982, g: 0.8, b: 0.69411767, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1119,10 +1119,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   confirmationDialog: {fileID: 0}
   navigator: {fileID: 0}
-  customerNameInputField: {fileID: 0}
-  propertyTitleField: {fileID: 0}
-  roomTitleField: {fileID: 0}
-  reservationPeriodText: {fileID: 0}
+  calendar: {fileID: 0}
+  customerNameInputField: {fileID: 5698106295969603532}
+  propertyTitleField: {fileID: 8236989453691564641}
+  roomTitleField: {fileID: 943178130485245649}
+  reservationPeriodText: {fileID: 5503778750345993297}
   modalCalendarDialog: {fileID: 0}
 --- !u!114 &5698106295736480573
 MonoBehaviour:
@@ -1446,8 +1447,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnRoomNameValueChanged
+      - m_Target: {fileID: 6124082024194167262}
+        m_MethodName: OnValueChanged
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1578,7 +1579,7 @@ GameObject:
   - component: {fileID: 4879723301670099610}
   - component: {fileID: 943178130485245649}
   m_Layer: 5
-  m_Name: RoomName
+  m_Name: RoomTitleField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1762,8 +1763,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: GoBack
+      - m_Target: {fileID: 6124082024194167262}
+        m_MethodName: SaveReservation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1774,7 +1775,18 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 0}
-        m_MethodName: InstantiateRooms
+        m_MethodName: UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: GoBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1806,9 +1818,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3628343714858182894}
     m_Modifications:
-    - target: {fileID: 166258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_Name
-      value: SetReservationPeriodButton
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1823,8 +1843,40 @@ PrefabInstance:
       value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 608
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1843,32 +1895,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
+      propertyPath: m_Pivot.x
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
+      propertyPath: m_Pivot.y
+      value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 100
+    - target: {fileID: 166258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_Name
+      value: SetReservationPeriodButton
       objectReference: {fileID: 0}
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1879,8 +1919,20 @@ PrefabInstance:
       value: ShowModalCalendar
       objectReference: {fileID: 0}
     - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 166260, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_Name
+      value: ReservationPeriodText
       objectReference: {fileID: 0}
     - target: {fileID: 11466260, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Color.r
@@ -1918,6 +1970,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5503778750335658565}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5503778750345993297 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 11466260, guid: 2ea12a2ab6365a64995624be5545cb0c,
+    type: 3}
+  m_PrefabInstance: {fileID: 5503778750335658565}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &9127916103772268058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1925,9 +1989,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5698106295736480570}
     m_Modifications:
-    - target: {fileID: 166258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_Name
-      value: CancelButton
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1942,23 +2014,23 @@ PrefabInstance:
       value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_AnchorMin.y
+      propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0.5
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
-      propertyPath: m_AnchorMax.y
+      propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
@@ -1978,8 +2050,56 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 22466258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Pivot.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 166258, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_Name
+      value: CancelButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6124082024194167262}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DeleteReservation
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 11466256, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11466260, guid: 2ea12a2ab6365a64995624be5545cb0c, type: 3}
       propertyPath: m_Color.r
