@@ -31,9 +31,9 @@ public class Calendar : MonoBehaviour
 
     private void SetGridLayoutGroupCellSize()
     {
-        float width = calendarScreen.GetComponent<RectTransform>().rect.width;
-        float height = calendarScreen.GetComponent<RectTransform>().rect.height;
-        Vector2 newSize = new Vector2(150, height / 10);
+        float width =GetComponent<RectTransform>().rect.width;
+        float height = GetComponent<RectTransform>().rect.height;
+        Vector2 newSize = new Vector2(150, height / 6.5f);
         GetComponent<GridLayoutGroup>().cellSize = newSize;
         filteredRoomList = calendarScreen.GetRoomsInFilteredRoomsList();
     }
