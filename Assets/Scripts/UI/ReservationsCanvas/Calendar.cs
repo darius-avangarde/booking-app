@@ -23,10 +23,19 @@ public class Calendar : MonoBehaviour
 
     void Start()
     {
-        filteredRoomList = calendarScreen.GetRoomsInFilteredRoomsList();
+        SetGridLayoutGroupCellSize();
         InstantiateCalendarDayItems();
         selectedDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
+    }
+
+    private void SetGridLayoutGroupCellSize()
+    {
+        float width = calendarScreen.GetComponent<RectTransform>().rect.width;
+        float height = calendarScreen.GetComponent<RectTransform>().rect.height;
+        Vector2 newSize = new Vector2(150, height / 10);
+        GetComponent<GridLayoutGroup>().cellSize = newSize;
+        filteredRoomList = calendarScreen.GetRoomsInFilteredRoomsList();
     }
 
     public void UpdateCalendarAfterFiltering()

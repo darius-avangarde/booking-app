@@ -39,7 +39,8 @@ public class CalendarDayItem : MonoBehaviour
     {
         dayItemDateTime = dateTime;
         dayItemImage.color = isSelectedMonth ? dayItemImageColor : Constants.unavailableItemColor;
-        todayImage.gameObject.SetActive(dateTime == DateTime.Today);
+        int alfa = dateTime == DateTime.Today ? 1 : 0;
+        todayImage.color = new Color(todayImage.color.r, todayImage.color.g, todayImage.color.b, alfa);
         dayText.text = dateTime.Day.ToString();
         ShowDayItemStatus(filteredRooms, reservedRoomsInCurrentDay);
     }
