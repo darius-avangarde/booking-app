@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
-    public const string defaultProperyAdminScreenName = "Proprietate noua";
+    public const string defaultProperyAdminScreenName = "Proprietate nouă";
     public const string Proprietate = "Proprietate: ";
-    public const string defaultRoomAdminScreenName = "Camera noua";
+    public const string defaultRoomAdminScreenName = "Camera nouă";
     public const string defaultCustomerName = "NumeClient";
     public const string Persoane = "Persoane: ";
     public const string SingleBed = "Paturi single: ";
@@ -39,26 +39,26 @@ public class Constants : MonoBehaviour
     public static Dictionary<int, string> DayOfWeekNamesDict = new Dictionary<int, string>()
     {
         {1,"Luni"},
-        {2, "Marti"},
+        {2, "Marți"},
         {3,"Miercuri"},
         {4,"Joi"},
         {5,"Vineri"},
-        {6,"Sambata"},
-        {7,"Duminica"}
+        {6,"Sambată"},
+        {7,"Duminică"}
     };
 
     public static Dictionary<int, string> XAxisDict = new Dictionary<int, string>()
     {
         {0,"Timp"},
-        {1,"Locatie"},
-        {2,"Categorie de camera"},
-        {3,"Zile Rezervate in Camera"}
+        {1,"Locație"},
+        {2,"Tip cameră"},
+        {3,"Rezervări"}
     };
 
     public static Dictionary<int, string> AggregateXAxisDict = new Dictionary<int, string>()
     {
-        {0,"Saptamana"},
-        {1,"Luna"},
+        {0,"Saptămană"},
+        {1,"Lună"},
         {2,"An"}
     };
 }
