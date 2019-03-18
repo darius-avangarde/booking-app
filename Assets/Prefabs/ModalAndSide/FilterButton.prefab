@@ -66,7 +66,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: e001fcaa6197cd04eb27c6cae9d9dbd6, type: 3}
+    m_Font: {fileID: 12800000, guid: 597f00fdf84e08a499917949eee226b9, type: 3}
     m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
@@ -92,7 +92,6 @@ GameObject:
   - component: {fileID: 4649803600430930628}
   - component: {fileID: 7178704076071799972}
   - component: {fileID: 6505944063367754384}
-  - component: {fileID: 6204259307747642735}
   - component: {fileID: 3286378366793564552}
   m_Layer: 5
   m_Name: FilterButton
@@ -214,29 +213,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &6204259307747642735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2293922850656485163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -405508275, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 50
-    m_Right: 50
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 4
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
 --- !u!114 &3286378366793564552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,11 +261,11 @@ RectTransform:
   m_Father: {fileID: 8812488965808438644}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 50, y: 0}
   m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1920618919974596642
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -393,7 +369,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: e001fcaa6197cd04eb27c6cae9d9dbd6, type: 3}
+    m_Font: {fileID: 12800000, guid: 597f00fdf84e08a499917949eee226b9, type: 3}
     m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
@@ -442,11 +418,11 @@ RectTransform:
   m_Father: {fileID: 8812488965808438644}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 200}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 900, y: 200}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &7461268958360379497
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -475,8 +451,8 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 400, y: 100}
-  m_Spacing: {x: 0, y: 0}
+  m_CellSize: {x: 410, y: 100}
+  m_Spacing: {x: 40, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &7491658415001955151
@@ -545,11 +521,11 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: e001fcaa6197cd04eb27c6cae9d9dbd6, type: 3}
-    m_FontSize: 50
+    m_Font: {fileID: 12800000, guid: 597f00fdf84e08a499917949eee226b9, type: 3}
+    m_FontSize: 38
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 5
+    m_MinSize: 3
     m_MaxSize: 50
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -624,7 +600,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: e001fcaa6197cd04eb27c6cae9d9dbd6, type: 3}
+    m_Font: {fileID: 12800000, guid: 597f00fdf84e08a499917949eee226b9, type: 3}
     m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0

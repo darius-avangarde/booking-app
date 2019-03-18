@@ -59,9 +59,16 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void DeleteProperty()
     {
-        confirmationDialog.Show(() => {
-            PropertyDataManager.DeleteProperty(currentProperty.ID);
-            navigator.GoBack();
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = "Ștergeți proprietatea?",
+            ConfirmText = "Ștergeți",
+            CancelText = "Anulați ",
+            ConfirmCallback = () => {
+                PropertyDataManager.DeleteProperty(currentProperty.ID);
+                navigator.GoBack();
+            },
+            CancelCallback = null
         });
     }
 
@@ -70,7 +77,7 @@ public class PropertyAdminScreen : MonoBehaviour
         propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;
     }
-    
+
     private void OpenRoomAdminScreen(IRoom room)
     {
         roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(currentProperty, room);

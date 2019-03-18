@@ -38,9 +38,16 @@ public class RoomAdminScreen : MonoBehaviour
     
     public void DeleteRoom()
     {
-        confirmationDialog.Show(() => {
-            currentProperty.DeleteRoom(currentRoom.ID);
-            navigator.GoBack();
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = "Ștergeți camera?",
+            ConfirmText = "Ștergeți",
+            CancelText = "Anulați ",
+            ConfirmCallback = ()=> {
+                currentProperty.DeleteRoom(currentRoom.ID);
+                navigator.GoBack();
+            },
+            CancelCallback = null
         });
     }
 
