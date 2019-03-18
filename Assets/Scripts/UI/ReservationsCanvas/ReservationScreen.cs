@@ -46,23 +46,6 @@ public class ReservationScreen : MonoBehaviour
         }
     }
 
-    private void UpdateNewReservationFields()
-    {
-        customerNameInputField.text = Constants.defaultCustomerName;
-        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
-        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
-    }
-
-    private void UpdateCurrentReservationFields(IReservation reservation)
-    {
-        customerNameInputField.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : currentReservation.CustomerName;
-        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
-        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
-        string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
-        string endPeriod = reservation.Period.End.ToString(Constants.DateTimePrintFormat);
-        reservationPeriodText.text = startPeriod + Constants.AndDelimiter + endPeriod;
-    }
-
     public void ShowModalCalendar()
     {
         roomReservationList = GetRoomReservations()
@@ -91,6 +74,49 @@ public class ReservationScreen : MonoBehaviour
         }
     }
 
+    public void DeleteReservation()
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = "Anulați rezervarea?",
+            ConfirmText = "Anulați",
+            CancelText = "Nu anulați",
+            ConfirmCallback = DeleteReservationCallback,
+            CancelCallback = null
+        });
+    }
+
+    private void DeleteReservationCallback()
+    {
+        if (currentReservation != null)
+        {
+            ReservationDataManager.DeleteReservation(currentReservation.ID);
+            navigator.GoBack();
+            calendar.UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange();
+        }
+        else
+        {
+            navigator.GoBack();
+        }
+    }
+
+    private void UpdateNewReservationFields()
+    {
+        customerNameInputField.text = Constants.defaultCustomerName;
+        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
+        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+    }
+
+    private void UpdateCurrentReservationFields(IReservation reservation)
+    {
+        customerNameInputField.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : currentReservation.CustomerName;
+        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
+        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+        string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
+        string endPeriod = reservation.Period.End.ToString(Constants.DateTimePrintFormat);
+        reservationPeriodText.text = startPeriod + Constants.AndDelimiter + endPeriod;
+    }
+
     private void AddNewReservation(DateTime start, DateTime end)
     {
         IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
@@ -98,24 +124,6 @@ public class ReservationScreen : MonoBehaviour
         reservation.Period.Start = start;
         reservation.Period.End = end;
         currentReservation = reservation;
-    }
-
-    public void DeleteReservation()
-    {
-        if (currentReservation != null)
-        {
-            confirmationDialog.Show(() => {
-                ReservationDataManager.DeleteReservation(currentReservation.ID);
-                navigator.GoBack();
-                calendar.UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange();
-            }, null);
-        }
-        else
-        {
-            confirmationDialog.Show(() => {
-                navigator.GoBack();
-            }, null);
-        }
     }
 
     private void SaveAndShowUpdatedReservationPeriod(DateTime start, DateTime end)

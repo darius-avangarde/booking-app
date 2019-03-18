@@ -29,13 +29,6 @@ public class ConfirmationDialog : MonoBehaviour
         cancelButtonText.text = defaultCancelButtonText;
     }
 
-    public void Show(Action confirmCallback, Action cancelCallback = null)
-    {
-        ConfirmCallback = confirmCallback;
-        CancelCallback = cancelCallback;
-        easyTween.OpenCloseObjectAnimation();
-    }
-
     public void Show(ConfirmationDialogOptions options)
     {
         messageText.text = options.Message ?? defaultMessage;
@@ -49,18 +42,12 @@ public class ConfirmationDialog : MonoBehaviour
     public void Confirm()
     {
         ConfirmCallback?.Invoke();
-
-        Reset();
-
         easyTween.OpenCloseObjectAnimation();
     }
 
     public void Cancel()
     {
         CancelCallback?.Invoke();
-
-        Reset();
-
         easyTween.OpenCloseObjectAnimation();
     }
 }

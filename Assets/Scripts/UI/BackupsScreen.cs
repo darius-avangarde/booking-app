@@ -48,12 +48,16 @@ public class BackupsScreen : MonoBehaviour
         GameObject button = Instantiate(backupButtonPrefab, container);
         string buttonText = data.CreationDate.ToString("yyyy-MM-dd HH:mm:ss");
 
-        ConfirmationDialogOptions options = new ConfirmationDialogOptions();
-        options.Message = "Urmează să înlocuiți toate datele din aplicație cu datele din fișierul ales.\nSunteți sigur?";
-        options.ConfirmCallback = () =>
+        ConfirmationDialogOptions options = new ConfirmationDialogOptions
         {
-            backupManager.Restore(data);
-            navigator.GoBack();
+            Message = "Înlocuiți toate datele din aplicație cu cele alese?",
+            ConfirmText = "Înlocuiți",
+            CancelText = "Anulați",
+            ConfirmCallback = () =>
+            {
+                backupManager.Restore(data);
+                navigator.GoBack();
+            }
         };
 
         Action buttonCallback = () => { confirmationDialog.Show(options); };
