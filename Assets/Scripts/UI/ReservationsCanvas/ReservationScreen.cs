@@ -74,19 +74,19 @@ public class ReservationScreen : MonoBehaviour
         }
     }
 
-    public void DeleteReservation()
+    public void ShowDeleteConfirmationDialog()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
             Message = "Anulați rezervarea?",
             ConfirmText = "Anulați",
             CancelText = "Nu anulați",
-            ConfirmCallback = DeleteReservationCallback,
+            ConfirmCallback = DeleteReservation,
             CancelCallback = null
         });
     }
 
-    private void DeleteReservationCallback()
+    private void DeleteReservation()
     {
         if (currentReservation != null)
         {
