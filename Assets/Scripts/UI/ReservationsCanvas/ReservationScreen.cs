@@ -54,14 +54,6 @@ public class ReservationScreen : MonoBehaviour
         modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, SaveAndShowUpdatedReservationPeriod);
     }
 
-    public void SaveReservation()
-    {
-        if (currentReservation == null)
-        {
-            AddNewReservation(startPeriod, endPeriod);
-        }
-    }
-
     public void OnValueChanged(string value)
     {
         if (currentReservation != null)
@@ -134,6 +126,17 @@ public class ReservationScreen : MonoBehaviour
         {
             currentReservation.Period.Start = startPeriod;
             currentReservation.Period.End = endPeriod;
+        }
+        else
+        {
+            if (start == default)
+            {
+                navigator.GoBack();
+            }
+            else
+            {
+                AddNewReservation(startPeriod, endPeriod);
+            }
         }
         reservationPeriodText.text = startPeriod.ToString(Constants.DateTimePrintFormat)
                                    + Constants.AndDelimiter
