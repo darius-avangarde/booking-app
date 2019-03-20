@@ -52,6 +52,21 @@ public class ModalCalendar : MonoBehaviour
         }
         UpdateCalendar(selectedDateTime);
     }
+    
+    public void CancelSelectedDateTimeOnModalCalendar()
+    {
+        isSetStartDay = false;
+        if (currentReservation != null)
+        {
+            newReservationStartDateTime = currentReservation.Period.Start;
+            newReservationEndDateTime = currentReservation.Period.End;
+        }
+        else
+        {
+            newReservationStartDateTime = default;
+        }
+        CloseModalCalendar();
+    }
 
     public void ShowPreviousMonth()
     {
