@@ -51,6 +51,14 @@ public class ModalCalendarStatistics : MonoBehaviour
         DoneCallback = doneCallback;
     }
 
+    public void CancelSelectedDateTimeOnModalCalendar()
+    {
+        isSetStartDay = false;
+        startDateTime = default;
+        DoneCallback = null;
+        easyTween.OpenCloseObjectAnimation();
+    }
+
     private void CloseModalCalendar()
     {
         DoneCallback?.Invoke(startDateTime, endDateTime);
