@@ -46,6 +46,7 @@ public class BackupsScreen : MonoBehaviour
     private GameObject CreateBackupButton(BackupData data)
     {
         GameObject button = Instantiate(backupButtonPrefab, container);
+        backupButtons.Add(button);
         string buttonText = data.CreationDate.ToString("yyyy-MM-dd HH:mm:ss");
 
         ConfirmationDialogOptions options = new ConfirmationDialogOptions
