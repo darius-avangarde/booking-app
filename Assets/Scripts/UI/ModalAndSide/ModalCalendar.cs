@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ModalCalendar : MonoBehaviour
+public class ModalCalendar : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween easyTween = null;
@@ -37,7 +37,7 @@ public class ModalCalendar : MonoBehaviour
             dayItem.Initialize(SetReservationPeriod);
         }
     }
-    
+
     public void Show(IReservation reservation, IRoom room, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
     {
         currentReservation = reservation;
@@ -51,6 +51,13 @@ public class ModalCalendar : MonoBehaviour
             selectedDateTime = currentReservation.Period.Start;
         }
         UpdateCalendar(selectedDateTime);
+
+        InputManager.CurrentlyOpenClosable = this;
+    }
+
+    public void Close()
+    {
+        CloseModalCalendar();
     }
 
     public void ShowPreviousMonth()
@@ -169,7 +176,7 @@ public class ModalCalendar : MonoBehaviour
         {
             isDateTimeInReservationPeriod = dateTime >= currentReservation.Period.Start && dateTime <= currentReservation.Period.End;
         }
-        
+
         if (isDateTimeInReservationPeriod || !isReserved || isReservedDayAvailable)
         {
             if (!isSetStartDay && !IsDateTimeStartOfAnyReservationPeriod(dateTime))
@@ -267,7 +274,7 @@ public class ModalCalendar : MonoBehaviour
 
         for (int i = 0; i < roomReservationList.Count; i++)
         {
-            if (newReservationStartDateTime >= roomReservationList[i].Period.End 
+            if (newReservationStartDateTime >= roomReservationList[i].Period.End
                 && itemDateTime > roomReservationList[i].Period.End
                 && itemDateTime <= roomReservationList[i + 1].Period.Start)
             {

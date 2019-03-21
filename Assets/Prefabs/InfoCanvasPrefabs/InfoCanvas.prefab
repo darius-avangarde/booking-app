@@ -33,10 +33,10 @@ RectTransform:
   m_Father: {fileID: 6670911067180443590}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -1060}
-  m_SizeDelta: {x: 1080, y: 1720}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -100}
+  m_SizeDelta: {x: 0, y: -200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4921340609703097087
 CanvasRenderer:
@@ -241,7 +241,6 @@ GameObject:
   - component: {fileID: 6670911067180443590}
   - component: {fileID: 239108628804434433}
   - component: {fileID: 3530184293116413735}
-  - component: {fileID: 2803481695585099536}
   - component: {fileID: 4408334161922528378}
   m_Layer: 5
   m_Name: InfoScreen
@@ -308,29 +307,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &2803481695585099536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9205213791669491796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
 --- !u!114 &4408334161922528378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -370,6 +346,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6670911067180443590}
     m_Modifications:
+    - target: {fileID: 238348878119047925, guid: a9b803da98fc17c409495f995ffcd092,
+        type: 3}
+      propertyPath: m_Name
+      value: HeaderBar (Main Screen)
+      objectReference: {fileID: 0}
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -428,7 +409,7 @@ PrefabInstance:
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 540
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
@@ -448,7 +429,7 @@ PrefabInstance:
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
@@ -458,7 +439,7 @@ PrefabInstance:
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 238348878119047930, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}
@@ -474,11 +455,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 238348878119047925, guid: a9b803da98fc17c409495f995ffcd092,
-        type: 3}
-      propertyPath: m_Name
-      value: HeaderBar (Main Screen)
       objectReference: {fileID: 0}
     - target: {fileID: 238348877841085599, guid: a9b803da98fc17c409495f995ffcd092,
         type: 3}

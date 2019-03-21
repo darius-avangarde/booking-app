@@ -1,7 +1,7 @@
 using UINavigation;
 using UnityEngine;
 
-public class SideMenu : MonoBehaviour
+public class SideMenu : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween sideMenu = null;
@@ -49,15 +49,13 @@ public class SideMenu : MonoBehaviour
     private GameObject currentlyActiveCanvas = null;
     private SideMenuButton currentlyActiveButton = null;
 
+    public Navigator CurrentlyActiveNavigator => currentlyActiveCanvas.GetComponent<Navigator>();
+
     private void Start()
     {
         currentlyActiveCanvas = reservationsCanvas;
         reservationsButton.Active = true;
         currentlyActiveButton = reservationsButton;
-
-        // currentlyActiveCanvas = propertiesCanvas;
-        // propertiesButton.Active = true;
-        // currentlyActiveButton = propertiesButton;
     }
 
     public void ShowReservations()
@@ -136,6 +134,12 @@ public class SideMenu : MonoBehaviour
     }
 
     public void Show()
+    {
+        sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
+    }
+
+    public void Close()
     {
         sideMenu.OpenCloseObjectAnimation();
     }
