@@ -71,6 +71,7 @@ public class SideMenu : MonoBehaviour, IClosable
         currentlyActiveButton = reservationsButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowProperties()
@@ -86,6 +87,7 @@ public class SideMenu : MonoBehaviour, IClosable
         currentlyActiveButton = propertiesButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowStatistics()
@@ -101,6 +103,7 @@ public class SideMenu : MonoBehaviour, IClosable
         currentlyActiveButton = statisticsButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowSettings()
@@ -116,6 +119,7 @@ public class SideMenu : MonoBehaviour, IClosable
         currentlyActiveButton = settingsButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowInfo()
@@ -131,6 +135,7 @@ public class SideMenu : MonoBehaviour, IClosable
         currentlyActiveButton = infoButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void Show()
@@ -142,5 +147,6 @@ public class SideMenu : MonoBehaviour, IClosable
     public void Close()
     {
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 }

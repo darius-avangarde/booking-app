@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    // modal dialogs need to set themselves as CurrentlyOpenClosable when they're shown and unset themselves when they're hidden
+    // it's a good idea to do this right after easyTween.OpenCloseObjectAnimation
     public static IClosable CurrentlyOpenClosable { get; set; }
 
     [SerializeField]
@@ -16,7 +18,6 @@ public class InputManager : MonoBehaviour
             if (CurrentlyOpenClosable != null)
             {
                 CurrentlyOpenClosable.Close();
-                CurrentlyOpenClosable = null;
             }
             else
             {
@@ -24,7 +25,7 @@ public class InputManager : MonoBehaviour
                 bool shouldMinimizeApp = navigator.CurrentScreen == navigator.initialScreen;
                 if (shouldMinimizeApp)
                 {
-                    Minimize();
+                    Application.Quit();
                 }
                 else
                 {
@@ -32,10 +33,5 @@ public class InputManager : MonoBehaviour
                 }
             }
         }
-    }
-
-    private void Minimize()
-    {
-        Debug.Log("[DEBUG] Minimize ");
     }
 }

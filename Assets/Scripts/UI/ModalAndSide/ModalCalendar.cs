@@ -44,6 +44,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
         currentRoom = room;
         roomReservationList = reservationList;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
         DoneCallback = doneCallback;
 
         if (currentReservation != null)
@@ -51,15 +52,13 @@ public class ModalCalendar : MonoBehaviour, IClosable
             selectedDateTime = currentReservation.Period.Start;
         }
         UpdateCalendar(selectedDateTime);
-
-        InputManager.CurrentlyOpenClosable = this;
     }
 
     public void Close()
     {
         CloseModalCalendar();
     }
-    
+
     public void CancelSelectedDateTimeOnModalCalendar()
     {
         isSetStartDay = false;
@@ -95,6 +94,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
         DoneCallback?.Invoke(newReservationStartDateTime, newReservationEndDateTime);
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
     }
 
     private void UpdateCalendar(DateTime selectedDateTime)

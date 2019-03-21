@@ -34,7 +34,6 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
         ConfirmCallback = options.ConfirmCallback;
         CancelCallback = options.CancelCallback;
         easyTween.OpenCloseObjectAnimation();
-
         InputManager.CurrentlyOpenClosable = this;
     }
 
@@ -42,6 +41,7 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     {
         ConfirmCallback?.Invoke();
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
         Reset();
     }
 
@@ -49,6 +49,7 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     {
         CancelCallback?.Invoke();
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
         Reset();
     }
 

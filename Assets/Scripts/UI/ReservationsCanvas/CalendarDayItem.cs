@@ -21,7 +21,7 @@ public class CalendarDayItem : MonoBehaviour
     private List<IReservation> currentDayReservationList;
     private List<IRoom> filteredRoomList;
 
-    private void Start()
+    private void Awake()
     {
         dayItemImage = GetComponent<Image>();
         dayItemImageColor = dayItemImage.color;
@@ -32,6 +32,7 @@ public class CalendarDayItem : MonoBehaviour
 
     public void Initialize(Action<DateTime> callback)
     {
+        // Debug.Log("[DEBUG] " + gameObject.name + " dayItemButton " + dayItemButton);
         dayItemButton.onClick.AddListener(() => callback(dayItemDateTime));
     }
 
@@ -48,7 +49,7 @@ public class CalendarDayItem : MonoBehaviour
     private void ShowDayItemStatus(List<IRoom> filteredRooms, List<IRoom> reservedRoomsInCurrentDay)
     {
         filteredRoomList = filteredRooms;
-        
+
         if (reservedRoomsInCurrentDay.Count == 0)
         {
             dayReservationStatusImage.color = dayReservationStatusImageColor;

@@ -20,6 +20,7 @@ public class FilterDialog : MonoBehaviour, IClosable
     public void Show(RoomFilter filter, Action<RoomFilter> doneCallback)
     {
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
         propertyDropdown.Initialize();
         this.filter = filter;
         this.doneCallback = doneCallback;
@@ -28,8 +29,6 @@ public class FilterDialog : MonoBehaviour, IClosable
         roomCapacitySelector.Value = filter.RoomCapacity;
         singleBedCountSelector.Value = filter.SingleBeds;
         doubleBedCountSelector.Value = filter.DoubleBeds;
-
-        InputManager.CurrentlyOpenClosable = this;
     }
 
     public void Close()
@@ -60,5 +59,6 @@ public class FilterDialog : MonoBehaviour, IClosable
         filter = null;
         doneCallback = null;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 }
