@@ -47,10 +47,7 @@ public class FilterDialog : MonoBehaviour, IClosable
 
     public void CloseDialog()
     {
-        if (propertyDropdown.SelectedProperty != null)
-        {
-            filter.PropertyID = propertyDropdown.SelectedProperty.ID;
-        }
+        filter.PropertyID = propertyDropdown.SelectedProperty?.ID;
         filter.RoomCapacity = roomCapacitySelector.Value;
         filter.SingleBeds = singleBedCountSelector.Value;
         filter.DoubleBeds = doubleBedCountSelector.Value;
