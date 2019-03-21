@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ModalCalendarStatistics : MonoBehaviour
+public class ModalCalendarStatistics : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween easyTween = null;
@@ -48,7 +48,13 @@ public class ModalCalendarStatistics : MonoBehaviour
             child.GetComponent<Image>().color = itemCalendarColor;
         }
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
         DoneCallback = doneCallback;
+    }
+
+    public void Close()
+    {
+        CancelSelectedDateTimeOnModalCalendar();
     }
 
     public void CancelSelectedDateTimeOnModalCalendar()
@@ -57,6 +63,7 @@ public class ModalCalendarStatistics : MonoBehaviour
         startDateTime = default;
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     private void CloseModalCalendar()
@@ -64,6 +71,7 @@ public class ModalCalendarStatistics : MonoBehaviour
         DoneCallback?.Invoke(startDateTime, endDateTime);
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     private void SetStatisticsPeriod(DateTime dateTime, Image modalItemImage)

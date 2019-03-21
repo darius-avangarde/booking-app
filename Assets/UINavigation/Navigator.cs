@@ -41,7 +41,7 @@ namespace UINavigation
         private List<NavScreen> screens = new List<NavScreen>();
         private bool initialized = false;
 
-        private NavScreen CurrentScreen
+        public NavScreen CurrentScreen
         {
             get
             {

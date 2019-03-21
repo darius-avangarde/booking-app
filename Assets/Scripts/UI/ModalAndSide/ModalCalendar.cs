@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ModalCalendar : MonoBehaviour
+public class ModalCalendar : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween easyTween = null;
@@ -37,13 +37,14 @@ public class ModalCalendar : MonoBehaviour
             dayItem.Initialize(SetReservationPeriod);
         }
     }
-    
+
     public void Show(IReservation reservation, IRoom room, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
     {
         currentReservation = reservation;
         currentRoom = room;
         roomReservationList = reservationList;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
         DoneCallback = doneCallback;
 
         if (currentReservation != null)
@@ -52,7 +53,12 @@ public class ModalCalendar : MonoBehaviour
         }
         UpdateCalendar(selectedDateTime);
     }
-    
+
+    public void Close()
+    {
+        CloseModalCalendar();
+    }
+
     public void CancelSelectedDateTimeOnModalCalendar()
     {
         isSetStartDay = false;
@@ -88,6 +94,7 @@ public class ModalCalendar : MonoBehaviour
         DoneCallback?.Invoke(newReservationStartDateTime, newReservationEndDateTime);
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     private void UpdateCalendar(DateTime selectedDateTime)
@@ -184,7 +191,7 @@ public class ModalCalendar : MonoBehaviour
         {
             isDateTimeInReservationPeriod = dateTime >= currentReservation.Period.Start && dateTime <= currentReservation.Period.End;
         }
-        
+
         if (isDateTimeInReservationPeriod || !isReserved || isReservedDayAvailable)
         {
             if (!isSetStartDay && !IsDateTimeStartOfAnyReservationPeriod(dateTime))
@@ -282,7 +289,7 @@ public class ModalCalendar : MonoBehaviour
 
         for (int i = 0; i < roomReservationList.Count; i++)
         {
-            if (newReservationStartDateTime >= roomReservationList[i].Period.End 
+            if (newReservationStartDateTime >= roomReservationList[i].Period.End
                 && itemDateTime > roomReservationList[i].Period.End
                 && itemDateTime <= roomReservationList[i + 1].Period.Start)
             {

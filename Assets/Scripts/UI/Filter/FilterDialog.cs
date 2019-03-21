@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class FilterDialog : MonoBehaviour
+public class FilterDialog : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween easyTween = null;
@@ -20,6 +20,7 @@ public class FilterDialog : MonoBehaviour
     public void Show(RoomFilter filter, Action<RoomFilter> doneCallback)
     {
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
         propertyDropdown.Initialize();
         this.filter = filter;
         this.doneCallback = doneCallback;
@@ -28,6 +29,11 @@ public class FilterDialog : MonoBehaviour
         roomCapacitySelector.Value = filter.RoomCapacity;
         singleBedCountSelector.Value = filter.SingleBeds;
         doubleBedCountSelector.Value = filter.DoubleBeds;
+    }
+
+    public void Close()
+    {
+        CloseDialog();
     }
 
     public void ResetFilter()
@@ -53,5 +59,6 @@ public class FilterDialog : MonoBehaviour
         filter = null;
         doneCallback = null;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 }

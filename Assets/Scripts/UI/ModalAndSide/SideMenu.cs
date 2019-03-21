@@ -1,7 +1,7 @@
 using UINavigation;
 using UnityEngine;
 
-public class SideMenu : MonoBehaviour
+public class SideMenu : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween sideMenu = null;
@@ -49,15 +49,13 @@ public class SideMenu : MonoBehaviour
     private GameObject currentlyActiveCanvas = null;
     private SideMenuButton currentlyActiveButton = null;
 
+    public Navigator CurrentlyActiveNavigator => currentlyActiveCanvas.GetComponent<Navigator>();
+
     private void Start()
     {
         currentlyActiveCanvas = reservationsCanvas;
         reservationsButton.Active = true;
         currentlyActiveButton = reservationsButton;
-
-        // currentlyActiveCanvas = propertiesCanvas;
-        // propertiesButton.Active = true;
-        // currentlyActiveButton = propertiesButton;
     }
 
     public void ShowReservations()
@@ -73,6 +71,7 @@ public class SideMenu : MonoBehaviour
         currentlyActiveButton = reservationsButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowProperties()
@@ -88,6 +87,7 @@ public class SideMenu : MonoBehaviour
         currentlyActiveButton = propertiesButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowStatistics()
@@ -103,6 +103,7 @@ public class SideMenu : MonoBehaviour
         currentlyActiveButton = statisticsButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowSettings()
@@ -118,6 +119,7 @@ public class SideMenu : MonoBehaviour
         currentlyActiveButton = settingsButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void ShowInfo()
@@ -133,10 +135,18 @@ public class SideMenu : MonoBehaviour
         currentlyActiveButton = infoButton;
 
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     public void Show()
     {
         sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
+    }
+
+    public void Close()
+    {
+        sideMenu.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
     }
 }

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ConfirmationDialog : MonoBehaviour
+public class ConfirmationDialog : MonoBehaviour, IClosable
 {
     [SerializeField]
     private EasyTween easyTween = null;
@@ -34,12 +34,14 @@ public class ConfirmationDialog : MonoBehaviour
         ConfirmCallback = options.ConfirmCallback;
         CancelCallback = options.CancelCallback;
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
     }
 
     public void Confirm()
     {
         ConfirmCallback?.Invoke();
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
         Reset();
     }
 
@@ -47,7 +49,13 @@ public class ConfirmationDialog : MonoBehaviour
     {
         CancelCallback?.Invoke();
         easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = null;
         Reset();
+    }
+
+    public void Close()
+    {
+        Cancel();
     }
 }
 
