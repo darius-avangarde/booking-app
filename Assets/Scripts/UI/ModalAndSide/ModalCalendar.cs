@@ -94,7 +94,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
         DoneCallback?.Invoke(newReservationStartDateTime, newReservationEndDateTime);
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
-        InputManager.CurrentlyOpenClosable = this;
+        InputManager.CurrentlyOpenClosable = null;
     }
 
     private void UpdateCalendar(DateTime selectedDateTime)
