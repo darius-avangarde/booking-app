@@ -9,6 +9,19 @@ public class Graph : MonoBehaviour, IGraph
     [SerializeField]
     private Transform barsContainer = null;
 
+    private Color defaultBarColor = new Color(0.078f, 0.21f, 0.19f);
+    private Color alternativeBarColor = new Color(0.11f, 0.47f, 0.4f);
+
+    private bool isAlternative;
+    public bool IsAlternative
+    {
+        get => isAlternative;
+        set
+        {
+            isAlternative = value;
+        }
+    }
+
     private List<float> data;
     public List<float> Data
     {
@@ -62,8 +75,7 @@ public class Graph : MonoBehaviour, IGraph
             GameObject bar = Instantiate(barPrefab, barsContainer);
             float barHeight = barsContainerHeight * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
-            ColorUtility.TryParseHtmlString(Constants.graphBarsColor, out Color barColor);
-            bar.GetComponent<Image>().color = barColor;
+            bar.GetComponent<Image>().color = isAlternative ? (i % 2 == 0 ? alternativeBarColor : defaultBarColor)  : defaultBarColor;
             SetTextXValue(bar, i);
         }
     }

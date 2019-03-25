@@ -15,12 +15,10 @@ public class Constants : MonoBehaviour
     public const string DateTimePrintFormat = "dd/MM/yy";
     public const string AndDelimiter = "  -  ";
 
-    public static Color reservedUnavailableItemColor = Color.red;
-    public static Color reservedAvailableItemColor = Color.yellow;
-    public static Color unavailableItemColor = Color.gray;
-    public static Color selectedItemColor = Color.cyan;
-    public static string graphBarsColor = "#143730";
-    public static string graphExeptBarsColor = "#1C7966";
+    public readonly static Color reservedUnavailableItemColor = Color.red;
+    public readonly static Color reservedAvailableItemColor = Color.yellow;
+    public readonly static Color unavailableItemColor = Color.gray;
+    public readonly static Color selectedItemColor = Color.cyan;
 
     public static Dictionary<int, string> MonthNamesDict = new Dictionary<int, string>()
     {
