@@ -180,9 +180,9 @@ public class GraphComponent : MonoBehaviour
         SetDataInGraph(data, roomNameList, false);
     }
 
-    private void SetDataInGraph(List<float> data, List<string> roomNameList, bool isAlternative)
+    private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
     {
-        graph.IsAlternative = isAlternative;
+        graph.HasAlternativeColors = hasAlternativeColors;
         graph.XValue = roomNameList;
         graph.Data = data;
     }
