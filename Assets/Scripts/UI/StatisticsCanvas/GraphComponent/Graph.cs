@@ -62,11 +62,7 @@ public class Graph : MonoBehaviour, IGraph
             GameObject bar = Instantiate(barPrefab, barsContainer);
             float barHeight = barsContainerHeight * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
-            Color barColor = new Color(
-                  UnityEngine.Random.Range(0f, 1f),
-                  UnityEngine.Random.Range(0f, 1f),
-                  UnityEngine.Random.Range(0f, 1f)
-              );
+            ColorUtility.TryParseHtmlString(Constants.graphBarsColor, out Color barColor);
             bar.GetComponent<Image>().color = barColor;
             SetTextXValue(bar, i);
         }
