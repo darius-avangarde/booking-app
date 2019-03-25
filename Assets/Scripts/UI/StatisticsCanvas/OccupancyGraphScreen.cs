@@ -28,6 +28,11 @@ public class OccupancyGraphScreen : MonoBehaviour
 
     void Start()
     {
+        DateTime today = DateTime.Today;
+        startDateTimePeriod = new DateTime(today.Year, today.Month, 1);
+        endDateTimePeriod = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+
+        ShowUpdatedStatisticsPeriod(startDateTimePeriod, endDateTimePeriod);
         foreach (IProperty property in PropertyDataManager.GetProperties())
         {
             filteredRoomList.AddRange(property.Rooms);
