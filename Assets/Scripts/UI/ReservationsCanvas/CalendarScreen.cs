@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,14 +16,19 @@ public class CalendarScreen : MonoBehaviour
     [SerializeField]
     private FilterButton filterButtonDayScreen = null;
 
-    private List<IRoom> filteredRoomList = new List<IRoom>();
+    private List<IRoom> filteredRooms = new List<IRoom>();
+    public List<IRoom> FilteredRooms => filteredRooms;
     private RoomFilter filter = new RoomFilter();
 
-    // Start is called before the first frame update
-    void Start()
+    public void Initialize()
     {
         filterButtonCalendarScreen.UpdateFilterButtonText(filter);
         filterButtonDayScreen.UpdateFilterButtonText(filter);
+
+        var properties = PropertyDataManager.GetProperties();
+        var rooms = properties.SelectMany(property => property.Rooms);
+        filteredRooms = filter.Apply(rooms.ToList());
+        calendar.SetRooms(filteredRooms);
     }
 
     public void UpdateFilterButtonText()
@@ -31,60 +37,21 @@ public class CalendarScreen : MonoBehaviour
         filterButtonDayScreen.UpdateFilterButtonText(filter);
     }
 
-    public List<IRoom> GetFilteredRooms()
-    {
-        return filteredRoomList;
-    }
-
     public void ShowFilterDialog()
     {
         modalFilterDialog.Show(filter, (updatedFilter) => {
-            FilterList(updatedFilter);
+            var properties = PropertyDataManager.GetProperties();
+            var rooms = properties.SelectMany(property => property.Rooms);
+            filteredRooms = filter.Apply(rooms.ToList());
+            calendar.SetRooms(filteredRooms);
         });
-    }
-
-    public List<IRoom> GetRoomsInFilteredRoomsList()
-    {
-        foreach (IProperty property in PropertyDataManager.GetProperties())
-        {
-            filteredRoomList.AddRange(property.Rooms);
-        }
-        return filteredRoomList;
-    }
-
-    private void FilterList(RoomFilter updatedFilter)
-    {
-        filteredRoomList = new List<IRoom>();
-        foreach (IProperty property in PropertyDataManager.GetProperties())
-        {
-            filteredRoomList.AddRange(property.Rooms);
-        }
-        filteredRoomList = updatedFilter.Apply(filteredRoomList);
-        calendar.UpdateCalendarAfterFiltering();
     }
 
     public List<IRoom> GetReservedRoomsInCurrentDay(DateTime dayItemDateTime)
     {
-        List<IReservation> currentDayReservationList = new List<IReservation>();
-        foreach (var reservation in ReservationDataManager.GetReservations())
-        {
-            bool isDayReserved = dayItemDateTime >= reservation.Period.Start && dayItemDateTime <= reservation.Period.End;
+        var currentDayReservationList = ReservationDataManager.GetReservations()
+            .ToList().FindAll(reservation => reservation.Period.Includes(dayItemDateTime));
 
-            if (isDayReserved)
-            {
-                currentDayReservationList.Add(reservation);
-            }
-        }
-
-        List<IRoom> reservedRoomsInCurrentDay = filteredRoomList.FindAll(room =>
-        {
-            List<IReservation> reservationsForThisRoom = currentDayReservationList.FindAll(reservation => reservation.RoomID == room.ID);
-            return reservationsForThisRoom.Exists(reservation =>
-            {
-                bool reservationIsForCurrentDay = dayItemDateTime >= reservation.Period.Start && dayItemDateTime <= reservation.Period.End;
-                return reservationIsForCurrentDay;
-            });
-        });
-        return reservedRoomsInCurrentDay;
+        return filteredRooms.FindAll(room => currentDayReservationList.Exists(reservation => reservation.RoomID.Equals(room.ID)));
     }
 }

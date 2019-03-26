@@ -30,9 +30,8 @@ public class CalendarDayItem : MonoBehaviour
         dayItemButton = GetComponent<Button>();
     }
 
-    public void Initialize(Action<DateTime> callback)
+    public void AddListener(Action<DateTime> callback)
     {
-        // Debug.Log("[DEBUG] " + gameObject.name + " dayItemButton " + dayItemButton);
         dayItemButton.onClick.AddListener(() => callback(dayItemDateTime));
     }
 
