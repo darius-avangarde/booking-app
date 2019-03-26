@@ -9,6 +9,11 @@ public class Graph : MonoBehaviour, IGraph
     [SerializeField]
     private Transform barsContainer = null;
 
+    private Color defaultBarColor = new Color(0.078f, 0.21f, 0.19f);
+    private Color alternativeBarColor = new Color(0.11f, 0.47f, 0.4f);
+
+    public bool HasAlternativeColors { get; set; }
+    
     private List<float> data;
     public List<float> Data
     {
@@ -62,12 +67,7 @@ public class Graph : MonoBehaviour, IGraph
             GameObject bar = Instantiate(barPrefab, barsContainer);
             float barHeight = barsContainerHeight * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
-            Color barColor = new Color(
-                  UnityEngine.Random.Range(0f, 1f),
-                  UnityEngine.Random.Range(0f, 1f),
-                  UnityEngine.Random.Range(0f, 1f)
-              );
-            bar.GetComponent<Image>().color = barColor;
+            bar.GetComponent<Image>().color = HasAlternativeColors ? (i % 2 == 0 ? alternativeBarColor : defaultBarColor)  : defaultBarColor;
             SetTextXValue(bar, i);
         }
     }

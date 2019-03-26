@@ -61,7 +61,7 @@ public class GraphComponent : MonoBehaviour
             dateTimeDayList.Add(datetime.Day.ToString());
         }
 
-        SetDataInGraph(data, dateTimeDayList);
+        SetDataInGraph(data, dateTimeDayList, false);
     }
 
     private static List<IReservation> GetReservationInSelectedPeriodList(DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
@@ -110,7 +110,7 @@ public class GraphComponent : MonoBehaviour
             propertyNameList.Add(propertyItem.Name);
         }
 
-        SetDataInGraph(data, propertyNameList);
+        SetDataInGraph(data, propertyNameList, true);
     }
     
     private void ShowGraphWithXAxisRoomCategoryByPersons(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
@@ -143,7 +143,7 @@ public class GraphComponent : MonoBehaviour
             }
         }
 
-        SetDataInGraph(data, roomCategoryList);
+        SetDataInGraph(data, roomCategoryList, true);
     }
 
     private void ShowGraphWithXAxisDaysReservationsRoom(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
@@ -177,11 +177,12 @@ public class GraphComponent : MonoBehaviour
             data.Add(reservedDaysPercentInRoom);
         }
 
-        SetDataInGraph(data, roomNameList);
+        SetDataInGraph(data, roomNameList, false);
     }
 
-    private void SetDataInGraph(List<float> data, List<string> roomNameList)
+    private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
     {
+        graph.HasAlternativeColors = hasAlternativeColors;
         graph.XValue = roomNameList;
         graph.Data = data;
     }
