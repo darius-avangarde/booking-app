@@ -12,8 +12,6 @@ public class ReservationScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Calendar calendar = null;
-    [SerializeField]
     private InputField customerNameInputField = null;
     [SerializeField]
     private Text propertyTitleField = null;
@@ -23,6 +21,7 @@ public class ReservationScreen : MonoBehaviour
     private Text reservationPeriodText = null;
     [SerializeField]
     private ModalCalendar modalCalendarDialog = null;
+    private DateTime dayDateTime = DateTime.Today;
     private IReservation currentReservation;
     private IRoom currentRoom;
     private List<IReservation> roomReservationList = new List<IReservation>();
@@ -30,28 +29,32 @@ public class ReservationScreen : MonoBehaviour
     private DateTime startPeriod;
     private DateTime endPeriod;
 
-    public void UpdateReservationScreen(IReservation reservation, IRoom room)
+    public void UpdateReservationScreen(DateTime date, IReservation reservation, IRoom room)
     {
+        dayDateTime = date;
         currentReservation = reservation;
         currentRoom = room;
-        roomReservationList = GetRoomReservations().OrderBy(res => res.Period.Start).ToList();
+        roomReservationList = ReservationDataManager.GetReservations()
+            .Where(res => res.RoomID.Equals(currentRoom.ID))
+            .OrderBy(res => res.Period.Start)
+            .ToList();
         if (currentReservation != null)
         {
             UpdateCurrentReservationFields(reservation);
         }
         else
         {
-            modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, SaveAndShowUpdatedReservationPeriod);
+            modalCalendarDialog.Show(dayDateTime, currentReservation, roomReservationList, SaveAndShowUpdatedReservationPeriod);
             UpdateNewReservationFields();
         }
     }
 
     public void ShowModalCalendar()
     {
-        roomReservationList = GetRoomReservations()
-                            .Where(res => res != currentReservation)
-                            .OrderBy(res => res.Period.Start).ToList();
-        modalCalendarDialog.Show(currentReservation, currentRoom, roomReservationList, SaveAndShowUpdatedReservationPeriod);
+        roomReservationList = ReservationDataManager.GetReservations()
+            .Where(res => res != currentReservation && res.RoomID.Equals(currentRoom.ID))
+            .OrderBy(res => res.Period.Start).ToList();
+        modalCalendarDialog.Show(currentReservation.Period.Start, currentReservation, roomReservationList, SaveAndShowUpdatedReservationPeriod);
     }
 
     public void OnValueChanged(string value)
@@ -84,7 +87,6 @@ public class ReservationScreen : MonoBehaviour
         {
             ReservationDataManager.DeleteReservation(currentReservation.ID);
             navigator.GoBack();
-            calendar.UpdateItemsStatusOnCalendarAndDayScreenOnReservationChange();
         }
         else
         {
@@ -142,18 +144,4 @@ public class ReservationScreen : MonoBehaviour
                                    + Constants.AndDelimiter
                                    + endPeriod.ToString(Constants.DateTimePrintFormat);
     }
-
-    private List<IReservation> GetRoomReservations()
-    {
-        List<IReservation> roomReservationList = new List<IReservation>();
-        foreach (var reservation in ReservationDataManager.GetReservations())
-        {
-            if (reservation.RoomID == currentRoom.ID)
-            {
-                roomReservationList.Add(reservation);
-            }
-        }
-        return roomReservationList;
-    }
-
 }

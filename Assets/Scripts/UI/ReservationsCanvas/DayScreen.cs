@@ -52,7 +52,7 @@ public class DayScreen : MonoBehaviour
 
     private void OpenRoomReservationScreen(IRoom room)
     {
-        roomScreen.GetComponent<RoomScreen>().UpdateRoomDetailsFields(room);
+        roomScreen.GetComponent<RoomScreen>().UpdateRoomDetailsFields(dayDateTime, room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 }
