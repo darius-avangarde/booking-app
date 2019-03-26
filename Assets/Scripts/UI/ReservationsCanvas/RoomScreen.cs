@@ -21,13 +21,15 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Transform reservationsContent = null;
     private List<GameObject> reservationButtonList = new List<GameObject>();
+    private DateTime dayDateTime = DateTime.Today;
     private IRoom currentRoom;
     private IReservation currentReservation;
     private List<IReservation> roomReservations = new List<IReservation>();
 
-    public void UpdateRoomDetailsFields(IRoom room)
+    public void UpdateRoomDetailsFields(DateTime date, IRoom room)
     {
         IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
+        dayDateTime = date;
         currentRoom = room;
         string propertyName = property.Name ?? Constants.defaultProperyAdminScreenName;
         string roomName = room.Name ?? Constants.defaultRoomAdminScreenName;
@@ -39,7 +41,7 @@ public class RoomScreen : MonoBehaviour
 
     public void CreateNewReservation()
     {
-        reservationScreen.UpdateReservationScreen(null, currentRoom);
+        reservationScreen.UpdateReservationScreen(dayDateTime, null, currentRoom);
     }
 
     public void InstantiateReservations()
@@ -63,7 +65,7 @@ public class RoomScreen : MonoBehaviour
 
     private void OpenReservationScreen(IReservation reservation)
     {
-        reservationScreen.GetComponent<ReservationScreen>().UpdateReservationScreen(reservation, currentRoom);
+        reservationScreen.GetComponent<ReservationScreen>().UpdateReservationScreen(dayDateTime, reservation, currentRoom);
         navigator.GoTo(reservationScreen.GetComponent<NavScreen>());
     }
 }

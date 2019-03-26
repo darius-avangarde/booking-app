@@ -43,6 +43,9 @@ public class ModalCalendarStatistics : MonoBehaviour, IClosable
 
     public void Show(Action<DateTime, DateTime> doneCallback)
     {
+        selectedDateTime = DateTime.Today;
+        UpdateCalendar(selectedDateTime);
+
         foreach (Transform child in modalItemsCalendarPanel)
         {
             child.GetComponent<Image>().color = itemCalendarColor;
