@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,11 +37,15 @@ public class DayScreen : MonoBehaviour
             Destroy(dayScreenItem);
         }
 
-        foreach (IRoom room in calendarScreen.GetFilteredRooms())
+        var reservations = ReservationDataManager.GetReservations()
+            .ToList().FindAll(reservation => reservation.Period.Includes(dayDateTime));
+
+        foreach (IRoom room in calendarScreen.FilteredRooms)
         {
             GameObject dayScreenItem = Instantiate(dayScreenItemPrefab, filteredPropertiesContent);
+            bool isReserved = reservations.Exists(reservation => room.ID.Equals(reservation.RoomID));
             dayScreenItem.GetComponent<DayScreenPropertyItem>()
-                .Initialize(room, calendarScreen.GetReservedRoomsInCurrentDay(dayDateTime), () => OpenRoomReservationScreen(room));
+                .Initialize(room, isReserved, () => OpenRoomReservationScreen(room));
             dayScreenItemList.Add(dayScreenItem);
         }
     }

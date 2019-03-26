@@ -179,5 +179,11 @@ public static class ReservationDataManager
             startTicks = start.Ticks;
             endTicks = end.Ticks;
         }
+
+        public bool Includes(DateTime dateTime)
+        {
+            long ticks = dateTime.ToUniversalTime().Ticks;
+            return (startTicks <= ticks) && (ticks <= endTicks);
+        }
     }
 }
