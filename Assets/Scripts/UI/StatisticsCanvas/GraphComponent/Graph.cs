@@ -68,27 +68,40 @@ public class Graph : MonoBehaviour, IGraph
             float barHeight = barsContainerHeight * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
             bar.GetComponent<Image>().color = HasAlternativeColors ? (i % 2 == 0 ? alternativeBarColor : defaultBarColor)  : defaultBarColor;
-            SetTextXValue(bar, i);
+            SetTextXValueOnInterval(bar, i);
         }
     }
 
-    private void SetTextXValue(GameObject bar, int itemIndex)
+    private void SetTextXValueOnInterval(GameObject bar, int itemIndex)
     {
-        int maxItemsForShowing = 20;
-        if (xValue.Count > maxItemsForShowing && itemIndex % 5 == 0)
+        bar.GetComponentInChildren<Text>().text = "";
+        bar.transform.GetChild(1).GetComponent<Text>().text = "";
+
+        bool isMaxDataCount = xValue.Count > 365;
+        int textIntervalMax = 100;
+        if (isMaxDataCount && itemIndex % textIntervalMax == 0)
+        {
+            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+        }
+
+        bool isMedDataCount = xValue.Count < 365 && xValue.Count > 100;
+        int textIntervalMed = 50;
+        if (isMedDataCount && itemIndex % textIntervalMed == 0)
+        {
+            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+        }
+
+        bool isMinDataCount = xValue.Count > 20 && xValue.Count < 100;
+        int textIntervalMin = 5;
+        if (isMinDataCount && itemIndex % textIntervalMin == 0)
+        {
+            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+        }
+
+        if (xValue.Count < 20)
         {
             bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
             bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";
-        }
-        else if (xValue.Count < maxItemsForShowing)
-        {
-            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
-            bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";
-        }
-        else
-        {
-            bar.GetComponentInChildren<Text>().text = "";
-            bar.transform.GetChild(1).GetComponent<Text>().text = "";
         }
     }
 }

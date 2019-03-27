@@ -58,7 +58,23 @@ public class GraphComponent : MonoBehaviour
             bool isDenominatorNonZero = filteredRoomList.Count != 0;
             float roomsPercentInThisDay = isDenominatorNonZero ? (float)roomsQuantityInThisDay / filteredRoomList.Count : 0;
             data.Add(roomsPercentInThisDay);
-            dateTimeDayList.Add(datetime.Day.ToString());
+
+            int daysInSelectedPeriod = (endDateTime - startDateTime).Days;
+            bool isSelectedPeriodLessYear = daysInSelectedPeriod > 90 && daysInSelectedPeriod < 365;
+            bool isSelectedPeriodLessSeason = daysInSelectedPeriod <= 90;
+
+            if (isSelectedPeriodLessYear)
+            {
+                dateTimeDayList.Add(datetime.Day.ToString() + " " + Constants.MonthNamesDict[datetime.Month].Substring(0, 3));
+            }
+            else if (isSelectedPeriodLessSeason)
+            {
+                dateTimeDayList.Add(datetime.Day.ToString());
+            }
+            else
+            {
+                dateTimeDayList.Add(Constants.MonthNamesDict[datetime.Month].Substring(0, 3) + " " + datetime.Year.ToString());
+            }
         }
 
         SetDataInGraph(data, dateTimeDayList, false);
