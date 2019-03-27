@@ -5,10 +5,15 @@ using UnityEngine.UI;
 
 public class AggregateOccupancyGraphScreen : MonoBehaviour
 {
+    private const string INFO_MESSAGE =
+@"În funcție de opțiunea selectată mai jos graficul va afișa pentru perioada selectată numărul de camere ocupate în acea zi a săptamânii, zi a lunii, respectiv zi a anului.";
+
     [SerializeField]
     private ModalCalendarStatistics modalCalendar = null;
     [SerializeField]
     private FilterDialog modalFilterDialog = null;
+    [SerializeField]
+    private InfoBox infoBox = null;
     [SerializeField]
     private AggregateGraphComponent graphComponent = null;
     [SerializeField]
@@ -62,6 +67,11 @@ public class AggregateOccupancyGraphScreen : MonoBehaviour
         });
     }
 
+    public void ShowInfo()
+    {
+        infoBox.Show(INFO_MESSAGE);
+    }
+
     public void SetXAxisValueType()
     {
         xAxisTypeValueIndex = xAxisTypeValueDropdown.value;
@@ -98,4 +108,3 @@ public class AggregateOccupancyGraphScreen : MonoBehaviour
         graphComponent.UpdateGraph(filteredRoomList, startDateTimePeriod, endDateTimePeriod, reservationList, xAxisTypeValueIndex);
     }
 }
-

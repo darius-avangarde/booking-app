@@ -6,10 +6,23 @@ using UnityEngine.UI;
 
 public class OccupancyGraphScreen : MonoBehaviour
 {
+    private const string INFO_MESSAGE =
+@"În funcție de opțiunea selectată mai jos graficul va afișa următoarele date:
+
+Timp: Fiecare coloană reprezintă numărul de camere ocupate în ziua respectivă raportat la numărul total de camere.
+
+Locație: ...
+
+Tip cameră: ...
+
+Rezervări: ...";
+
     [SerializeField]
     private ModalCalendarStatistics modalCalendar = null;
     [SerializeField]
     private FilterDialog modalFilterDialog = null;
+    [SerializeField]
+    private InfoBox infoBox = null;
     [SerializeField]
     private GraphComponent graphComponent = null;
     [SerializeField]
@@ -61,6 +74,11 @@ public class OccupancyGraphScreen : MonoBehaviour
         modalFilterDialog.Show(filter, (updatedFilter) => {
             FilterList(updatedFilter);
         });
+    }
+
+    public void ShowInfo()
+    {
+        infoBox.Show(INFO_MESSAGE);
     }
 
     public void SetXAxisValueType()
