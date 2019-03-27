@@ -46,10 +46,10 @@ public class ModalCalendarStatistics : MonoBehaviour, IClosable
         selectedDateTime = DateTime.Today;
         UpdateCalendar(selectedDateTime);
 
-        foreach (Transform child in modalItemsCalendarPanel)
-        {
-            child.GetComponent<Image>().color = itemCalendarColor;
-        }
+        // foreach (Transform child in modalItemsCalendarPanel)
+        // {
+        //     child.GetComponent<Image>().color = itemCalendarColor;
+        // }
         easyTween.OpenCloseObjectAnimation();
         InputManager.CurrentlyOpenClosable = this;
         DoneCallback = doneCallback;
