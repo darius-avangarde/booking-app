@@ -16,7 +16,6 @@ public class CalendarDayItem : MonoBehaviour
     private Image dayItemImage;
     private Color dayItemImageColor;
     private Color dayReservationStatusImageColor;
-    private Button dayItemButton;
     private DateTime dayItemDateTime;
     private List<IReservation> currentDayReservationList;
     private List<IRoom> filteredRoomList;
@@ -27,12 +26,11 @@ public class CalendarDayItem : MonoBehaviour
         dayItemImageColor = dayItemImage.color;
         dayReservationStatusImage = dayReservationStatusImage.GetComponent<Image>();
         dayReservationStatusImageColor = dayReservationStatusImage.color;
-        dayItemButton = GetComponent<Button>();
     }
 
     public void AddListener(Action<DateTime> callback)
     {
-        dayItemButton.onClick.AddListener(() => callback(dayItemDateTime));
+        GetComponent<Button>().onClick.AddListener(() => callback(dayItemDateTime));
     }
 
     public void UpdateDayItem(DateTime dateTime, bool isSelectedMonth, List<IRoom> filteredRooms, List<IRoom> reservedRoomsInCurrentDay)
