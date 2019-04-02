@@ -19,15 +19,13 @@ public class Calendar : MonoBehaviour
     [SerializeField]
     private Transform dayItemsContainer = null;
 
-    private DateTime selectedDateTime;
+    private DateTime selectedDateTime = DateTime.Today;
     private List<IRoom> rooms;
 
     void Start()
     {
         SetGridLayoutGroupCellSize();
         AddButtonListeners();
-
-        selectedDateTime = DateTime.Today;
     }
 
     public void SetRooms(List<IRoom> rooms)
