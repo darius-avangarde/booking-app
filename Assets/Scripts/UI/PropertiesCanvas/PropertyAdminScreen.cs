@@ -66,6 +66,7 @@ public class PropertyAdminScreen : MonoBehaviour
             CancelText = "Anulați ",
             ConfirmCallback = () => {
                 PropertyDataManager.DeleteProperty(currentProperty.ID);
+                ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
                 navigator.GoBack();
             },
             CancelCallback = null
