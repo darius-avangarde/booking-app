@@ -74,6 +74,26 @@ public static class ReservationDataManager
         }
     }
 
+    public static void DeleteReservationsForRoom(string roomID)
+    {
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.RoomID.Equals(roomID));
+        foreach (var reservation in reservations)
+        {
+            reservation.Deleted = true;
+        }
+        WriteReservationData();
+    }
+
+    public static void DeleteReservationsForProperty(string propertyID)
+    {
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.PropertyID.Equals(propertyID));
+        foreach (var reservation in reservations)
+        {
+            reservation.Deleted = true;
+        }
+        WriteReservationData();
+    }
+
     [Serializable]
     private class ReservationData
     {

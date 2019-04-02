@@ -35,7 +35,7 @@ public class RoomAdminScreen : MonoBehaviour
         roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
         roomAdminScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
     }
-    
+
     public void DeleteRoom()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -45,6 +45,7 @@ public class RoomAdminScreen : MonoBehaviour
             CancelText = "Anulați ",
             ConfirmCallback = ()=> {
                 currentProperty.DeleteRoom(currentRoom.ID);
+                ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
                 navigator.GoBack();
             },
             CancelCallback = null
@@ -56,7 +57,7 @@ public class RoomAdminScreen : MonoBehaviour
         roomAdminScreenTitle.text = value;
         currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.defaultRoomAdminScreenName : value;
     }
-    
+
     public void OnSingleBedsChanged(string value)
     {
         if (value == "-")
@@ -66,7 +67,7 @@ public class RoomAdminScreen : MonoBehaviour
         }
         currentRoom.SingleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
-    
+
     public void OnDoubleBedsChanged(string value)
     {
         if (value == "-")
@@ -76,7 +77,7 @@ public class RoomAdminScreen : MonoBehaviour
         }
         currentRoom.DoubleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
-    
+
     public void IncrementSingleBedQuantity()
     {
         roomSingleBedQuantityInputField.text = (++currentRoom.SingleBeds).ToString();
