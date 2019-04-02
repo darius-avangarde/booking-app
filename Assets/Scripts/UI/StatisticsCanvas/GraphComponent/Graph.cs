@@ -75,7 +75,6 @@ public class Graph : MonoBehaviour, IGraph
     private void SetTextXValueOnInterval(GameObject bar, int itemIndex)
     {
         bar.GetComponentInChildren<Text>().text = "";
-        bar.transform.GetChild(1).GetComponent<Text>().text = "";
 
         bool isMaxDataCount = xValue.Count > 365;
         int textIntervalMax = 100;
@@ -101,7 +100,6 @@ public class Graph : MonoBehaviour, IGraph
         if (xValue.Count < 20)
         {
             bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
-            bar.transform.GetChild(1).GetComponent<Text>().text = (int)(data[itemIndex] * 100) + "%";
         }
     }
 }
