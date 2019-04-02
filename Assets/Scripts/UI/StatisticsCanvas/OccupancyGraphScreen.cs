@@ -11,11 +11,11 @@ public class OccupancyGraphScreen : MonoBehaviour
 
 Timp: Fiecare coloană reprezintă numărul de camere ocupate în ziua respectivă raportat la numărul total de camere.
 
-Locație: ...
+Locație: Fiecare coloană reprezintă numărul de rezervari în proprietatea respectivă raportat la numărul total de rezervari.
 
-Tip cameră: ...
+Tip cameră: Fiecare coloană reprezintă numărul de rezervari în tipul de cameră respectivă raportat la numărul total de rezervari.
 
-Rezervări: ...";
+Rezervări: Fiecare coloană reprezintă numărul de zile rezervate în camera respectivă raportat la numărul maxim de zile rezervate.";
 
     [SerializeField]
     private ModalCalendarStatistics modalCalendar = null;
