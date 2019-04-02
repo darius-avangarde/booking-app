@@ -28,7 +28,7 @@ public static class EditorUtils
     [MenuItem("Data Files/Delete Property Data")]
     public static void ClearPropertiesDataFiles()
     {
-        string path = Path.Combine(Application.persistentDataPath, ReservationDataManager.DATA_FILE_NAME);
+        string path = Path.Combine(Application.persistentDataPath, PropertyDataManager.DATA_FILE_NAME);
 
         if (File.Exists(path))
         {
