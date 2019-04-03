@@ -110,6 +110,7 @@ namespace UINavigation
             }
             else
             {
+                StopAllCoroutines();
                 StartCoroutine(transition.Play(CurrentScreen, targetScreen));
             }
 
@@ -150,6 +151,7 @@ namespace UINavigation
             }
             else
             {
+                StopAllCoroutines();
                 StartCoroutine(transition.PlayReverse(CurrentScreen, previousScreen));
             }
 
