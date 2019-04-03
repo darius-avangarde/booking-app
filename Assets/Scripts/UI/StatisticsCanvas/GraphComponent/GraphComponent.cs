@@ -41,7 +41,7 @@ public class GraphComponent : MonoBehaviour
     {
         List<float> data = new List<float>();
         List<string> dateTimeDayList = new List<string>();
-        
+
         int daysInSelectedPeriod = (endDateTime - startDateTime).Days;
         bool isSelectedPeriodLessYear = daysInSelectedPeriod > 90 && daysInSelectedPeriod < 365;
         bool isSelectedPeriodLessSeason = daysInSelectedPeriod <= 90;
@@ -77,7 +77,7 @@ public class GraphComponent : MonoBehaviour
             }
         }
 
-        SetDataInGraph(data, dateTimeDayList, false);
+        SetDataInGraph(data, dateTimeDayList, true);
     }
 
     private static List<IReservation> GetReservationInSelectedPeriodList(DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
@@ -102,7 +102,7 @@ public class GraphComponent : MonoBehaviour
         List<string> propertyNameList = new List<string>();
 
         List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
-        
+
         List<IProperty> propertyList = new List<IProperty>();
         propertyList.AddRange(PropertyDataManager.GetProperties());
 
@@ -128,7 +128,7 @@ public class GraphComponent : MonoBehaviour
 
         SetDataInGraph(data, propertyNameList, true);
     }
-    
+
     private void ShowGraphWithXAxisRoomCategoryByPersons(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
     {
         List<float> data = new List<float>();
@@ -137,7 +137,7 @@ public class GraphComponent : MonoBehaviour
         List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
 
         int maxQuantityPersons = filteredRoomList.Count != 0 ? filteredRoomList.Max(room => room.Persons) : 0;
-       
+
         for (int i = 1; i <= maxQuantityPersons; i++)
         {
             List<IReservation> reservationsInRoomCategoryList = reservationInSelectedPeriodList.FindAll(reservation =>
@@ -193,7 +193,7 @@ public class GraphComponent : MonoBehaviour
             data.Add(reservedDaysPercentInRoom);
         }
 
-        SetDataInGraph(data, roomNameList, false);
+        SetDataInGraph(data, roomNameList, true);
     }
 
     private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
