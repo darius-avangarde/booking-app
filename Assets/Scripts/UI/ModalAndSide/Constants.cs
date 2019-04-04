@@ -36,6 +36,22 @@ public class Constants : MonoBehaviour
         {12,"Decembrie"}
     };
 
+    public static List<string> MonthNames = new List<string>()
+    {
+        "Ian",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mai",
+        "Iun",
+        "Iul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Noi",
+        "Dec"
+    };
+
     public static List<string> DayOfWeekNames = new List<string>()
     {
         "Lun",

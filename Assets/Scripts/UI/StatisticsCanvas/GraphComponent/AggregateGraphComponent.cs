@@ -130,18 +130,13 @@ public class AggregateGraphComponent : MonoBehaviour
     private void ShowAggregateGraphYear(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
     {
         List<float> data = new List<float>();
-        List<string> monthOfYearList = new List<string>();
         int monthsOfYear = 12;
 
         List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList, selectedStartDateTime, selectedEndDateTime);
 
         if (filteredReservationList.Count == 0)
         {
-            for (int i = 1; i <= monthsOfYear; i++)
-            {
-                monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
-            }
-            SetDataInGraph(data, monthOfYearList, true);
+            SetDataInGraph(data, Constants.MonthNames, true);
             return;
         }
 
@@ -170,9 +165,8 @@ public class AggregateGraphComponent : MonoBehaviour
         for (int i = 1; i <= monthsOfYear; i++)
         {
             data.Add(reservedDayCount[i] / maxReservedDayCount);
-            monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
         }
-        SetDataInGraph(data, monthOfYearList, true);
+        SetDataInGraph(data, Constants.MonthNames, true);
     }
     
     private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
