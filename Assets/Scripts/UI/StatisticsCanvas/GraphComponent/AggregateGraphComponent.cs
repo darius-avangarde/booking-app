@@ -41,7 +41,6 @@ public class AggregateGraphComponent : MonoBehaviour
 
         if (filteredReservationList.Count == 0)
         {
-            data = new List<float>(new float[7]);
             SetDataInGraph(data, Constants.DayOfWeekNames, true);
             return;
         }
@@ -89,7 +88,10 @@ public class AggregateGraphComponent : MonoBehaviour
 
         if (filteredReservationList.Count == 0)
         {
-            data = new List<float>();
+            for (int i = 1; i <= daysOfMonth; i++)
+            {
+                daysOfMonthList.Add(i.ToString());
+            }
             SetDataInGraph(data, daysOfMonthList, true);
             return;
         }
@@ -135,7 +137,10 @@ public class AggregateGraphComponent : MonoBehaviour
 
         if (filteredReservationList.Count == 0)
         {
-            data = new List<float>();
+            for (int i = 1; i <= monthsOfYear; i++)
+            {
+                monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
+            }
             SetDataInGraph(data, monthOfYearList, true);
             return;
         }
