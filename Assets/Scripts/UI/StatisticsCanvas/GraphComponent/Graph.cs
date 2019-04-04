@@ -13,7 +13,7 @@ public class Graph : MonoBehaviour, IGraph
     private Color alternativeBarColor = new Color(0.11f, 0.47f, 0.4f);
 
     public bool HasAlternativeColors { get; set; }
-    
+
     private List<float> data;
     public List<float> Data
     {
@@ -51,7 +51,7 @@ public class Graph : MonoBehaviour, IGraph
     private Text xAxisText = null;
     [SerializeField]
     private Text yAxisText = null;
-    
+
     private void InstantiateBars(List<float> data)
     {
         foreach (Transform child in barsContainer)
@@ -59,13 +59,13 @@ public class Graph : MonoBehaviour, IGraph
             Destroy(child.gameObject);
         }
 
-        float barWidth = (barsContainer.GetComponent<RectTransform>().rect.width - 10) / data.Count;
-        float barsContainerHeight = barsContainer.GetComponent<RectTransform>().rect.height;
+        Rect containerRect = barsContainer.GetComponent<RectTransform>().rect;
+        float barWidth = containerRect.width / data.Count;
 
         for (int i = 0; i < data.Count; i++)
         {
             GameObject bar = Instantiate(barPrefab, barsContainer);
-            float barHeight = barsContainerHeight * data[i];
+            float barHeight = containerRect.height * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
             bar.GetComponent<Image>().color = HasAlternativeColors ? (i % 2 == 0 ? alternativeBarColor : defaultBarColor)  : defaultBarColor;
             SetTextXValueOnInterval(bar, i);

@@ -16,6 +16,12 @@ public class GraphComponent : MonoBehaviour
 
     public void UpdateGraph(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList, int xAxisTypeValueIndex)
     {
+        if (startDateTime >= endDateTime)
+        {
+            Debug.LogError("Start date should be before end date.");
+            return;
+        }
+
         graph.XAxisLabel = Constants.XAxisDict[xAxisTypeValueIndex];
         switch (xAxisTypeValueIndex)
         {
@@ -41,7 +47,7 @@ public class GraphComponent : MonoBehaviour
     {
         List<float> data = new List<float>();
         List<string> dateTimeDayList = new List<string>();
-        
+
         int daysInSelectedPeriod = (endDateTime - startDateTime).Days;
         bool isSelectedPeriodLessYear = daysInSelectedPeriod > 90 && daysInSelectedPeriod < 365;
         bool isSelectedPeriodLessSeason = daysInSelectedPeriod <= 90;
@@ -77,123 +83,87 @@ public class GraphComponent : MonoBehaviour
             }
         }
 
-        SetDataInGraph(data, dateTimeDayList, false);
+        SetDataInGraph(data, dateTimeDayList, true);
     }
 
-    private static List<IReservation> GetReservationInSelectedPeriodList(DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
+    private void ShowGraphWithXAxisLocation(List<IRoom> filteredRooms, DateTime start, DateTime end, List<IReservation> reservations)
     {
-        List<IReservation> reservationInSelectedPeriodList = new List<IReservation>();
+        List<float> data = new List<float>();
+        var properties = PropertyDataManager.GetProperties();
+        List<string> propertyNames = properties.Select(p => p.Name).ToList();
 
-        foreach (IReservation resItem in reservationList)
+        foreach (var property in properties)
         {
-            if (resItem.Period.Start >= selectedStartDateTime && resItem.Period.End < selectedEndDateTime)
+            var rooms = filteredRooms.Where(r => r.PropertyID.Equals(property.ID));
+            if (rooms.Count() == 0)
             {
-                reservationInSelectedPeriodList.Add(resItem);
+                data.Add(0f);
+                continue;
+            }
+
+            var slots = GetReservationSlots(rooms, reservations, start, end);
+            float reservedSlots = slots.Count(s => s.Reservation != null);
+            data.Add(reservedSlots / slots.Count);
+        }
+
+        SetDataInGraph(data, propertyNames, true);
+    }
+
+    private void ShowGraphWithXAxisRoomCategoryByPersons(List<IRoom> filteredRooms, DateTime start, DateTime end, List<IReservation> reservations)
+    {
+        List<float> data = new List<float>();
+        var roomCategories = filteredRooms.Select(room => room.Persons).Distinct();
+        List<string> roomCategoryLabels = roomCategories.Select(c => c.ToString()).ToList();
+
+        foreach (var personsCount in roomCategories)
+        {
+            var rooms = filteredRooms.Where(r => r.Persons == personsCount);
+            if (rooms.Count() == 0)
+            {
+                data.Add(0f);
+                continue;
+            }
+
+            var slots = GetReservationSlots(rooms, reservations, start, end);
+            float reservedSlots = slots.Count(s => s.Reservation != null);
+            data.Add(reservedSlots / slots.Count);
+        }
+
+        SetDataInGraph(data, roomCategories.Select(c => c.ToString()).ToList(), true);
+    }
+
+    private void ShowGraphWithXAxisDaysReservationsRoom(List<IRoom> filteredRooms, DateTime start, DateTime end, List<IReservation> reservations)
+    {
+        List<float> data = new List<float>();
+        var roomNames = filteredRooms.Select(r => r.Name).ToList();
+
+        foreach (var room in filteredRooms)
+        {
+            var slots = GetReservationSlots(new List<IRoom>(){ room }, reservations, start, end);
+            float reservedSlots = slots.Count(s => s.Reservation != null);
+            data.Add(reservedSlots / slots.Count);
+        }
+
+        SetDataInGraph(data, roomNames, true);
+    }
+
+    private List<ReservationSlot> GetReservationSlots(IEnumerable<IRoom> rooms, IEnumerable<IReservation> reservations, DateTime startDay, DateTime endDay)
+    {
+        List<ReservationSlot> slots = new List<ReservationSlot>();
+
+        foreach (var room in rooms)
+        {
+            IEnumerable<IReservation> roomReservations = reservations.Where(r => r.RoomID.Equals(room.ID));
+
+            for (DateTime day = startDay; day < endDay; day = day.AddDays(1))
+            {
+                var reservation = roomReservations.FirstOrDefault(r => r.Period.Includes(day));
+                ReservationSlot slot = new ReservationSlot(day, room, reservation);
+                slots.Add(slot);
             }
         }
 
-        reservationInSelectedPeriodList = reservationInSelectedPeriodList.Distinct().ToList();
-        return reservationInSelectedPeriodList;
-    }
-
-    private void ShowGraphWithXAxisLocation(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
-    {
-        List<float> data = new List<float>();
-        List<string> propertyNameList = new List<string>();
-
-        List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
-        
-        List<IProperty> propertyList = new List<IProperty>();
-        propertyList.AddRange(PropertyDataManager.GetProperties());
-
-        foreach (var propertyItem in propertyList)
-        {
-            List<IReservation> reservationsInProperyList = reservationInSelectedPeriodList.FindAll(reservation =>
-            {
-                return filteredRoomList.Exists(room =>
-                {
-                    bool isRoomInReservation = room.ID == reservation.RoomID
-                                               && reservation.PropertyID == propertyItem.ID;
-                    return isRoomInReservation;
-                });
-            });
-
-            int totalReservations = reservationList.Count;
-            int reservationsInThisPropery = reservationsInProperyList.Count;
-            bool isDenominatorNonZero = totalReservations != 0;
-            float reservationsPercentInThisPropery = isDenominatorNonZero ? (float)reservationsInThisPropery / totalReservations : 0;
-            data.Add(reservationsPercentInThisPropery);
-            propertyNameList.Add(propertyItem.Name);
-        }
-
-        SetDataInGraph(data, propertyNameList, true);
-    }
-    
-    private void ShowGraphWithXAxisRoomCategoryByPersons(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
-    {
-        List<float> data = new List<float>();
-        List<string> roomCategoryList = new List<string>();
-
-        List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
-
-        int maxQuantityPersons = filteredRoomList.Count != 0 ? filteredRoomList.Max(room => room.Persons) : 0;
-       
-        for (int i = 1; i <= maxQuantityPersons; i++)
-        {
-            List<IReservation> reservationsInRoomCategoryList = reservationInSelectedPeriodList.FindAll(reservation =>
-            {
-                return filteredRoomList.Exists(room =>
-                {
-                    bool isRoomInReservation = room.ID == reservation.RoomID
-                                               && room.Persons == i;
-                    return isRoomInReservation;
-                });
-            });
-            float reservationsInRoomCategory = reservationsInRoomCategoryList.Count;
-            if (reservationsInRoomCategory != 0)
-            {
-                bool isDenominatorNonZero = reservationList.Count != 0;
-                float reservationsPercentInRoomCategory = isDenominatorNonZero ? reservationsInRoomCategory / reservationList.Count : 0;
-                roomCategoryList.Add(i.ToString());
-                data.Add(reservationsPercentInRoomCategory);
-            }
-        }
-
-        SetDataInGraph(data, roomCategoryList, true);
-    }
-
-    private void ShowGraphWithXAxisDaysReservationsRoom(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
-    {
-        List<float> data = new List<float>();
-        List<string> roomNameList = new List<string>();
-
-        List<IReservation> reservationInSelectedPeriodList = GetReservationInSelectedPeriodList(startDateTime, endDateTime, reservationList);
-
-        List<int> reservedDaysInRoomList = new List<int>();
-        foreach (IRoom roomItem in filteredRoomList)
-        {
-            int reservedDaysInRoom = 0;
-            foreach (IReservation reservationItem in reservationInSelectedPeriodList)
-            {
-                if (roomItem.ID == reservationItem.RoomID)
-                {
-                    reservedDaysInRoom += (reservationItem.Period.End - reservationItem.Period.Start).Days;
-                }
-            }
-            roomNameList.Add(roomItem.Name);
-            reservedDaysInRoomList.Add(reservedDaysInRoom);
-        }
-
-        int maxReservedDays = reservedDaysInRoomList.Count != 0 ? reservedDaysInRoomList.Max(d => d) : 0;
-        float reservedDaysPercentInRoom = 0;
-        bool isDenominatorNonZero = maxReservedDays != 0;
-        foreach (var item in reservedDaysInRoomList)
-        {
-            reservedDaysPercentInRoom = isDenominatorNonZero ? (float)item / maxReservedDays : 0;
-            data.Add(reservedDaysPercentInRoom);
-        }
-
-        SetDataInGraph(data, roomNameList, false);
+        return slots;
     }
 
     private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
@@ -201,5 +171,19 @@ public class GraphComponent : MonoBehaviour
         graph.HasAlternativeColors = hasAlternativeColors;
         graph.XValue = roomNameList;
         graph.Data = data;
+    }
+
+    private class ReservationSlot
+    {
+        public DateTime Day { get; set; }
+        public IRoom Room { get; set; }
+        public IReservation Reservation { get; set; }
+
+        public ReservationSlot(DateTime day, IRoom room, IReservation reservation)
+        {
+            Day = day;
+            Room = room;
+            Reservation = reservation;
+        }
     }
 }
