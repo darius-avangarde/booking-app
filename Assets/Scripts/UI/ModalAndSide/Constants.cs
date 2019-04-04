@@ -36,15 +36,15 @@ public class Constants : MonoBehaviour
         {12,"Decembrie"}
     };
 
-    public static Dictionary<int, string> DayOfWeekNamesDict = new Dictionary<int, string>()
+    public static List<string> DayOfWeekNames = new List<string>()
     {
-        {1,"Luni"},
-        {2, "Marți"},
-        {3,"Miercuri"},
-        {4,"Joi"},
-        {5,"Vineri"},
-        {6,"Sambată"},
-        {7,"Duminică"}
+        "Lun",
+        "Mar",
+        "Mie",
+        "Joi",
+        "Vin",
+        "Sam",
+        "Dum"
     };
 
     public static Dictionary<int, string> XAxisDict = new Dictionary<int, string>()
