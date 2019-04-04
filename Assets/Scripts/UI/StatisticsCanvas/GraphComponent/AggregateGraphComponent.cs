@@ -42,7 +42,7 @@ public class AggregateGraphComponent : MonoBehaviour
         if (filteredReservationList.Count == 0)
         {
             data = new List<float>(new float[7]);
-            SetDataInGraph(data, Constants.DayOfWeekNames);
+            SetDataInGraph(data, Constants.DayOfWeekNames, true);
             return;
         }
 
@@ -77,10 +77,9 @@ public class AggregateGraphComponent : MonoBehaviour
         data[4] = reservedDayCount[DayOfWeek.Friday] / maxReservedDayCount;
         data[5] = reservedDayCount[DayOfWeek.Saturday] / maxReservedDayCount;
         data[6] = reservedDayCount[DayOfWeek.Sunday] / maxReservedDayCount;
-        SetDataInGraph(data, Constants.DayOfWeekNames);
-        
+        SetDataInGraph(data, Constants.DayOfWeekNames, true);
     }
-    
+
     private void ShowAggregateGraphMonth(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
     {
         List<float> data = new List<float>();
@@ -88,105 +87,94 @@ public class AggregateGraphComponent : MonoBehaviour
         int daysOfMonth = 31;
         List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList, selectedStartDateTime, selectedEndDateTime);
 
-        Dictionary<int, int> reservationCountInDayOfMonth = new Dictionary<int, int>();
-
-        foreach (IReservation resItem in filteredReservationList)
+        if (filteredReservationList.Count == 0)
         {
-            DateTime start = resItem.Period.Start;
-            DateTime end = resItem.Period.End;
-
-            if (resItem.Period.Start >= selectedStartDateTime && resItem.Period.End < selectedEndDateTime)
-            {
-                for (DateTime datetime = start; datetime.Date < end; datetime = datetime.AddDays(1))
-                {
-                    if (!reservationCountInDayOfMonth.ContainsKey(datetime.Day))
-                    {
-                        reservationCountInDayOfMonth.Add(datetime.Day, 0);
-                    }
-                    reservationCountInDayOfMonth[datetime.Day]++;
-                }
-            }
+            data = new List<float>();
+            SetDataInGraph(data, daysOfMonthList, true);
+            return;
         }
-        bool isDenominatorNonZero = filteredReservationList.Count != 0;
+
+        Dictionary<int, int> reservedDayCount = new Dictionary<int, int>();
+
         for (int i = 1; i <= daysOfMonth; i++)
         {
-            float roomsPercentInThisDay = 0;
-            if (reservationCountInDayOfMonth.ContainsKey(i))
+            int count = 0;
+            foreach (IReservation reservation in filteredReservationList)
             {
-                roomsPercentInThisDay = isDenominatorNonZero ? (float)reservationCountInDayOfMonth[i] / filteredReservationList.Count : 0;
+                DateTime start = reservation.Period.Start;
+                DateTime end = reservation.Period.End;
+
+                for (DateTime datetime = start; datetime < end; datetime = datetime.AddDays(1))
+                {
+                    bool isDayInSelectedPeriod = datetime >= selectedStartDateTime && datetime < selectedEndDateTime;
+                    if (datetime.Day == i && isDayInSelectedPeriod)
+                    {
+                        count++;
+                    }
+                }
             }
-            data.Add(roomsPercentInThisDay);
+            reservedDayCount[i] = count;
+        }
+
+        float maxReservedDayCount = reservedDayCount.Values.Max();
+        for (int i = 1; i <= daysOfMonth; i++)
+        {
+            data.Add(reservedDayCount[i] / maxReservedDayCount);
             daysOfMonthList.Add(i.ToString());
         }
-        SetDataInGraph(data, daysOfMonthList);
+        SetDataInGraph(data, daysOfMonthList, true);
     }
 
     private void ShowAggregateGraphYear(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
     {
         List<float> data = new List<float>();
         List<string> monthOfYearList = new List<string>();
-        int monthOfYear = 12;
+        int monthsOfYear = 12;
+
         List<IReservation> filteredReservationList = GetFilteredReservationList(filteredRoomList, reservationList, selectedStartDateTime, selectedEndDateTime);
 
-        Dictionary<int, int> reservationCountInMonthOfYear = new Dictionary<int, int>();
-
-        foreach (IReservation resItem in filteredReservationList)
+        if (filteredReservationList.Count == 0)
         {
-            DateTime start = resItem.Period.Start;
-            DateTime end = resItem.Period.End;
+            data = new List<float>();
+            SetDataInGraph(data, monthOfYearList, true);
+            return;
+        }
 
-            if (resItem.Period.Start >= selectedStartDateTime && resItem.Period.End < selectedEndDateTime)
+        Dictionary<int, int> reservedDayCount = new Dictionary<int, int>();
+        for (int i = 1; i <= monthsOfYear; i++)
+        {
+            int count = 0;
+            foreach (IReservation reservation in filteredReservationList)
             {
-                for (int datetimeMonth = start.Month; datetimeMonth <= end.Month; datetimeMonth++)
+                DateTime start = reservation.Period.Start;
+                DateTime end = reservation.Period.End;
+
+                for (DateTime datetime = start; datetime < end; datetime = datetime.AddDays(1))
                 {
-                    if (!reservationCountInMonthOfYear.ContainsKey(datetimeMonth))
+                    bool isDayInSelectedPeriod = datetime >= selectedStartDateTime && datetime < selectedEndDateTime;
+                    if (datetime.Month == i && isDayInSelectedPeriod)
                     {
-                        reservationCountInMonthOfYear.Add(datetimeMonth, 0);
+                        count++;
                     }
-                    reservationCountInMonthOfYear[datetimeMonth]++;
                 }
             }
+            reservedDayCount[i] = count;
         }
-        bool isDenominatorNonZero = filteredReservationList.Count != 0;
-        for (int i = 1; i <= monthOfYear; i++)
-        {
-            float roomsPercentInThisDay = 0;
-            if (reservationCountInMonthOfYear.ContainsKey(i))
-            {
-                roomsPercentInThisDay = isDenominatorNonZero ? (float)reservationCountInMonthOfYear[i] / filteredReservationList.Count : 0;
-            }
-            data.Add(roomsPercentInThisDay);
-            monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
 
+        float maxReservedDayCount = reservedDayCount.Values.Max();
+        for (int i = 1; i <= monthsOfYear; i++)
+        {
+            data.Add(reservedDayCount[i] / maxReservedDayCount);
+            monthOfYearList.Add(Constants.MonthNamesDict[i].Substring(0, 3));
         }
-        SetDataInGraph(data, monthOfYearList);
+        SetDataInGraph(data, monthOfYearList, true);
     }
     
-    private void ShowAggregateGraphRoomType(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList)
+    private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
     {
-        print("ShowAggregateGraphRoomType");
-    }
-
-    private void SetDataInGraph(List<float> data, List<string> roomNameList)
-    {
+        graph.HasAlternativeColors = hasAlternativeColors;
         graph.XValue = roomNameList;
         graph.Data = data;
-    }
-
-    private int GetIndexDayOfWeek(DayOfWeek day)
-    {
-        switch (day)
-        {
-            case DayOfWeek.Monday: return 1;
-            case DayOfWeek.Tuesday: return 2;
-            case DayOfWeek.Wednesday: return 3;
-            case DayOfWeek.Thursday: return 4;
-            case DayOfWeek.Friday: return 5;
-            case DayOfWeek.Saturday: return 6;
-            case DayOfWeek.Sunday: return 7;
-        }
-
-        return 0;
     }
     
     private static List<IReservation> GetFilteredReservationList(List<IRoom> filteredRoomList, List<IReservation> reservationList, DateTime start, DateTime end)
@@ -196,6 +184,5 @@ public class AggregateGraphComponent : MonoBehaviour
             bool isInSelectedPeriod = reservation.Period.Overlaps(start, end);
             return filteredRoomList.Exists(room => room.ID == reservation.RoomID) && isInSelectedPeriod;
         }).ToList();
-
     }
 }
