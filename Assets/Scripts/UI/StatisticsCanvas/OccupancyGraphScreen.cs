@@ -7,15 +7,16 @@ using UnityEngine.UI;
 public class OccupancyGraphScreen : MonoBehaviour
 {
     private const string INFO_MESSAGE =
-@"În funcție de opțiunea selectată mai jos graficul va afișa următoarele date:
+@"În funcție de opțiunea selectată mai jos graficul va afișa gradul de ocupare in diferite moduri.
+Gradul de ocupare se referă la numărul de zile rezervate raportat la numărul maxim de zile rezervate (număr de camere X număr de zile în perioada selectată).
 
-Timp: Fiecare coloană reprezintă numărul de camere ocupate în ziua respectivă raportat la numărul total de camere.
+Timp: Fiecare coloană reprezintă gradul de ocupare pentru ziua respectivă.
 
-Locație: Fiecare coloană reprezintă numărul de rezervari în proprietatea respectivă raportat la numărul total de rezervari.
+Locație: Fiecare coloană reprezintă gradul de ocupare pentru proprietatea respectivă.
 
-Tip cameră: Fiecare coloană reprezintă numărul de rezervari în tipul de cameră respectivă raportat la numărul total de rezervari.
+Tip cameră: Fiecare coloană reprezintă gradul de ocupare pentru categoria de cameră respectivă (număr de persoane).
 
-Rezervări: Fiecare coloană reprezintă numărul de zile rezervate în camera respectivă raportat la numărul maxim de zile rezervate.";
+Camere: Fiecare coloană reprezintă gradul de ocupare pentru camera respectivă.";
 
     [SerializeField]
     private ModalCalendarStatistics modalCalendar = null;

@@ -52,7 +52,7 @@ public class Constants : MonoBehaviour
         {0,"Timp"},
         {1,"Locație"},
         {2,"Tip cameră"},
-        {3,"Rezervări"}
+        {3,"Cameră"}
     };
 
     public static Dictionary<int, string> AggregateXAxisDict = new Dictionary<int, string>()
