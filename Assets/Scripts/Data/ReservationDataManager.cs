@@ -205,5 +205,12 @@ public static class ReservationDataManager
             long ticks = dateTime.ToUniversalTime().Ticks;
             return (startTicks <= ticks) && (ticks <= endTicks);
         }
+
+        public bool Overlaps(DateTime start, DateTime end)
+        {
+            long overlapStartTicks = start.ToUniversalTime().Ticks;
+            long overlapEndTicks = end.ToUniversalTime().Ticks;
+            return startTicks <= overlapEndTicks || endTicks >= overlapStartTicks;
+        }
     }
 }
