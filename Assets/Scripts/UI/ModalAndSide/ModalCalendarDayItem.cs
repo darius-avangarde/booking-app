@@ -10,7 +10,7 @@ public class ModalCalendarDayItem : MonoBehaviour
 
     private Image modalCalendarDayItemImage;
     private Color modalCalendarDayItemImageColor;
-    private Color reservedItemColor = Color.blue;
+    private Color reservedItemColor = new Color(0.6588235f, 0.7960785f, 0.8392158f);
     private Button modalCalendarDayItemButton;
     private DateTime modalCalendarItemDateTime;
     private bool isReserved = false;
@@ -22,7 +22,7 @@ public class ModalCalendarDayItem : MonoBehaviour
         modalCalendarDayItemImage = GetComponent<Image>();
         modalCalendarDayItemButton = GetComponent<Button>();
         modalCalendarDayItemImageColor = modalCalendarDayItemImage.color;
-        GetComponent<Button>().onClick.AddListener(() => 
+        GetComponent<Button>().onClick.AddListener(() =>
         callback(modalCalendarItemDateTime, modalCalendarDayItemImage, isReserved, isReservedDayAvailable));
     }
 
@@ -44,12 +44,12 @@ public class ModalCalendarDayItem : MonoBehaviour
         modalCalendarItemDateTime = dateTime;
         dayText.text = dateTime.Day.ToString();
     }
-    
+
     private void ShowCurrentReservationReservedPeriod()
     {
         if (currentReservation != null)
         {
-            bool isDateTimeItemInReservationPeriod = modalCalendarItemDateTime >= currentReservation.Period.Start 
+            bool isDateTimeItemInReservationPeriod = modalCalendarItemDateTime >= currentReservation.Period.Start
                                                   && modalCalendarItemDateTime <= currentReservation.Period.End;
             if (isDateTimeItemInReservationPeriod)
             {

@@ -66,7 +66,7 @@ public class Graph : MonoBehaviour, IGraph
             GameObject bar = Instantiate(barPrefab, barsContainer);
             float barHeight = containerRect.height * data[i];
             bar.GetComponent<RectTransform>().sizeDelta = new Vector2(barWidth, barHeight);
-            bar.GetComponent<Image>().color = HasAlternativeColors ? (i % 2 == 0 ? alternativeBarColor : defaultBarColor)  : defaultBarColor;
+            bar.GetComponent<Image>().color = HasAlternativeColors ? (i % 2 == 0 ? Constants.lightGreenColor : Constants.mediumGreenColor)  : Constants.mediumGreenColor;
             SetTextXValueOnInterval(bar, i);
         }
     }

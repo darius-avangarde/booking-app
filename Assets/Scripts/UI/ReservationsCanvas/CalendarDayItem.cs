@@ -11,22 +11,11 @@ public class CalendarDayItem : MonoBehaviour
     [SerializeField]
     private Text dayText = null;
     [SerializeField]
-    private Image dayReservationStatusImage;
+    private Image dayReservationStatusImage = null;
 
-    private Image dayItemImage;
-    private Color dayItemImageColor;
-    private Color dayReservationStatusImageColor;
     private DateTime dayItemDateTime;
     private List<IReservation> currentDayReservationList;
     private List<IRoom> filteredRoomList;
-
-    private void Awake()
-    {
-        dayItemImage = GetComponent<Image>();
-        dayItemImageColor = dayItemImage.color;
-        dayReservationStatusImage = dayReservationStatusImage.GetComponent<Image>();
-        dayReservationStatusImageColor = dayReservationStatusImage.color;
-    }
 
     public void AddListener(Action<DateTime> callback)
     {
@@ -36,7 +25,7 @@ public class CalendarDayItem : MonoBehaviour
     public void UpdateDayItem(DateTime dateTime, bool isSelectedMonth, List<IRoom> filteredRooms, List<IRoom> reservedRoomsInCurrentDay)
     {
         dayItemDateTime = dateTime;
-        dayItemImage.color = isSelectedMonth ? dayItemImageColor : Constants.unavailableItemColor;
+        dayText.color = isSelectedMonth ? Constants.darkTextColor : Constants.lightTextColor;
         int alpha = dateTime == DateTime.Today ? 1 : 0;
         todayImage.color = new Color(todayImage.color.r, todayImage.color.g, todayImage.color.b, alpha);
         dayText.text = dateTime.Day.ToString();
@@ -49,7 +38,7 @@ public class CalendarDayItem : MonoBehaviour
 
         if (reservedRoomsInCurrentDay.Count == 0)
         {
-            dayReservationStatusImage.color = dayReservationStatusImageColor;
+            dayReservationStatusImage.color = Constants.availableItemColor;
         }
         else if (reservedRoomsInCurrentDay.Count < filteredRoomList.Count)
         {
