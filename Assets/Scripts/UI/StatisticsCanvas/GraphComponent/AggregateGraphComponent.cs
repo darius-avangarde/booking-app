@@ -11,13 +11,13 @@ public class AggregateGraphComponent : MonoBehaviour
     private void Start()
     {
         graph.XAxisLabel = Constants.AggregateXAxisDict[0];
-        graph.YAxisLabel = "Procente";
+        graph.YAxisLabel = "Zile rezervate";
     }
 
     public void UpdateGraph(List<IRoom> filteredRoomList, DateTime startDateTime, DateTime endDateTime, List<IReservation> reservationList, int xAxisTypeValueIndex)
     {
         graph.XAxisLabel = Constants.AggregateXAxisDict[xAxisTypeValueIndex];
-        
+
         switch (xAxisTypeValueIndex)
         {
             case 0:
@@ -46,7 +46,7 @@ public class AggregateGraphComponent : MonoBehaviour
         }
 
         Dictionary<DayOfWeek, int> reservedDayCount = new Dictionary<DayOfWeek, int>();
-        
+
         foreach (DayOfWeek dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
         {
             int count = 0;
@@ -76,7 +76,8 @@ public class AggregateGraphComponent : MonoBehaviour
         data[4] = reservedDayCount[DayOfWeek.Friday] / maxReservedDayCount;
         data[5] = reservedDayCount[DayOfWeek.Saturday] / maxReservedDayCount;
         data[6] = reservedDayCount[DayOfWeek.Sunday] / maxReservedDayCount;
-        SetDataInGraph(data, Constants.DayOfWeekNames, true);
+
+        SetDataInGraph(data, Constants.DayOfWeekNames, true, maxReservedDayCount);
     }
 
     private void ShowAggregateGraphMonth(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
@@ -124,7 +125,7 @@ public class AggregateGraphComponent : MonoBehaviour
             data.Add(reservedDayCount[i] / maxReservedDayCount);
             daysOfMonthList.Add(i.ToString());
         }
-        SetDataInGraph(data, daysOfMonthList, true);
+        SetDataInGraph(data, daysOfMonthList, true, maxReservedDayCount);
     }
 
     private void ShowAggregateGraphYear(List<IRoom> filteredRoomList, DateTime selectedStartDateTime, DateTime selectedEndDateTime, List<IReservation> reservationList)
@@ -166,16 +167,23 @@ public class AggregateGraphComponent : MonoBehaviour
         {
             data.Add(reservedDayCount[i] / maxReservedDayCount);
         }
-        SetDataInGraph(data, Constants.MonthNames, true);
+
+        SetDataInGraph(data, Constants.MonthNames, true, maxReservedDayCount);
     }
-    
+
     private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors)
     {
         graph.HasAlternativeColors = hasAlternativeColors;
         graph.XValue = roomNameList;
         graph.Data = data;
     }
-    
+
+    private void SetDataInGraph(List<float> data, List<string> roomNameList, bool hasAlternativeColors, float maxYValue)
+    {
+        SetDataInGraph(data, roomNameList, hasAlternativeColors);
+        graph.MaxYLabel = Mathf.FloorToInt(maxYValue).ToString();
+    }
+
     private static List<IReservation> GetFilteredReservationList(List<IRoom> filteredRoomList, List<IReservation> reservationList, DateTime start, DateTime end)
     {
         return reservationList.Where(reservation =>

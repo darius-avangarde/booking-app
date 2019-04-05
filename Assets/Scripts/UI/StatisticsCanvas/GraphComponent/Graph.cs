@@ -8,6 +8,12 @@ public class Graph : MonoBehaviour, IGraph
     private GameObject barPrefab = null;
     [SerializeField]
     private Transform barsContainer = null;
+    [SerializeField]
+    private Text xAxisText = null;
+    [SerializeField]
+    private Text yAxisText = null;
+    [SerializeField]
+    private Text maxYText = null;
 
     private Color defaultBarColor = new Color(0.078f, 0.21f, 0.19f);
     private Color alternativeBarColor = new Color(0.11f, 0.47f, 0.4f);
@@ -25,15 +31,7 @@ public class Graph : MonoBehaviour, IGraph
         }
     }
 
-    private List<string> xValue;
-    public List<string> XValue
-    {
-        get => xValue;
-        set
-        {
-            xValue = value;
-        }
-    }
+    public List<string> XValue { get; set; }
 
     public string XAxisLabel
     {
@@ -47,10 +45,11 @@ public class Graph : MonoBehaviour, IGraph
         set => yAxisText.text = value;
     }
 
-    [SerializeField]
-    private Text xAxisText = null;
-    [SerializeField]
-    private Text yAxisText = null;
+    public string MaxYLabel
+    {
+        get => maxYText.text;
+        set => maxYText.text = value;
+    }
 
     private void InstantiateBars(List<float> data)
     {
@@ -76,30 +75,30 @@ public class Graph : MonoBehaviour, IGraph
     {
         bar.GetComponentInChildren<Text>().text = "";
 
-        bool isMaxDataCount = xValue.Count > 365;
+        bool isMaxDataCount = XValue.Count > 365;
         int textIntervalMax = 100;
         if (isMaxDataCount && itemIndex % textIntervalMax == 0)
         {
-            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+            bar.GetComponentInChildren<Text>().text = XValue[itemIndex].ToString();
         }
 
-        bool isMedDataCount = xValue.Count < 365 && xValue.Count > 100;
+        bool isMedDataCount = XValue.Count < 365 && XValue.Count > 100;
         int textIntervalMed = 50;
         if (isMedDataCount && itemIndex % textIntervalMed == 0)
         {
-            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+            bar.GetComponentInChildren<Text>().text = XValue[itemIndex].ToString();
         }
 
-        bool isMinDataCount = xValue.Count > 20 && xValue.Count < 100;
+        bool isMinDataCount = XValue.Count > 20 && XValue.Count < 100;
         int textIntervalMin = 5;
         if (isMinDataCount && itemIndex % textIntervalMin == 0)
         {
-            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+            bar.GetComponentInChildren<Text>().text = XValue[itemIndex].ToString();
         }
 
-        if (xValue.Count < 20)
+        if (XValue.Count < 20)
         {
-            bar.GetComponentInChildren<Text>().text = xValue[itemIndex].ToString();
+            bar.GetComponentInChildren<Text>().text = XValue[itemIndex].ToString();
         }
     }
 }

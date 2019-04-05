@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class AggregateOccupancyGraphScreen : MonoBehaviour
 {
     private const string INFO_MESSAGE =
-@"În funcție de opțiunea selectată mai jos graficul va afișa pentru perioada selectată numărul de camere ocupate în acea zi a săptamânii, zi a lunii, respectiv zi a anului.";
+@"În funcție de opțiunea selectată mai jos graficul va afișa suma zilelor tuturor rezervărilor care se încadrează în perioada selectată, agregate după zi a săptămânii, zi a lunii, respectiv lună a anului.";
 
     [SerializeField]
     private ModalCalendarStatistics modalCalendar = null;
