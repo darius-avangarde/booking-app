@@ -7,4 +7,6 @@ public interface IReservation_New
     string PropertyID { get; }
     string RoomID { get; }
     IDateTimePeriod Period { get; }
+
+    void EditReservation(IRoom room, string _customerID, DateTime start, DateTime end);
 }

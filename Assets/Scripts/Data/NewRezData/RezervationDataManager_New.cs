@@ -40,9 +40,18 @@ public static class ReservationDataManager_New
 
     // we're using interfaces to restrict data mutation to methods and properties that we control
     // this allows us to make sure that the data file is updated automatically with each change
+
+    ///<summary>
+    ///Returns an IEnumerable of all undeleted reservations.
+    ///</summary>
     public static IEnumerable<IReservation_New> GetReservations()
     {
         return Data.reservations.FindAll(r => !r.Deleted);
+    }
+
+    public static IEnumerable<IReservation_New> GetReservations(Predicate<IReservation_New> match)
+    {
+        return Data.reservations.FindAll(match);
     }
 
     public static IEnumerable<IReservation_New> GetDeletedReservations()
@@ -62,6 +71,21 @@ public static class ReservationDataManager_New
         WriteReservationData();
 
         return newReservation;
+    }
+
+    public static IReservation_New AddReservation(IRoom room, string customerID, DateTime start, DateTime end)
+    {
+        Reservation_New newReservation = new Reservation_New(room,customerID,start,end);
+        Data.reservations.Add(newReservation);
+        WriteReservationData();
+
+        return newReservation;
+    }
+
+    public static void EditReservation(IReservation_New reservation, IRoom room, string customerID, DateTime start, DateTime end)
+    {
+        reservation.EditReservation(room,customerID,start,end);
+        WriteReservationData();
     }
 
     public static void DeleteReservation(string ID)
@@ -180,6 +204,26 @@ public static class ReservationDataManager_New
             this.propertyID = room.PropertyID;
             this.roomID = room.ID;
             this.period = new DateTimePeriod(DateTime.Today, DateTime.Today.AddDays(1f));
+            WriteReservationData();
+        }
+
+        public Reservation_New(IRoom room, string customerID, DateTime start, DateTime end)
+        {
+            this.id = Guid.NewGuid().ToString();
+            this.propertyID = room.PropertyID;
+            this.roomID = room.ID;
+            this.customerID = customerID;
+            this.period = new DateTimePeriod(start, end);
+            WriteReservationData();
+        }
+
+        public void EditReservation(IRoom room, string _customerID, DateTime start, DateTime end)
+        {
+            id = Guid.NewGuid().ToString();
+            propertyID = room.PropertyID;
+            roomID = room.ID;
+            customerID = _customerID;
+            period = new DateTimePeriod(start, end);
             WriteReservationData();
         }
     }
