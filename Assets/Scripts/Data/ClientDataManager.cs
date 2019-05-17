@@ -53,7 +53,25 @@ public class ClientDataManager
         return Data.clients.Find(p => p.ID.Equals(ID));
     }
 
-  
+    public static IClient AddClient()
+    {
+        Client newClient = new Client();
+        Data.clients.Add(newClient);
+        WriteClientData();
+
+        return newClient;
+    }
+
+    public static void DeleteClient(string ID)
+    {
+        Client client = Data.clients.Find(p => p.ID.Equals(ID));
+        if (client != null)
+        {
+            client.Deleted = true;
+            WriteClientData();
+        }
+    }
+
     [Serializable]
     private class ClientData
     {
