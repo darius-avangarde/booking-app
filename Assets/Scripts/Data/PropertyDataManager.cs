@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public static class PropertyDataManager
@@ -106,6 +107,18 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
+        private bool hasRooms = false;
+        public bool HasRooms
+        {
+            get => hasRooms;
+            set
+            {
+                hasRooms = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
         private bool deleted = false;
         public bool Deleted
         {
@@ -121,6 +134,11 @@ public static class PropertyDataManager
         private List<Room> rooms = new List<Room>();
         public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
         public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
+        public string NrRooms => Rooms.Count().ToString();
+
+        [SerializeField]
+        private IRoom getPropertyRoom = null;
+        public IRoom GetPropertyRoom => getPropertyRoom;
 
         public Property()
         {
@@ -132,6 +150,10 @@ public static class PropertyDataManager
         public IRoom AddRoom()
         {
             Room newRoom = new Room(id);
+            if (!HasRooms)
+            {
+                getPropertyRoom = newRoom;
+            }
             rooms.Add(newRoom);
             WritePropertyData();
 
@@ -173,6 +195,18 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
+        private string price;
+        public string Price
+        {
+            get => price;
+            set
+            {
+                price = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
         private bool deleted = false;
         public bool Deleted
         {
@@ -208,7 +242,7 @@ public static class PropertyDataManager
             }
         }
 
-        public int Persons => singleBeds + 2 * doubleBeds;
+        //public int Persons => singleBeds + 2 * doubleBeds;
 
         public Room(string propertyID)
         {
