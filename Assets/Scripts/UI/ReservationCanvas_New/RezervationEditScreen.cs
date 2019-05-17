@@ -6,7 +6,7 @@ using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RezervationsScreen_New : MonoBehaviour
+public class RezervationEditScreen : MonoBehaviour
 {
     [SerializeField]
     private Navigator reservationNavigator;
@@ -31,7 +31,7 @@ public class RezervationsScreen_New : MonoBehaviour
     private string selectedRoomID = string.Empty;
     private string customerID = string.Empty;
 
-    private IReservation_New selectedReservation = null;
+    private IReservation selectedReservation = null;
 
     //set these on callback from calendar overlay
     private DateTime start;
@@ -50,13 +50,13 @@ public class RezervationsScreen_New : MonoBehaviour
     //    OpenReservation(null);
     // }
 
-    public void OpenReservationScreen(IReservation_New reservation)
+    public void OpenReservationScreen(IReservation reservation)
     {
         UpdateDropdowns(PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID));
         OpenReservation(reservation);
     }
 
-    private void OpenReservation(IReservation_New reservation)
+    private void OpenReservation(IReservation reservation)
     {
         selectedReservation = reservation;
         reservationNavigator.GoTo(reservationScreen);
@@ -105,7 +105,7 @@ public class RezervationsScreen_New : MonoBehaviour
 
     private void CreateReservation()
     {
-        ReservationDataManager_New.AddReservation(
+        ReservationDataManager.AddReservation(
             PropertyDataManager.GetProperty(selectedPropertyID).GetRoom(selectedRoomID),
             customerID,
             start,
@@ -113,9 +113,9 @@ public class RezervationsScreen_New : MonoBehaviour
         );
     }
 
-    private void UpdateReservation(IReservation_New reservation)
+    private void UpdateReservation(IReservation reservation)
     {
-        ReservationDataManager_New.EditReservation(reservation, PropertyDataManager.GetProperty(selectedPropertyID).GetRoom(selectedRoomID), customerID, start, end);
+        ReservationDataManager.EditReservation(reservation, PropertyDataManager.GetProperty(selectedPropertyID).GetRoom(selectedRoomID), customerID, start, end);
     }
 
     private void UpdateDropdowns(IRoom room)
