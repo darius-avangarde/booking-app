@@ -2,11 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RezervationsScreen_New : MonoBehaviour
 {
+    [SerializeField]
+    private Navigator reservationNavigator;
+    [SerializeField]
+    private NavScreen reservationScreen;
+    [SerializeField]
+    private ModalCalendar modalCalendarDialog;
+
     [SerializeField]
     private Text titleText;
     [SerializeField]
@@ -30,22 +38,31 @@ public class RezervationsScreen_New : MonoBehaviour
     private DateTime end;
 
 
-    public void OpenRezervationScreen(IRoom room)
+    public void OpenReservationScreen(IRoom room)
     {
         UpdateDropdowns(room);
-        selectedReservation = null;
-    }
-
-    public void OpenRezervationScreen(IReservation_New reservation)
-    {
-        UpdateDropdowns(PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID));
-        selectedReservation = reservation;
+        OpenReservation(null);
     }
 
     // public void OpenRezervationScreen(ICustomer cutomer)
     // {
     //    InitializePropertyDropdown(null);
+    //    OpenReservation(null);
     // }
+
+    public void OpenReservationScreen(IReservation_New reservation)
+    {
+        UpdateDropdowns(PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID));
+        OpenReservation(reservation);
+    }
+
+    private void OpenReservation(IReservation_New reservation)
+    {
+        selectedReservation = reservation;
+        reservationNavigator.GoTo(reservationScreen);
+        //modalCalendarDialog.Show();
+    }
+
 
     public void SelectProperty(int selectedValue)
     {
@@ -100,7 +117,6 @@ public class RezervationsScreen_New : MonoBehaviour
     {
         ReservationDataManager_New.EditReservation(reservation, PropertyDataManager.GetProperty(selectedPropertyID).GetRoom(selectedRoomID), customerID, start, end);
     }
-
 
     private void UpdateDropdowns(IRoom room)
     {
