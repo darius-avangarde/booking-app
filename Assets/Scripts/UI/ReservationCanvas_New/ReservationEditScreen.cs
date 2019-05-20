@@ -9,9 +9,9 @@ using UnityEngine.UI;
 public class ReservationEditScreen : MonoBehaviour
 {
     [SerializeField]
-    private Navigator reservationEditNavigator;
+    private Navigator navigator;
     [SerializeField]
-    private NavScreen reservationScreen;
+    private NavScreen navScreen;
     [SerializeField]
     private ModalCalendar modalCalendarDialog;
 
@@ -86,9 +86,17 @@ public class ReservationEditScreen : MonoBehaviour
         }
     }
 
+    public void CommitChanges()
+    {
+        // if (currentReservation != null)
+        // {
+        //     currentReservation.EditReservation(
 
+        //     );
+        // }
+    }
 
-    public void SelectProperty(int optionIndex)
+    private void SelectProperty(int optionIndex)
     {
         if(optionIndex > 0)
         {
@@ -103,7 +111,7 @@ public class ReservationEditScreen : MonoBehaviour
         UpdateRoomDropdown(currentProperty);
     }
 
-    public void SelectRoom(int optionIndex)
+    private void SelectRoom(int optionIndex)
     {
         if(optionIndex > 0)
         {
