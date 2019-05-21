@@ -149,11 +149,11 @@ public class ReservationsViewScreen : MonoBehaviour
             createdObjects.Add(resObj.gameObject);
             if(forClient)
             {
-                resObj.InitializeReservation(viewedClient, reservationList[r], EditReservation , DeleteReservation);
+                resObj.InitializeReservation(forClient, reservationList[r], EditReservation , DeleteReservation);
             }
             else
             {
-                resObj.InitializeReservation(viewedRoom, reservationList[r], EditReservation , DeleteReservation);
+                resObj.InitializeReservation(forClient, reservationList[r], EditReservation , DeleteReservation);
             }
         }
 

@@ -15,28 +15,22 @@ public class ReservationObject : MonoBehaviour
     [SerializeField]
     private Button deleteButton;
 
-    public void InitializeReservation(IClient client, IReservation res, UnityAction<IReservation> editAction, UnityAction<IReservation> deleteAction)
+    ///<summary>
+    /// Initializes the reservation object with the relevant reservation data for the provided client or room.
+    /// Also sets the edit and delete button actions
+    ///</summary>
+    public void InitializeReservation(bool isClient, IReservation res, UnityAction<IReservation> editAction, UnityAction<IReservation> deleteAction)
     {
         UpdateObjectUI(
-            PropertyDataManager.GetProperty(res.PropertyID).Name
+              ((isClient) ? PropertyDataManager.GetProperty(res.PropertyID).Name : ClientDataManager.GetClient(res.CustomerID).Name)
             + ReservationConstants.NEWLINE
-            + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name
+            + ((isClient) ? PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name : ClientDataManager.GetClient(res.CustomerID).Number)
             , res);
         editButton.onClick.AddListener(() => editAction(res));
         deleteButton.onClick.AddListener(() => deleteAction(res));
     }
 
-    public void InitializeReservation(IRoom room, IReservation reservation, UnityAction<IReservation> editAction, UnityAction<IReservation> deleteAction)
-    {
-        UpdateObjectUI(
-            ClientDataManager.GetClient(reservation.CustomerID).Name
-            + ReservationConstants.NEWLINE
-            + ClientDataManager.GetClient(reservation.CustomerID).Number
-            , reservation);
-        editButton.onClick.AddListener(() => editAction(reservation));
-        deleteButton.onClick.AddListener(() => deleteAction(reservation));
-    }
-
+    //Updates the reservation information text
     private void UpdateObjectUI(string info, IReservation reservation)
     {
         infoText.text = info
