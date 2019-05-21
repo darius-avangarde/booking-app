@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &965093269026105035
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 901ddf6d4b65d6c43a706d3bef91d240, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -185,7 +185,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000029666971, y: -0.00008376071}
+  m_AnchoredPosition: {x: 0.000029666971, y: -0.000041779265}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &965093269123266005
@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 965093269474633572}
   - component: {fileID: 965093269474633573}
   - component: {fileID: 965093269474633574}
+  - component: {fileID: 965093269437031369}
   m_Layer: 5
   m_Name: ReservationsViewScreen
   m_TagString: Untagged
@@ -433,6 +434,18 @@ MonoBehaviour:
     type: 3}
   newReservationButton: {fileID: 965093270853499574}
   clientDetails: {fileID: 965093270759572465}
+--- !u!225 &965093269437031369
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965093269474633560}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &965093269643176348
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,7 +1007,7 @@ MonoBehaviour:
   m_Content: {fileID: 965093269123266007}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 2
+  m_MovementType: 1
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
@@ -1475,7 +1488,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: -17}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &965093270670075877
 CanvasRenderer:
@@ -1498,7 +1511,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1554,7 +1567,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 965093269026105037}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1882,7 +1895,7 @@ GameObject:
   - component: {fileID: 965093270848900230}
   - component: {fileID: 965093270848900229}
   - component: {fileID: 965093269437031370}
-  - component: {fileID: 965093269437031369}
+  - component: {fileID: 9219185383967987254}
   m_Layer: 5
   m_Name: ClientDetailsParent
   m_TagString: Untagged
@@ -1942,7 +1955,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 965093270848900231}
   m_CullTransparentMesh: 0
---- !u!114 &965093269437031369
+--- !u!114 &9219185383967987254
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

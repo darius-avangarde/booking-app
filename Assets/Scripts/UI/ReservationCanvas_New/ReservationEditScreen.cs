@@ -36,6 +36,8 @@ public class ReservationEditScreen : MonoBehaviour
         private Text reservationPeriodText;
         [SerializeField]
         private Button confirmButton;
+        [SerializeField]
+        private Text errorText;
 
     #endregion
 
@@ -58,6 +60,7 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void Start()
     {
+        errorText.enabled = false;
         editConfirmation = new ConfirmationDialogOptions();
         editConfirmation.Message = ReservationConstants.EDIT_DIALOG;
         propertyDropdown.onValueChanged.AddListener(SelectProperty);
@@ -83,7 +86,7 @@ public class ReservationEditScreen : MonoBehaviour
                 PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
                 );
             titleText.text = ReservationConstants.EDIT_TITLE;
-            ToggleConfirmButton();
+            ValidateInput();
             navigator.GoTo(navScreen);
         }
 
@@ -95,7 +98,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             UpdateEditableOptions(null, client, null);
             titleText.text = ReservationConstants.NEW_TITLE;
-            ToggleConfirmButton();
+            ValidateInput();
             navigator.GoTo(navScreen);
         }
 
@@ -107,7 +110,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             UpdateEditableOptions(null, null, room);
             titleText.text = ReservationConstants.NEW_TITLE;
-            ToggleConfirmButton();
+            ValidateInput();
             navigator.GoTo(navScreen);
         }
     #endregion
@@ -177,33 +180,52 @@ public class ReservationEditScreen : MonoBehaviour
     #endregion
 
     //Toggles the save/confirm reservation edit button off if there are any necessary fields unfilled
-    private void ToggleConfirmButton()
+    private void ValidateInput()
     {
         if(currentProperty == null)
         {
             confirmButton.interactable = false;
+            SetErrorText(ReservationConstants.ERR_PROP);
             return;
         }
 
         if(currentRoom == null)
         {
             confirmButton.interactable = false;
+            SetErrorText(ReservationConstants.ERR_ROOM);
+            return;
+        }
+        if(OverlapsOtherReservation())
+        {
+            confirmButton.interactable = false;
+            SetErrorText(ReservationConstants.ERR_PERIOD);
             return;
         }
 
         if(currentClient == null)
         {
             confirmButton.interactable = false;
+            SetErrorText(ReservationConstants.ERR_CLIENT);
             return;
         }
 
         if(start == end)
         {
             confirmButton.interactable = false;
+            SetErrorText(ReservationConstants.ERR_DATES);
             return;
         }
 
+        SetErrorText(string.Empty);
         confirmButton.interactable = true;
+    }
+
+    //Returns true if no other reservations for this room overlap the curently set period
+    private bool OverlapsOtherReservation()
+    {
+        return ReservationDataManager.GetReservations()
+            .Where(r => r.RoomID == currentRoom.ID && ((currentReservation != null) ? r.ID != currentReservation.ID : false)
+            && (r.Period.Overlaps(start,end) || r.Period.Includes(start) || r.Period.Includes(end))).Count() > 0;
     }
 
     //TODO: Integrate has room property from new property data
@@ -221,7 +243,7 @@ public class ReservationEditScreen : MonoBehaviour
         }
 
         UpdateRoomDropdown(currentProperty);
-        ToggleConfirmButton();
+        ValidateInput();
     }
 
     //Sets the selected room object as selected from the dropdown options
@@ -235,7 +257,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             currentRoom = null;
         }
-        ToggleConfirmButton();
+        ValidateInput();
     }
 
     //Updates all editable fields in the edit reservation screen
@@ -251,14 +273,7 @@ public class ReservationEditScreen : MonoBehaviour
 
         if(reservation != null)
         {
-            start = reservation.Period.Start;
-            end = reservation.Period.End;
-
-
-            reservationPeriodText.text =
-                start.ToString(Constants.DateTimePrintFormat)
-                + Constants.AndDelimiter
-                + end.ToString(Constants.DateTimePrintFormat);
+            UpdateReservationPeriod(reservation.Period.Start, reservation.Period.End);
         }
         else
         {
@@ -267,6 +282,7 @@ public class ReservationEditScreen : MonoBehaviour
             reservationPeriodText.text = start.ToString(Constants.DateTimePrintFormat);
         }
 
+        ValidateInput();
     }
 
     private void UpdatePropertyDropdown()
@@ -366,6 +382,13 @@ public class ReservationEditScreen : MonoBehaviour
             start.ToString(Constants.DateTimePrintFormat)
             + Constants.AndDelimiter
             + end.ToString(Constants.DateTimePrintFormat);
-        ToggleConfirmButton();
+
+        ValidateInput();
+    }
+
+    private void SetErrorText(string errorMessage)
+    {
+        errorText.text = errorMessage;
+        errorText.enabled = !string.IsNullOrEmpty(errorMessage);
     }
 }
