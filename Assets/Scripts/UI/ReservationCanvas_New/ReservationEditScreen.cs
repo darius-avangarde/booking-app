@@ -1,101 +1,213 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using UINavigation;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UINavigation;
 
 public class ReservationEditScreen : MonoBehaviour
 {
-    [SerializeField]
-    private Navigator navigator;
-    [SerializeField]
-    private NavScreen navScreen;
-    [SerializeField]
-    private ModalCalendar modalCalendarDialog;
+    #region Inspector references
 
-    [SerializeField]
-    private Text titleText;
-    [SerializeField]
-    private Dropdown propertyDropdown;
-    [SerializeField]
-    private Dropdown roomDropdown;
-    [SerializeField]
-    private InputField clientInputField;
-    [SerializeField]
-    private Text reservationPeriodText;
+        [Header("Navigation")]
+        [SerializeField]
+        private Navigator navigator;
+        [SerializeField]
+        private NavScreen navScreen;
 
-    private Dictionary<string,Dropdown.OptionData> propertyOptions;
-    private Dictionary<string,Dropdown.OptionData> roomOptions;
+        [Header("Modal dialogues")]
+        [SerializeField]
+        private ModalCalendar modalCalendarDialog;
+        [SerializeField]
+        private ConfirmationDialog confirmationDialog;
 
-    private IReservation currentReservation;
-    private IRoom currentRoom;
-    private IProperty currentProperty;
-    private IClient currentClient;
+        [Space]
+        [SerializeField]
+        private ReservationsViewScreen reservationsScreen;
+        [SerializeField]
+        private Text titleText;
+        [SerializeField]
+        private Dropdown propertyDropdown;
+        [SerializeField]
+        private Dropdown roomDropdown;
+        [SerializeField]
+        private InputField clientInputField;
+        [SerializeField]
+        private Text reservationPeriodText;
+        [SerializeField]
+        private Button confirmButton;
 
-    private List<IReservation> roomReservationList;
-    //set these on callback from calendar overlay
-    private DateTime start;
-    private DateTime end;
+    #endregion
 
+    #region Private variables
+        private Dictionary<string,Dropdown.OptionData> propertyOptions;
+        private Dictionary<string,Dropdown.OptionData> roomOptions;
+
+        private IReservation currentReservation;
+        private IRoom currentRoom;
+        private IProperty currentProperty;
+        private IClient currentClient;
+
+        private List<IReservation> roomReservationList;
+        //set these on callback from calendar overlay
+        private DateTime start;
+        private DateTime end;
+
+        private ConfirmationDialogOptions editConfirmation;
+    #endregion
 
     private void Start()
     {
+        editConfirmation = new ConfirmationDialogOptions();
+        editConfirmation.Message = ReservationConstants.EDIT_DIALOG;
         propertyDropdown.onValueChanged.AddListener(SelectProperty);
         roomDropdown.onValueChanged.AddListener(SelectRoom);
     }
 
-    public void OpenEditReservation(IReservation reservation)
+    private void OnDestroy()
     {
-        UpdateEditableOptions(
-            reservation,
-            ClientDataManager.GetClient(reservation.CustomerID),
-            PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
-            );
-        titleText.text = "Modifică rezervarea";
+        propertyDropdown.onValueChanged.RemoveAllListeners();
+        roomDropdown.onValueChanged.RemoveAllListeners();
     }
 
-    public void OpenEditReservation(IClient client)
-    {
-        UpdateEditableOptions(null, client, null);
-        titleText.text = "Rezervare nouă";
-    }
-
-    public void OpenEditReservation(IRoom room)
-    {
-        UpdateEditableOptions(null, null, room);
-        titleText.text = "Rezervare nouă";
-    }
-
-    public void ChangePeriod()
-    {
-        if(currentRoom != null)
+    #region Open panel functions
+        ///<summary>
+        /// Fills the available fields and opens the reservation edit pannel withe the provided reservation object
+        /// Use to EDIT a reservation from either the client screen or the room screen when tapping on an existing reservation.
+        ///</summary>
+        public void OpenEditReservation(IReservation reservation)
         {
-            modalCalendarDialog.Show(
-                DateTime.Today,
-                currentReservation,
-                ReservationDataManager.GetReservations(a => a.RoomID == currentRoom.ID).ToList(),
-                SaveAndUpdatedReservationPeriod
+            UpdateEditableOptions(
+                reservation,
+                ClientDataManager.GetClient(reservation.CustomerID),
+                PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
                 );
+            titleText.text = ReservationConstants.EDIT_TITLE;
+            ToggleConfirmButton();
+            navigator.GoTo(navScreen);
+        }
 
-            foreach (var item in ReservationDataManager.GetReservations(a => a.RoomID == currentRoom.ID).ToList())
+        ///<summary>
+        /// Fills the available fields and opens the reservation edit pannel withe the provided client object
+        /// Use when adding a NEW reservation for a specific client from the client screen.
+        ///</summary>
+        public void OpenEditReservation(IClient client)
+        {
+            UpdateEditableOptions(null, client, null);
+            titleText.text = ReservationConstants.NEW_TITLE;
+            ToggleConfirmButton();
+            navigator.GoTo(navScreen);
+        }
+
+        ///<summary>
+        /// Fills the available fields and opens the reservation edit pannel withe the provided room object.
+        /// Use when adding a NEW reservation for a specific room from the client screen.
+        ///</summary>
+        public void OpenEditReservation(IRoom room)
+        {
+            UpdateEditableOptions(null, null, room);
+            titleText.text = ReservationConstants.NEW_TITLE;
+            ToggleConfirmButton();
+            navigator.GoTo(navScreen);
+        }
+    #endregion
+
+    #region Public functions
+        ///<summary>
+        /// Opens the modal calendar overlay if a property is selected in order to change or set the reservation period
+        ///</summary>
+        public void ChangePeriod()
+        {
+            string reservationID = (currentReservation != null) ? currentReservation.ID : string.Empty;
+
+            if(currentRoom != null)
             {
-                Debug.Log(item.RoomID);
+                modalCalendarDialog.Show(
+                    DateTime.Today,
+                    currentReservation,
+                    ReservationDataManager.GetReservations()
+                        .Where(r => r.RoomID == currentRoom.ID && r.ID != reservationID)
+                        .ToList(),
+                        UpdateReservationPeriod
+                    );
             }
         }
-    }
 
-    public void CommitChanges()
+        ///<summary>
+        /// Propmpts a confirmation screen if a reservetion is being edited. If the reservation is new the confirmation dialog is skipped
+        ///</summary>
+        public void CommitChanges()
+        {
+            if (currentReservation != null)
+            {
+                editConfirmation.ConfirmCallback = () =>
+                {
+                    currentReservation.EditReservation(
+                        currentRoom,
+                        currentClient,
+                        start,
+                        end
+                    );
+                    navigator.GoBack();
+                    reservationsScreen.ReloadReservations();
+                };
+                confirmationDialog.Show(editConfirmation);
+            }
+            else
+            {
+                ReservationDataManager.AddReservation(
+                    currentRoom,
+                    currentClient,
+                    start,
+                    end
+                );
+                navigator.GoBack();
+                reservationsScreen.ReloadReservations();
+            }
+        }
+
+        ///<summary>
+        /// Sets the curent client and updates the client input field text to the client name
+        ///</summary>
+        public void SetClient(IClient client)
+        {
+            currentClient = client;
+            clientInputField.text = client.Name;
+        }
+    #endregion
+
+    //Toggles the save/confirm reservation edit button off if there are any necessary fields unfilled
+    private void ToggleConfirmButton()
     {
-        // if (currentReservation != null)
-        // {
-        //     currentReservation.EditReservation(
+        if(currentProperty == null)
+        {
+            confirmButton.interactable = false;
+            return;
+        }
 
-        //     );
-        // }
+        if(currentRoom == null)
+        {
+            confirmButton.interactable = false;
+            return;
+        }
+
+        if(currentClient == null)
+        {
+            confirmButton.interactable = false;
+            return;
+        }
+
+        if(start == end)
+        {
+            confirmButton.interactable = false;
+            return;
+        }
+
+        confirmButton.interactable = true;
     }
 
+    //TODO: Integrate has room property from new property data
+    //Sets the selected property object as selected from the dropdown options. This also sets the room in the case of the property not having rooms
     private void SelectProperty(int optionIndex)
     {
         if(optionIndex > 0)
@@ -109,8 +221,10 @@ public class ReservationEditScreen : MonoBehaviour
         }
 
         UpdateRoomDropdown(currentProperty);
+        ToggleConfirmButton();
     }
 
+    //Sets the selected room object as selected from the dropdown options
     private void SelectRoom(int optionIndex)
     {
         if(optionIndex > 0)
@@ -121,19 +235,17 @@ public class ReservationEditScreen : MonoBehaviour
         {
             currentRoom = null;
         }
+        ToggleConfirmButton();
     }
 
+    //Updates all editable fields in the edit reservation screen
     private void UpdateEditableOptions(IReservation reservation, IClient client, IRoom room)
     {
         currentReservation = reservation;
         currentRoom = room;
         currentClient = client;
 
-
-            //update dropdown + data
         UpdatePropertyDropdown();
-
-        //update dropdown + data
 
         clientInputField.text = (client != null) ? client.Name : Constants.defaultCustomerName;
 
@@ -151,6 +263,7 @@ public class ReservationEditScreen : MonoBehaviour
         else
         {
             start = DateTime.Today;
+            end = DateTime.Today;
             reservationPeriodText.text = start.ToString(Constants.DateTimePrintFormat);
         }
 
@@ -243,17 +356,8 @@ public class ReservationEditScreen : MonoBehaviour
         roomDropdown.RefreshShownValue();
     }
 
-
-
-
-
-
-
-
-
-
-
-    private void SaveAndUpdatedReservationPeriod(DateTime _start, DateTime _end)
+    //Callback function for the modal calendar overlay, sets selected start and end times
+    private void UpdateReservationPeriod(DateTime _start, DateTime _end)
     {
         start = _start;
         end = _end;
@@ -262,5 +366,6 @@ public class ReservationEditScreen : MonoBehaviour
             start.ToString(Constants.DateTimePrintFormat)
             + Constants.AndDelimiter
             + end.ToString(Constants.DateTimePrintFormat);
+        ToggleConfirmButton();
     }
 }

@@ -9,5 +9,5 @@ public interface IReservation
     string RoomID { get; }
     IDateTimePeriod Period { get; }
 
-    void EditReservation(IRoom room, string _customerID, DateTime start, DateTime end);
+    void EditReservation(IRoom room, IClient client, DateTime start, DateTime end);
 }

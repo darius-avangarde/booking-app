@@ -69,18 +69,18 @@ public static class ReservationDataManager
         return newReservation;
     }
 
-    public static IReservation AddReservation(IRoom room, string customerID, DateTime start, DateTime end)
+    public static IReservation AddReservation(IRoom room, IClient client, DateTime start, DateTime end)
     {
-        Reservation newReservation = new Reservation(room,customerID,start,end);
+        Reservation newReservation = new Reservation(room, client.ID, start,end);
         Data.reservations.Add(newReservation);
         WriteReservationData();
 
         return newReservation;
     }
 
-    public static void EditReservation(IReservation reservation, IRoom room, string customerID, DateTime start, DateTime end)
+    public static void EditReservation(IReservation reservation, IRoom room, IClient client, DateTime start, DateTime end)
     {
-        reservation.EditReservation(room, customerID, start, end);
+        reservation.EditReservation(room, client, start, end);
         WriteReservationData();
     }
 
@@ -197,12 +197,12 @@ public static class ReservationDataManager
             WriteReservationData();
         }
 
-        public void EditReservation(IRoom room, string _customerID, DateTime start, DateTime end)
+        public void EditReservation(IRoom room, IClient client, DateTime start, DateTime end)
         {
             id = Guid.NewGuid().ToString();
             propertyID = room.PropertyID;
             roomID = room.ID;
-            customerID = _customerID;
+            customerID = client.ID;
             period = new DateTimePeriod(start, end);
             WriteReservationData();
         }
