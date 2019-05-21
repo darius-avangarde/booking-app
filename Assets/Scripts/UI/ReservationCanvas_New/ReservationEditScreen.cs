@@ -39,6 +39,12 @@ public class ReservationEditScreen : MonoBehaviour
         [SerializeField]
         private Text errorText;
 
+        public bool AllowSearch
+        {
+            get => allowSearch;
+        }
+        private bool allowSearch = false;
+
     #endregion
 
     #region Private variables
@@ -167,6 +173,14 @@ public class ReservationEditScreen : MonoBehaviour
                 navigator.GoBack();
                 reservationsScreen.ReloadReservations();
             }
+
+            allowSearch = false;
+        }
+
+        public void CancelChanges()
+        {
+            navigator.GoBack();
+            allowSearch = false;
         }
 
         ///<summary>
@@ -283,6 +297,7 @@ public class ReservationEditScreen : MonoBehaviour
         }
 
         ValidateInput();
+        allowSearch = true;
     }
 
     private void UpdatePropertyDropdown()
