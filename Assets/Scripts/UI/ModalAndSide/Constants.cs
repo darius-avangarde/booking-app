@@ -15,6 +15,22 @@ public class Constants : MonoBehaviour
     public const string DateTimePrintFormat = "dd/MM/yy";
     public const string AndDelimiter = "  -  ";
 
+    #region Reservation strings
+        public const string CLIENTS_TITLE = "Clienți";
+        public const string DELETE_DIALOG = "Ștergeți rezervarea?";
+        public const string EDIT_DIALOG = "Moficați rezervarea?";
+        public const string EDIT_TITLE = "Modifică rezervarea";
+        public const string NEW_TITLE = "Rezervare nouă";
+        public const string NEWLINE = "\n";
+
+        //error messages
+        public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
+        public const string ERR_ROOM = "Specificați camera pentru această rezervare";
+        public const string ERR_PERIOD = "Există deja o rezervare pe această cameră care se suprapune cu perioada selectată";
+        public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
+        public const string ERR_DATES = "Data de sfârșit a rezervarii trebuie să fie cu cel puțin o zi după de data de început a acesteia";
+    #endregion
+
     // COLORS
     public readonly static Color darkTextColor = new Color(0.2313726f, 0.2196078f, 0.2078431f);
     public readonly static Color lightTextColor = new Color(0.7019608f, 0.6745098f, 0.6470588f);
@@ -87,4 +103,5 @@ public class Constants : MonoBehaviour
         {1, "Lună"},
         {2, "An"}
     };
+
 }

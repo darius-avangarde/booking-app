@@ -13,18 +13,20 @@ public class ClientPickerObject : MonoBehaviour
 
     private IClient client;
 
-
     private void OnDestroy()
     {
         button.onClick.RemoveAllListeners();
     }
 
-    public void Initialize(IClient _client, UnityAction<IClient> onSelect)
+    ///<summary>
+    ///Sets the target client for this picker object and adds selectAction to the onClick event of the object.
+    ///</summary>
+    internal void Initialize(IClient _client, UnityAction<IClient> selectAction)
     {
         client = _client;
         nameText.text = client.Name;
         numberText.text = client.Number;
 
-        button.onClick.AddListener(() => onSelect(client));
+        button.onClick.AddListener(() => selectAction(client));
     }
 }

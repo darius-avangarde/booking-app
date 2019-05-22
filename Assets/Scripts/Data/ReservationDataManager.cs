@@ -60,6 +60,11 @@ public static class ReservationDataManager
         return Data.reservations.Find(r => r.ID.Equals(ID));
     }
 
+    // TODO: Remove unused AddReservation
+    ///<summary>
+    ///Do not use this method (both client and reservation objects are required with the new system).
+    /// Use the ".AddReservation(IRoom room, IClient client, DateTime start, DateTime end)" overload instead.
+    ///</summary>
     public static IReservation AddReservation(IRoom room)
     {
         Reservation newReservation = new Reservation(room);

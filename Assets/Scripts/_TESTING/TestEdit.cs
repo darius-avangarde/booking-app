@@ -6,29 +6,41 @@ using UnityEngine;
 public class TestEdit : MonoBehaviour
 {
     [SerializeField]
-    ReservationsViewScreen view;
+    ReservationEditScreen edit;
 
     IClient client;
     IRoom room;
-
+    IReservation reservation;
     // Start is called before the first frame update
     void Start()
     {
-
         client = ClientDataManager.GetClients().ToList()[0];
-        IReservation r = ReservationDataManager.GetReservations().ToList()[0];
-        room = PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID);
-        //editScreen.OpenEditReservation(clients[0]);
+        room = PropertyDataManager.GetProperties().ToList()[0].Rooms.ToList()[0];
+        reservation = ReservationDataManager.GetReservations().ToList()[0];
     }
 
-    public void OpenViewC()
+    public void OpenViewClient()
     {
-        view.ViewClientReservations(client);
+        if(client != null)
+            edit.OpenEditReservation(client, null);
+        else
+            Debug.Log("Reservation is null");
     }
 
-    public void OpenViewR()
+    public void OpenViewRoom()
     {
-        view.ViewRoomReservations(room);
+        if(room != null)
+            edit.OpenEditReservation(room, null);
+        else
+            Debug.Log("Reservation is null");
+    }
+
+    public void OpenViewReservation()
+    {
+        if(reservation != null)
+            edit.OpenEditReservation(reservation, null);
+        else
+            Debug.Log("Reservation is null");
     }
 
 }

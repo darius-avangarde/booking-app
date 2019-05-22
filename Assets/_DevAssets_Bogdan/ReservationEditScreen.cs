@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UINavigation;
+using UnityEngine.Events;
 
 public class ReservationEditScreen : MonoBehaviour
 {
     #region Inspector references
-
         [Header("Navigation")]
         [SerializeField]
         private Navigator navigator;
@@ -23,8 +23,6 @@ public class ReservationEditScreen : MonoBehaviour
 
         [Space]
         [SerializeField]
-        private ReservationsViewScreen reservationsScreen;
-        [SerializeField]
         private Text titleText;
         [SerializeField]
         private Dropdown propertyDropdown;
@@ -38,16 +36,14 @@ public class ReservationEditScreen : MonoBehaviour
         private Button confirmButton;
         [SerializeField]
         private Text errorText;
-
-        public bool AllowSearch
+    #endregion
+    #region Private variables
+        internal bool AllowSearch
         {
             get => allowSearch;
         }
         private bool allowSearch = false;
 
-    #endregion
-
-    #region Private variables
         private Dictionary<string,Dropdown.OptionData> propertyOptions;
         private Dictionary<string,Dropdown.OptionData> roomOptions;
 
@@ -57,18 +53,21 @@ public class ReservationEditScreen : MonoBehaviour
         private IClient currentClient;
 
         private List<IReservation> roomReservationList;
+
         //set these on callback from calendar overlay
         private DateTime start;
         private DateTime end;
 
         private ConfirmationDialogOptions editConfirmation;
+        private UnityAction<IReservation> confirmationCallback;
     #endregion
 
     private void Start()
     {
+        allowSearch = false;
         errorText.enabled = false;
         editConfirmation = new ConfirmationDialogOptions();
-        editConfirmation.Message = ReservationConstants.EDIT_DIALOG;
+        editConfirmation.Message = Constants.EDIT_DIALOG;
         propertyDropdown.onValueChanged.AddListener(SelectProperty);
         roomDropdown.onValueChanged.AddListener(SelectRoom);
     }
@@ -83,15 +82,17 @@ public class ReservationEditScreen : MonoBehaviour
         ///<summary>
         /// Fills the available fields and opens the reservation edit pannel withe the provided reservation object
         /// Use to EDIT a reservation from either the client screen or the room screen when tapping on an existing reservation.
+        /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
         ///</summary>
-        public void OpenEditReservation(IReservation reservation)
+        internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> confirmCallback)
         {
+            confirmationCallback = confirmCallback;
             UpdateEditableOptions(
                 reservation,
                 ClientDataManager.GetClient(reservation.CustomerID),
                 PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
                 );
-            titleText.text = ReservationConstants.EDIT_TITLE;
+            titleText.text = Constants.EDIT_TITLE;
             ValidateInput();
             navigator.GoTo(navScreen);
         }
@@ -99,11 +100,13 @@ public class ReservationEditScreen : MonoBehaviour
         ///<summary>
         /// Fills the available fields and opens the reservation edit pannel withe the provided client object
         /// Use when adding a NEW reservation for a specific client from the client screen.
+        /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
         ///</summary>
-        public void OpenEditReservation(IClient client)
+        internal void OpenEditReservation(IClient client, UnityAction<IReservation> confirmCallback)
         {
+            confirmationCallback = confirmCallback;
             UpdateEditableOptions(null, client, null);
-            titleText.text = ReservationConstants.NEW_TITLE;
+            titleText.text = Constants.NEW_TITLE;
             ValidateInput();
             navigator.GoTo(navScreen);
         }
@@ -111,11 +114,13 @@ public class ReservationEditScreen : MonoBehaviour
         ///<summary>
         /// Fills the available fields and opens the reservation edit pannel withe the provided room object.
         /// Use when adding a NEW reservation for a specific room from the client screen.
+        /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
         ///</summary>
-        public void OpenEditReservation(IRoom room)
+        internal void OpenEditReservation(IRoom room, UnityAction<IReservation> confirmCallback)
         {
+            confirmationCallback = confirmCallback;
             UpdateEditableOptions(null, null, room);
-            titleText.text = ReservationConstants.NEW_TITLE;
+            titleText.text = Constants.NEW_TITLE;
             ValidateInput();
             navigator.GoTo(navScreen);
         }
@@ -157,21 +162,29 @@ public class ReservationEditScreen : MonoBehaviour
                         start,
                         end
                     );
+                    if(confirmationCallback != null)
+                    {
+                        confirmationCallback.Invoke(currentReservation);
+                    }
                     navigator.GoBack();
-                    reservationsScreen.ReloadReservations();
+                    //reservationsScreen.ReloadReservations();
                 };
                 confirmationDialog.Show(editConfirmation);
             }
             else
             {
-                ReservationDataManager.AddReservation(
+                IReservation newReservation = ReservationDataManager.AddReservation(
                     currentRoom,
                     currentClient,
                     start,
                     end
                 );
+                if(confirmationCallback != null)
+                {
+                    confirmationCallback.Invoke(newReservation);
+                }
                 navigator.GoBack();
-                reservationsScreen.ReloadReservations();
+                //reservationsScreen.ReloadReservations();
             }
 
             allowSearch = false;
@@ -188,8 +201,12 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         public void SetClient(IClient client)
         {
-            currentClient = client;
-            clientInputField.text = client.Name;
+            if(client != null)
+            {
+                currentClient = client;
+                clientInputField.text = client.Name;
+            }
+            ValidateInput();
         }
     #endregion
 
@@ -199,34 +216,34 @@ public class ReservationEditScreen : MonoBehaviour
         if(currentProperty == null)
         {
             confirmButton.interactable = false;
-            SetErrorText(ReservationConstants.ERR_PROP);
+            SetErrorText(Constants.ERR_PROP);
             return;
         }
 
         if(currentRoom == null)
         {
             confirmButton.interactable = false;
-            SetErrorText(ReservationConstants.ERR_ROOM);
+            SetErrorText(Constants.ERR_ROOM);
             return;
         }
         if(OverlapsOtherReservation())
         {
             confirmButton.interactable = false;
-            SetErrorText(ReservationConstants.ERR_PERIOD);
+            SetErrorText(Constants.ERR_PERIOD);
             return;
         }
 
         if(currentClient == null)
         {
             confirmButton.interactable = false;
-            SetErrorText(ReservationConstants.ERR_CLIENT);
+            SetErrorText(Constants.ERR_CLIENT);
             return;
         }
 
         if(start == end)
         {
             confirmButton.interactable = false;
-            SetErrorText(ReservationConstants.ERR_DATES);
+            SetErrorText(Constants.ERR_DATES);
             return;
         }
 
@@ -283,7 +300,7 @@ public class ReservationEditScreen : MonoBehaviour
 
         UpdatePropertyDropdown();
 
-        clientInputField.text = (client != null) ? client.Name : Constants.defaultCustomerName;
+        clientInputField.text = (client != null) ? client.Name : string.Empty;
 
         if(reservation != null)
         {
