@@ -35,15 +35,40 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
-    public void SetHasRooms(bool toggle)
-    {
-        currentProperty.HasRooms = toggle;
-    }
-
     public void SetPropertyFieldsText()
     {
         propertyNameInputField.text = currentProperty.Name ?? "";
         propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
+    }
+
+    public void SaveProperty()
+    {
+        if (PropertyDataManager.GetProperty(currentProperty.ID) == null) {
+            OnNameChanged(propertyNameInputField.text);
+            if (HasRoomsToggle)
+            {
+                currentProperty.HasRooms = true;
+            }
+            else
+            {
+                currentProperty.HasRooms = false;
+            }
+            PropertyDataManager.SaveProperty(currentProperty);
+            navigator.GoBack();
+        }
+        else
+        {
+            OnNameChanged(propertyNameInputField.text);
+            if (HasRoomsToggle.isOn)
+            {
+                currentProperty.HasRooms = true;
+            }
+            else
+            {
+                currentProperty.HasRooms = false;
+            }
+            navigator.GoBack();
+        }
     }
 
     public void DeleteProperty()

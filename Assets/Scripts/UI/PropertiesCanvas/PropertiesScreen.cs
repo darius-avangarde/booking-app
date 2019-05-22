@@ -8,15 +8,19 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private ConfirmationDialog confirmationDialog = null;
+    [SerializeField]
     private Transform propertyAdminScreenTransform = null;
     [SerializeField]
     private Transform roomAdminScreenTransform = null;
     [SerializeField]
-    private GameObject propertyPrefabButton = null;
+    private GameObject propertyWithRoomsPrefab = null;
+    [SerializeField]
+    private GameObject propertyWithoutRoomsPrefab = null;
     [SerializeField]
     private Transform addPropertyButton = null;
     [SerializeField]
-    private Transform propertyInfoContent = null;
+    private RectTransform propertyInfoContent = null;
     private List<GameObject> propertyButtons = new List<GameObject>();
     private int index = 0;
 
@@ -28,13 +32,20 @@ public class PropertiesScreen : MonoBehaviour
         }
         foreach (var property in PropertyDataManager.GetProperties())
         {
-            GameObject propertyButton = Instantiate(propertyPrefabButton, propertyInfoContent);
-            propertyButton.GetComponent<PropertyButton>().layoutContent = propertyInfoContent.GetComponent<RectTransform>();
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen);
-            propertyButton.GetComponent<PropertyButton>().navigator = navigator;
-            propertyButton.GetComponent<PropertyButton>().roomAdminScreenTransform = roomAdminScreenTransform;
-            propertyButtons.Add(propertyButton);
-            index++;
+            if (property.HasRooms)
+            {
+                GameObject propertyButton = Instantiate(propertyWithRoomsPrefab, propertyInfoContent);
+                propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
+                propertyButtons.Add(propertyButton);
+                index++;
+            }
+            else
+            {
+                GameObject propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
+                propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
+                propertyButtons.Add(propertyButton);
+                index++;
+            }
         }
         addPropertyButton.SetSiblingIndex(index);
     }
@@ -43,6 +54,23 @@ public class PropertiesScreen : MonoBehaviour
     {
         IProperty property = PropertyDataManager.AddProperty();
         OpenPropertyAdminScreen(property);
+    }
+
+    public void DeleteProperty(IProperty property)
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = "Ștergeți proprietatea?",
+            ConfirmText = "Ștergeți",
+            CancelText = "Anulați ",
+            ConfirmCallback = () =>
+            {
+                PropertyDataManager.DeleteProperty(property.ID);
+                ReservationDataManager.DeleteReservationsForProperty(property.ID);
+                InstantiateProperties();
+            },
+            CancelCallback = null
+        });
     }
 
     private void OpenPropertyAdminScreen(IProperty property)

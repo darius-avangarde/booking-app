@@ -60,10 +60,15 @@ public static class PropertyDataManager
     public static IProperty AddProperty()
     {
         Property newProperty = new Property();
-        Data.properties.Add(newProperty);
-        WritePropertyData();
-
+        //Data.properties.Add(newProperty);
+        //WritePropertyData();
         return newProperty;
+    }
+
+    public static void SaveProperty(IProperty property)
+    {
+        Data.properties.Add((Property)property);
+        WritePropertyData();
     }
 
     public static void DeleteProperty(string ID)
@@ -242,7 +247,7 @@ public static class PropertyDataManager
             }
         }
 
-        //public int Persons => singleBeds + 2 * doubleBeds;
+        public int Persons => singleBeds + 2 * doubleBeds;
 
         public Room(string propertyID)
         {
