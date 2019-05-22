@@ -15,8 +15,10 @@ public class TestEdit : MonoBehaviour
     void Start()
     {
         client = ClientDataManager.GetClients().ToList()[0];
-        room = PropertyDataManager.GetProperties().ToList()[0].Rooms.ToList()[0];
-        reservation = ReservationDataManager.GetReservations().ToList()[0];
+        IProperty p = PropertyDataManager.GetProperties().ToList()[0];
+        room = p.Rooms.ToList()[0];
+        if(ReservationDataManager.GetReservations().Count() > 0)
+            reservation = ReservationDataManager.GetReservations().ToList()[0];
     }
 
     public void OpenViewClient()
@@ -24,7 +26,7 @@ public class TestEdit : MonoBehaviour
         if(client != null)
             edit.OpenEditReservation(client, null);
         else
-            Debug.Log("Reservation is null");
+            Debug.Log("client is null");
     }
 
     public void OpenViewRoom()
@@ -32,7 +34,7 @@ public class TestEdit : MonoBehaviour
         if(room != null)
             edit.OpenEditReservation(room, null);
         else
-            Debug.Log("Reservation is null");
+            Debug.Log("room is null");
     }
 
     public void OpenViewReservation()
@@ -40,7 +42,7 @@ public class TestEdit : MonoBehaviour
         if(reservation != null)
             edit.OpenEditReservation(reservation, null);
         else
-            Debug.Log("Reservation is null");
+            Debug.Log("reservation is null");
     }
 
 }

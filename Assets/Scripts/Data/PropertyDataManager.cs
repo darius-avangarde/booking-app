@@ -157,6 +157,7 @@ public static class PropertyDataManager
             Room newRoom = new Room(id);
             if (!HasRooms)
             {
+                newRoom.Name = name;
                 getPropertyRoom = newRoom;
             }
             rooms.Add(newRoom);

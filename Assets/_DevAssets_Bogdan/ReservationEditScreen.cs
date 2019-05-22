@@ -266,10 +266,14 @@ public class ReservationEditScreen : MonoBehaviour
         if(optionIndex > 0)
         {
             currentProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(optionIndex).Key);
+            if(!currentProperty.HasRooms)
+            {
+                currentRoom = currentProperty.Rooms.ToList()[0];
+            }
         }
         else
         {
-            currentProperty = null; //if prop has 1 room also set room
+            currentProperty = null;
             currentRoom = null;
         }
 
@@ -357,7 +361,7 @@ public class ReservationEditScreen : MonoBehaviour
     {
         if(property != null)
         {
-            if(property.Rooms.Count() > 1)
+            if(property.HasRooms)
             {
                 roomDropdown.transform.parent.gameObject.SetActive(true);
             }
