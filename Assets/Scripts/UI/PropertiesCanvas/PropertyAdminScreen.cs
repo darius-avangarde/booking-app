@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,21 +11,28 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Transform roomAdminScreenTransform = null;
-    [SerializeField]
     private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
-    private GameObject roomPrefabButton = null;
+    private Toggle HasRoomsToggle;
     [SerializeField]
-    private Transform roomsContentScrollView = null;
-    private List<GameObject> roomButtons = new List<GameObject>();
+    private Toggle NoRoomsToggle;
     private IProperty currentProperty;
 
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
+        if (property.HasRooms)
+        {
+            HasRoomsToggle.isOn = true;
+            NoRoomsToggle.isOn = false;
+        }
+        else
+        {
+            NoRoomsToggle.isOn = true;
+            HasRoomsToggle.isOn = false;
+        }
     }
 
     public void SetPropertyFieldsText()
@@ -34,27 +41,34 @@ public class PropertyAdminScreen : MonoBehaviour
         propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
     }
 
-    public void InstantiateRooms()
+    public void SaveProperty()
     {
-        foreach (var roomButton in roomButtons)
-        {
-            Destroy(roomButton);
-        }
-        if (currentProperty != null)
-        {
-            foreach (var room in currentProperty.Rooms)
+        if (PropertyDataManager.GetProperty(currentProperty.ID) == null) {
+            OnNameChanged(propertyNameInputField.text);
+            if (HasRoomsToggle)
             {
-                GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
-                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomAdminScreen);
-                roomButtons.Add(roomButton);
+                currentProperty.HasRooms = true;
             }
+            else
+            {
+                currentProperty.HasRooms = false;
+            }
+            PropertyDataManager.SaveProperty(currentProperty);
+            navigator.GoBack();
         }
-    }
-
-    public void AddRoomItem()
-    {
-        IRoom room = currentProperty.AddRoom();
-        OpenRoomAdminScreen(room);
+        else
+        {
+            OnNameChanged(propertyNameInputField.text);
+            if (HasRoomsToggle.isOn)
+            {
+                currentProperty.HasRooms = true;
+            }
+            else
+            {
+                currentProperty.HasRooms = false;
+            }
+            navigator.GoBack();
+        }
     }
 
     public void DeleteProperty()
@@ -77,11 +91,5 @@ public class PropertyAdminScreen : MonoBehaviour
     {
         propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;
-    }
-
-    private void OpenRoomAdminScreen(IRoom room)
-    {
-        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(currentProperty, room);
-        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
     }
 }

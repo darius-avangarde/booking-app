@@ -5,10 +5,12 @@ using UnityEngine;
 public class Constants : MonoBehaviour
 {
     public const string defaultProperyAdminScreenName = "Proprietate nouă";
+    public const string defaultProperyAdminScreenNrRooms = "Număr de camere";
     public const string Proprietate = "Proprietate: ";
     public const string defaultRoomAdminScreenName = "Camera nouă";
     public const string defaultCustomerName = "NumeClient";
     public const string Persoane = "Persoane: ";
+    public const string Pret = "Pret: ";
     public const string SingleBed = "Paturi single: ";
     public const string DoubleBed = "Paturi duble: ";
 

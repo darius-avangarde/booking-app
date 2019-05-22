@@ -7,6 +7,8 @@ public class FilterButton : MonoBehaviour
 {
     [SerializeField]
     private Text roomCapacityText = null;
+    //[SerializeField]
+    //private Text roomPriceText = null;
     [SerializeField]
     private Text singleBedText = null;
     [SerializeField]
@@ -28,6 +30,7 @@ public class FilterButton : MonoBehaviour
 
         propertyInfoText.text = propertyInfo;
         roomCapacityText.text = roomCapacityInfo;
+        //roomPriceText.text = roomPriceInfo;
         singleBedText.text = singleBedInfo;
         doubleBedText.text = doubleBedInfo;
     }
