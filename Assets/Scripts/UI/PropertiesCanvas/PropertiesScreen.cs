@@ -32,20 +32,18 @@ public class PropertiesScreen : MonoBehaviour
         }
         foreach (var property in PropertyDataManager.GetProperties())
         {
+            GameObject propertyButton;
             if (property.HasRooms)
             {
-                GameObject propertyButton = Instantiate(propertyWithRoomsPrefab, propertyInfoContent);
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
-                propertyButtons.Add(propertyButton);
-                index++;
+                propertyButton = Instantiate(propertyWithRoomsPrefab, propertyInfoContent);
             }
             else
             {
-                GameObject propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
-                propertyButtons.Add(propertyButton);
-                index++;
+                propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
             }
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
+            propertyButtons.Add(propertyButton);
+            index++;
         }
         addPropertyButton.SetSiblingIndex(index);
     }

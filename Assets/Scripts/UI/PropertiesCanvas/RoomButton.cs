@@ -16,8 +16,9 @@ public class RoomButton : MonoBehaviour
     private Button roomButton;
     [SerializeField]
     private Button editRoomButton;
+    [SerializeField]
+    private Button deleteRoomButton;
     private IRoom currentRoom;
-    private Action<IRoom> currentCallback;
     //[SerializeField]
     //private Text personsNumber = null;
 
@@ -38,7 +39,6 @@ public class RoomButton : MonoBehaviour
         {
             roomBeds.text += "Paturi duble: " + room.DoubleBeds;
         }
-        currentCallback = callback;
         currentRoom = room;
         editRoomButton.onClick.AddListener(() => callback(room));
     }

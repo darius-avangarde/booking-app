@@ -36,6 +36,18 @@ public class RoomAdminScreen : MonoBehaviour
         roomAdminScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
     }
 
+    public void SaveRoom()
+    {
+        OnRoomNameValueChanged(roomNameInputField.text);
+        OnSingleBedsChanged(roomSingleBedQuantityInputField.text);
+        OnDoubleBedsChanged(roomDoubleBedQuantityInputField.text);
+        if (currentProperty.GetRoom(currentRoom.ID) == null)
+        {
+            currentProperty.SaveRoom(currentRoom);
+        }
+        navigator.GoBack();
+    }
+
     public void DeleteRoom()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions

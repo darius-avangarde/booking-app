@@ -38,7 +38,7 @@ public class PropertyButton : MonoBehaviour
         deletePropertyButton.onClick.AddListener(() => deleteCallback(property));
         if (!property.HasRooms)
         {
-            InitializeRoom(property);
+            //InitializeRoom(property);
             //propertyButtonItem.onClick.AddListener(() => roomButtons[0].GetComponent<RoomButton>().OpenRoom());
         }
         else

@@ -43,32 +43,20 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void SaveProperty()
     {
-        if (PropertyDataManager.GetProperty(currentProperty.ID) == null) {
-            OnNameChanged(propertyNameInputField.text);
-            if (HasRoomsToggle)
-            {
-                currentProperty.HasRooms = true;
-            }
-            else
-            {
-                currentProperty.HasRooms = false;
-            }
-            PropertyDataManager.SaveProperty(currentProperty);
-            navigator.GoBack();
+        NameChanged(propertyNameInputField.text);
+        if (HasRoomsToggle.isOn)
+        {
+            currentProperty.HasRooms = true;
         }
         else
         {
-            OnNameChanged(propertyNameInputField.text);
-            if (HasRoomsToggle.isOn)
-            {
-                currentProperty.HasRooms = true;
-            }
-            else
-            {
-                currentProperty.HasRooms = false;
-            }
-            navigator.GoBack();
+            currentProperty.HasRooms = false;
         }
+        if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
+        {
+            PropertyDataManager.SaveProperty(currentProperty);
+        }
+        navigator.GoBack();
     }
 
     public void DeleteProperty()
@@ -78,7 +66,8 @@ public class PropertyAdminScreen : MonoBehaviour
             Message = "Ștergeți proprietatea?",
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
-            ConfirmCallback = () => {
+            ConfirmCallback = () =>
+            {
                 PropertyDataManager.DeleteProperty(currentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
                 navigator.GoBack();
@@ -87,7 +76,7 @@ public class PropertyAdminScreen : MonoBehaviour
         });
     }
 
-    public void OnNameChanged(string value)
+    public void NameChanged(string value)
     {
         propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;
