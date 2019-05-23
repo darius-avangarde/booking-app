@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TestEdit : MonoBehaviour
 {
     [SerializeField]
     ReservationEditScreen edit;
-
     [SerializeField]
-    ReservationsViewScreen viewRect;
+    Text testText;
+
+
+
 
     IClient client;
     IRoom room;
@@ -23,12 +26,21 @@ public class TestEdit : MonoBehaviour
         if(ReservationDataManager.GetReservations().Count() > 0)
             reservation = ReservationDataManager.GetReservations().ToList()[0];
 
+
+        List<IReservation> rlist = ReservationDataManager.GetReservations().ToList();
+        for (int i = 0; i < rlist.Count; i++)
+        {
+            testText.text +=  Constants.NEWLINE + ClientDataManager.GetClient(rlist[i].CustomerID).Name + Constants.NEWLINE
+                + PropertyDataManager.GetProperty(rlist[i].PropertyID).GetRoom(rlist[i].RoomID).Name + Constants.NEWLINE
+                + rlist[i].Period.Start.ToString(Constants.DateTimePrintFormat) + " - " + rlist[i].Period.End.ToString(Constants.DateTimePrintFormat)+ Constants.NEWLINE;
+        }
+
     }
 
     public void OpenViewClient()
     {
         if(client != null)
-            edit.OpenEditReservation(client);
+            edit.OpenAddReservation(client, (r) => DebugC(r,true));
         else
             Debug.Log("client is null");
     }
@@ -36,7 +48,7 @@ public class TestEdit : MonoBehaviour
     public void OpenViewRoom()
     {
         if(room != null)
-            edit.OpenEditReservation(room);
+            edit.OpenAddReservation(room, (r) => DebugC(r,true));
         else
             Debug.Log("room is null");
     }
@@ -44,27 +56,13 @@ public class TestEdit : MonoBehaviour
     public void OpenViewReservation()
     {
         if(reservation != null)
-            edit.OpenEditReservation(reservation);
+            edit.OpenEditReservation(reservation, (r) => DebugC(r,true));
         else
             Debug.Log("reservation is null");
     }
 
-
-
-    public void ViewRoomReservations()
+    private void DebugC(IReservation r, bool isEdit)
     {
-        if(room != null)
-            viewRect.ViewRoomReservations(room);
-        else
-            Debug.Log("room is null");
+        Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.CustomerID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
     }
-
-    public void ViewClientReservations()
-    {
-        if(reservation != null)
-            viewRect.ViewClientReservations(client);
-        else
-            Debug.Log("client is null");
-    }
-
 }

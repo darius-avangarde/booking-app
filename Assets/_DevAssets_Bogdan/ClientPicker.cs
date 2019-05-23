@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class ClientPicker : MonoBehaviour
 {
@@ -30,6 +31,10 @@ public class ClientPicker : MonoBehaviour
     [SerializeField]
     private int maxClientsInPicker = 100;
 
+    [Space]
+    [SerializeField]
+    private UnityEvent onClickAddNewClient;
+
 
     private List<GameObject> clientsInList = new List<GameObject>();
     private string currentQuerry;
@@ -54,24 +59,28 @@ public class ClientPicker : MonoBehaviour
     //Add client function attached to the add new client button in the client picker scrollrect
     public void AddNewClient()
     {
-        //pass value of input field//callback for return
-        Debug.Log("Going to new client screen");
-        //navigator go to new client screen
-        //perhaps give back action as well
+        Debug.Log("Should be to new client screen");
 
-        // callback is:
-        //SelectAction(client);
-            // if client is not saved (return with client = null)
-            // else client = newly created client
-        //(do navigator go back on cancel)
+        if(onClickAddNewClient != null)
+        {
+            onClickAddNewClient.Invoke();
+        }
 
         scrolRectGameObj.SetActive(false);
+    }
+
+    //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
+    internal void SelectAction(IClient client)
+    {
+        editScreen.SetClient(client);
+        scrolRectGameObj.SetActive(false);
+        addClientButton.SetActive(false);
     }
 
     //Filters the input field value on change if allowed to search, and starts load coroutine before populating scrolrect with matching clients
     private void FilterClients(string value)
     {
-        if(editScreen.AllowSearch)
+        if(editScreen.allowEdit)
         {
             if(!scrolRectGameObj.activeSelf)
             {
@@ -124,14 +133,6 @@ public class ClientPicker : MonoBehaviour
             Destroy(g);
         }
         clientsInList.Clear();
-    }
-
-    //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
-    private void SelectAction(IClient client)
-    {
-        editScreen.SetClient(client);
-        scrolRectGameObj.SetActive(false);
-        addClientButton.SetActive(false);
     }
 
     //compares two strings, returns true if the string begins with querry;
