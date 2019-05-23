@@ -40,7 +40,7 @@ public class TestEdit : MonoBehaviour
     public void OpenViewClient()
     {
         if(client != null)
-            edit.OpenEditReservation(client);
+            edit.OpenAddReservation(client, (r) => DebugC(r,true));
         else
             Debug.Log("client is null");
     }
@@ -48,7 +48,7 @@ public class TestEdit : MonoBehaviour
     public void OpenViewRoom()
     {
         if(room != null)
-            edit.OpenEditReservation(room);
+            edit.OpenAddReservation(room, (r) => DebugC(r,true));
         else
             Debug.Log("room is null");
     }
@@ -56,8 +56,13 @@ public class TestEdit : MonoBehaviour
     public void OpenViewReservation()
     {
         if(reservation != null)
-            edit.OpenEditReservation(reservation);
+            edit.OpenEditReservation(reservation, (r) => DebugC(r,true));
         else
             Debug.Log("reservation is null");
+    }
+
+    private void DebugC(IReservation r, bool isEdit)
+    {
+        Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.CustomerID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
     }
 }

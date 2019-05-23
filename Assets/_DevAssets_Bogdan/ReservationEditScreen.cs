@@ -53,11 +53,11 @@ public class ReservationEditScreen : MonoBehaviour
         private IClient currentClient;
 
         private List<IReservation> roomReservationList;
-
         //set these on callback from calendar overlay
         private IDateTimePeriod period;
-
         private ConfirmationDialogOptions editConfirmation;
+
+        private UnityAction<IReservation> confirmationCallback;
     #endregion
 
     private void Start()
@@ -111,6 +111,8 @@ public class ReservationEditScreen : MonoBehaviour
                         period.Start,
                         period.End
                     );
+                    if(confirmationCallback != null)
+                        confirmationCallback.Invoke(currentReservation);
                     navigator.GoBack();
                 };
                 confirmationDialog.Show(editConfirmation);
@@ -123,6 +125,8 @@ public class ReservationEditScreen : MonoBehaviour
                     period.Start,
                     period.End
                 );
+                if(confirmationCallback != null)
+                    confirmationCallback.Invoke(newReservation);
                 navigator.GoBack();
             }
 
@@ -160,8 +164,9 @@ public class ReservationEditScreen : MonoBehaviour
         /// Use to EDIT a reservation from either the client screen or the room screen when tapping on an existing reservation's edit reservation button.
         /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
         ///</summary>
-        internal void OpenEditReservation(IReservation reservation)
+        internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> callback)
         {
+            confirmationCallback = callback;
             period = reservation.Period;
             UpdateEditableOptions(
                 reservation,
@@ -178,8 +183,10 @@ public class ReservationEditScreen : MonoBehaviour
         /// Use when adding a NEW reservation from a specific clients's new reservation button.
         /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
         ///</summary>
-        internal void OpenEditReservation(IClient client)
+        internal void OpenAddReservation(IClient client, UnityAction<IReservation> callback)
         {
+            period = ReservationDataManager.DefaultPeriod();
+            confirmationCallback = callback;
             UpdateEditableOptions(null, client, null);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
@@ -190,8 +197,10 @@ public class ReservationEditScreen : MonoBehaviour
         /// Use when adding a NEW reservation from a specific room's new reservation button.
         /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
         ///</summary>
-        internal void OpenEditReservation(IRoom room)
+        internal void OpenAddReservation(IRoom room, UnityAction<IReservation> callback)
         {
+            period = ReservationDataManager.DefaultPeriod();
+            confirmationCallback = callback;
             UpdateEditableOptions(null, null, room);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
