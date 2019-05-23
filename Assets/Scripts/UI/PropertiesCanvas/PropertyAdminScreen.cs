@@ -18,12 +18,28 @@ public class PropertyAdminScreen : MonoBehaviour
     private Toggle HasRoomsToggle;
     [SerializeField]
     private Toggle NoRoomsToggle;
+    [SerializeField]
+    private GameObject RoomsToggleField;
     private IProperty currentProperty;
 
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-        if (property.HasRooms)
+        if(currentProperty.Name != null)
+        {
+            RoomsToggleField.SetActive(false);
+        }
+        else
+        {
+            RoomsToggleField.SetActive(true);
+        }
+    }
+
+    public void SetPropertyFieldsText()
+    {
+        propertyNameInputField.text = currentProperty.Name ?? "";
+        propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
+        if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
             NoRoomsToggle.isOn = false;
@@ -33,12 +49,6 @@ public class PropertyAdminScreen : MonoBehaviour
             NoRoomsToggle.isOn = true;
             HasRoomsToggle.isOn = false;
         }
-    }
-
-    public void SetPropertyFieldsText()
-    {
-        propertyNameInputField.text = currentProperty.Name ?? "";
-        propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
     }
 
     public void SaveProperty()

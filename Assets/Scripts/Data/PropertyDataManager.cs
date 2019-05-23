@@ -60,8 +60,6 @@ public static class PropertyDataManager
     public static IProperty AddProperty()
     {
         Property newProperty = new Property();
-        //Data.properties.Add(newProperty);
-        //WritePropertyData();
         return newProperty;
     }
 
@@ -71,6 +69,7 @@ public static class PropertyDataManager
         {
             IRoom newRoom = property.AddRoom();
             newRoom.Name = property.Name;
+            property.SaveRoom(newRoom);
             property.GetPropertyRoom = newRoom;
         }
         Data.properties.Add((Property)property);

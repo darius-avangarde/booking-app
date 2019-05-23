@@ -41,7 +41,7 @@ public class PropertiesScreen : MonoBehaviour
             {
                 propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
             }
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, confirmationDialog, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
             propertyButtons.Add(propertyButton);
             index++;
         }

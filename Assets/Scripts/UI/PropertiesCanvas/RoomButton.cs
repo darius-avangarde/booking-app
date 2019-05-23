@@ -22,28 +22,29 @@ public class RoomButton : MonoBehaviour
     //[SerializeField]
     //private Text personsNumber = null;
 
-    public void Initialize(IRoom room, Action<IRoom> callback)
+    public void Initialize(IRoom room, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
     {
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
-        roomName.text = string.IsNullOrEmpty(room.Price) ? Constants.defaultRoomAdminScreenName : ("Pret: " + room.Price + " ron");
-        roomBeds.text = " ";
+        roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.Pret : ("Pret: " + room.Price + " ron");
+        roomBeds.text = "Paturi ";
         if (room.SingleBeds != 0)
         {
-            roomBeds.text += "Paturi single: " + room.SingleBeds;
+            roomBeds.text += "single: " + room.SingleBeds;
         }
         if (room.SingleBeds != 0 && room.DoubleBeds != 0)
         {
-            roomBeds.text += ", ";
+            roomBeds.text += " & ";
         }
         if (room.DoubleBeds != 0)
         {
-            roomBeds.text += "Paturi duble: " + room.DoubleBeds;
+            roomBeds.text += "duble: " + room.DoubleBeds;
         }
         currentRoom = room;
-        editRoomButton.onClick.AddListener(() => callback(room));
+        editRoomButton.onClick.AddListener(() => editCallback(room));
+        deleteRoomButton.onClick.AddListener(() => deleteCallback(room));
     }
 
-    public void OpenRoom()
+    public void OpenRoomReservations()
     {
         //roomButton.onClick.AddListener(() => currentCallback(currentRoom));
     }
