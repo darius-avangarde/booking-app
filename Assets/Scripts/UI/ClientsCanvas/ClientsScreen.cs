@@ -35,6 +35,8 @@ public class ClientsScreen : MonoBehaviour
     private GameObject saveButton;
     [SerializeField]
     private GameObject editButton;
+    [SerializeField]
+    private Text textNameRequired;
     private List<GameObject> clientButtons = new List<GameObject>();
    
 
@@ -44,6 +46,7 @@ public class ClientsScreen : MonoBehaviour
         {
             Destroy(clientButton);
         }
+        clientButtons.Clear();
         foreach (var client in ClientDataManager.GetClients())
         {
 
@@ -56,22 +59,36 @@ public class ClientsScreen : MonoBehaviour
     public void SaveAddedClient()
     {
         Client client = new Client();
-        if (!string.IsNullOrEmpty(clientName.text))
+        if (clientName.text == " ")
         {
+            Debug.Log("nume necesar");
+            textNameRequired.text = "Te rog adaugă un nume!";
+        }
+        else
+        //if (!string.IsNullOrEmpty(clientName.text))
+        {
+            textNameRequired.text = " ";
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
             client.Email = clientEmail.text;
             ClientDataManager.AddClient(client);
         }
+        
     }
 
     public void EditClient()
     {
         var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
         Client client = new Client();
-        if (!string.IsNullOrEmpty(clientName.text))
+        if (clientName.text == " ")
         {
+            textNameRequired.text = "Te rog adaugă un nume!";
+        }
+        else
+        // if (!string.IsNullOrEmpty(clientName.text))
+        {
+            textNameRequired.text = " ";
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
@@ -94,6 +111,7 @@ public class ClientsScreen : MonoBehaviour
 
     private void OpenClientAdminScreen(IClient client)
     {
+        clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
         navigator.GoTo(clientAdminScreenTransform.GetComponent<NavScreen>());
     }
@@ -113,11 +131,10 @@ public class ClientsScreen : MonoBehaviour
 
             foreach (var client in clientButtons)
             {
-                Debug.Log(client.name);
+              
                 if (client.GetComponent<ClientButton>().clientName.text.ToString().ToLower().Trim().StartsWith(searchField.text.ToLower().Trim()))
                 {
                     client.SetActive(true);
-                    Debug.Log(client.name);
                 }
                 else
                 {

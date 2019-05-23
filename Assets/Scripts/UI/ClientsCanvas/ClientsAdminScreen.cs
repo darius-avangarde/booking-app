@@ -19,6 +19,8 @@ public class ClientsAdminScreen : MonoBehaviour
     private Text clientScreenAdress = null;
     [SerializeField]
     private Text clientScreenEmail = null;
+    [SerializeField]
+    private Transform addReservationButton;
     private IClient currentClient;
 
     public IClient GetCurrentClient()
@@ -59,4 +61,8 @@ public class ClientsAdminScreen : MonoBehaviour
         });
     }
 
+    public void SetAddReservationButton()
+    {
+        addReservationButton.SetAsFirstSibling();
+    }
 }

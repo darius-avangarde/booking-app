@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class ClientsEditScreen : MonoBehaviour
 {
     [SerializeField]
-    private Transform clientEditScreenTransform = null;
-    [SerializeField]
     private InputField clientName;
     [SerializeField]
     private InputField clientPhone;
@@ -20,13 +18,6 @@ public class ClientsEditScreen : MonoBehaviour
     public IClient GetCurrentClient()
     {
         return currentClient;
-    }
-
-    public void EditCurrentClient()
-    {
-        //SetCurrentClient(currentClient);
-        //var currentClient = clientEditScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
-        //SetClientsFieldsText();
     }
 
     public void SetCurrentClient(IClient client)
@@ -42,7 +33,5 @@ public class ClientsEditScreen : MonoBehaviour
         clientAdress.text = currentClient.Adress;
         clientEmail.text = currentClient.Email;
     }
-
-    
 
 }
