@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
-    // modal dialogs need to set themselves as CurrentlyOpenClosable when they're shown and unset themselves when they're hidden
-    // it's a good idea to do this right after easyTween.OpenCloseObjectAnimation
+
     public static IClosable CurrentlyOpenClosable { get; set; }
 
     [SerializeField]
-    private SideMenu sideMenu = null;
+    private Navigator navigator = null;
 
     void Update()
     {
@@ -21,17 +20,53 @@ public class InputManager : MonoBehaviour
             }
             else
             {
-                Navigator navigator = sideMenu.CurrentlyActiveNavigator;
                 bool shouldMinimizeApp = navigator.CurrentScreen == navigator.initialScreen;
                 if (shouldMinimizeApp)
                 {
+                    Debug.Log("should be quitting app");
                     Application.Quit();
                 }
                 else
                 {
-                    sideMenu.CurrentlyActiveNavigator.GoBack();
+                    Debug.Log("should be going back");
+                    navigator.GoBack();
                 }
             }
         }
     }
+
+    //inactive original code
+    #region OriginalCode
+        // // modal dialogs need to set themselves as CurrentlyOpenClosable when they're shown and unset themselves when they're hidden
+        // // it's a good idea to do this right after easyTween.OpenCloseObjectAnimation
+        // public static IClosable CurrentlyOpenClosable { get; set; }
+
+        // [SerializeField]
+        // private SideMenu sideMenu = null;
+
+        // void Update()
+        // {
+        //     // handle Android back key
+        //     if (Input.GetKeyDown(KeyCode.Escape))
+        //     {
+        //         if (CurrentlyOpenClosable != null)
+        //         {
+        //             CurrentlyOpenClosable.Close();
+        //         }
+        //         else
+        //         {
+        //             Navigator navigator = sideMenu.CurrentlyActiveNavigator;
+        //             bool shouldMinimizeApp = navigator.CurrentScreen == navigator.initialScreen;
+        //             if (shouldMinimizeApp)
+        //             {
+        //                 Application.Quit();
+        //             }
+        //             else
+        //             {
+        //                 sideMenu.CurrentlyActiveNavigator.GoBack();
+        //             }
+        //         }
+        //     }
+        // }
+    #endregion
 }

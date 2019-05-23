@@ -32,7 +32,7 @@ public static class ReservationDataManager
 
     private static void WriteReservationData()
     {
-        string dataAsJson = JsonUtility.ToJson(Data);
+        string dataAsJson = JsonUtility.ToJson(Data, Constants.PRETTY_PRINT);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
@@ -45,6 +45,11 @@ public static class ReservationDataManager
         return Data.reservations.FindAll(r => !r.Deleted);
     }
 
+    public static IEnumerable<IReservation> GetReservations(Predicate<IReservation> match)
+    {
+        return Data.reservations.FindAll(match);
+    }
+
     public static IEnumerable<IReservation> GetDeletedReservations()
     {
         return Data.reservations.FindAll(r => r.Deleted);
@@ -55,6 +60,29 @@ public static class ReservationDataManager
         return Data.reservations.Find(r => r.ID.Equals(ID));
     }
 
+    ///<summary>
+    ///Returns all active (with the end date in the future), undeleted reservations for the given roomID
+    ///</summary>
+    public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks > DateTime.Today.Ticks && r.RoomID == roomID);
+    }
+
+
+    ///<summary>
+    ///Returns all active (with the end date in the future), undeleted reservations for the given clientID
+    ///</summary>
+    public static IEnumerable<IReservation> GetActiveClientReservations(string clientID)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks > DateTime.Today.Ticks && r.CustomerID == clientID);
+    }
+
+
+    // TODO: Remove unused AddReservation
+    ///<summary>
+    ///Do not use this method (both client and reservation objects are required with the new system).
+    /// Use the ".AddReservation(IRoom room, IClient client, DateTime start, DateTime end)" overload instead.
+    ///</summary>
     public static IReservation AddReservation(IRoom room)
     {
         Reservation newReservation = new Reservation(room);
@@ -62,6 +90,21 @@ public static class ReservationDataManager
         WriteReservationData();
 
         return newReservation;
+    }
+
+    public static IReservation AddReservation(IRoom room, IClient client, DateTime start, DateTime end)
+    {
+        Reservation newReservation = new Reservation(room, client.ID, start,end);
+        Data.reservations.Add(newReservation);
+        WriteReservationData();
+
+        return newReservation;
+    }
+
+    public static void EditReservation(IReservation reservation, IRoom room, IClient client, DateTime start, DateTime end)
+    {
+        reservation.EditReservation(room, client, start, end);
+        WriteReservationData();
     }
 
     public static void DeleteReservation(string ID)
@@ -92,6 +135,21 @@ public static class ReservationDataManager
             reservation.Deleted = true;
         }
         WriteReservationData();
+    }
+
+    public static void DeleteReservationsForClient(string clientID)
+    {
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.CustomerID.Equals(clientID));
+        foreach (var reservation in reservations)
+        {
+            reservation.Deleted = true;
+        }
+        WriteReservationData();
+    }
+
+    public static IDateTimePeriod DefaultPeriod()
+    {
+        return new DateTimePeriod(DateTime.Today, DateTime.Today);
     }
 
     [Serializable]
@@ -129,14 +187,24 @@ public static class ReservationDataManager
         private string roomID;
         public string RoomID => roomID;
 
-        [SerializeField]
-        private string customerName;
         public string CustomerName
         {
-            get => customerName;
+            get => ClientDataManager.GetClient(customerID).Name;
             set
             {
-                customerName = value;
+                ClientDataManager.GetClient(customerID).Name = value;
+                WriteReservationData();
+            }
+        }
+
+        [SerializeField]
+        private string customerID;
+        public string CustomerID
+        {
+            get => customerID;
+            set
+            {
+                customerID = value;
                 WriteReservationData();
             }
         }
@@ -154,6 +222,26 @@ public static class ReservationDataManager
             this.propertyID = room.PropertyID;
             this.roomID = room.ID;
             this.period = new DateTimePeriod(DateTime.Today, DateTime.Today.AddDays(1f));
+            WriteReservationData();
+        }
+
+        public Reservation(IRoom room, string customerID, DateTime start, DateTime end)
+        {
+            this.id = Guid.NewGuid().ToString();
+            this.propertyID = room.PropertyID;
+            this.roomID = room.ID;
+            this.customerID = customerID;
+            this.period = new DateTimePeriod(start, end);
+            WriteReservationData();
+        }
+
+        public void EditReservation(IRoom room, IClient client, DateTime start, DateTime end)
+        {
+            id = Guid.NewGuid().ToString();
+            propertyID = room.PropertyID;
+            roomID = room.ID;
+            customerID = client.ID;
+            period = new DateTimePeriod(start, end);
             WriteReservationData();
         }
     }

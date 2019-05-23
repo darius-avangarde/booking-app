@@ -147,7 +147,7 @@ public class ClientDataManager
             }
         }
 
-       
+
         [SerializeField]
         private bool deleted = false;
         public bool Deleted
