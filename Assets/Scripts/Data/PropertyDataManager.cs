@@ -34,7 +34,7 @@ public static class PropertyDataManager
 
     private static void WritePropertyData()
     {
-        string dataAsJson = JsonUtility.ToJson(Data);
+        string dataAsJson = JsonUtility.ToJson(Data, Constants.PRETTY_PRINT);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
