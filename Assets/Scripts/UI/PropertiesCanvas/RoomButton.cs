@@ -22,7 +22,7 @@ public class RoomButton : MonoBehaviour
     //[SerializeField]
     //private Text personsNumber = null;
 
-    public void Initialize(IRoom room, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
+    public void Initialize(IRoom room, Action<IRoom> roomCallback, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
     {
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
         roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.Pret : ("Pret: " + room.Price + " ron");
@@ -39,13 +39,9 @@ public class RoomButton : MonoBehaviour
         {
             roomBeds.text += "duble: " + room.DoubleBeds;
         }
-        currentRoom = room;
+        roomButton.onClick.AddListener(() => roomCallback(room));
         editRoomButton.onClick.AddListener(() => editCallback(room));
         deleteRoomButton.onClick.AddListener(() => deleteCallback(room));
-    }
-
-    public void OpenRoomReservations()
-    {
-        //roomButton.onClick.AddListener(() => currentCallback(currentRoom));
+        currentRoom = room;
     }
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
+    //TODO: Remove bool when no longer used
+    public const bool PRETTY_PRINT = true;
+
     public const string defaultProperyAdminScreenName = "Proprietate nouă";
     public const string defaultProperyAdminScreenNrRooms = "Număr de camere";
     public const string Proprietate = "Proprietate: ";
@@ -17,7 +20,7 @@ public class Constants : MonoBehaviour
     public const string DateTimePrintFormat = "dd/MM/yy";
     public const string AndDelimiter = "  -  ";
 
-    #region Reservation strings
+    #region Reservation specific strings
         public const string CLIENTS_TITLE = "Clienți";
         public const string DELETE_DIALOG = "Ștergeți rezervarea?";
         public const string EDIT_DIALOG = "Moficați rezervarea?";
@@ -30,7 +33,7 @@ public class Constants : MonoBehaviour
         public const string ERR_ROOM = "Specificați camera pentru această rezervare";
         public const string ERR_PERIOD = "Există deja o rezervare pe această cameră care se suprapune cu perioada selectată";
         public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
-        public const string ERR_DATES = "Data de sfârșit a rezervarii trebuie să fie cu cel puțin o zi după de data de început a acesteia";
+        public const string ERR_DATES = "Specificați perioada rezervării";
     #endregion
 
     // COLORS

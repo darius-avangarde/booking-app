@@ -14,6 +14,8 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Transform roomAdminScreenTransform = null;
     [SerializeField]
+    private Transform roomScreenTransform = null;
+    [SerializeField]
     private GameObject propertyWithRoomsPrefab = null;
     [SerializeField]
     private GameObject propertyWithoutRoomsPrefab = null;
@@ -41,7 +43,7 @@ public class PropertiesScreen : MonoBehaviour
             {
                 propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
             }
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, confirmationDialog, propertyInfoContent, roomAdminScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, navigator, confirmationDialog, propertyInfoContent, roomAdminScreenTransform, roomScreenTransform, OpenPropertyAdminScreen, DeleteProperty);
             propertyButtons.Add(propertyButton);
             index++;
         }

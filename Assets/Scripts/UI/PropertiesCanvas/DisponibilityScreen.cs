@@ -6,7 +6,7 @@ using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DayScreen : MonoBehaviour
+public class DisponibilityScreen : MonoBehaviour
 {
     [SerializeField]
     private Navigator navigator = null;
@@ -21,13 +21,13 @@ public class DayScreen : MonoBehaviour
     [SerializeField]
     private Text dayScreenTitle = null;
     private List<GameObject> dayScreenItemList = new List<GameObject>();
-    private DateTime dayDateTime;
+    private DateTime dayDateTime = DateTime.Today;
 
-    public void UpdateDayScreenInfo(DateTime dateTime)
+    public void UpdateDisponibilityInfo(DateTime dateTime)
     {
         dayDateTime = dateTime;
         dayScreenTitle.text = dateTime.Day + " " + Constants.MonthNamesDict[dateTime.Month] + " " + dateTime.Year;
-        UpdateFilteredDayScreenPropertyItemsContent();
+        //UpdateFilteredDayScreenPropertyItemsContent();
     }
 
     public void UpdateFilteredDayScreenPropertyItemsContent()
@@ -56,3 +56,4 @@ public class DayScreen : MonoBehaviour
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 }
+

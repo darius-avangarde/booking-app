@@ -8,6 +8,9 @@ public class TestEdit : MonoBehaviour
     [SerializeField]
     ReservationEditScreen edit;
 
+    [SerializeField]
+    ReservationsViewScreen viewRect;
+
     IClient client;
     IRoom room;
     IReservation reservation;
@@ -19,12 +22,13 @@ public class TestEdit : MonoBehaviour
         room = p.Rooms.ToList()[0];
         if(ReservationDataManager.GetReservations().Count() > 0)
             reservation = ReservationDataManager.GetReservations().ToList()[0];
+
     }
 
     public void OpenViewClient()
     {
         if(client != null)
-            edit.OpenEditReservation(client, null);
+            edit.OpenEditReservation(client);
         else
             Debug.Log("client is null");
     }
@@ -32,7 +36,7 @@ public class TestEdit : MonoBehaviour
     public void OpenViewRoom()
     {
         if(room != null)
-            edit.OpenEditReservation(room, null);
+            edit.OpenEditReservation(room);
         else
             Debug.Log("room is null");
     }
@@ -40,9 +44,27 @@ public class TestEdit : MonoBehaviour
     public void OpenViewReservation()
     {
         if(reservation != null)
-            edit.OpenEditReservation(reservation, null);
+            edit.OpenEditReservation(reservation);
         else
             Debug.Log("reservation is null");
+    }
+
+
+
+    public void ViewRoomReservations()
+    {
+        if(room != null)
+            viewRect.ViewRoomReservations(room);
+        else
+            Debug.Log("room is null");
+    }
+
+    public void ViewClientReservations()
+    {
+        if(reservation != null)
+            viewRect.ViewClientReservations(client);
+        else
+            Debug.Log("client is null");
     }
 
 }

@@ -70,7 +70,7 @@ public static class PropertyDataManager
             IRoom newRoom = property.AddRoom();
             newRoom.Name = property.Name;
             property.SaveRoom(newRoom);
-            property.GetPropertyRoom = newRoom;
+            property.GetPropertyRoomID = newRoom.ID;
         }
         Data.properties.Add((Property)property);
         WritePropertyData();
@@ -152,18 +152,23 @@ public static class PropertyDataManager
         public string NrRooms => Rooms.Count().ToString();
 
         [SerializeField]
-        private IRoom getPropertyRoom;
-        public IRoom GetPropertyRoom
+        private string getPropertyRoomID;
+        public string GetPropertyRoomID
         {
-            get => getPropertyRoom;
+            get => getPropertyRoomID;
             set
             {
-                getPropertyRoom = value;
+                getPropertyRoomID = value;
                 WritePropertyData();
             }
         }
 
         public IRoom GetRoom(string ID) => rooms.Find(r => r.ID.Equals(ID));
+
+        public IRoom GetPropertyRoom()
+        {
+            return GetRoom(getPropertyRoomID);
+        }
 
         public IRoom AddRoom()
         {

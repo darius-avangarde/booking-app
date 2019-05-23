@@ -31,12 +31,14 @@ public class PropertyButton : MonoBehaviour
     private IProperty selectedProperty;
     private RectTransform layoutContent;
     private Transform roomAdminScreenTransform;
+    private Transform roomScreenTransform;
 
-    public void Initialize(IProperty property, Navigator nav, ConfirmationDialog ConfirmPopUp, RectTransform layout, Transform roomScreen, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
+    public void Initialize(IProperty property, Navigator nav, ConfirmationDialog ConfirmPopUp, RectTransform layout, Transform roomAdminScreen, Transform roomScreen, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
     {
         navigator = nav;
         layoutContent = layout;
-        roomAdminScreenTransform = roomScreen;
+        roomAdminScreenTransform = roomAdminScreen;
+        roomScreenTransform = roomScreen;
         confirmationDialog = ConfirmPopUp;
 
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
@@ -44,8 +46,8 @@ public class PropertyButton : MonoBehaviour
         deletePropertyButton.onClick.AddListener(() => deleteCallback(property));
         if (!property.HasRooms)
         {
-            //InitializeRoom(property);
-            //propertyButtonItem.onClick.AddListener(() => roomButtons[0].GetComponent<RoomButton>().OpenRoom());
+            propertyButtonItem.onClick.AddListener(() => OpenRoomScreen(property.GetRoom(property.GetPropertyRoomID)));
+            //propertyButtonItem.onClick.AddListener(() => OpenRoomReservationScreen(property.GetPropertyRoom()));
         }
         else
         {
@@ -70,13 +72,6 @@ public class PropertyButton : MonoBehaviour
         selectedProperty = property;
     }
 
-    private void InitializeRoom(IProperty property)
-    {
-        GameObject roomButton = Instantiate(roomPrefabButton, propertyButtonItem.transform);
-        roomButton.GetComponent<RoomButton>().Initialize(property.GetPropertyRoom, OpenRoomAdminScreen, DeleteRoom);
-        roomButtons.Add(roomButton);
-    }
-
     private void InstantiateRooms(IProperty property)
     {
         foreach (var roomButton in roomButtons)
@@ -89,7 +84,7 @@ public class PropertyButton : MonoBehaviour
             {
                 property.HasRooms = true;
                 GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
-                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomAdminScreen, DeleteRoom);
+                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomScreen, OpenRoomAdminScreen, DeleteRoom);
                 roomButtons.Add(roomButton);
             }
         }
@@ -123,5 +118,11 @@ public class PropertyButton : MonoBehaviour
     {
         roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(selectedProperty, room);
         navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
+    }
+
+    private void OpenRoomScreen(IRoom room)
+    {
+        roomScreenTransform.GetComponent<RoomScreen>().UpdateRoomDetailsFields(room);
+        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
     }
 }

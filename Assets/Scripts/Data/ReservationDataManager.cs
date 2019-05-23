@@ -32,7 +32,7 @@ public static class ReservationDataManager
 
     private static void WriteReservationData()
     {
-        string dataAsJson = JsonUtility.ToJson(Data);
+        string dataAsJson = JsonUtility.ToJson(Data, Constants.PRETTY_PRINT);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
@@ -59,6 +59,24 @@ public static class ReservationDataManager
     {
         return Data.reservations.Find(r => r.ID.Equals(ID));
     }
+
+    ///<summary>
+    ///Returns all active (with the end date in the future), undeleted reservations for the given roomID
+    ///</summary>
+    public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks > DateTime.Today.Ticks && r.RoomID == roomID);
+    }
+
+
+    ///<summary>
+    ///Returns all active (with the end date in the future), undeleted reservations for the given clientID
+    ///</summary>
+    public static IEnumerable<IReservation> GetActiveClientReservations(string clientID)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks > DateTime.Today.Ticks && r.CustomerID == clientID);
+    }
+
 
     // TODO: Remove unused AddReservation
     ///<summary>
@@ -117,6 +135,21 @@ public static class ReservationDataManager
             reservation.Deleted = true;
         }
         WriteReservationData();
+    }
+
+    public static void DeleteReservationsForClient(string clientID)
+    {
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.CustomerID.Equals(clientID));
+        foreach (var reservation in reservations)
+        {
+            reservation.Deleted = true;
+        }
+        WriteReservationData();
+    }
+
+    public static IDateTimePeriod DefaultPeriod()
+    {
+        return new DateTimePeriod(DateTime.Today, DateTime.Today);
     }
 
     [Serializable]
