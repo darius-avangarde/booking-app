@@ -31,7 +31,7 @@ public class Constants : MonoBehaviour
         //error messages
         public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
         public const string ERR_ROOM = "Specificați camera pentru această rezervare";
-        public const string ERR_PERIOD = "Există deja o rezervare pe această cameră care se suprapune cu perioada selectată";
+        public const string ERR_PERIOD = "Există deja o rezervare pentru această cameră care se suprapune cu perioada selectată";
         public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
         public const string ERR_DATES = "Specificați perioada rezervării";
     #endregion
