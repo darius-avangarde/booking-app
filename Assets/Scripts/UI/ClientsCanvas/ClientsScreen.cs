@@ -65,7 +65,7 @@ public class ClientsScreen : MonoBehaviour
             textNameRequired.text = "Te rog adaugă un nume!";
         }
         else
-        //if (!string.IsNullOrEmpty(clientName.text))
+       
         {
             textNameRequired.text = " ";
             client.Name = clientName.text;
@@ -86,7 +86,7 @@ public class ClientsScreen : MonoBehaviour
             textNameRequired.text = "Te rog adaugă un nume!";
         }
         else
-        // if (!string.IsNullOrEmpty(clientName.text))
+      
         {
             textNameRequired.text = " ";
             client.Name = clientName.text;
@@ -97,11 +97,6 @@ public class ClientsScreen : MonoBehaviour
         }
     }
 
-    /*public void DeleteClient()
-    {
-        var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
-        ClientDataManager.DeleteClient(currentClient.ID);
-    }*/
 
     private void OpenDeleteAdminScreen(IClient client)
     {

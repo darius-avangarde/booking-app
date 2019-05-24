@@ -19,16 +19,13 @@ public class ReservationButton : MonoBehaviour
     [SerializeField]
     private Button deleteButton;
 
-    public void Initialize(IReservation reservation)//, Action<IReservation> callback, Action<IReservation> editCallBack, Action<IReservation> deleteCallback)
+    public void Initialize(IReservation reservation)
     {
         
-        propertyName.text = PropertyDataManager.GetProperty(reservation.PropertyID).Name;//string.IsNullOrEmpty(client.Name) ? Constants.defaultRoomAdminScreenName : reservation.Name;
+        propertyName.text = PropertyDataManager.GetProperty(reservation.PropertyID).Name;
         cameraName.text = PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID).Name;
         string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
         string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
         reservationPeriod.text = startPeriod + "  -  " + endPeriod;
-        //reservationButton.onClick.AddListener(() => callback(reservation));
-        // editButton.onClick.AddListener(() => editCallBack(reservation));
-        // deleteButton.onClick.AddListener(() => deleteCallback(reservation));
     }
 }

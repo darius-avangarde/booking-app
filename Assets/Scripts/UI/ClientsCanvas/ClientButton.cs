@@ -17,7 +17,7 @@ public class ClientButton : MonoBehaviour
 
     public void Initialize(IClient client, Action<IClient> callback, Action<IClient> editCallBack, Action<IClient> deleteCallback)
     {
-        clientName.text = string.IsNullOrEmpty(client.Name) ? Constants.defaultRoomAdminScreenName : client.Name;
+        clientName.text = client.Name;
         phoneNumber.text = client.Number ;
         clientButton.onClick.AddListener(() => callback(client));
         editButton.onClick.AddListener(() => editCallBack(client));

@@ -23,7 +23,6 @@ public class ClientsEditScreen : MonoBehaviour
     public void SetCurrentClient(IClient client)
     {
         currentClient = client;
-        Debug.Log("client name is:" + currentClient.Name);
         SetClientsFieldsText();
     }
     public void SetClientsFieldsText()
