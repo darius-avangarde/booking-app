@@ -22,9 +22,9 @@ public class ReservationObject : MonoBehaviour
     public void InitializeReservation(bool isClient, IReservation res, UnityAction<IReservation> editAction, UnityAction<IReservation,GameObject> deleteAction)
     {
         UpdateObjectUI(
-              ((isClient) ? PropertyDataManager.GetProperty(res.PropertyID).Name : ClientDataManager.GetClient(res.CustomerID).Name)
+              ((isClient) ? PropertyDataManager.GetProperty(res.PropertyID).Name : ClientDataManager.GetClient(res.ClientID).Name)
             + Constants.NEWLINE
-            + ((isClient) ? PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name : ClientDataManager.GetClient(res.CustomerID).Number)
+            + ((isClient) ? PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name : ClientDataManager.GetClient(res.ClientID).Number)
             , res);
         editButton.onClick.AddListener(() => editAction(res));
         deleteButton.onClick.AddListener(() => deleteAction(res, gameObject));

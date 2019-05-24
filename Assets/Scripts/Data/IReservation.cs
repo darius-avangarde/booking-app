@@ -3,8 +3,8 @@ using System;
 public interface IReservation
 {
     string ID { get; }
-    string CustomerName { get; set; }
-    string CustomerID { get; set; }
+    string ClientName { get; set; }
+    string ClientID { get; set; }
     string PropertyID { get; }
     string RoomID { get; }
     IDateTimePeriod Period { get; }

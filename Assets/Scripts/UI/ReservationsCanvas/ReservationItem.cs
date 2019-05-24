@@ -13,7 +13,7 @@ public class ReservationItem : MonoBehaviour
 
     public void Initialize(IReservation reservation, Action callback)
     {
-        customerName.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : reservation.CustomerName;
+        customerName.text = string.IsNullOrEmpty(reservation.ClientName) ? Constants.defaultCustomerName : reservation.ClientName;
         string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
         string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
         reservationPeriod.text = startPeriod + "  -  " + endPeriod;

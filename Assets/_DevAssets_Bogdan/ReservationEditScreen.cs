@@ -35,6 +35,8 @@ public class ReservationEditScreen : MonoBehaviour
         [SerializeField]
         private Button confirmButton;
         [SerializeField]
+        private Button setPeriodButton;
+        [SerializeField]
         private Text errorText;
     #endregion
     #region Private variables
@@ -134,7 +136,7 @@ public class ReservationEditScreen : MonoBehaviour
         }
 
         ///<summary>
-        /// Propmts the navigator
+        /// Propmts the navigator to go to the previous screen without commiting any changes
         ///</summary>
         public void CancelChanges()
         {
@@ -160,9 +162,9 @@ public class ReservationEditScreen : MonoBehaviour
 
     #region OpenEditPanel functions
         ///<summary>
-        /// Fills/Selects the edit fields with the available data from the reservation (IReservation) parameter.
-        /// Use to EDIT a reservation from either the client screen or the room screen when tapping on an existing reservation's edit reservation button.
-        /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
+        ///Fills/Selects the edit fields with the available data from the reservation (IReservation) parameter.
+        ///<para>Use to EDIT a reservation from either the client screen or the room screen when tapping on an existing reservation's edit reservation button.</para>
+        ///<para>Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
         ///</summary>
         internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> callback)
         {
@@ -170,7 +172,7 @@ public class ReservationEditScreen : MonoBehaviour
             period = reservation.Period;
             UpdateEditableOptions(
                 reservation,
-                ClientDataManager.GetClient(reservation.CustomerID),
+                ClientDataManager.GetClient(reservation.ClientID),
                 PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
                 );
             titleText.text = Constants.EDIT_TITLE;
@@ -180,8 +182,8 @@ public class ReservationEditScreen : MonoBehaviour
 
         ///<summary>
         /// Fills/Selects the edit fields with the available data from the client (IClient) parameter.
-        /// Use when adding a NEW reservation from a specific clients's new reservation button.
-        /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
+        ///<para>Use when adding a NEW reservation from a specific clients's new reservation button.</para>
+        ///<para> Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
         ///</summary>
         internal void OpenAddReservation(IClient client, UnityAction<IReservation> callback)
         {
@@ -194,8 +196,8 @@ public class ReservationEditScreen : MonoBehaviour
 
         ///<summary>
         /// Fills/Selects the edit fields with the available data from the room (IRoom) parameter.
-        /// Use when adding a NEW reservation from a specific room's new reservation button.
-        /// Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.
+        ///<para>Use when adding a NEW reservation from a specific room's new reservation button.</para>
+        ///<para>Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
         ///</summary>
         internal void OpenAddReservation(IRoom room, UnityAction<IReservation> callback)
         {
@@ -207,54 +209,40 @@ public class ReservationEditScreen : MonoBehaviour
         }
     #endregion
 
-    //Toggles the save/confirm reservation edit button off if there are any necessary fields unfilled
+    //Toggles the save/confirm reservation edit button off if there are any fields with invalid data and displays an error message
     private void ValidateInput()
     {
         if(currentProperty == null)
         {
-            confirmButton.interactable = false;
-            SetErrorText(Constants.ERR_PROP);
+            DisplayErrorAndSetInteractability(Constants.ERR_PROP, false, false);
             return;
         }
 
         if(currentRoom == null)
         {
-            confirmButton.interactable = false;
-            SetErrorText(Constants.ERR_ROOM);
+            DisplayErrorAndSetInteractability(Constants.ERR_ROOM, false, false);
             return;
         }
 
         if(currentClient == null)
         {
-            confirmButton.interactable = false;
-            SetErrorText(Constants.ERR_CLIENT);
+            DisplayErrorAndSetInteractability(Constants.ERR_CLIENT, true, false);
             return;
         }
 
         if(period.Start == period.End)
         {
-            confirmButton.interactable = false;
-            SetErrorText(Constants.ERR_DATES);
+            DisplayErrorAndSetInteractability(Constants.ERR_DATES, true, false);
             return;
         }
 
         if(OverlapsOtherReservation())
         {
-            confirmButton.interactable = false;
-            SetErrorText(Constants.ERR_PERIOD);
+            DisplayErrorAndSetInteractability(Constants.ERR_PERIOD, true, false);
             return;
         }
 
-        SetErrorText(string.Empty);
-        confirmButton.interactable = true;
-    }
-
-    //Returns true if no other reservations for this room overlap the curently set period
-    private bool OverlapsOtherReservation()
-    {
-        return ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
-            .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != string.Empty)
-            && (r.Period.Overlaps(period) || period.Overlaps(r.Period) || (r.Period.Start == period.Start && r.Period.End == period.End)));
+        DisplayErrorAndSetInteractability(string.Empty, true, true);
     }
 
     //Sets the selected property object as selected from the dropdown options. This also sets the room in the case of the property not having rooms
@@ -430,9 +418,19 @@ public class ReservationEditScreen : MonoBehaviour
     }
 
     //Updates and enables/disables the error text to show the given error message
-    private void SetErrorText(string errorMessage)
+    private void DisplayErrorAndSetInteractability(string errorMessage, bool setDateAllowed, bool confirmAllowed)
     {
+        setPeriodButton.interactable = setDateAllowed;
+        confirmButton.interactable = confirmAllowed;
         errorText.text = errorMessage;
         errorText.enabled = !string.IsNullOrEmpty(errorMessage);
+    }
+
+    //Returns true if no other reservations for this room overlap the curently set period
+    private bool OverlapsOtherReservation()
+    {
+        return ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
+            .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != string.Empty)
+            && (r.Period.Overlaps(period) || period.Overlaps(r.Period) || (r.Period.Start == period.Start && r.Period.End == period.End)));
     }
 }

@@ -30,7 +30,7 @@ public class ReservationFilter
                 return false;
             }
 
-            if (CustomerName != null && !r.CustomerName.Equals(CustomerName))
+            if (CustomerName != null && !r.ClientName.Equals(CustomerName))
             {
                 return false;
             }

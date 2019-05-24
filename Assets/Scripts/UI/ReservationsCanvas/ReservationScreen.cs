@@ -61,7 +61,7 @@ public class ReservationScreen : MonoBehaviour
     {
         if (currentReservation != null)
         {
-            currentReservation.CustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
+            currentReservation.ClientName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
         }
         else
         {
@@ -103,7 +103,7 @@ public class ReservationScreen : MonoBehaviour
 
     private void UpdateCurrentReservationFields(IReservation reservation)
     {
-        customerNameInputField.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : currentReservation.CustomerName;
+        customerNameInputField.text = string.IsNullOrEmpty(reservation.ClientName) ? Constants.defaultCustomerName : currentReservation.ClientName;
         propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
         roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
         string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
@@ -114,7 +114,7 @@ public class ReservationScreen : MonoBehaviour
     private void AddNewReservation(DateTime start, DateTime end)
     {
         IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
-        reservation.CustomerName = reservationCustomerName;
+        reservation.ClientName = reservationCustomerName;
         reservation.Period.Start = start;
         reservation.Period.End = end;
         currentReservation = reservation;
