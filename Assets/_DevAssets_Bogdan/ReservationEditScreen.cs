@@ -142,6 +142,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             propertyDropdown.onValueChanged.RemoveAllListeners();
             roomDropdown.onValueChanged.RemoveAllListeners();
+            clientInputField.onValueChanged.RemoveAllListeners();
             navigator.GoBack();
             allowSearch = false;
         }
@@ -224,7 +225,7 @@ public class ReservationEditScreen : MonoBehaviour
             return;
         }
 
-        if(currentClient == null)
+        if(currentClient == null || clientInputField.text != currentClient.Name)
         {
             DisplayErrorAndSetInteractability(Constants.ERR_CLIENT, true, false);
             return;
@@ -308,6 +309,11 @@ public class ReservationEditScreen : MonoBehaviour
 
         ValidateInput();
         allowSearch = true;
+
+
+        propertyDropdown.onValueChanged.AddListener(SelectProperty);
+        roomDropdown.onValueChanged.AddListener(SelectRoom);
+        clientInputField.onEndEdit.AddListener((s) => ValidateInput());
     }
 
     //Updates the properties dropdown with all available properties with at least one room or roomles properties
@@ -345,10 +351,6 @@ public class ReservationEditScreen : MonoBehaviour
         propertyDropdown.RefreshShownValue();
 
         UpdateRoomDropdown(currentProperty);
-
-
-        propertyDropdown.onValueChanged.AddListener(SelectProperty);
-        roomDropdown.onValueChanged.AddListener(SelectRoom);
     }
 
     //Updates the room dropdown opttions, is hidden if selected property has no rooms

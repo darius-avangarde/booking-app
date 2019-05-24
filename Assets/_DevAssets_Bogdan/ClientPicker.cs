@@ -48,7 +48,7 @@ public class ClientPicker : MonoBehaviour
         addClientButton.SetActive(false);
         scrolRectGameObj.SetActive(false);
         searchLoadImage.gameObject.SetActive(false);
-        scrolRect = scrolRectGameObj.GetComponent<ScrollRect>();
+        scrolRect = scrolRectGameObj.GetComponentInChildren<ScrollRect>();
     }
 
     private void OnDestroy()
@@ -67,6 +67,12 @@ public class ClientPicker : MonoBehaviour
         }
 
         scrolRectGameObj.SetActive(false);
+    }
+
+    //triggered when the user taps outside the scrolview rect containing the client names
+    public void CancelSearch()
+    {
+        SelectAction(null);
     }
 
     //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)

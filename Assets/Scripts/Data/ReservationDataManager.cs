@@ -69,7 +69,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks >= DateTime.Today.ToUniversalTime().Ticks && r.RoomID == roomID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.ToUniversalTime().Ticks > DateTime.Today.ToUniversalTime().Ticks && r.RoomID == roomID);
     }
 
 
@@ -79,7 +79,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveClientReservations(string clientID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks >= DateTime.Today.ToUniversalTime().Ticks && r.ClientID == clientID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.ToUniversalTime().Ticks > DateTime.Today.ToUniversalTime().Ticks && r.ClientID == clientID);
     }
 
     // TODO: Remove unused AddReservation
