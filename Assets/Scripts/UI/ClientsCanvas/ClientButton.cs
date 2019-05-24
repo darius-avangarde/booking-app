@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +8,12 @@ public class ClientButton : MonoBehaviour
     public Text clientName = null;
     [SerializeField]
     private Text phoneNumber = null;
-    public Button clientButton;
-    public  Button editButton;
-    public Button deleteButton;
+    [SerializeField]
+    private Button clientButton;
+    [SerializeField]
+    private Button editButton;
+    [SerializeField]
+    private Button deleteButton;
 
     public void Initialize(IClient client, Action<IClient> callback, Action<IClient> editCallBack, Action<IClient> deleteCallback)
     {

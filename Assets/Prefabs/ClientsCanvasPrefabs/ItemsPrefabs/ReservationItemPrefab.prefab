@@ -30,7 +30,7 @@ RectTransform:
   m_LocalScale: {x: 0.59259, y: 0.59259, z: 0.59259}
   m_Children: []
   m_Father: {fileID: 6369800608470696109}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -107,7 +107,7 @@ RectTransform:
   m_Children:
   - {fileID: 4050774650138333105}
   m_Father: {fileID: 6369800608470696109}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -239,7 +239,7 @@ RectTransform:
   m_Children:
   - {fileID: 8232940168376911412}
   m_Father: {fileID: 6369800608470696109}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 6369800608369160531}
   - component: {fileID: 6369800608369160530}
   m_Layer: 5
-  m_Name: ClientPhoneNumberText
+  m_Name: CameraNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -520,8 +520,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 415.38, y: -150}
-  m_SizeDelta: {x: 630.75, y: 100}
+  m_AnchoredPosition: {x: 415.38, y: -100}
+  m_SizeDelta: {x: 630.8, y: 65.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6369800608369160531
 CanvasRenderer:
@@ -580,7 +580,7 @@ GameObject:
   - component: {fileID: 6369800609688919250}
   - component: {fileID: 6369800609688919249}
   - component: {fileID: 6369800609688919248}
-  - component: {fileID: 2448384440297056931}
+  - component: {fileID: 4973476499286106280}
   m_Layer: 5
   m_Name: ReservationItemPrefab
   m_TagString: Untagged
@@ -601,6 +601,7 @@ RectTransform:
   m_Children:
   - {fileID: 6369800610038125032}
   - {fileID: 6369800608369160529}
+  - {fileID: 4001946779941515838}
   - {fileID: 509218211563503113}
   - {fileID: 8720852111786917833}
   - {fileID: 5537168172599878533}
@@ -980,7 +981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9eb35234601da8f4b9670f9ea18ae5b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2448384440297056931
+--- !u!114 &4973476499286106280
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -989,12 +990,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6369800609688919262}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5809636ac9343b941b3de7ed0c39cce6, type: 3}
+  m_Script: {fileID: 11500000, guid: 33ee2ede89f6c784f880301954a8a962, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clientName: {fileID: 6369800610038125033}
-  phoneNumber: {fileID: 6369800608369160530}
-  clientButton: {fileID: 6369800609688919251}
+  propertyName: {fileID: 6369800610038125033}
+  cameraName: {fileID: 6369800608369160530}
+  reservationPeriod: {fileID: 196160986843339339}
+  reservationButton: {fileID: 6369800609688919251}
   editButton: {fileID: 4372470664729879793}
   deleteButton: {fileID: 6717441139541984157}
 --- !u!1 &6369800610038125047
@@ -1009,7 +1011,7 @@ GameObject:
   - component: {fileID: 6369800610038125034}
   - component: {fileID: 6369800610038125033}
   m_Layer: 5
-  m_Name: ClientNameText
+  m_Name: PropertyNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1031,8 +1033,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 415.4, y: -50}
-  m_SizeDelta: {x: 630.7, y: 100}
+  m_AnchoredPosition: {x: 415.38, y: -33.675003}
+  m_SizeDelta: {x: 630.8, y: 67.55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6369800610038125034
 CanvasRenderer:
@@ -1106,7 +1108,7 @@ RectTransform:
   m_LocalScale: {x: 0.5925902, y: 0.5925902, z: 0.59259}
   m_Children: []
   m_Father: {fileID: 6369800608470696109}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -1150,3 +1152,82 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!1 &8695444864635932940
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4001946779941515838}
+  - component: {fileID: 4553508205982101389}
+  - component: {fileID: 196160986843339339}
+  m_Layer: 5
+  m_Name: PeriodText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4001946779941515838
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695444864635932940}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6369800608470696109}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 415.38004, y: -167.45}
+  m_SizeDelta: {x: 630.8, y: 65.1}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4553508205982101389
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695444864635932940}
+  m_CullTransparentMesh: 0
+--- !u!114 &196160986843339339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8695444864635932940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 597f00fdf84e08a499917949eee226b9, type: 3}
+    m_FontSize: 50
+    m_FontStyle: 0
+    m_BestFit: 1
+    m_MinSize: 5
+    m_MaxSize: 70
+    m_Alignment: 3
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 

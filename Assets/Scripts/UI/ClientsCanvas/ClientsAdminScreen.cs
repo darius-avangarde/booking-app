@@ -4,6 +4,7 @@ using UnityEngine;
 using UINavigation;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 public class ClientsAdminScreen : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class ClientsAdminScreen : MonoBehaviour
     private Text clientScreenEmail = null;
     [SerializeField]
     private Transform addReservationButton;
+    [SerializeField]
+    private Transform reservationInfoContent = null;
+    [SerializeField]
+    private GameObject reservationPrefabButton = null;
+    private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
 
     public IClient GetCurrentClient()
@@ -54,6 +60,7 @@ public class ClientsAdminScreen : MonoBehaviour
             ConfirmCallback = () =>
             {
                 ClientDataManager.DeleteClient(currentClient.ID);
+                //ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
                 navigator.GoBack();
                 actionDelete?.Invoke();
             },
@@ -65,4 +72,39 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         addReservationButton.SetAsFirstSibling();
     }
+
+    public void InstantiateReservations()
+    {
+        foreach (var reservationButton in reservationButtons)
+        {
+            Destroy(reservationButton);
+        }
+        reservationButtons.Clear();
+        foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID))
+        {
+
+            GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation);//, OpenClientAdminScreen, OpenEditAdminScreen, OpenDeleteAdminScreen);
+            reservationButtons.Add(reservationButton);
+        }
+    }
+
+   /* public void InstantiateReservations()
+    {
+        List<IReservation> orderedRoomReservationList = ReservationDataManager.GetReservations()
+                                                    .Where(res => res.CustomerName == currentClient.ID)
+                                                    .OrderBy(res => res.Period.Start).ToList();
+
+        foreach (var reservationButton in reservationButtons)
+        {
+            Destroy(reservationButton);
+        }
+
+        foreach (var reservation in orderedRoomReservationList)
+        {
+            GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation);//, () => OpenReservationScreen(reservation));
+            reservationButtons.Add(reservationButton);
+        }
+    }*/
 }
