@@ -61,7 +61,6 @@ public class ClientsScreen : MonoBehaviour
         Client client = new Client();
         if (clientName.text == " ")
         {
-            Debug.Log("nume necesar");
             textNameRequired.text = "Te rog adaugă un nume!";
         }
         else

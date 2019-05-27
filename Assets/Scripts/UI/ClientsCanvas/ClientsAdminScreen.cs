@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UINavigation;
 using UnityEngine.UI;
 using System;
-using System.Linq;
 
 public class ClientsAdminScreen : MonoBehaviour
 {
