@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +18,10 @@ public class RoomButton : MonoBehaviour
     private Button editRoomButton;
     [SerializeField]
     private Button deleteRoomButton;
+    [SerializeField]
+    private Image disponibilityMarker = null;
     private IRoom currentRoom;
+    private DateTime dateTimeFilter = DateTime.Today;
     //[SerializeField]
     //private Text personsNumber = null;
 
@@ -38,6 +41,16 @@ public class RoomButton : MonoBehaviour
         if (room.DoubleBeds != 0)
         {
             roomBeds.text += "duble: " + room.DoubleBeds;
+        }
+        IEnumerable<IReservation> reservations = ReservationDataManager.GetActiveRoomReservations(room.ID)
+                .Where(r => r.Period.Includes(dateTimeFilter));
+        if (reservations.Count() == 0)
+        {
+            disponibilityMarker.color = Constants.availableItemColor;
+        }
+        else
+        {
+            disponibilityMarker.color = Constants.reservedUnavailableItemColor;
         }
         roomButton.onClick.AddListener(() => roomCallback(room));
         editRoomButton.onClick.AddListener(() => editCallback(room));

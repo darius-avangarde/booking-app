@@ -17,14 +17,14 @@ public class ReservationItem : MonoBehaviour
     [SerializeField]
     private Text reservationPeriod = null;
 
-    public void Initialize(IReservation reservation, Action<IReservation> editCallback, Action<IReservation> deleteCallback)
+    public void Initialize(IReservation reservation, Action editCallback, Action<IReservation> deleteCallback)
     {
         customerName.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : ClientDataManager.GetClient(reservation.CustomerID).Name;
         customerPhone.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : ClientDataManager.GetClient(reservation.CustomerID).Number;
         string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
         string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
         reservationPeriod.text = startPeriod + "  -  " + endPeriod;
-        editReservationButton.onClick.AddListener(() => editCallback(reservation));
+        editReservationButton.onClick.AddListener(() => editCallback());
         deleteReservationButton.onClick.AddListener(() => deleteCallback(reservation));
     }
 }

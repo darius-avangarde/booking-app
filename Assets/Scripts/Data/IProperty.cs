@@ -4,7 +4,6 @@ public interface IProperty
 {
     string ID { get; }
     string Name { get; set; }
-    string NrRooms { get; }
     string GetPropertyRoomID { get; set; }
     bool HasRooms { get; set; }
     IEnumerable<IRoom> Rooms { get; }

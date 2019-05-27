@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UINavigation;
 
 public class PropertyButton : MonoBehaviour
 {
-    [SerializeField]
-    private Transform roomsContentScrollView = null;
+    public List<GameObject> RoomButtons { get; set; } = new List<GameObject>();
+    public Transform RoomsContentScrollView = null;
+
     [SerializeField]
     private Text propertyName = null;
     [SerializeField]
@@ -19,43 +21,51 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Button deletePropertyButton = null;
     [SerializeField]
-    private GameObject roomPrefabButton = null;
+    private Button addRoomButton = null;
     [SerializeField]
     private GameObject roomArrowLeft = null;
     [SerializeField]
     private GameObject roomArrowDown = null;
+    [SerializeField]
+    private GameObject addRoomsButton = null;
+    [SerializeField]
+    private Image disponibilityMarker = null;
 
-    private List<GameObject> roomButtons = new List<GameObject>();
-    private Navigator navigator;
-    private ConfirmationDialog confirmationDialog;
-    private IProperty selectedProperty;
-    private RectTransform layoutContent;
-    private Transform roomAdminScreenTransform;
-    private Transform roomScreenTransform;
-
-    public void Initialize(IProperty property, Navigator nav, ConfirmationDialog ConfirmPopUp, RectTransform layout, Transform roomAdminScreen, Transform roomScreen, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
+    public void Initialize(IProperty property, RectTransform layoutContent, bool disponibility, string nrRooms, Action<IProperty> addRoomCallback, Action<IRoom> PropertyRoomCallback, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
     {
-        navigator = nav;
-        layoutContent = layout;
-        roomAdminScreenTransform = roomAdminScreen;
-        roomScreenTransform = roomScreen;
-        confirmationDialog = ConfirmPopUp;
-
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
         editPropertyButton.onClick.AddListener(() => editCallback(property));
         deletePropertyButton.onClick.AddListener(() => deleteCallback(property));
         if (!property.HasRooms)
         {
-            propertyButtonItem.onClick.AddListener(() => OpenRoomScreen(property.GetRoom(property.GetPropertyRoomID)));
-            //propertyButtonItem.onClick.AddListener(() => OpenRoomReservationScreen(property.GetPropertyRoom()));
+            propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetRoom(property.GetPropertyRoomID)));
+            IEnumerable<IReservation> reservations = ReservationDataManager.GetActiveRoomReservations(property.GetRoom(property.GetPropertyRoomID).ID)
+                    .Where(r => r.Period.Includes(DateTime.Today));
+            if (reservations.Count() == 0)
+            {
+                disponibilityMarker.color = Constants.availableItemColor;
+            }
+            else
+            {
+                disponibilityMarker.color = Constants.reservedUnavailableItemColor;
+            }
         }
         else
         {
-            InstantiateRooms(property);
+            nrOfRooms.text = string.IsNullOrEmpty(nrRooms) ? Constants.defaultProperyAdminScreenNrRooms : nrRooms;
+            if (disponibility)
+            {
+                addRoomsButton.SetActive(false);
+            }
+            else
+            {
+                addRoomsButton.SetActive(true);
+            }
+            addRoomButton.onClick.AddListener(() => addRoomCallback(property));
             propertyButtonItem.onClick.AddListener(() =>
             {
-                roomsContentScrollView.gameObject.SetActive(roomsContentScrollView.gameObject.activeInHierarchy ? false : true);
-                if (roomsContentScrollView.gameObject.activeInHierarchy)
+                RoomsContentScrollView.gameObject.SetActive(RoomsContentScrollView.gameObject.activeInHierarchy ? false : true);
+                if (RoomsContentScrollView.gameObject.activeInHierarchy)
                 {
                     roomArrowLeft.SetActive(false);
                     roomArrowDown.SetActive(true);
@@ -69,60 +79,5 @@ public class PropertyButton : MonoBehaviour
                 Canvas.ForceUpdateCanvases();
             });
         }
-        selectedProperty = property;
-    }
-
-    private void InstantiateRooms(IProperty property)
-    {
-        foreach (var roomButton in roomButtons)
-        {
-            Destroy(roomButton);
-        }
-        if (property != null)
-        {
-            foreach (var room in property.Rooms)
-            {
-                property.HasRooms = true;
-                GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
-                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomScreen, OpenRoomAdminScreen, DeleteRoom);
-                roomButtons.Add(roomButton);
-            }
-        }
-        nrOfRooms.text = string.IsNullOrEmpty(property.NrRooms) ? Constants.defaultProperyAdminScreenNrRooms : ("Nr. Camere: " + property.NrRooms);
-        roomsContentScrollView.gameObject.SetActive(false);
-    }
-
-    public void AddRoomItem()
-    {
-        IRoom room = selectedProperty.AddRoom();
-        OpenRoomAdminScreen(room);
-    }
-
-    public void DeleteRoom(IRoom selectedRoom)
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = "Ștergeți camera?",
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
-            ConfirmCallback = () => {
-                selectedProperty.DeleteRoom(selectedRoom.ID);
-                ReservationDataManager.DeleteReservationsForRoom(selectedRoom.ID);
-                InstantiateRooms(selectedProperty);
-            },
-            CancelCallback = null
-        });
-    }
-
-    private void OpenRoomAdminScreen(IRoom room)
-    {
-        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(selectedProperty, room);
-        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
-    }
-
-    private void OpenRoomScreen(IRoom room)
-    {
-        roomScreenTransform.GetComponent<RoomScreen>().UpdateRoomDetailsFields(room);
-        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
     }
 }

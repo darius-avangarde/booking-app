@@ -35,11 +35,11 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1080, y: 300}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 1080, y: 500}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1974633078695460012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52,16 +52,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96579c0c980b8974ab0b47eacb875b6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomsContentScrollView: {fileID: 6518814395718641087}
+  RoomsContentScrollView: {fileID: 6518814395718641087}
   propertyName: {fileID: 2075275763055482825}
   nrOfRooms: {fileID: 1522565117379179614}
   propertyButtonItem: {fileID: 3574168738619634067}
   editPropertyButton: {fileID: 5626776494961384927}
   deletePropertyButton: {fileID: 1380554339350970559}
-  roomPrefabButton: {fileID: 3383151205223744628, guid: f6b996979a7c0634dacfb3a5afe11194,
-    type: 3}
+  addRoomButton: {fileID: 7311858327472296053}
   roomArrowLeft: {fileID: 4672903924933457150}
   roomArrowDown: {fileID: 1973831315648168631}
+  addRoomsButton: {fileID: 7311858327462063895}
+  disponibilityMarker: {fileID: 0}
 --- !u!114 &5483684035035695440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,7 +820,6 @@ GameObject:
   - component: {fileID: 6518814395718641087}
   - component: {fileID: 7385569731804731650}
   - component: {fileID: 6009892616045995808}
-  - component: {fileID: 8005953703304145215}
   m_Layer: 5
   m_Name: RoomsContents
   m_TagString: Untagged
@@ -884,26 +884,6 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
---- !u!114 &8005953703304145215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2725278994909625194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 750
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: 250
-  m_LayoutPriority: 1
 --- !u!1 &2927367642272102833
 GameObject:
   m_ObjectHideFlags: 0
@@ -1520,10 +1500,10 @@ RectTransform:
   m_Father: {fileID: 4178574038511559388}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -75}
-  m_SizeDelta: {x: -240, y: -150}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 462.5, y: -225}
+  m_SizeDelta: {x: 684.99, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7733524274378809475
 CanvasRenderer:
@@ -1601,8 +1581,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 75, y: 0}
-  m_SizeDelta: {x: -150, y: 0}
+  m_AnchoredPosition: {x: 50, y: 0}
+  m_SizeDelta: {x: -200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7311858327473547249
 CanvasRenderer:
@@ -1635,7 +1615,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: e001fcaa6197cd04eb27c6cae9d9dbd6, type: 3}
     m_FontSize: 50
-    m_FontStyle: 0
+    m_FontStyle: 1
     m_BestFit: 1
     m_MinSize: 4
     m_MaxSize: 80
@@ -1763,18 +1743,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7311858327472296043}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1974633078695460012}
-        m_MethodName: AddRoomItem
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &7311858327472296055
@@ -2231,11 +2200,11 @@ RectTransform:
   m_Father: {fileID: 7311858327473875127}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 75, y: -75}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 25, y: 0}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5386795243078204289
 CanvasRenderer:
   m_ObjectHideFlags: 0

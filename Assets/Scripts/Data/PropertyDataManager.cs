@@ -149,7 +149,6 @@ public static class PropertyDataManager
         private List<Room> rooms = new List<Room>();
         public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
         public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
-        public string NrRooms => Rooms.Count().ToString();
 
         [SerializeField]
         private string getPropertyRoomID;

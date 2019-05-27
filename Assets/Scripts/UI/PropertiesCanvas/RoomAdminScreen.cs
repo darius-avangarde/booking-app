@@ -26,9 +26,9 @@ public class RoomAdminScreen : MonoBehaviour
     private int SingleBedsNr;
     private int DoubleBedsNr;
 
-    public void SetCurrentPropertyRoom(IProperty property, IRoom room)
+    public void SetCurrentPropertyRoom(IRoom room)
     {
-        currentProperty = property;
+        currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
         Initialize();
     }
@@ -62,22 +62,6 @@ public class RoomAdminScreen : MonoBehaviour
             currentProperty.SaveRoom(currentRoom);
         }
         navigator.GoBack();
-    }
-
-    public void DeleteRoom()
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = "Ștergeți camera?",
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
-            ConfirmCallback = ()=> {
-                currentProperty.DeleteRoom(currentRoom.ID);
-                ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
-                navigator.GoBack();
-            },
-            CancelCallback = null
-        });
     }
 
     public void OnRoomNameValueChanged(string value)
