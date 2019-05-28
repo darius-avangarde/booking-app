@@ -36,8 +36,6 @@ public static class ReservationDataManager
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
-
-        Debug.Log("Wrote data");
     }
 
     // we're using interfaces to restrict data mutation to methods and properties that we control

@@ -388,23 +388,30 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         {
             for (int d = 0; d < dayObjects.Count; d++)
             {
-                if(dayObjects[d].ObjDate.Date > currentReservation.Period.Start.Date && dayObjects[d].ObjDate.Date < currentReservation.Period.End.Date)
+                if(dayObjects[d].ObjDate.Date < DateTime.Today.Date)
                 {
-                    dayObjects[d].UpdateDayColors(currentColor, currentColor, currentColor);
+                    dayObjects[d].UpdateDayColors(pastColor, pastColor, pastColor);
+                    dayObjects[d].IsReserved = true;
                 }
                 else
                 {
-                    if(dayObjects[d].ObjDate.Date == currentReservation.Period.Start.Date)
+                    if(dayObjects[d].ObjDate.Date > currentReservation.Period.Start.Date && dayObjects[d].ObjDate.Date < currentReservation.Period.End.Date)
                     {
-                        dayObjects[d].UpdateDayColors(null,currentColor, null);
+                        dayObjects[d].UpdateDayColors(currentColor, currentColor, currentColor);
                     }
-
-                    if(dayObjects[d].ObjDate.Date == currentReservation.Period.End.Date)
+                    else
                     {
-                        dayObjects[d].UpdateDayColors(null, null, currentColor);
+                        if(dayObjects[d].ObjDate.Date == currentReservation.Period.Start.Date)
+                        {
+                            dayObjects[d].UpdateDayColors(null,currentColor, null);
+                        }
+
+                        if(dayObjects[d].ObjDate.Date == currentReservation.Period.End.Date)
+                        {
+                            dayObjects[d].UpdateDayColors(null, null, currentColor);
+                        }
                     }
                 }
-
             }
         }
     }
