@@ -49,6 +49,10 @@ public class PropertyButton : MonoBehaviour
             {
                 disponibilityMarker.color = Constants.reservedUnavailableItemColor;
             }
+            if (disponibility)
+            {
+                disponibilityMarker.color = Constants.availableItemColor;
+            }
         }
         else
         {

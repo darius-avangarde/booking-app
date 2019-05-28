@@ -45,9 +45,26 @@ public static class ReservationDataManager
         return Data.reservations.FindAll(r => !r.Deleted);
     }
 
+    ///<summary>
+    ///Gets all reservations (including deleted that match the given predicate)
+    ///</summary>
     public static IEnumerable<IReservation> GetReservations(Predicate<IReservation> match)
     {
         return Data.reservations.FindAll(match);
+    }
+
+    ///<summary>
+    ///Returns all reservations with the start or end date between(non-equal to) the given from and to DateTimes.
+    ///</summary>
+    public static IEnumerable<IReservation> GetReservationsBetween(DateTime from, DateTime to)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted &&
+            (r.Period.End.Date > from.Date && r.Period.End.Date < to.Date) ||       //check if interval start is between from/to
+            (r.Period.Start.Date > from.Date && r.Period.Start.Date < to.Date) ||   //check if interval end is between from/to
+            (from.Date > r.Period.Start.Date && from.Date < r.Period.End.Date) ||   //check if from is in interval
+            (to.Date > r.Period.Start.Date && to.Date < r.Period.End.Date) ||       //check if to is in interval
+            (from.Date == r.Period.Start || to.Date == r.Period.End.Date)           //chek if either start or end matches any reservation's start or end resepectively
+            );
     }
 
     public static IEnumerable<IReservation> GetDeletedReservations()
@@ -61,22 +78,23 @@ public static class ReservationDataManager
     }
 
     ///<summary>
-    ///Returns all active (with the end date in the future), undeleted reservations for the given roomID
+    ///Returns all active* and undeleted reservations for the given roomID
+    ///<para>*with the end date equal to the current day or in the future</para>
     ///</summary>
     public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks > DateTime.Today.Ticks && r.RoomID == roomID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.RoomID == roomID);
     }
 
 
     ///<summary>
-    ///Returns all active (with the end date in the future), undeleted reservations for the given clientID
+    ///Returns all active* and undeleted reservations for the given clientID
+    ///<para>*with the end date equal to the current day or in the future</para>
     ///</summary>
     public static IEnumerable<IReservation> GetActiveClientReservations(string clientID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Ticks > DateTime.Today.Ticks && r.CustomerID == clientID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.CustomerID == clientID);
     }
-
 
     // TODO: Remove unused AddReservation
     ///<summary>
@@ -92,6 +110,9 @@ public static class ReservationDataManager
         return newReservation;
     }
 
+    ///<summary>
+    ///Creates a new reservation with the given room, client and period data and returns it, this also saves the new reservation to file
+    ///</summary>
     public static IReservation AddReservation(IRoom room, IClient client, DateTime start, DateTime end)
     {
         Reservation newReservation = new Reservation(room, client.ID, start,end);
@@ -101,10 +122,14 @@ public static class ReservationDataManager
         return newReservation;
     }
 
-    public static void EditReservation(IReservation reservation, IRoom room, IClient client, DateTime start, DateTime end)
+    ///<summary>
+    ///Updates the selected reservation's room, client, and period and returns it, this also updates the saved reservation data on file
+    ///</summary>
+    public static IReservation EditReservation(IReservation reservation, IRoom room, IClient client, DateTime start, DateTime end)
     {
         reservation.EditReservation(room, client, start, end);
         WriteReservationData();
+        return reservation;
     }
 
     public static void DeleteReservation(string ID)
@@ -237,11 +262,10 @@ public static class ReservationDataManager
 
         public void EditReservation(IRoom room, IClient client, DateTime start, DateTime end)
         {
-            id = Guid.NewGuid().ToString();
-            propertyID = room.PropertyID;
-            roomID = room.ID;
-            customerID = client.ID;
-            period = new DateTimePeriod(start, end);
+            this.propertyID = room.PropertyID;
+            this.roomID = room.ID;
+            this.customerID = client.ID;
+            this.period = new DateTimePeriod(start, end);
             WriteReservationData();
         }
     }
@@ -301,6 +325,10 @@ public static class ReservationDataManager
             return startTicks <= overlapEndTicks || endTicks >= overlapStartTicks;
         }
 
+        ///<summary>
+        ///Compares the the period to the given one, returns true if they overlap for more then one day (a reservations start date can be the same as another's end date)
+        ///<para>Ex(days): true for 22-25 and 24-26, true for 22-23 and 22-23, false for 22-23 and 23-24 etc...</para>
+        ///</summary>
         public bool Overlaps(IDateTimePeriod period)
         {
             long checkStart = period.Start.ToUniversalTime().Ticks;

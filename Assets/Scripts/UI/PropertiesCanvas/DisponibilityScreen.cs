@@ -40,6 +40,8 @@ public class DisponibilityScreen : MonoBehaviour
     private IProperty selectedProperty;
     private Transform roomsContentScrollView = null;
     private IDateTimePeriod datePeriod = ReservationDataManager.DefaultPeriod();
+    private DateTime startDate = DateTime.Today;
+    private DateTime endDate = DateTime.Today;
     private int selectedDropdown = 0;
     private int nrRooms = 0;
 
@@ -89,19 +91,23 @@ public class DisponibilityScreen : MonoBehaviour
         else
         {
             selectedProperty = null;
-            UpdateDisponibilityContent(datePeriod);
+            UpdateDisponibilityContent(startDate, endDate);
         }
     }
 
-    private void UpdateDisponibilityContent(IDateTimePeriod dateTimePeriod)
+    private void UpdateDisponibilityContent(DateTime startDate, DateTime endDate)
     {
-        disponibilityDatePeriod.text = dateTimePeriod.Start.Day + " " + Constants.MonthNamesDict[dateTimePeriod.Start.Month] + " " + dateTimePeriod.Start.Year;
-        if (dateTimePeriod.End != dateTimePeriod.Start)
+        disponibilityDatePeriod.text = startDate.Day + " " + Constants.MonthNamesDict[startDate.Month] + " " + startDate.Year;
+        if (endDate != startDate)
         {
-            disponibilityDatePeriod.text += " - " + dateTimePeriod.End.Day + " " + Constants.MonthNamesDict[dateTimePeriod.End.Month] + " " + dateTimePeriod.End.Year;
+            disponibilityDatePeriod.text += " - " + endDate.Day + " " + Constants.MonthNamesDict[endDate.Month] + " " + endDate.Year;
         }
-        reservations = ReservationDataManager.GetReservations()
-                .ToList().FindAll(reservation => reservation.Period.Overlaps(dateTimePeriod));
+        reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
+
+        foreach (var res in reservations)
+        {
+            Debug.Log(PropertyDataManager.GetProperty(res.PropertyID).Name + " " + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name);
+        }
         propertyOptions = new Dictionary<string, Dropdown.OptionData>();
         propertyOptions.Add(String.Empty, new Dropdown.OptionData("Toate Proprietatile"));
 
@@ -169,8 +175,8 @@ public class DisponibilityScreen : MonoBehaviour
     public void ShowModalCalendar()
     {
         //calendarScreen.Show(startDateTime, endDateTime, UpdateDisponibilityContent);
-        datePeriod.Start = new DateTime(2019, 5, 26);
-        datePeriod.End = new DateTime(2019, 6, 1);
+        startDate = new DateTime(2019, 5, 27);
+        endDate = new DateTime(2019, 6, 1);
         SelectProperty(selectedDropdown);
     }
 
