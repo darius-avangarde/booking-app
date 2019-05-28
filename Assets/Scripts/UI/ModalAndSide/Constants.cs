@@ -19,7 +19,7 @@ public class Constants : MonoBehaviour
 
     public const string DateTimePrintFormat = "dd/MM/yy";
     public const string AndDelimiter = "  -  ";
-
+    public const string NameRequired = " Te rog adaugă un nume!";
     #region Reservation specific strings
         public const string CLIENTS_TITLE = "Clienți";
         public const string DELETE_DIALOG = "Ștergeți rezervarea?";

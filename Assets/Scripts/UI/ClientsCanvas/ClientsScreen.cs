@@ -61,7 +61,7 @@ public class ClientsScreen : MonoBehaviour
         Client client = new Client();
         if (clientName.text == " ")
         {
-            textNameRequired.text = "Te rog adaugă un nume!";
+            textNameRequired.text = Constants.NameRequired;
         }
         else
        
@@ -82,7 +82,7 @@ public class ClientsScreen : MonoBehaviour
         Client client = new Client();
         if (clientName.text == " ")
         {
-            textNameRequired.text = "Te rog adaugă un nume!";
+            textNameRequired.text = Constants.NameRequired;
         }
         else
       
@@ -126,7 +126,7 @@ public class ClientsScreen : MonoBehaviour
             foreach (var client in clientButtons)
             {
               
-                if (client.GetComponent<ClientButton>().clientName.text.ToString().ToLower().Trim().StartsWith(searchField.text.ToLower().Trim()))
+                if(client.GetComponent<ClientButton>().SearchClients(searchField.text))
                 {
                     client.SetActive(true);
                 }

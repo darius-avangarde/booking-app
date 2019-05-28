@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ClientButton : MonoBehaviour
 {
     [SerializeField]
-    public Text clientName = null;
+    private Text ClientName = null;
     [SerializeField]
     private Text phoneNumber = null;
     [SerializeField]
@@ -14,15 +14,27 @@ public class ClientButton : MonoBehaviour
     private Button editButton;
     [SerializeField]
     private Button deleteButton;
+    
 
     public void Initialize(IClient client, Action<IClient> callback, Action<IClient> editCallBack, Action<IClient> deleteCallback)
     {
-        clientName.text = client.Name;
+        ClientName.text = client.Name;
         phoneNumber.text = client.Number ;
         clientButton.onClick.AddListener(() => callback(client));
         editButton.onClick.AddListener(() => editCallBack(client));
         deleteButton.onClick.AddListener(() => deleteCallback(client));
     }
 
-    
+   
+
+ public bool SearchClients(string input)
+    {
+        bool ok = false;
+
+        if (ClientName.text.ToLower().Trim().StartsWith(input.ToLower().Trim()))
+        {
+            ok = true;
+        }
+        return ok;
+    }
 }
