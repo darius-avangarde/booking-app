@@ -17,7 +17,7 @@ public class ReservationEditScreen : MonoBehaviour
 
         [Header("Modal dialogues")]
         [SerializeField]
-        private ModalCalendar modalCalendarDialog;
+        private ModalCalendarNew modalCalendarDialog;
         [SerializeField]
         private ConfirmationDialog confirmationDialog;
 
@@ -75,6 +75,7 @@ public class ReservationEditScreen : MonoBehaviour
     {
         propertyDropdown.onValueChanged.RemoveAllListeners();
         roomDropdown.onValueChanged.RemoveAllListeners();
+        clientInputField.onEndEdit.RemoveAllListeners();
     }
 
     #region Public and internal functions
@@ -87,8 +88,7 @@ public class ReservationEditScreen : MonoBehaviour
 
             if(currentRoom != null)
             {
-                modalCalendarDialog.Show(
-                    DateTime.Today,
+                modalCalendarDialog.OpenCallendar(
                     currentReservation,
                     ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
                         .Where(r => r.ID != reservationID)
@@ -115,7 +115,7 @@ public class ReservationEditScreen : MonoBehaviour
                     );
                     if(confirmationCallback != null)
                         confirmationCallback.Invoke(currentReservation);
-                    navigator.GoBack();
+                    CancelChanges();
                 };
                 confirmationDialog.Show(editConfirmation);
             }
@@ -129,7 +129,7 @@ public class ReservationEditScreen : MonoBehaviour
                 );
                 if(confirmationCallback != null)
                     confirmationCallback.Invoke(newReservation);
-                navigator.GoBack();
+                CancelChanges();
             }
 
             allowSearch = false;
@@ -142,7 +142,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             propertyDropdown.onValueChanged.RemoveAllListeners();
             roomDropdown.onValueChanged.RemoveAllListeners();
-            clientInputField.onValueChanged.RemoveAllListeners();
+            clientInputField.onEndEdit.RemoveAllListeners();
             navigator.GoBack();
             allowSearch = false;
         }
@@ -170,7 +170,8 @@ public class ReservationEditScreen : MonoBehaviour
         internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> callback)
         {
             confirmationCallback = callback;
-            period = reservation.Period;
+            period.Start = reservation.Period.Start.Date;
+            period.End = reservation.Period.End.Date;
             UpdateEditableOptions(
                 reservation,
                 ClientDataManager.GetClient(reservation.ClientID),
@@ -237,7 +238,7 @@ public class ReservationEditScreen : MonoBehaviour
             return;
         }
 
-        if(OverlapsOtherReservation())
+        if(OverlapsOtherReservation(period.Start.Date, period.End.Date))
         {
             DisplayErrorAndSetInteractability(Constants.ERR_PERIOD, true, false);
             return;
@@ -308,12 +309,11 @@ public class ReservationEditScreen : MonoBehaviour
         }
 
         ValidateInput();
-        allowSearch = true;
-
 
         propertyDropdown.onValueChanged.AddListener(SelectProperty);
         roomDropdown.onValueChanged.AddListener(SelectRoom);
         clientInputField.onEndEdit.AddListener((s) => ValidateInput());
+        allowSearch = true;
     }
 
     //Updates the properties dropdown with all available properties with at least one room or roomles properties
@@ -429,10 +429,13 @@ public class ReservationEditScreen : MonoBehaviour
     }
 
     //Returns true if no other reservations for this room overlap the curently set period
-    private bool OverlapsOtherReservation()
+    private bool OverlapsOtherReservation(DateTime start, DateTime end)
     {
         return ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
-            .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != string.Empty)
-            && (r.Period.Overlaps(period) || period.Overlaps(r.Period) || (r.Period.Start == period.Start && r.Period.End == period.End)));
+        .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != Constants.defaultCustomerName)
+            && ((start.Date > r.Period.Start && start.Date < r.Period.End.Date)
+            || r.Period.Start.Date > start.Date && r.Period.End.Date < end.Date
+            || r.Period.Start.Date == start.Date || r.Period.End.Date == end.Date
+        ));
     }
 }

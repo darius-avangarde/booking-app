@@ -36,6 +36,8 @@ public static class ReservationDataManager
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
+
+        Debug.Log("Wrote data");
     }
 
     // we're using interfaces to restrict data mutation to methods and properties that we control
@@ -51,6 +53,20 @@ public static class ReservationDataManager
     public static IEnumerable<IReservation> GetReservations(Predicate<IReservation> match)
     {
         return Data.reservations.FindAll(match);
+    }
+
+    ///<summary>
+    ///Returns all reservations with the start or end date between(non-equal to) the given from and to DateTimes.
+    ///</summary>
+    public static IEnumerable<IReservation> GetReservationsBetween(DateTime from, DateTime to)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted &&
+            (r.Period.End.Date > from.Date && r.Period.End.Date < to.Date) ||       //check if interval start is between from/to
+            (r.Period.Start.Date > from.Date && r.Period.Start.Date < to.Date) ||   //check if interval end is between from/to
+            (from.Date > r.Period.Start.Date && from.Date < r.Period.End.Date) ||   //check if from is in interval
+            (to.Date > r.Period.Start.Date && to.Date < r.Period.End.Date) ||       //check if to is in interval
+            (from.Date == r.Period.Start || to.Date == r.Period.End.Date)           //chek if either start or end matches any reservation's start or end resepectively
+            );
     }
 
     public static IEnumerable<IReservation> GetDeletedReservations()
@@ -69,7 +85,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.ToUniversalTime().Ticks > DateTime.Today.ToUniversalTime().Ticks && r.RoomID == roomID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.RoomID == roomID);
     }
 
 
@@ -79,7 +95,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveClientReservations(string clientID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.ToUniversalTime().Ticks > DateTime.Today.ToUniversalTime().Ticks && r.ClientID == clientID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.ClientID == clientID);
     }
 
     // TODO: Remove unused AddReservation

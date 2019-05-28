@@ -27,6 +27,9 @@ public class Constants : MonoBehaviour
         public const string EDIT_TITLE = "Modifică rezervarea";
         public const string NEW_TITLE = "Rezervare nouă";
         public const string NEWLINE = "\n";
+        public const string DAY_COUNT_PREF = "Ați selectat";
+        public const string DAY_COUNT_SUFF_PL = "nopți.";
+        public const string DAY_COUNT_SUFF_SN = "noapte.";
 
         //error messages
         public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
@@ -108,5 +111,4 @@ public class Constants : MonoBehaviour
         {1, "Lună"},
         {2, "An"}
     };
-
 }

@@ -10,9 +10,16 @@ public class TestEdit : MonoBehaviour
     ReservationEditScreen edit;
     [SerializeField]
     Text testText;
+    [SerializeField]
+    ModalCalendarNew newCalendar;
 
-
-
+    [SerializeField]
+    Color
+    unavailale = Constants.unavailableItemColor,
+    selected = Constants.selectedItemColor,
+    reservedAvailable = Constants.reservedAvailableItemColor,
+    reserverUnavail = Constants.reservedUnavailableItemColor,
+    avail = Constants.availableItemColor;
 
     IClient client;
     IRoom room;
@@ -62,6 +69,11 @@ public class TestEdit : MonoBehaviour
             Debug.Log("reservation is null");
     }
 
+    public void OpenNewCalendar()
+    {
+        //newCalendar.OpenCallendar(reservation, ReservationDataManager.GetActiveRoomReservations(room.ID).ToList(), (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
+        newCalendar.OpenCallendar(System.DateTime.Today,  (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
+    }
     private void DebugC(IReservation r, bool isEdit)
     {
         Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.ClientID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
