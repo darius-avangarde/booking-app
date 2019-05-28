@@ -20,7 +20,14 @@ public class PropertyAdminScreen : MonoBehaviour
     private Toggle NoRoomsToggle;
     [SerializeField]
     private GameObject RoomsToggleField;
+    [SerializeField]
+    private Button backButton;
     private IProperty currentProperty;
+
+    private void Start()
+    {
+        backButton.onClick.AddListener(() => navigator.GoBack());
+    }
 
     public void SetCurrentProperty(IProperty property)
     {
