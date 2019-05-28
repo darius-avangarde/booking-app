@@ -28,7 +28,7 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private RectTransform propertyInfoContent = null;
     [SerializeField]
-    private Button BackButton;
+    private Button backButton;
 
     private Transform roomsContentScrollView = null;
     private List<GameObject> propertyButtons = new List<GameObject>();
@@ -38,7 +38,7 @@ public class PropertiesScreen : MonoBehaviour
 
     private void Awake()
     {
-        BackButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => navigator.GoBack());
     }
 
     public void InstantiateProperties()

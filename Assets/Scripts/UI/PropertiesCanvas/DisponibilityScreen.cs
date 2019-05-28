@@ -33,7 +33,7 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
-    private Button BackButton;
+    private Button backButton;
 
     private Dictionary<string, Dropdown.OptionData> propertyOptions;
     private List<GameObject> disponibilityScreenItemList = new List<GameObject>();
@@ -49,7 +49,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void Awake()
     {
-        BackButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => navigator.GoBack());
     }
 
     public void InitializeDisponibility()

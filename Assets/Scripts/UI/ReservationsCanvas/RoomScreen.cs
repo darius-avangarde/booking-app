@@ -25,7 +25,7 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Text propertyRoomScreenTitle = null;
     [SerializeField]
-    private Button BackButton;
+    private Button backButton;
     //[SerializeField]
     //private Text roomDetails = null;
     private List<GameObject> reservationButtonList = new List<GameObject>();
@@ -36,7 +36,7 @@ public class RoomScreen : MonoBehaviour
 
     private void Awake()
     {
-        BackButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => navigator.GoBack());
     }
 
     public void UpdateRoomDetailsFields(/*DateTime date,*/ IRoom room)
