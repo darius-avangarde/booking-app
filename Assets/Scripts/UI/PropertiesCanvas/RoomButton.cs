@@ -27,12 +27,12 @@ public class RoomButton : MonoBehaviour
 
     public void Initialize(IRoom room, Action<IRoom> roomCallback, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
     {
-        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
-        roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.Pret : ("Pret: " + room.Price + " ron");
-        roomBeds.text = "Paturi ";
+        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
+        roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.PRICE : ("Pret: " + room.Price + " ron");
+        roomBeds.text = Constants.BEDS;
         if (room.SingleBeds != 0)
         {
-            roomBeds.text += "single: " + room.SingleBeds;
+            roomBeds.text += Constants.SingleBed + room.SingleBeds;
         }
         if (room.SingleBeds != 0 && room.DoubleBeds != 0)
         {
@@ -40,7 +40,7 @@ public class RoomButton : MonoBehaviour
         }
         if (room.DoubleBeds != 0)
         {
-            roomBeds.text += "duble: " + room.DoubleBeds;
+            roomBeds.text += Constants.DoubleBed + room.DoubleBeds;
         }
         IEnumerable<IReservation> reservations = ReservationDataManager.GetActiveRoomReservations(room.ID)
                 .Where(r => r.Period.Includes(dateTimeFilter));

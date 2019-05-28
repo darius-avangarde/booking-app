@@ -43,11 +43,7 @@ public class RoomAdminScreen : MonoBehaviour
             roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
             SingleBedsNr = currentRoom.SingleBeds;
             DoubleBedsNr = currentRoom.DoubleBeds;
-            roomAdminScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
-        }
-        else
-        {
-            Debug.Log("null?");
+            roomAdminScreenTitle.text = currentRoom.Name ?? Constants.NEW_ROOM;
         }
     }
 
@@ -67,7 +63,7 @@ public class RoomAdminScreen : MonoBehaviour
     public void OnRoomNameValueChanged(string value)
     {
         roomAdminScreenTitle.text = value;
-        currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.defaultRoomAdminScreenName : value;
+        currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.NEW_ROOM : value;
     }
 
     public void OnRoomPriceValueChanged(string value)

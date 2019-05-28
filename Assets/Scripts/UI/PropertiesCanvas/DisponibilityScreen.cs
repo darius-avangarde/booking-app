@@ -83,7 +83,7 @@ public class DisponibilityScreen : MonoBehaviour
                     Destroy(propertyButton);
                 }
             }
-            string disponibleRooms = "Camere disponibile: " + nrRooms;
+            string disponibleRooms = Constants.AVAILABLE_ROOMS + nrRooms;
             propertyButton.GetComponent<PropertyButton>().Initialize(selectedProperty, filteredPropertiesContent, true, disponibleRooms, null, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
             disponibilityScreenItemList.Add(propertyButton);
             nrRooms = 0;
@@ -139,7 +139,7 @@ public class DisponibilityScreen : MonoBehaviour
                     Destroy(propertyButton);
                 }
             }
-            string disponibleRooms = "Camere disponibile: " + nrRooms;
+            string disponibleRooms = Constants.AVAILABLE_ROOMS + nrRooms;
             propertyButton.GetComponent<PropertyButton>().Initialize(property, filteredPropertiesContent, true, disponibleRooms, null, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
             propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
             disponibilityScreenItemList.Add(propertyButton);
@@ -174,7 +174,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void ShowModalCalendar()
     {
-        //calendarScreen.Show(startDateTime, endDateTime, UpdateDisponibilityContent);
+        //calendarScreen.Show(startDateTime, UpdateDisponibilityContent);
         startDate = new DateTime(2019, 5, 27);
         endDate = new DateTime(2019, 6, 1);
         SelectProperty(selectedDropdown);
@@ -184,7 +184,7 @@ public class DisponibilityScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți proprietatea?",
+            Message = Constants.DELETE_PROPERTY,
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
             ConfirmCallback = () =>
@@ -201,7 +201,7 @@ public class DisponibilityScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți camera?",
+            Message = Constants.DELETE_ROOM,
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
             ConfirmCallback = () =>

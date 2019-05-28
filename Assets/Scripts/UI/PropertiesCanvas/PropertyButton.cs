@@ -33,7 +33,7 @@ public class PropertyButton : MonoBehaviour
 
     public void Initialize(IProperty property, RectTransform layoutContent, bool disponibility, string nrRooms, Action<IProperty> addRoomCallback, Action<IRoom> PropertyRoomCallback, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
     {
-        propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.defaultProperyAdminScreenName : property.Name;
+        propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : property.Name;
         editPropertyButton.onClick.AddListener(() => editCallback(property));
         deletePropertyButton.onClick.AddListener(() => deleteCallback(property));
         if (!property.HasRooms)
@@ -56,7 +56,7 @@ public class PropertyButton : MonoBehaviour
         }
         else
         {
-            nrOfRooms.text = string.IsNullOrEmpty(nrRooms) ? Constants.defaultProperyAdminScreenNrRooms : nrRooms;
+            nrOfRooms.text = string.IsNullOrEmpty(nrRooms) ? Constants.ROOMS_NUMBER : nrRooms;
             if (disponibility)
             {
                 addRoomsButton.SetActive(false);

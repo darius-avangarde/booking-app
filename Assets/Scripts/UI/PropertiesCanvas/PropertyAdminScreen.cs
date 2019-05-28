@@ -38,7 +38,7 @@ public class PropertyAdminScreen : MonoBehaviour
     public void SetPropertyFieldsText()
     {
         propertyNameInputField.text = currentProperty.Name ?? "";
-        propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
+        propertyScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
         if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
@@ -73,7 +73,7 @@ public class PropertyAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți proprietatea?",
+            Message = Constants.DELETE_PROPERTY,
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
             ConfirmCallback = () =>
@@ -89,6 +89,6 @@ public class PropertyAdminScreen : MonoBehaviour
     public void NameChanged(string value)
     {
         propertyScreenTitle.text = value;
-        currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;
+        currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
     }
 }

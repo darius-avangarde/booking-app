@@ -56,7 +56,7 @@ public class PropertiesScreen : MonoBehaviour
             {
                 propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
             }
-            string rooms = "Nr. Camere: " + nrRooms;
+            string rooms = Constants.ROOMS_NUMBER + nrRooms;
             propertyButton.GetComponent<PropertyButton>().Initialize(property, propertyInfoContent, false, rooms, AddRoomItem, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
             propertyButtons.Add(propertyButton);
             nrRooms = 0;
@@ -100,7 +100,7 @@ public class PropertiesScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți proprietatea?",
+            Message = Constants.DELETE_PROPERTY,
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
             ConfirmCallback = () =>
@@ -117,7 +117,7 @@ public class PropertiesScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți camera?",
+            Message = Constants.DELETE_ROOM,
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
             ConfirmCallback = () =>

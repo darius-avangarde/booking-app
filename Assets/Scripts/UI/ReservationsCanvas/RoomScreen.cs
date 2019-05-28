@@ -39,11 +39,11 @@ public class RoomScreen : MonoBehaviour
         currentRoom = room;
         if (currentProperty.HasRooms)
         {
-            propertyRoomScreenTitle.text = room.Name ?? Constants.defaultRoomAdminScreenName;
+            propertyRoomScreenTitle.text = room.Name ?? Constants.NEW_ROOM;
         }
         else
         {
-            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
+            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
         }
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -53,11 +53,11 @@ public class RoomScreen : MonoBehaviour
     {
         if (currentProperty.HasRooms)
         {
-            propertyRoomScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+            propertyRoomScreenTitle.text = currentRoom.Name ?? Constants.NEW_ROOM;
         }
         else
         {
-            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
+            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
         }
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -102,7 +102,7 @@ public class RoomScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți rezervarea?",
+            Message = Constants.DELETE_DIALOG,
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
             ConfirmCallback = () => {

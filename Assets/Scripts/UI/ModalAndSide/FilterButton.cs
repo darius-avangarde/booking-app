@@ -19,13 +19,13 @@ public class FilterButton : MonoBehaviour
     public void UpdateFilterButtonText(RoomFilter filter)
     {
         string propertyInfo = "";
-        string roomCapacityInfo = Constants.Persoane + filter.RoomCapacity.ToString();
+        string roomCapacityInfo = Constants.PERSONS + filter.RoomCapacity.ToString();
         string singleBedInfo = Constants.SingleBed + filter.SingleBeds;
         string doubleBedInfo = Constants.DoubleBed + filter.DoubleBeds;
 
         if (!string.IsNullOrEmpty(filter.PropertyID))
         {
-            propertyInfo = Constants.Proprietate + PropertyDataManager.GetProperty(filter.PropertyID).Name;
+            propertyInfo = Constants.PROPERTY + PropertyDataManager.GetProperty(filter.PropertyID).Name;
         }
 
         propertyInfoText.text = propertyInfo;
