@@ -26,7 +26,8 @@ public class ClientsAdminScreen : MonoBehaviour
     private GameObject reservationPrefabButton = null;
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
-  
+    [SerializeField]
+    private ReservationEditScreen rezerv = null;
 
     public IClient GetCurrentClient()
     {
@@ -35,6 +36,13 @@ public class ClientsAdminScreen : MonoBehaviour
     public void SetCurrentClient(IClient client)
     {
         currentClient = client;
+    }
+
+    public void SetCurrentClients(IClient client)
+    {
+        currentClient = client;
+        SetClientsFieldsText();
+        Debug.Log(client.Name);
     }
 
     public void SetClientsFieldsText()
@@ -53,9 +61,9 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Ștergeți clientul?",
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
+            Message = Constants.DELETE_CLIENT,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
                 ClientDataManager.DeleteClient(currentClient.ID);
@@ -82,15 +90,38 @@ public class ClientsAdminScreen : MonoBehaviour
         foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID))
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
-            reservationButton.GetComponent<ReservationButton>().Initialize(reservation);
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack),DeleteReservation);
             reservationButtons.Add(reservationButton);
         }
     }
 
+    private void UpdateCallBack(IReservation reserv)
+
+    {
+        SetCurrentClients(ClientDataManager.GetClient(reserv.CustomerID));
+        Debug.Log(ClientDataManager.GetClient(reserv.CustomerID).Name);
+    }
+    private void DeleteReservation(IReservation reservation)
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_DIALOG,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () => {
+                ReservationDataManager.DeleteReservation(reservation.ID);
+                InstantiateReservations();
+            },
+            CancelCallback = null
+        });
+    }
+
     public void AddReservationForClient()
     {
-        Debug.Log("client curent nume:"+ currentClient.Name);
-        Debug.Log("client current id:" + currentClient.ID);
+       // Debug.Log("client curent nume:"+ currentClient.Name);
+        //Debug.Log("client current id:" + currentClient.ID);
+
+        rezerv.OpenAddReservation(currentClient, UpdateCallBack);
     }
    
 }
