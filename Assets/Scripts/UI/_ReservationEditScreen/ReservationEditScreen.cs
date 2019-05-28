@@ -174,7 +174,7 @@ public class ReservationEditScreen : MonoBehaviour
             period.End = reservation.Period.End.Date;
             UpdateEditableOptions(
                 reservation,
-                ClientDataManager.GetClient(reservation.ClientID),
+                ClientDataManager.GetClient(reservation.CustomerID),
                 PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
                 );
             titleText.text = Constants.EDIT_TITLE;

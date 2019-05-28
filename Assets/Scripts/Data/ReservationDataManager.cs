@@ -93,7 +93,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveClientReservations(string clientID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.ClientID == clientID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.CustomerID == clientID);
     }
 
     // TODO: Remove unused AddReservation
@@ -164,7 +164,7 @@ public static class ReservationDataManager
 
     public static void DeleteReservationsForClient(string clientID)
     {
-        List<Reservation> reservations = Data.reservations.FindAll(r => r.ClientID.Equals(clientID));
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.CustomerID.Equals(clientID));
         foreach (var reservation in reservations)
         {
             reservation.Deleted = true;
@@ -212,7 +212,7 @@ public static class ReservationDataManager
         private string roomID;
         public string RoomID => roomID;
 
-        public string ClientName
+        public string CustomerName
         {
             get => ClientDataManager.GetClient(customerID).Name;
             set
@@ -224,7 +224,7 @@ public static class ReservationDataManager
 
         [SerializeField]
         private string customerID;
-        public string ClientID
+        public string CustomerID
         {
             get => customerID;
             set

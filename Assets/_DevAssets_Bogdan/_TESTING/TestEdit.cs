@@ -38,7 +38,7 @@ public class TestEdit : MonoBehaviour
         List<IReservation> rlist = ReservationDataManager.GetReservations().OrderBy(r => r.Period.Start).ToList();
         for (int i = 0; i < rlist.Count; i++)
         {
-            testText.text +=  Constants.NEWLINE + ClientDataManager.GetClient(rlist[i].ClientID).Name + Constants.NEWLINE
+            testText.text +=  Constants.NEWLINE + ClientDataManager.GetClient(rlist[i].CustomerID).Name + Constants.NEWLINE
                 + PropertyDataManager.GetProperty(rlist[i].PropertyID).GetRoom(rlist[i].RoomID).Name + Constants.NEWLINE
                 + rlist[i].Period.Start.ToString(Constants.DateTimePrintFormat) + " - " + rlist[i].Period.End.ToString(Constants.DateTimePrintFormat)+ Constants.NEWLINE;
         }
@@ -76,6 +76,6 @@ public class TestEdit : MonoBehaviour
     }
     private void DebugC(IReservation r, bool isEdit)
     {
-        Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.ClientID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
+        Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.CustomerID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
     }
 }
