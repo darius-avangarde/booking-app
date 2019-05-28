@@ -7,20 +7,32 @@ public class Constants : MonoBehaviour
     //TODO: Remove bool when no longer used
     public const bool PRETTY_PRINT = true;
 
-    public const string defaultProperyAdminScreenName = "Proprietate nouă";
-    public const string defaultProperyAdminScreenNrRooms = "Număr de camere";
-    public const string Proprietate = "Proprietate: ";
-    public const string defaultRoomAdminScreenName = "Camera nouă";
-    public const string defaultCustomerName = "NumeClient";
-    public const string Persoane = "Persoane: ";
-    public const string Pret = "Pret: ";
+    #region Property specific strings
+    public const string PROPERTIES_TITLE = "Proprietati";
+    public const string DELETE_PROPERTY = "Ștergeți proprietatea?";
+    public const string DELETE_ROOM = "Ștergeți camera?";
+    public const string NEW_PROPERTY = "Proprietate nouă";
+    public const string NEW_ROOM = "Camera nouă";
+    public const string ROOMS_NUMBER = "Număr de camere: ";
+    public const string AVAILABLE_ROOMS = "Camere disponibile: ";
+    public const string PROPERTY = "Proprietate: ";
+    public const string PERSONS = "Persoane: ";
+    public const string BEDS = "Paturi: ";
+    public const string PRICE = "Pret: ";
     public const string SingleBed = "Paturi single: ";
     public const string DoubleBed = "Paturi duble: ";
+    //error messages
+    public const string ERR_PROPERTY = "Nu exista proprietati, apasati pe butonul adauga proprietate";
+    public const string ERR_DISPONIBILITY = "Nu exista camere disponibile in intervalul selectat";
+    #endregion
 
     public const string DateTimePrintFormat = "dd/MM/yy";
     public const string AndDelimiter = "  -  ";
+    public const string NameRequired = " Te rog adaugă un nume!";
+    public const string defaultCustomerName = "NumeClient";
 
     #region Reservation specific strings
+<<<<<<< HEAD
         public const string CLIENTS_TITLE = "Clienți";
         public const string DELETE_DIALOG = "Ștergeți rezervarea?";
         public const string EDIT_DIALOG = "Moficați rezervarea?";
@@ -30,13 +42,21 @@ public class Constants : MonoBehaviour
         public const string DAY_COUNT_PREF = "Ați selectat";
         public const string DAY_COUNT_SUFF_PL = "nopți.";
         public const string DAY_COUNT_SUFF_SN = "noapte.";
+=======
+    public const string CLIENTS_TITLE = "Clienți";
+    public const string DELETE_DIALOG = "Ștergeți rezervarea?";
+    public const string EDIT_DIALOG = "Moficați rezervarea?";
+    public const string EDIT_TITLE = "Modifică rezervarea";
+    public const string NEW_TITLE = "Rezervare nouă";
+    public const string NEWLINE = "\n";
+>>>>>>> origin/master
 
-        //error messages
-        public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
-        public const string ERR_ROOM = "Specificați camera pentru această rezervare";
-        public const string ERR_PERIOD = "Există deja o rezervare pentru această cameră care se suprapune cu perioada selectată";
-        public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
-        public const string ERR_DATES = "Specificați perioada rezervării";
+    //error messages
+    public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
+    public const string ERR_ROOM = "Specificați camera pentru această rezervare";
+    public const string ERR_PERIOD = "Există deja o rezervare pentru această cameră care se suprapune cu perioada selectată";
+    public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
+    public const string ERR_DATES = "Specificați perioada rezervării";
     #endregion
 
     // COLORS

@@ -32,7 +32,7 @@ public class ClientDataManager
 
     private static void WriteClientData()
     {
-        string dataAsJson = JsonUtility.ToJson(Data);
+        string dataAsJson = JsonUtility.ToJson(Data, true);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
@@ -53,9 +53,8 @@ public class ClientDataManager
         return Data.clients.Find(p => p.ID.Equals(ID));
     }
 
-    public static IClient AddClient()
+    public static IClient AddClient(Client newClient)
     {
-        Client newClient = new Client();
         Data.clients.Add(newClient);
         WriteClientData();
 
@@ -68,6 +67,18 @@ public class ClientDataManager
         if (client != null)
         {
             client.Deleted = true;
+            WriteClientData();
+        }
+    }
+    public static void EditClient(string ID, Client update)
+    {
+        Client client = Data.clients.Find(p => p.ID.Equals(ID));
+        if (client != null)
+        {
+            client.Name = update.Name;
+            client.Number = update.Number;
+            client.Adress = update.Adress;
+            client.Email = update.Email;
             WriteClientData();
         }
     }
@@ -84,7 +95,7 @@ public class ClientDataManager
     }
 
     [Serializable]
-    private class Client : IClient
+    public  class Client : IClient
     {
         [SerializeField]
         private string id;

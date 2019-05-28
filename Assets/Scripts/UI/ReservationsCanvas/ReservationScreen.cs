@@ -61,7 +61,7 @@ public class ReservationScreen : MonoBehaviour
     {
         if (currentReservation != null)
         {
-            currentReservation.ClientName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
+            currentReservation.CustomerName = string.IsNullOrEmpty(value) ? Constants.defaultCustomerName : value;
         }
         else
         {
@@ -97,15 +97,15 @@ public class ReservationScreen : MonoBehaviour
     private void UpdateNewReservationFields()
     {
         customerNameInputField.text = Constants.defaultCustomerName;
-        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
-        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.NEW_PROPERTY;
+        roomTitleField.text = currentRoom.Name ?? Constants.NEW_ROOM;
     }
 
     private void UpdateCurrentReservationFields(IReservation reservation)
     {
-        customerNameInputField.text = string.IsNullOrEmpty(reservation.ClientName) ? Constants.defaultCustomerName : currentReservation.ClientName;
-        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.defaultProperyAdminScreenName;
-        roomTitleField.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+        customerNameInputField.text = string.IsNullOrEmpty(reservation.CustomerName) ? Constants.defaultCustomerName : currentReservation.CustomerName;
+        propertyTitleField.text = PropertyDataManager.GetProperty(currentRoom.PropertyID).Name ?? Constants.NEW_PROPERTY;
+        roomTitleField.text = currentRoom.Name ?? Constants.NEW_ROOM;
         string startPeriod = reservation.Period.Start.ToString(Constants.DateTimePrintFormat);
         string endPeriod = reservation.Period.End.ToString(Constants.DateTimePrintFormat);
         reservationPeriodText.text = startPeriod + Constants.AndDelimiter + endPeriod;
@@ -114,7 +114,7 @@ public class ReservationScreen : MonoBehaviour
     private void AddNewReservation(DateTime start, DateTime end)
     {
         IReservation reservation = ReservationDataManager.AddReservation(currentRoom);
-        reservation.ClientName = reservationCustomerName;
+        reservation.CustomerName = reservationCustomerName;
         reservation.Period.Start = start;
         reservation.Period.End = end;
         currentReservation = reservation;

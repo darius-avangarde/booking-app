@@ -11,43 +11,78 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ReservationScreen reservationScreen = null;
+    private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
-    private Text propertyAndRoomScreenTitle = null;
+    private ReservationEditScreen reservationScreen = null;
     [SerializeField]
-    private Text roomDetails = null;
+    private Transform roomAdminScreenTransform = null;
+    [SerializeField]
+    private Transform propertyAdminScreenTransform = null;
     [SerializeField]
     private GameObject reservationPrefabButton = null;
     [SerializeField]
     private Transform reservationsContent = null;
+    [SerializeField]
+    private Text propertyRoomScreenTitle = null;
+    //[SerializeField]
+    //private Text roomDetails = null;
     private List<GameObject> reservationButtonList = new List<GameObject>();
     private DateTime dayDateTime = DateTime.Today;
+    private IProperty currentProperty;
     private IRoom currentRoom;
     private IReservation currentReservation;
-    private List<IReservation> roomReservations = new List<IReservation>();
 
-    public void UpdateRoomDetailsFields(DateTime date, IRoom room)
+    public void UpdateRoomDetailsFields(/*DateTime date,*/ IRoom room)
     {
-        IProperty property = PropertyDataManager.GetProperty(room.PropertyID);
-        dayDateTime = date;
+        currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
+        //dayDateTime = date;
         currentRoom = room;
-        string propertyName = property.Name ?? Constants.defaultProperyAdminScreenName;
-        string roomName = room.Name ?? Constants.defaultRoomAdminScreenName;
-        propertyAndRoomScreenTitle.text = roomName;
-        roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
-
+        if (currentProperty.HasRooms)
+        {
+            propertyRoomScreenTitle.text = room.Name ?? Constants.NEW_ROOM;
+        }
+        else
+        {
+            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+        }
+        //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
+    }
+
+    public void UpdateCurrentRoomDetailsFields()
+    {
+        if (currentProperty.HasRooms)
+        {
+            propertyRoomScreenTitle.text = currentRoom.Name ?? Constants.NEW_ROOM;
+        }
+        else
+        {
+            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+        }
+        //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
+        InstantiateReservations();
+    }
+
+    public void EditButton()
+    {
+        if (currentProperty.HasRooms)
+        {
+            OpenRoomAdminScreen();
+        }
+        else
+        {
+            OpenPropertyAdminScreen();
+        }
     }
 
     public void CreateNewReservation()
     {
-        reservationScreen.UpdateReservationScreen(dayDateTime, null, currentRoom);
+        reservationScreen.OpenAddReservation(currentRoom, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID)));
     }
 
     public void InstantiateReservations()
     {
-        List<IReservation> orderedRoomReservationList = ReservationDataManager.GetReservations()
-                                                    .Where(res => res.RoomID == currentRoom.ID)
+        List<IReservation> orderedRoomReservationList = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
                                                     .OrderBy(res => res.Period.Start).ToList();
 
         foreach (var reservationButton in reservationButtonList)
@@ -58,14 +93,35 @@ public class RoomScreen : MonoBehaviour
         foreach (var reservation in orderedRoomReservationList)
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => OpenReservationScreen(reservation));
+            reservationButton.GetComponent<ReservationItem>().Initialize(reservation,() => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), DeleteReservation);
             reservationButtonList.Add(reservationButton);
         }
     }
 
-    private void OpenReservationScreen(IReservation reservation)
+    private void DeleteReservation(IReservation reservation)
     {
-        reservationScreen.GetComponent<ReservationScreen>().UpdateReservationScreen(dayDateTime, reservation, currentRoom);
-        navigator.GoTo(reservationScreen.GetComponent<NavScreen>());
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_DIALOG,
+            ConfirmText = "Ștergeți",
+            CancelText = "Anulați ",
+            ConfirmCallback = () => {
+                ReservationDataManager.DeleteReservation(reservation.ID);
+                InstantiateReservations();
+            },
+            CancelCallback = null
+        });
+    }
+
+    private void OpenRoomAdminScreen()
+    {
+        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(currentRoom);
+        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
+    }
+
+    private void OpenPropertyAdminScreen()
+    {
+        propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().SetCurrentProperty(currentProperty);
+        navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 }
