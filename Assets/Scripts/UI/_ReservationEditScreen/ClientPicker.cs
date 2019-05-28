@@ -24,6 +24,8 @@ public class ClientPicker : MonoBehaviour
     private Transform clientObjContainer;
     [SerializeField]
     private GameObject addClientButton;
+    [SerializeField]
+    private GameObject noClientsFoundText;
 
     [Space]
     [SerializeField]
@@ -47,6 +49,7 @@ public class ClientPicker : MonoBehaviour
         waitTime = new WaitForSeconds(searchDelay);
         addClientButton.SetActive(false);
         scrolRectGameObj.SetActive(false);
+        noClientsFoundText.SetActive(false);
         searchLoadImage.gameObject.SetActive(false);
         scrolRect = scrolRectGameObj.GetComponentInChildren<ScrollRect>();
     }
@@ -59,6 +62,8 @@ public class ClientPicker : MonoBehaviour
     //Add client function attached to the add new client button in the client picker scrollrect
     public void AddNewClient()
     {
+        ///add client screen - save client + go to navscreen on button + setClientCallback
+
         Debug.Log("Should be to new client screen");
 
         if(onClickAddNewClient != null)
@@ -93,6 +98,7 @@ public class ClientPicker : MonoBehaviour
                 scrolRectGameObj.SetActive(true);
             }
 
+            noClientsFoundText.SetActive(false);
             StopAllCoroutines();
             ClearObjects();
             currentQuerry = value;
@@ -128,7 +134,10 @@ public class ClientPicker : MonoBehaviour
             clientsInList[c].GetComponent<ClientPickerObject>().Initialize(matches[c], SelectAction);
         }
 
-        //addClientButton.transform.SetAsFirstSibling();
+        if(matches.Count == 0)
+        {
+            noClientsFoundText.SetActive(true);
+        }
     }
 
     //clears curently created objects within the client picker scrolrect
