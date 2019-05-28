@@ -10,9 +10,16 @@ public class TestEdit : MonoBehaviour
     ReservationEditScreen edit;
     [SerializeField]
     Text testText;
+    [SerializeField]
+    ModalCalendarNew newCalendar;
 
-
-
+    [SerializeField]
+    Color
+    unavailale = Constants.unavailableItemColor,
+    selected = Constants.selectedItemColor,
+    reservedAvailable = Constants.reservedAvailableItemColor,
+    reserverUnavail = Constants.reservedUnavailableItemColor,
+    avail = Constants.availableItemColor;
 
     IClient client;
     IRoom room;
@@ -20,6 +27,7 @@ public class TestEdit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         client = ClientDataManager.GetClients().ToList()[0];
         IProperty p = PropertyDataManager.GetProperties().ToList()[0];
         room = p.Rooms.ToList()[0];
@@ -27,7 +35,7 @@ public class TestEdit : MonoBehaviour
             reservation = ReservationDataManager.GetReservations().ToList()[0];
 
 
-        List<IReservation> rlist = ReservationDataManager.GetReservations().ToList();
+        List<IReservation> rlist = ReservationDataManager.GetReservations().OrderBy(r => r.Period.Start).ToList();
         for (int i = 0; i < rlist.Count; i++)
         {
             testText.text +=  Constants.NEWLINE + ClientDataManager.GetClient(rlist[i].CustomerID).Name + Constants.NEWLINE
@@ -61,6 +69,11 @@ public class TestEdit : MonoBehaviour
             Debug.Log("reservation is null");
     }
 
+    public void OpenNewCalendar()
+    {
+        //newCalendar.OpenCallendar(reservation, ReservationDataManager.GetActiveRoomReservations(room.ID).ToList(), (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
+        newCalendar.OpenCallendar(System.DateTime.Today,  (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
+    }
     private void DebugC(IReservation r, bool isEdit)
     {
         Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.CustomerID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);

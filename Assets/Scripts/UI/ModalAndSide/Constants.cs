@@ -32,19 +32,22 @@ public class Constants : MonoBehaviour
     public const string defaultCustomerName = "NumeClient";
 
     #region Reservation specific strings
-    public const string CLIENTS_TITLE = "Clienți";
-    public const string DELETE_DIALOG = "Ștergeți rezervarea?";
-    public const string EDIT_DIALOG = "Moficați rezervarea?";
-    public const string EDIT_TITLE = "Modifică rezervarea";
-    public const string NEW_TITLE = "Rezervare nouă";
-    public const string NEWLINE = "\n";
+        public const string CLIENTS_TITLE = "Clienți";
+        public const string DELETE_DIALOG = "Ștergeți rezervarea?";
+        public const string EDIT_DIALOG = "Moficați rezervarea?";
+        public const string EDIT_TITLE = "Modifică rezervarea";
+        public const string NEW_TITLE = "Rezervare nouă";
+        public const string NEWLINE = "\n";
+        public const string DAY_COUNT_PREF = "Ați selectat";
+        public const string DAY_COUNT_SUFF_PL = "nopți.";
+        public const string DAY_COUNT_SUFF_SN = "noapte.";
 
-    //error messages
-    public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
-    public const string ERR_ROOM = "Specificați camera pentru această rezervare";
-    public const string ERR_PERIOD = "Există deja o rezervare pentru această cameră care se suprapune cu perioada selectată";
-    public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
-    public const string ERR_DATES = "Specificați perioada rezervării";
+        //error messages
+        public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
+        public const string ERR_ROOM = "Specificați camera pentru această rezervare";
+        public const string ERR_PERIOD = "Există deja o rezervare pentru această cameră care se suprapune cu perioada selectată";
+        public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
+        public const string ERR_DATES = "Specificați perioada rezervării";
     #endregion
 
     // COLORS
@@ -119,5 +122,4 @@ public class Constants : MonoBehaviour
         {1, "Lună"},
         {2, "An"}
     };
-
 }
