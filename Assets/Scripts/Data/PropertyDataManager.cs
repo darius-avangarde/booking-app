@@ -34,7 +34,7 @@ public static class PropertyDataManager
 
     private static void WritePropertyData()
     {
-        string dataAsJson = JsonUtility.ToJson(Data, Constants.PRETTY_PRINT);
+        string dataAsJson = JsonUtility.ToJson(Data, true);
 
         string filePath = Path.Combine(Application.persistentDataPath, DATA_FILE_NAME);
         File.WriteAllText(filePath, dataAsJson);
@@ -60,13 +60,18 @@ public static class PropertyDataManager
     public static IProperty AddProperty()
     {
         Property newProperty = new Property();
-        //Data.properties.Add(newProperty);
-        //WritePropertyData();
         return newProperty;
     }
 
     public static void SaveProperty(IProperty property)
     {
+        if (!property.HasRooms)
+        {
+            IRoom newRoom = property.AddRoom();
+            newRoom.Name = property.Name;
+            property.SaveRoom(newRoom);
+            property.GetPropertyRoomID = newRoom.ID;
+        }
         Data.properties.Add((Property)property);
         WritePropertyData();
     }
@@ -135,35 +140,45 @@ public static class PropertyDataManager
             }
         }
 
-        [SerializeField]
-        private List<Room> rooms = new List<Room>();
-        public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
-        public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
-        public string NrRooms => Rooms.Count().ToString();
-
-        [SerializeField]
-        private IRoom getPropertyRoom = null;
-        public IRoom GetPropertyRoom => getPropertyRoom;
-
         public Property()
         {
             this.id = Guid.NewGuid().ToString();
         }
 
+        [SerializeField]
+        private List<Room> rooms = new List<Room>();
+        public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
+        public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
+
+        [SerializeField]
+        private string getPropertyRoomID;
+        public string GetPropertyRoomID
+        {
+            get => getPropertyRoomID;
+            set
+            {
+                getPropertyRoomID = value;
+                WritePropertyData();
+            }
+        }
+
         public IRoom GetRoom(string ID) => rooms.Find(r => r.ID.Equals(ID));
+
+        public IRoom GetPropertyRoom()
+        {
+            return GetRoom(getPropertyRoomID);
+        }
 
         public IRoom AddRoom()
         {
             Room newRoom = new Room(id);
-            if (!HasRooms)
-            {
-                newRoom.Name = name;
-                getPropertyRoom = newRoom;
-            }
-            rooms.Add(newRoom);
-            WritePropertyData();
-
             return newRoom;
+        }
+
+        public void SaveRoom(IRoom room)
+        {
+            rooms.Add((Room)room);
+            WritePropertyData();
         }
 
         public void DeleteRoom(string ID)

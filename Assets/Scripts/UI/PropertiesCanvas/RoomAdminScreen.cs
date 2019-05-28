@@ -15,47 +15,64 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField roomNameInputField = null;
     [SerializeField]
+    private InputField roomPriceInputField = null;
+    [SerializeField]
     private InputField roomSingleBedQuantityInputField = null;
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField = null;
 
     private IProperty currentProperty;
     private IRoom currentRoom;
+    private int SingleBedsNr;
+    private int DoubleBedsNr;
 
-    public void SetCurrentPropertyRoom(IProperty property, IRoom room)
+    public void SetCurrentPropertyRoom(IRoom room)
     {
-        currentProperty = property;
+        currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
+        Initialize();
     }
 
     public void Initialize()
     {
-        roomNameInputField.text = currentRoom.Name ?? "";
-        roomSingleBedQuantityInputField.text = currentRoom.SingleBeds.ToString();
-        roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
-        roomAdminScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+        if (currentRoom != null)
+        {
+            roomNameInputField.text = currentRoom.Name ?? "";
+            roomPriceInputField.text = currentRoom.Price ?? "";
+            roomSingleBedQuantityInputField.text = currentRoom.SingleBeds.ToString();
+            roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
+            SingleBedsNr = currentRoom.SingleBeds;
+            DoubleBedsNr = currentRoom.DoubleBeds;
+            roomAdminScreenTitle.text = currentRoom.Name ?? Constants.defaultRoomAdminScreenName;
+        }
+        else
+        {
+            Debug.Log("null?");
+        }
     }
 
-    public void DeleteRoom()
+    public void SaveRoom()
     {
-        confirmationDialog.Show(new ConfirmationDialogOptions
+        OnRoomNameValueChanged(roomNameInputField.text);
+        OnRoomPriceValueChanged(roomPriceInputField.text);
+        OnSingleBedsChanged(roomSingleBedQuantityInputField.text);
+        OnDoubleBedsChanged(roomDoubleBedQuantityInputField.text);
+        if (currentProperty.GetRoom(currentRoom.ID) == null)
         {
-            Message = "Ștergeți camera?",
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
-            ConfirmCallback = ()=> {
-                currentProperty.DeleteRoom(currentRoom.ID);
-                ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
-                navigator.GoBack();
-            },
-            CancelCallback = null
-        });
+            currentProperty.SaveRoom(currentRoom);
+        }
+        navigator.GoBack();
     }
 
     public void OnRoomNameValueChanged(string value)
     {
         roomAdminScreenTitle.text = value;
         currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.defaultRoomAdminScreenName : value;
+    }
+
+    public void OnRoomPriceValueChanged(string value)
+    {
+        currentRoom.Price = string.IsNullOrEmpty(value) ? "" : value;
     }
 
     public void OnSingleBedsChanged(string value)
@@ -80,27 +97,27 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void IncrementSingleBedQuantity()
     {
-        roomSingleBedQuantityInputField.text = (++currentRoom.SingleBeds).ToString();
+        roomSingleBedQuantityInputField.text = (++SingleBedsNr).ToString();
     }
 
     public void DecrementSingleBedQuantity()
     {
         if (roomSingleBedQuantityInputField.text != "0")
         {
-            roomSingleBedQuantityInputField.text = (--currentRoom.SingleBeds).ToString();
+            roomSingleBedQuantityInputField.text = (--SingleBedsNr).ToString();
         }
     }
 
     public void IncrementDoubleBedQuantity()
     {
-        roomDoubleBedQuantityInputField.text = (++currentRoom.DoubleBeds).ToString();
+        roomDoubleBedQuantityInputField.text = (++DoubleBedsNr).ToString();
     }
 
     public void DecrementDoubleBedQuantity()
     {
         if (roomDoubleBedQuantityInputField.text != "0")
         {
-            roomDoubleBedQuantityInputField.text = (--currentRoom.DoubleBeds).ToString();
+            roomDoubleBedQuantityInputField.text = (--DoubleBedsNr).ToString();
         }
     }
 }

@@ -18,12 +18,28 @@ public class PropertyAdminScreen : MonoBehaviour
     private Toggle HasRoomsToggle;
     [SerializeField]
     private Toggle NoRoomsToggle;
+    [SerializeField]
+    private GameObject RoomsToggleField;
     private IProperty currentProperty;
 
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-        if (property.HasRooms)
+        if(currentProperty.Name != null)
+        {
+            RoomsToggleField.SetActive(false);
+        }
+        else
+        {
+            RoomsToggleField.SetActive(true);
+        }
+    }
+
+    public void SetPropertyFieldsText()
+    {
+        propertyNameInputField.text = currentProperty.Name ?? "";
+        propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
+        if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
             NoRoomsToggle.isOn = false;
@@ -35,40 +51,22 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
-    public void SetPropertyFieldsText()
-    {
-        propertyNameInputField.text = currentProperty.Name ?? "";
-        propertyScreenTitle.text = currentProperty.Name ?? Constants.defaultProperyAdminScreenName;
-    }
-
     public void SaveProperty()
     {
-        if (PropertyDataManager.GetProperty(currentProperty.ID) == null) {
-            OnNameChanged(propertyNameInputField.text);
-            if (HasRoomsToggle)
-            {
-                currentProperty.HasRooms = true;
-            }
-            else
-            {
-                currentProperty.HasRooms = false;
-            }
-            PropertyDataManager.SaveProperty(currentProperty);
-            navigator.GoBack();
+        NameChanged(propertyNameInputField.text);
+        if (HasRoomsToggle.isOn)
+        {
+            currentProperty.HasRooms = true;
         }
         else
         {
-            OnNameChanged(propertyNameInputField.text);
-            if (HasRoomsToggle.isOn)
-            {
-                currentProperty.HasRooms = true;
-            }
-            else
-            {
-                currentProperty.HasRooms = false;
-            }
-            navigator.GoBack();
+            currentProperty.HasRooms = false;
         }
+        if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
+        {
+            PropertyDataManager.SaveProperty(currentProperty);
+        }
+        navigator.GoBack();
     }
 
     public void DeleteProperty()
@@ -78,7 +76,8 @@ public class PropertyAdminScreen : MonoBehaviour
             Message = "Ștergeți proprietatea?",
             ConfirmText = "Ștergeți",
             CancelText = "Anulați ",
-            ConfirmCallback = () => {
+            ConfirmCallback = () =>
+            {
                 PropertyDataManager.DeleteProperty(currentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
                 navigator.GoBack();
@@ -87,7 +86,7 @@ public class PropertyAdminScreen : MonoBehaviour
         });
     }
 
-    public void OnNameChanged(string value)
+    public void NameChanged(string value)
     {
         propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.defaultProperyAdminScreenName : value;

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,35 +16,45 @@ public class RoomButton : MonoBehaviour
     private Button roomButton;
     [SerializeField]
     private Button editRoomButton;
+    [SerializeField]
+    private Button deleteRoomButton;
+    [SerializeField]
+    private Image disponibilityMarker = null;
     private IRoom currentRoom;
-    private Action<IRoom> currentCallback;
+    private DateTime dateTimeFilter = DateTime.Today;
     //[SerializeField]
     //private Text personsNumber = null;
 
-    public void Initialize(IRoom room, Action<IRoom> callback)
+    public void Initialize(IRoom room, Action<IRoom> roomCallback, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
     {
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.defaultRoomAdminScreenName : room.Name;
-        roomName.text = string.IsNullOrEmpty(room.Price) ? Constants.defaultRoomAdminScreenName : ("Pret: " + room.Price + " ron");
-        roomBeds.text = " ";
+        roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.Pret : ("Pret: " + room.Price + " ron");
+        roomBeds.text = "Paturi ";
         if (room.SingleBeds != 0)
         {
-            roomBeds.text += "Paturi single: " + room.SingleBeds;
+            roomBeds.text += "single: " + room.SingleBeds;
         }
         if (room.SingleBeds != 0 && room.DoubleBeds != 0)
         {
-            roomBeds.text += ", ";
+            roomBeds.text += " & ";
         }
         if (room.DoubleBeds != 0)
         {
-            roomBeds.text += "Paturi duble: " + room.DoubleBeds;
+            roomBeds.text += "duble: " + room.DoubleBeds;
         }
-        currentCallback = callback;
+        IEnumerable<IReservation> reservations = ReservationDataManager.GetActiveRoomReservations(room.ID)
+                .Where(r => r.Period.Includes(dateTimeFilter));
+        if (reservations.Count() == 0)
+        {
+            disponibilityMarker.color = Constants.availableItemColor;
+        }
+        else
+        {
+            disponibilityMarker.color = Constants.reservedUnavailableItemColor;
+        }
+        roomButton.onClick.AddListener(() => roomCallback(room));
+        editRoomButton.onClick.AddListener(() => editCallback(room));
+        deleteRoomButton.onClick.AddListener(() => deleteCallback(room));
         currentRoom = room;
-        editRoomButton.onClick.AddListener(() => callback(room));
-    }
-
-    public void OpenRoom()
-    {
-        //roomButton.onClick.AddListener(() => currentCallback(currentRoom));
     }
 }
