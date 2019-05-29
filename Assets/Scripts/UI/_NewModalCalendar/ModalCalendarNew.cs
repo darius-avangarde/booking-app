@@ -12,19 +12,19 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     [SerializeField]
     private Text monthName = null;
     [SerializeField]
-    private Text selectionText;
+    private Text selectionText = null;
     [SerializeField]
-    private Text selectionDayCountText;
+    private Text selectionDayCountText = null;
     [SerializeField]
-    private Button confirmButton;
+    private Button confirmButton = null;
 
     [Space]
     [SerializeField]
-    private Transform rowParent;
+    private Transform rowParent = null;
     [SerializeField]
-    private GameObject rowPrefab;
+    private GameObject rowPrefab = null;
     [SerializeField]
-    private GameObject dayObjectPrefab;
+    private GameObject dayObjectPrefab = null;
 
     [Space]
     #region Colors
@@ -83,7 +83,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void ShowPreviousMonth()
     {
-        if (focusDateTime > DateTime.Today && focusDateTime.Month != DateTime.Today.Month)
+        if (focusDateTime.Date > DateTime.Today.Date)
         {
             focusDateTime = focusDateTime.AddMonths(-1);
             UpdateCalendar(focusDateTime);
@@ -105,7 +105,6 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     {
         CloseModalCalendar(false);
     }
-
 
     private void CreateDayItems()
     {
@@ -201,7 +200,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
         if(doCallback)
         {
-            DoneCallback?.Invoke(selectedStart, selectedEnd);
+            DoneCallback?.Invoke(selectedStart.Date, selectedEnd.Date);
         }
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
@@ -216,6 +215,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private void UpdateCalendar(DateTime selectedDateTime)
     {
         DateTime firstDayOfMonthInSelectedDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
+
 
         SetDayItemsForPreviousMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
 
@@ -302,6 +302,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         dayObj.UpdateDayColors(availableColor, availableColor, availableColor);
         dayObj.IsReserved = false;
         dayObj.IsEnd = false;
+        dayObj.IsStart = false;
 
         if(dateTime.Date < DateTime.Today.Date)
         {
@@ -388,6 +389,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         {
             for (int d = 0; d < dayObjects.Count; d++)
             {
+
                 if(dayObjects[d].ObjDate.Date < DateTime.Today.Date)
                 {
                     dayObjects[d].UpdateDayColors(pastColor, pastColor, pastColor);
