@@ -201,7 +201,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
         if(doCallback)
         {
-            DoneCallback?.Invoke(selectedStart, selectedEnd);
+            DoneCallback?.Invoke(selectedStart.Date, selectedEnd.Date);
         }
         DoneCallback = null;
         easyTween.OpenCloseObjectAnimation();
@@ -302,6 +302,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         dayObj.UpdateDayColors(availableColor, availableColor, availableColor);
         dayObj.IsReserved = false;
         dayObj.IsEnd = false;
+        dayObj.IsStart = false;
 
         if(dateTime.Date < DateTime.Today.Date)
         {
