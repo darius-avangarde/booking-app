@@ -27,8 +27,17 @@ public class PropertyButton : MonoBehaviour
     private RectTransform roomArrowTransform = null;
     [SerializeField]
     private Image disponibilityMarker = null;
+
+    private DateTime dateTimeStart = DateTime.Today.Date;
+    private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
     private float currentTime;
     private float maxHeight;
+
+    public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
+    {
+        this.dateTimeStart = dateTimeStart;
+        this.dateTimeEnd = dateTimeEnd;
+    }
 
     public void Initialize(IProperty property, RectTransform layoutContent, bool disponibility, string nrRooms, Action<IProperty> addRoomCallback, Action<IRoom> PropertyRoomCallback, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
     {
@@ -38,17 +47,13 @@ public class PropertyButton : MonoBehaviour
         if (!property.HasRooms)
         {
             propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetRoom(property.GetPropertyRoomID)));
-            IEnumerable<IReservation> reservations = ReservationDataManager.GetActiveRoomReservations(property.GetRoom(property.GetPropertyRoomID).ID)
-                    .Where(r => r.Period.Includes(DateTime.Today));
-            if (reservations.Count() == 0)
-            {
-                disponibilityMarker.color = Constants.availableItemColor;
-            }
-            else
+            bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
+                .Any(r => r.RoomID == property.GetRoom(property.GetPropertyRoomID).ID);
+            if (reservations)
             {
                 disponibilityMarker.color = Constants.reservedUnavailableItemColor;
             }
-            if (disponibility)
+            else
             {
                 disponibilityMarker.color = Constants.availableItemColor;
             }
@@ -82,7 +87,7 @@ public class PropertyButton : MonoBehaviour
         }
     }
 
-    IEnumerator Rotate(Quaternion start, Quaternion final)
+    private IEnumerator Rotate(Quaternion start, Quaternion final)
     {
         currentTime = 0;
         while (currentTime < 0.1f)

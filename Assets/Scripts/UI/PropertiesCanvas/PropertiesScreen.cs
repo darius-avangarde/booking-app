@@ -96,13 +96,13 @@ public class PropertiesScreen : MonoBehaviour
         OpenPropertyAdminScreen(property);
     }
 
-    public void AddRoomItem(IProperty selectedProperty)
+    private void AddRoomItem(IProperty selectedProperty)
     {
         IRoom room = selectedProperty.AddRoom();
         OpenRoomAdminScreen(room);
     }
 
-    public void DeleteProperty(IProperty property)
+    private void DeleteProperty(IProperty property)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
@@ -119,7 +119,7 @@ public class PropertiesScreen : MonoBehaviour
         });
     }
 
-    public void DeleteRoom(IRoom selectedRoom)
+    private void DeleteRoom(IRoom selectedRoom)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {

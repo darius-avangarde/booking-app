@@ -42,8 +42,8 @@ public class DisponibilityScreen : MonoBehaviour
     private IProperty selectedProperty;
     private Transform roomsContentScrollView = null;
     private IDateTimePeriod datePeriod = ReservationDataManager.DefaultPeriod();
-    private DateTime startDate = DateTime.Today;
-    private DateTime endDate = DateTime.Today;
+    private DateTime startDate = DateTime.Today.Date;
+    private DateTime endDate = DateTime.Today.AddDays(1).Date;
     private int selectedDropdown = 0;
     private int nrRooms = 0;
 
@@ -57,7 +57,19 @@ public class DisponibilityScreen : MonoBehaviour
         SelectProperty(selectedDropdown);
     }
 
-    public void SelectProperty(int optionIndex)
+    public void ShowModalCalendar()
+    {
+        calendarScreen.OpenCallendar(startDate, SetNewDatePeriod);
+    }
+
+    private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
+    {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        SelectProperty(selectedDropdown);
+    }
+
+    private void SelectProperty(int optionIndex)
     {
         selectedDropdown = optionIndex;
         if (optionIndex != 0)
@@ -68,10 +80,11 @@ public class DisponibilityScreen : MonoBehaviour
                 Destroy(propertyItem);
             }
             GameObject propertyButton;
+            PropertyButton buttonObject;
             if (selectedProperty.HasRooms)
             {
                 propertyButton = Instantiate(propertyWithRoomsPrefab, filteredPropertiesContent);
-                PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
+                buttonObject = propertyButton.GetComponent<PropertyButton>();
                 roomsContentScrollView = buttonObject.RoomsContentScrollView;
                 roomButtons = buttonObject.RoomButtons;
                 InstantiateRooms(selectedProperty);
@@ -84,14 +97,16 @@ public class DisponibilityScreen : MonoBehaviour
             else
             {
                 propertyButton = Instantiate(propertyWithoutRoomsPrefab, filteredPropertiesContent);
-                IEnumerable<IReservation> roomReservation = reservations.Where(r => r.RoomID == selectedProperty.GetPropertyRoom().ID);
-                if (roomReservation.Count() != 0)
+                buttonObject = propertyButton.GetComponent<PropertyButton>();
+                buttonObject.InitializeDateTime(startDate, endDate);
+                bool roomReservation = reservations.Any(r => r.RoomID == selectedProperty.GetPropertyRoom().ID);
+                if (roomReservation)
                 {
                     Destroy(propertyButton);
                 }
             }
             string disponibleRooms = Constants.AVAILABLE_ROOMS + nrRooms;
-            propertyButton.GetComponent<PropertyButton>().Initialize(selectedProperty, filteredPropertiesContent, true, disponibleRooms, null, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
+            buttonObject.Initialize(selectedProperty, filteredPropertiesContent, true, disponibleRooms, null, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
             disponibilityScreenItemList.Add(propertyButton);
             nrRooms = 0;
         }
@@ -120,10 +135,11 @@ public class DisponibilityScreen : MonoBehaviour
         foreach (var property in PropertyDataManager.GetProperties())
         {
             GameObject propertyButton;
+            PropertyButton buttonObject;
             if (property.HasRooms)
             {
                 propertyButton = Instantiate(propertyWithRoomsPrefab, filteredPropertiesContent);
-                PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
+                buttonObject = propertyButton.GetComponent<PropertyButton>();
                 roomsContentScrollView = buttonObject.RoomsContentScrollView;
                 roomButtons = buttonObject.RoomButtons;
                 InstantiateRooms(property);
@@ -135,14 +151,16 @@ public class DisponibilityScreen : MonoBehaviour
             else
             {
                 propertyButton = Instantiate(propertyWithoutRoomsPrefab, filteredPropertiesContent);
-                IEnumerable<IReservation> roomReservation = reservations.Where(r => r.RoomID == property.GetPropertyRoom().ID);
-                if (roomReservation.Count() != 0)
+                buttonObject = propertyButton.GetComponent<PropertyButton>();
+                buttonObject.InitializeDateTime(startDate, endDate);
+                bool roomReservation = reservations.Any(r => r.RoomID == property.GetPropertyRoom().ID);
+                if (roomReservation)
                 {
                     Destroy(propertyButton);
                 }
             }
             string disponibleRooms = Constants.AVAILABLE_ROOMS + nrRooms;
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, filteredPropertiesContent, true, disponibleRooms, null, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
+            buttonObject.Initialize(property, filteredPropertiesContent, true, disponibleRooms, null, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
             propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
             disponibilityScreenItemList.Add(propertyButton);
             nrRooms = 0;
@@ -161,11 +179,13 @@ public class DisponibilityScreen : MonoBehaviour
         {
             foreach (var room in property.Rooms)
             {
-                IEnumerable<IReservation> roomReservation = reservations.Where(r => r.RoomID == room.ID);
-                if (roomReservation.Count() == 0)
+                bool roomReservation = reservations.Any(r => r.RoomID == room.ID);
+                if (!roomReservation)
                 {
                     GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
-                    roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomScreen, OpenRoomAdminScreen, DeleteRoom);
+                    RoomButton RoomObject = roomButton.GetComponent<RoomButton>();
+                    RoomObject.InitializeDateTime(startDate, endDate);
+                    RoomObject.Initialize(room, OpenRoomScreen, OpenRoomAdminScreen, DeleteRoom);
                     roomButtons.Add(roomButton);
                     nrRooms++;
                 }
@@ -174,19 +194,7 @@ public class DisponibilityScreen : MonoBehaviour
         roomsContentScrollView.gameObject.SetActive(false);
     }
 
-    public void ShowModalCalendar()
-    {
-        calendarScreen.OpenCallendar(startDate, SetNewDatePeriod);
-    }
-
-    private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
-    {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        SelectProperty(selectedDropdown);
-    }
-
-    public void DeleteProperty(IProperty property)
+    private void DeleteProperty(IProperty property)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
@@ -203,7 +211,7 @@ public class DisponibilityScreen : MonoBehaviour
         });
     }
 
-    public void DeleteRoom(IRoom selectedRoom)
+    private void DeleteRoom(IRoom selectedRoom)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {

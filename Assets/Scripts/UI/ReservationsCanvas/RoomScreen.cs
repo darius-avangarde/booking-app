@@ -29,7 +29,7 @@ public class RoomScreen : MonoBehaviour
     //[SerializeField]
     //private Text roomDetails = null;
     private List<GameObject> reservationButtonList = new List<GameObject>();
-    private DateTime dayDateTime = DateTime.Today;
+    private DateTime dayDateTime = DateTime.Today.Date;
     private IProperty currentProperty;
     private IRoom currentRoom;
     private IReservation currentReservation;
