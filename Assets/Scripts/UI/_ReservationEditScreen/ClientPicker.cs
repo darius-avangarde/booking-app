@@ -9,25 +9,25 @@ public class ClientPicker : MonoBehaviour
 {
 
     [SerializeField]
-    private ReservationEditScreen reservationEdit;
+    private ReservationEditScreen reservationEdit = null;
     [SerializeField]
-    private ClientsScreen clientScreen;
+    private ClientsScreen clientScreen = null;
 
     [Space]
     [SerializeField]
-    private InputField clientNameField;
+    private InputField clientNameField = null;
     [SerializeField]
-    private Transform searchLoadImage;
+    private Transform searchLoadImage = null;
     [SerializeField]
-    private GameObject clientObjPrefab;
+    private GameObject clientObjPrefab = null;
     [SerializeField]
-    private GameObject scrolRectGameObj;
+    private GameObject scrolRectGameObj = null;
     [SerializeField]
-    private Transform clientObjContainer;
+    private Transform clientObjContainer = null;
     [SerializeField]
-    private GameObject addClientButton;
+    private GameObject addClientButton = null;
     [SerializeField]
-    private GameObject noClientsFoundText;
+    private GameObject noClientsFoundText = null;
 
     [Space]
     [SerializeField]
@@ -37,7 +37,7 @@ public class ClientPicker : MonoBehaviour
 
     [Space]
     [SerializeField]
-    private UnityEvent onClickAddNewClient;
+    private UnityEvent onClickAddNewClient = null;
 
 
     private List<GameObject> clientsInList = new List<GameObject>();

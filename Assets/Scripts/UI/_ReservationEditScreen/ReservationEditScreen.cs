@@ -11,33 +11,33 @@ public class ReservationEditScreen : MonoBehaviour
     #region Inspector references
         [Header("Navigation")]
         [SerializeField]
-        private Navigator navigator;
+        private Navigator navigator = null;
         [SerializeField]
-        private NavScreen navScreen;
+        private NavScreen navScreen = null;
 
         [Header("Modal dialogues")]
         [SerializeField]
-        private ModalCalendarNew modalCalendarDialog;
+        private ModalCalendarNew modalCalendarDialog = null;
         [SerializeField]
-        private ConfirmationDialog confirmationDialog;
+        private ConfirmationDialog confirmationDialog = null;
 
         [Space]
         [SerializeField]
-        private Text titleText;
+        private Text titleText = null;
         [SerializeField]
-        private Dropdown propertyDropdown;
+        private Dropdown propertyDropdown = null;
         [SerializeField]
-        private Dropdown roomDropdown;
+        private Dropdown roomDropdown = null;
         [SerializeField]
-        private InputField clientInputField;
+        private InputField clientInputField = null;
         [SerializeField]
-        private Text reservationPeriodText;
+        private Text reservationPeriodText = null;
         [SerializeField]
-        private Button confirmButton;
+        private Button confirmButton = null;
         [SerializeField]
-        private Button setPeriodButton;
+        private Button setPeriodButton = null;
         [SerializeField]
-        private Text errorText;
+        private Text errorText = null;
     #endregion
     #region Private variables
         internal bool allowEdit
@@ -54,7 +54,6 @@ public class ReservationEditScreen : MonoBehaviour
         private IProperty currentProperty;
         private IClient currentClient;
 
-        private List<IReservation> roomReservationList;
         //set these on callback from calendar overlay
         private IDateTimePeriod period;
         private ConfirmationDialogOptions editConfirmation;
@@ -115,6 +114,7 @@ public class ReservationEditScreen : MonoBehaviour
                     );
                     if(confirmationCallback != null)
                         confirmationCallback.Invoke(currentReservation);
+                    navigator.GoBack();
                     CancelChanges();
                 };
                 confirmationDialog.Show(editConfirmation);
@@ -130,20 +130,18 @@ public class ReservationEditScreen : MonoBehaviour
                 if(confirmationCallback != null)
                     confirmationCallback.Invoke(newReservation);
                 CancelChanges();
+                navigator.GoBack();
             }
-
-            allowSearch = false;
         }
 
         ///<summary>
-        /// Propmts the navigator to go to the previous screen without commiting any changes
+        /// Removes listeners, trigger on hidden in nav screen
         ///</summary>
         public void CancelChanges()
         {
             propertyDropdown.onValueChanged.RemoveAllListeners();
             roomDropdown.onValueChanged.RemoveAllListeners();
             clientInputField.onEndEdit.RemoveAllListeners();
-            navigator.GoBack();
             allowSearch = false;
         }
 
