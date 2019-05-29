@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 
@@ -23,13 +24,11 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Button addRoomButton = null;
     [SerializeField]
-    private GameObject roomArrowLeft = null;
-    [SerializeField]
-    private GameObject roomArrowDown = null;
-    [SerializeField]
-    private GameObject addRoomsButton = null;
+    private RectTransform roomArrowTransform = null;
     [SerializeField]
     private Image disponibilityMarker = null;
+    private float currentTime;
+    private float maxHeight;
 
     public void Initialize(IProperty property, RectTransform layoutContent, bool disponibility, string nrRooms, Action<IProperty> addRoomCallback, Action<IRoom> PropertyRoomCallback, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
     {
@@ -59,11 +58,11 @@ public class PropertyButton : MonoBehaviour
             nrOfRooms.text = string.IsNullOrEmpty(nrRooms) ? Constants.ROOMS_NUMBER : nrRooms;
             if (disponibility)
             {
-                addRoomsButton.SetActive(false);
+                addRoomButton.gameObject.SetActive(false);
             }
             else
             {
-                addRoomsButton.SetActive(true);
+                addRoomButton.gameObject.SetActive(true);
             }
             addRoomButton.onClick.AddListener(() => addRoomCallback(property));
             propertyButtonItem.onClick.AddListener(() =>
@@ -71,17 +70,27 @@ public class PropertyButton : MonoBehaviour
                 RoomsContentScrollView.gameObject.SetActive(RoomsContentScrollView.gameObject.activeInHierarchy ? false : true);
                 if (RoomsContentScrollView.gameObject.activeInHierarchy)
                 {
-                    roomArrowLeft.SetActive(false);
-                    roomArrowDown.SetActive(true);
+                    StartCoroutine(Rotate(roomArrowTransform.GetComponent<RectTransform>().rotation, Quaternion.Euler(0, 0, -90f)));
                 }
                 else
                 {
-                    roomArrowLeft.SetActive(true);
-                    roomArrowDown.SetActive(false);
+                    StartCoroutine(Rotate(roomArrowTransform.GetComponent<RectTransform>().rotation, Quaternion.Euler(0, 0, 0)));
                 }
                 LayoutRebuilder.ForceRebuildLayoutImmediate(layoutContent);
                 Canvas.ForceUpdateCanvases();
             });
         }
+    }
+
+    IEnumerator Rotate(Quaternion start, Quaternion final)
+    {
+        currentTime = 0;
+        while (currentTime < 0.1f)
+        {
+            currentTime += Time.deltaTime;
+            roomArrowTransform.localRotation = Quaternion.Slerp(start, final, currentTime / 0.1f);
+            yield return null;
+        }
+        roomArrowTransform.localRotation = final;
     }
 }

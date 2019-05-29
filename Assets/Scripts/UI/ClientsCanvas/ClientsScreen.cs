@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using static ClientDataManager;
 
@@ -56,7 +57,7 @@ public class ClientsScreen : MonoBehaviour
         }
     }
     
-    public void SaveAddedClient()
+    public void SaveAddedClient(UnityAction<IClient> clientAdded = null)
     {
         Client client = new Client();
         if (clientName.text == " ")
@@ -73,10 +74,18 @@ public class ClientsScreen : MonoBehaviour
             client.Email = clientEmail.text;
             ClientDataManager.AddClient(client);
         }
-        
-    }
+        clientAdded?.Invoke(client);
 
-    public void EditClient()
+    }
+    public void SaveAddedClientButton()
+    {
+        SaveAddedClient((c) => Debug.Log(c.Name) );
+    }
+    public void EditClientButton()
+    {
+        EditClient();
+    }
+    public void EditClient(UnityAction<IClient> clientAdded = null)
     {
         var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
         Client client = new Client();
@@ -94,6 +103,7 @@ public class ClientsScreen : MonoBehaviour
             client.Email = clientEmail.text;
             ClientDataManager.EditClient(currentClient.ID, client);
         }
+        clientAdded?.Invoke(client);
     }
 
 
@@ -117,6 +127,8 @@ public class ClientsScreen : MonoBehaviour
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
     }
+
+
 
     public void SearchForClient()
     {

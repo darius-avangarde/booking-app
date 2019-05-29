@@ -13,7 +13,7 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
-    private ModalCalendar calendarScreen = null;
+    private ModalCalendarNew calendarScreen = null;
     [SerializeField]
     private Transform propertyAdminScreenTransform = null;
     [SerializeField]
@@ -32,6 +32,8 @@ public class DisponibilityScreen : MonoBehaviour
     private Dropdown propertyDropdownList;
     [SerializeField]
     private Text disponibilityDatePeriod = null;
+    [SerializeField]
+    private Button backButton;
 
     private Dictionary<string, Dropdown.OptionData> propertyOptions;
     private List<GameObject> disponibilityScreenItemList = new List<GameObject>();
@@ -44,6 +46,11 @@ public class DisponibilityScreen : MonoBehaviour
     private DateTime endDate = DateTime.Today;
     private int selectedDropdown = 0;
     private int nrRooms = 0;
+
+    private void Awake()
+    {
+        backButton.onClick.AddListener(() => navigator.GoBack());
+    }
 
     public void InitializeDisponibility()
     {
@@ -103,11 +110,6 @@ public class DisponibilityScreen : MonoBehaviour
             disponibilityDatePeriod.text += " - " + endDate.Day + " " + Constants.MonthNamesDict[endDate.Month] + " " + endDate.Year;
         }
         reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
-
-        foreach (var res in reservations)
-        {
-            Debug.Log(PropertyDataManager.GetProperty(res.PropertyID).Name + " " + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name);
-        }
         propertyOptions = new Dictionary<string, Dropdown.OptionData>();
         propertyOptions.Add(String.Empty, new Dropdown.OptionData("Toate Proprietatile"));
 
@@ -174,9 +176,13 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void ShowModalCalendar()
     {
-        //calendarScreen.Show(startDateTime, UpdateDisponibilityContent);
-        startDate = new DateTime(2019, 5, 27);
-        endDate = new DateTime(2019, 6, 1);
+        calendarScreen.OpenCallendar(startDate, SetNewDatePeriod);
+    }
+
+    private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
+    {
+        this.startDate = startDate;
+        this.endDate = endDate;
         SelectProperty(selectedDropdown);
     }
 

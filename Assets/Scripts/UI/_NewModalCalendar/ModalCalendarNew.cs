@@ -83,7 +83,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void ShowPreviousMonth()
     {
-        if (focusDateTime > DateTime.Today && focusDateTime.Month != DateTime.Today.Month)
+        if (focusDateTime.Date > DateTime.Today.Date)
         {
             focusDateTime = focusDateTime.AddMonths(-1);
             UpdateCalendar(focusDateTime);

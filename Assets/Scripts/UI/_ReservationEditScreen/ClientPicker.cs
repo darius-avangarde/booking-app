@@ -11,7 +11,7 @@ public class ClientPicker : MonoBehaviour
     [SerializeField]
     private ReservationEditScreen reservationEdit;
     [SerializeField]
-    private ClientsScreen clientEdit;
+    private ClientsScreen clientScreen;
 
     [Space]
     [SerializeField]
@@ -64,19 +64,14 @@ public class ClientPicker : MonoBehaviour
     //Add client function attached to the add new client button in the client picker scrollrect
     public void AddNewClient()
     {
-        ///add client screen - save client + go to navscreen on button + setClientCallback
-
-        //clientEdit.SaveAddedClient(string clientNameField.text, UnityAction<IClient> callback);
-
-
-        Debug.Log("Should be to new client screen");
-
-        if(onClickAddNewClient != null)
-        {
-            onClickAddNewClient.Invoke();
-        }
-
-        scrolRectGameObj.SetActive(false);
+        Debug.Log("Not implemented, should be opening add new client screen");
+        //TODO: Update when propper function is available in client screen
+        // clientScreen.SaveAddedClient(SelectAction);
+        // if(onClickAddNewClient != null)
+        // {
+        //     onClickAddNewClient.Invoke();
+        // }
+        // scrolRectGameObj.SetActive(false);
     }
 
     //triggered when the user taps outside the scrolview rect containing the client names
@@ -88,6 +83,7 @@ public class ClientPicker : MonoBehaviour
     //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
     internal void SelectAction(IClient client)
     {
+        Debug.Log(client.Name);
         reservationEdit.SetClient(client);
         scrolRectGameObj.SetActive(false);
         addClientButton.SetActive(false);

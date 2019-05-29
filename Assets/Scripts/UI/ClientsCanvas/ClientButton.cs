@@ -14,20 +14,20 @@ public class ClientButton : MonoBehaviour
     private Button editButton;
     [SerializeField]
     private Button deleteButton;
-    
+
 
     public void Initialize(IClient client, Action<IClient> callback, Action<IClient> editCallBack, Action<IClient> deleteCallback)
     {
         ClientName.text = client.Name;
-        phoneNumber.text = client.Number ;
+        phoneNumber.text = client.Number;
         clientButton.onClick.AddListener(() => callback(client));
         editButton.onClick.AddListener(() => editCallBack(client));
         deleteButton.onClick.AddListener(() => deleteCallback(client));
     }
 
-   
 
- public bool SearchClients(string input)
+
+    public bool SearchClients(string input)
     {
         bool ok = false;
 

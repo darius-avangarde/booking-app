@@ -20,11 +20,18 @@ public class RoomAdminScreen : MonoBehaviour
     private InputField roomSingleBedQuantityInputField = null;
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField = null;
+    [SerializeField]
+    private Button backButton;
 
     private IProperty currentProperty;
     private IRoom currentRoom;
     private int SingleBedsNr;
     private int DoubleBedsNr;
+
+    private void Awake()
+    {
+        backButton.onClick.AddListener(() => navigator.GoBack());
+    }
 
     public void SetCurrentPropertyRoom(IRoom room)
     {
