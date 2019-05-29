@@ -119,6 +119,7 @@ public class ClientsScreen : MonoBehaviour
     {
         clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
         clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().DeleteClient(InstantiateClients);
+        ClearSearchField();
     }
 
     private void OpenClientAdminScreen(IClient client)
@@ -126,6 +127,7 @@ public class ClientsScreen : MonoBehaviour
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
         navigator.GoTo(clientAdminScreenTransform.GetComponent<NavScreen>());
+        ClearSearchField();
     }
     private void OpenEditAdminScreen(IClient client)
     {
@@ -134,6 +136,7 @@ public class ClientsScreen : MonoBehaviour
         editButton.gameObject.SetActive(true);
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
+        ClearSearchField();
     }
 
 
@@ -189,4 +192,8 @@ public class ClientsScreen : MonoBehaviour
         clientEmail.text = " ";
     }
 
+    public void ClearSearchField()
+    {
+        searchField.text = "";
+    }
 }
