@@ -81,6 +81,11 @@ public class ClientsScreen : MonoBehaviour
             hasCallBack = false;
         }
     }
+    public void CancelAddClient()
+    {
+        hasCallBack = false;
+        saveCallBack = null;
+    }
 
     public void OpenAddClient(UnityAction<IClient> clientAdded)
     {
