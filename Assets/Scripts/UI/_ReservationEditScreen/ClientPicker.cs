@@ -9,21 +9,25 @@ public class ClientPicker : MonoBehaviour
 {
 
     [SerializeField]
-    private ReservationEditScreen editScreen;
+    private ReservationEditScreen reservationEdit = null;
+    [SerializeField]
+    private ClientsScreen clientScreen = null;
 
     [Space]
     [SerializeField]
-    private InputField clientNameField;
+    private InputField clientNameField = null;
     [SerializeField]
-    private Transform searchLoadImage;
+    private Transform searchLoadImage = null;
     [SerializeField]
-    private GameObject clientObjPrefab;
+    private GameObject clientObjPrefab = null;
     [SerializeField]
-    private GameObject scrolRectGameObj;
+    private GameObject scrolRectGameObj = null;
     [SerializeField]
-    private Transform clientObjContainer;
+    private Transform clientObjContainer = null;
     [SerializeField]
-    private GameObject addClientButton;
+    private GameObject addClientButton = null;
+    [SerializeField]
+    private GameObject noClientsFoundText = null;
 
     [Space]
     [SerializeField]
@@ -33,7 +37,7 @@ public class ClientPicker : MonoBehaviour
 
     [Space]
     [SerializeField]
-    private UnityEvent onClickAddNewClient;
+    private UnityEvent onClickAddNewClient = null;
 
 
     private List<GameObject> clientsInList = new List<GameObject>();
@@ -47,6 +51,7 @@ public class ClientPicker : MonoBehaviour
         waitTime = new WaitForSeconds(searchDelay);
         addClientButton.SetActive(false);
         scrolRectGameObj.SetActive(false);
+        noClientsFoundText.SetActive(false);
         searchLoadImage.gameObject.SetActive(false);
         scrolRect = scrolRectGameObj.GetComponentInChildren<ScrollRect>();
     }
@@ -59,13 +64,11 @@ public class ClientPicker : MonoBehaviour
     //Add client function attached to the add new client button in the client picker scrollrect
     public void AddNewClient()
     {
-        Debug.Log("Should be to new client screen");
-
+        clientScreen.OpenAddClient(SelectAction);
         if(onClickAddNewClient != null)
         {
             onClickAddNewClient.Invoke();
         }
-
         scrolRectGameObj.SetActive(false);
     }
 
@@ -78,7 +81,7 @@ public class ClientPicker : MonoBehaviour
     //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
     internal void SelectAction(IClient client)
     {
-        editScreen.SetClient(client);
+        reservationEdit.SetClient(client);
         scrolRectGameObj.SetActive(false);
         addClientButton.SetActive(false);
     }
@@ -86,13 +89,14 @@ public class ClientPicker : MonoBehaviour
     //Filters the input field value on change if allowed to search, and starts load coroutine before populating scrolrect with matching clients
     private void FilterClients(string value)
     {
-        if(editScreen.allowEdit)
+        if(reservationEdit.allowEdit)
         {
             if(!scrolRectGameObj.activeSelf)
             {
                 scrolRectGameObj.SetActive(true);
             }
 
+            noClientsFoundText.SetActive(false);
             StopAllCoroutines();
             ClearObjects();
             currentQuerry = value;
@@ -128,7 +132,10 @@ public class ClientPicker : MonoBehaviour
             clientsInList[c].GetComponent<ClientPickerObject>().Initialize(matches[c], SelectAction);
         }
 
-        //addClientButton.transform.SetAsFirstSibling();
+        if(matches.Count == 0)
+        {
+            noClientsFoundText.SetActive(true);
+        }
     }
 
     //clears curently created objects within the client picker scrolrect

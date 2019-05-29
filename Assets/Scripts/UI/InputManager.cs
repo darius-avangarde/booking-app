@@ -23,12 +23,10 @@ public class InputManager : MonoBehaviour
                 bool shouldMinimizeApp = navigator.CurrentScreen == navigator.initialScreen;
                 if (shouldMinimizeApp)
                 {
-                    Debug.Log("should be quitting app");
                     Application.Quit();
                 }
                 else
                 {
-                    Debug.Log("should be going back");
                     navigator.GoBack();
                 }
             }
