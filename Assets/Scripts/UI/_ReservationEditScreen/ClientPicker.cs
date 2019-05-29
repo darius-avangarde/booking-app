@@ -81,7 +81,6 @@ public class ClientPicker : MonoBehaviour
     //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
     internal void SelectAction(IClient client)
     {
-        Debug.Log(client.Name);
         reservationEdit.SetClient(client);
         scrolRectGameObj.SetActive(false);
         addClientButton.SetActive(false);
