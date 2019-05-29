@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.Events;
@@ -39,8 +40,8 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private Text textNameRequired;
     private List<GameObject> clientButtons = new List<GameObject>();
-   
-
+    private bool hasCallBack = false;
+    private UnityAction<IClient> saveCallBack;
     public void InstantiateClients()
     {
         foreach (var clientButton in clientButtons)
@@ -52,58 +53,60 @@ public class ClientsScreen : MonoBehaviour
         {
 
             GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen,OpenEditAdminScreen, OpenDeleteAdminScreen);
+            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, OpenEditAdminScreen, OpenDeleteAdminScreen);
             clientButtons.Add(clientButton);
         }
     }
-    
-    public void SaveAddedClient(UnityAction<IClient> clientAdded = null)
+
+    public void SaveAddedClient()
     {
-        Client client = new Client();
-        if (clientName.text == " ")
+
+        if (String.IsNullOrEmpty(clientName.text))
         {
             textNameRequired.text = Constants.NameRequired;
         }
         else
-       
         {
-            textNameRequired.text = " ";
+            Client client = new Client();
+            textNameRequired.text = "";
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
             client.Email = clientEmail.text;
             ClientDataManager.AddClient(client);
+            if (hasCallBack)
+            {
+                saveCallBack.Invoke(client);
+            }
+            hasCallBack = false;
         }
-        clientAdded?.Invoke(client);
+    }
 
-    }
-    public void SaveAddedClientButton()
+    public void OpenAddClient(UnityAction<IClient> clientAdded)
     {
-        SaveAddedClient((c) => Debug.Log(c.Name) );
+        hasCallBack = true;
+        saveCallBack = clientAdded;
     }
-    public void EditClientButton()
-    {
-        EditClient();
-    }
-    public void EditClient(UnityAction<IClient> clientAdded = null)
+   
+   
+    public void EditClient()
     {
         var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
         Client client = new Client();
-        if (clientName.text == " ")
+        if (String.IsNullOrEmpty(clientName.text))
         {
             textNameRequired.text = Constants.NameRequired;
         }
         else
-      
+
         {
-            textNameRequired.text = " ";
+            textNameRequired.text = "";
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
             client.Email = clientEmail.text;
             ClientDataManager.EditClient(currentClient.ID, client);
         }
-        clientAdded?.Invoke(client);
     }
 
 
@@ -137,8 +140,8 @@ public class ClientsScreen : MonoBehaviour
 
             foreach (var client in clientButtons)
             {
-              
-                if(client.GetComponent<ClientButton>().SearchClients(searchField.text))
+
+                if (client.GetComponent<ClientButton>().SearchClients(searchField.text))
                 {
                     client.SetActive(true);
                 }
@@ -180,5 +183,5 @@ public class ClientsScreen : MonoBehaviour
         clientAdress.text = " ";
         clientEmail.text = " ";
     }
-    
+
 }

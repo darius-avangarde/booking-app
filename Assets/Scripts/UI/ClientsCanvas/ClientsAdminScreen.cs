@@ -118,9 +118,6 @@ public class ClientsAdminScreen : MonoBehaviour
 
     public void AddReservationForClient()
     {
-       // Debug.Log("client curent nume:"+ currentClient.Name);
-        //Debug.Log("client current id:" + currentClient.ID);
-
         rezerv.OpenAddReservation(currentClient, UpdateCallBack);
     }
    

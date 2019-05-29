@@ -64,14 +64,12 @@ public class ClientPicker : MonoBehaviour
     //Add client function attached to the add new client button in the client picker scrollrect
     public void AddNewClient()
     {
-        Debug.Log("Not implemented, should be opening add new client screen");
-        //TODO: Update when propper function is available in client screen
-        // clientScreen.SaveAddedClient(SelectAction);
-        // if(onClickAddNewClient != null)
-        // {
-        //     onClickAddNewClient.Invoke();
-        // }
-        // scrolRectGameObj.SetActive(false);
+        clientScreen.OpenAddClient(SelectAction);
+        if(onClickAddNewClient != null)
+        {
+            onClickAddNewClient.Invoke();
+        }
+        scrolRectGameObj.SetActive(false);
     }
 
     //triggered when the user taps outside the scrolview rect containing the client names
