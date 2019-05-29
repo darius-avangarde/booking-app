@@ -9,7 +9,9 @@ public class ClientPicker : MonoBehaviour
 {
 
     [SerializeField]
-    private ReservationEditScreen editScreen;
+    private ReservationEditScreen reservationEdit;
+    [SerializeField]
+    private ClientsScreen clientEdit;
 
     [Space]
     [SerializeField]
@@ -64,6 +66,9 @@ public class ClientPicker : MonoBehaviour
     {
         ///add client screen - save client + go to navscreen on button + setClientCallback
 
+        //clientEdit.SaveAddedClient(string clientNameField.text, UnityAction<IClient> callback);
+
+
         Debug.Log("Should be to new client screen");
 
         if(onClickAddNewClient != null)
@@ -83,7 +88,7 @@ public class ClientPicker : MonoBehaviour
     //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
     internal void SelectAction(IClient client)
     {
-        editScreen.SetClient(client);
+        reservationEdit.SetClient(client);
         scrolRectGameObj.SetActive(false);
         addClientButton.SetActive(false);
     }
@@ -91,7 +96,7 @@ public class ClientPicker : MonoBehaviour
     //Filters the input field value on change if allowed to search, and starts load coroutine before populating scrolrect with matching clients
     private void FilterClients(string value)
     {
-        if(editScreen.allowEdit)
+        if(reservationEdit.allowEdit)
         {
             if(!scrolRectGameObj.activeSelf)
             {
