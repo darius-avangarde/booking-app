@@ -42,6 +42,7 @@ public class ClientsScreen : MonoBehaviour
     private List<GameObject> clientButtons = new List<GameObject>();
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
+    
     public void InstantiateClients()
     {
         foreach (var clientButton in clientButtons)
@@ -92,8 +93,8 @@ public class ClientsScreen : MonoBehaviour
         hasCallBack = true;
         saveCallBack = clientAdded;
     }
-   
-   
+
+
     public void EditClient()
     {
         var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
