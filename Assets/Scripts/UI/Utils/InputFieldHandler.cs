@@ -9,7 +9,7 @@ public class InputFieldHandler : MonoBehaviour
     private void Start()
     {
         input = GetComponent<InputField>();
-#if UNITY_ANDROID
+#if !UNITY_EDITOR
         input.onValueChanged.AddListener(delegate { SetText(); });
         input.onEndEdit.AddListener(delegate { SaveText(); });
 #endif

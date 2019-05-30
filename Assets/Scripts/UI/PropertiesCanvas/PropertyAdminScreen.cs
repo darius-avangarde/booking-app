@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,11 +21,14 @@ public class PropertyAdminScreen : MonoBehaviour
     private GameObject RoomsToggleField;
     [SerializeField]
     private Button backButton;
+    [SerializeField]
+    private Button calcelButton;
     private IProperty currentProperty;
 
-    private void Start()
+    private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        calcelButton.onClick.AddListener(() => navigator.GoBack());
     }
 
     public void SetCurrentProperty(IProperty property)
