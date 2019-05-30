@@ -99,7 +99,6 @@ public class ClientsAdminScreen : MonoBehaviour
 
     {
         SetCurrentClients(ClientDataManager.GetClient(reserv.CustomerID));
-        Debug.Log(ClientDataManager.GetClient(reserv.CustomerID).Name);
     }
     private void DeleteReservation(IReservation reservation)
     {
