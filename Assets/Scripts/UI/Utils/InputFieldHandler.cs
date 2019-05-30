@@ -17,14 +17,19 @@ public class InputFieldHandler : MonoBehaviour
 
     private void SaveText()
     {
-        if (input.touchScreenKeyboard.status == TouchScreenKeyboard.Status.Canceled)
+        if (input.touchScreenKeyboard != null)
         {
-            input.text = lastText;
+            if (input.touchScreenKeyboard.status == TouchScreenKeyboard.Status.Canceled)
+            {
+                input.text = lastText;
+            }
         }
     }
 
     private void SetText()
     {
+        if (input.touchScreenKeyboard == null)
+            return;
         if (input.touchScreenKeyboard.status == TouchScreenKeyboard.Status.Canceled)
             return;
 
