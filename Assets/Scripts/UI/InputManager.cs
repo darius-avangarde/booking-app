@@ -11,6 +11,8 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private GameObject QuitOverlayCanvas;
+    [SerializeField]
     private Image quitObjectImage;
     [SerializeField]
     private Text quitObjectText;
@@ -29,6 +31,7 @@ public class InputManager : MonoBehaviour
         currentTextCollor.a = 0;
         quitObjectImage.color = currentImageCollor;
         quitObjectText.color = currentTextCollor;
+        QuitOverlayCanvas.SetActive(false);
     }
 
     private void Update()
@@ -49,6 +52,7 @@ public class InputManager : MonoBehaviour
                     clickedBefore = true;
 
                     //Activate Quit Object
+                    QuitOverlayCanvas.SetActive(true);
                     quitObjectImage.color = imageDefaultColor;
                     quitObjectText.color = textDefaultColor;
 
@@ -113,6 +117,7 @@ public class InputManager : MonoBehaviour
         currentTextCollor.a = 0;
         quitObjectImage.color = currentImageCollor;
         quitObjectText.color = currentTextCollor;
+        QuitOverlayCanvas.SetActive(false);
     }
 
     void Quit()

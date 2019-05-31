@@ -62,6 +62,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void SaveProperty()
     {
+        Debug.Log("saving...");
         NameChanged(propertyNameInputField.text);
         if (HasRoomsToggle.isOn)
         {
@@ -97,6 +98,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void NameChanged(string value)
     {
+        Debug.Log("change name");
         propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
     }

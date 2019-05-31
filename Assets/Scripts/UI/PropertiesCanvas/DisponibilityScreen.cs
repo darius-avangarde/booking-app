@@ -74,6 +74,12 @@ public class DisponibilityScreen : MonoBehaviour
         selectedDropdown = optionIndex;
         if (optionIndex != 0)
         {
+            disponibilityDatePeriod.text = startDate.Day + " " + Constants.MonthNamesDict[startDate.Month] + " " + startDate.Year;
+            if (endDate != startDate)
+            {
+                disponibilityDatePeriod.text += " - " + endDate.Day + " " + Constants.MonthNamesDict[endDate.Month] + " " + endDate.Year;
+            }
+            reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
             selectedProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(optionIndex).Key);
             foreach (var propertyItem in disponibilityScreenItemList)
             {
