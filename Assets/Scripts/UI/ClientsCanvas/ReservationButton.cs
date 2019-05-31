@@ -18,12 +18,19 @@ public class ReservationButton : MonoBehaviour
     private Button editButton;
     [SerializeField]
     private Button deleteButton;
-
+    private IProperty currentProperty;
     public void Initialize(IReservation reservation, Action editCallback, Action<IReservation> deleteCallback)
     {
-        
-        propertyName.text = PropertyDataManager.GetProperty(reservation.PropertyID).Name;
-        cameraName.text = PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID).Name;
+        currentProperty = PropertyDataManager.GetProperty(reservation.PropertyID);
+        propertyName.text = currentProperty.Name;
+        if (currentProperty.HasRooms)
+        {
+            cameraName.text = currentProperty.GetRoom(reservation.RoomID).Name;
+        }
+        else
+        {
+            cameraName.text = string.Empty;
+        }
         string startPeriod = reservation.Period.Start.ToString("dd/MM/yy");
         string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
         reservationPeriod.text = startPeriod + "  -  " + endPeriod;
