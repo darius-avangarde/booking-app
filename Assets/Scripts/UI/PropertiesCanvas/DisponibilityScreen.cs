@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class DisponibilityScreen : MonoBehaviour
 {
+    public string OpenRoomDropdown { get; set; }
+
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
@@ -52,7 +54,7 @@ public class DisponibilityScreen : MonoBehaviour
         backButton.onClick.AddListener(() => navigator.GoBack());
     }
 
-    public void InitializeDisponibility()
+    public void Initialize()
     {
         SelectProperty(selectedDropdown);
     }
@@ -90,12 +92,13 @@ public class DisponibilityScreen : MonoBehaviour
                 buttonObject = propertyButton.GetComponent<PropertyButton>();
                 roomsContentScrollView = buttonObject.RoomsContentScrollView;
                 roomButtons = buttonObject.RoomButtons;
+                buttonObject.OpenRoomContents();
                 InstantiateRooms(selectedProperty);
                 if (nrRooms == 0)
                 {
                     Destroy(propertyButton);
                 }
-                roomsContentScrollView.gameObject.SetActive(true);
+                buttonObject.OpenRoomContents();
             }
             else
             {
@@ -147,6 +150,14 @@ public class DisponibilityScreen : MonoBehaviour
                 {
                     Destroy(propertyButton);
                 }
+                if (property.ID == OpenRoomDropdown)
+                {
+                    buttonObject.OpenRoomContents();
+                }
+                else
+                {
+                    roomsContentScrollView.gameObject.SetActive(false);
+                }
             }
             else
             {
@@ -191,7 +202,6 @@ public class DisponibilityScreen : MonoBehaviour
                 }
             }
         }
-        roomsContentScrollView.gameObject.SetActive(false);
     }
 
     private void DeleteProperty(IProperty property)
@@ -231,13 +241,17 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().SetCurrentProperty(property);
+        PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
+        propertyAdminScreenScript.SetCurrentProperty(property);
+        propertyAdminScreenScript.disponibilityScreen = this;
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 
     private void OpenRoomAdminScreen(IRoom room)
     {
-        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(room);
+        RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
+        roomAdminScreenScript.SetCurrentPropertyRoom(room);
+        roomAdminScreenScript.disponibilityScreen = this;
         navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
     }
 

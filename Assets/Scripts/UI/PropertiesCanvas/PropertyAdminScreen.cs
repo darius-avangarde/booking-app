@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
+    public PropertiesScreen propertiesScreen { get; set; }
+    public DisponibilityScreen disponibilityScreen { get; set; }
+
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
@@ -62,7 +65,6 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void SaveProperty()
     {
-        Debug.Log("saving...");
         NameChanged(propertyNameInputField.text);
         if (HasRoomsToggle.isOn)
         {
@@ -76,30 +78,28 @@ public class PropertyAdminScreen : MonoBehaviour
         {
             PropertyDataManager.SaveProperty(currentProperty);
         }
-        navigator.GoBack();
+        OpenPropertiesScreen();
     }
 
-    public void DeleteProperty()
+    private void NameChanged(string value)
     {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_PROPERTY,
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
-            ConfirmCallback = () =>
-            {
-                PropertyDataManager.DeleteProperty(currentProperty.ID);
-                ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
-                navigator.GoBack();
-            },
-            CancelCallback = null
-        });
-    }
-
-    public void NameChanged(string value)
-    {
-        Debug.Log("change name");
         propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
+    }
+
+    private void OpenPropertiesScreen()
+    {
+        if (propertiesScreen != null)
+        {
+            propertiesScreen.Initialize();
+            propertiesScreen = null;
+            navigator.GoBack();
+        }
+        if (disponibilityScreen != null)
+        {
+            disponibilityScreen.Initialize();
+            disponibilityScreen = null;
+            navigator.GoBack();
+        }
     }
 }

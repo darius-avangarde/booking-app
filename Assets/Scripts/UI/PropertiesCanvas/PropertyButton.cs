@@ -87,6 +87,12 @@ public class PropertyButton : MonoBehaviour
         }
     }
 
+    public void OpenRoomContents()
+    {
+        RoomsContentScrollView.gameObject.SetActive(true);
+        StartCoroutine(Rotate(roomArrowTransform.GetComponent<RectTransform>().rotation, Quaternion.Euler(0, 0, -90f)));
+    }
+
     private IEnumerator Rotate(Quaternion start, Quaternion final)
     {
         currentTime = 0;

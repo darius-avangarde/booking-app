@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class RoomAdminScreen : MonoBehaviour
 {
+    public PropertiesScreen propertiesScreen { get; set; }
+    public DisponibilityScreen disponibilityScreen { get; set; }
+
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
@@ -67,7 +70,7 @@ public class RoomAdminScreen : MonoBehaviour
         {
             currentProperty.SaveRoom(currentRoom);
         }
-        navigator.GoBack();
+        OpenPropertiesScreen();
     }
 
     public void OnRoomNameValueChanged(string value)
@@ -124,6 +127,22 @@ public class RoomAdminScreen : MonoBehaviour
         if (roomDoubleBedQuantityInputField.text != "0")
         {
             roomDoubleBedQuantityInputField.text = (--DoubleBedsNr).ToString();
+        }
+    }
+
+    private void OpenPropertiesScreen()
+    {
+        if (propertiesScreen != null)
+        {
+            propertiesScreen.OpenRoomDropdown = currentProperty.ID;
+            propertiesScreen.Initialize();
+            navigator.GoBack();
+        }
+        if(disponibilityScreen != null)
+        {
+            disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
+            disponibilityScreen.Initialize();
+            navigator.GoBack();
         }
     }
 }
