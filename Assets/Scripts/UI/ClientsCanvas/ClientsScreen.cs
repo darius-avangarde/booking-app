@@ -79,6 +79,7 @@ public class ClientsScreen : MonoBehaviour
             if (hasCallBack)
             {
                 saveCallBack.Invoke(client);
+                cancelCallback.Invoke(true);
             }
             hasCallBack = false;
         }
