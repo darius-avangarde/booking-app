@@ -52,9 +52,26 @@ public class ClientsAdminScreen : MonoBehaviour
         clientScreenEmail.text = currentClient.Email;
     }
 
-    public void DeleteClientButton()
+    private void DeleteClientButton(Action actionDelete = null)
     {
-        DeleteClient();
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_CLIENT,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                ClientDataManager.DeleteClient(currentClient.ID);
+                ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
+                navigator.GoBack();
+                actionDelete?.Invoke();
+            },
+            CancelCallback = null
+        });
+    }
+    public void DeleteClientCurrent()
+    {
+        DeleteClientButton();
     }
     public void DeleteClient(Action actionDelete = null)
     {
@@ -67,7 +84,6 @@ public class ClientsAdminScreen : MonoBehaviour
             {
                 ClientDataManager.DeleteClient(currentClient.ID);
                 ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
-                //navigator.GoBack();
                 actionDelete?.Invoke();
             },
             CancelCallback = null
@@ -89,7 +105,7 @@ public class ClientsAdminScreen : MonoBehaviour
         foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID))
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
-            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack),DeleteReservation);
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack), DeleteReservation);
             reservationButtons.Add(reservationButton);
         }
     }
@@ -106,7 +122,8 @@ public class ClientsAdminScreen : MonoBehaviour
             Message = Constants.DELETE_DIALOG,
             ConfirmText = Constants.DELETE_CONFIRM,
             CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () => {
+            ConfirmCallback = () =>
+            {
                 ReservationDataManager.DeleteReservation(reservation.ID);
                 InstantiateReservations();
             },
@@ -118,5 +135,5 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         rezerv.OpenAddReservation(currentClient, UpdateCallBack);
     }
-   
+
 }
