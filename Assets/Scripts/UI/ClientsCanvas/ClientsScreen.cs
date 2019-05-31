@@ -61,7 +61,7 @@ public class ClientsScreen : MonoBehaviour
 
     public void SaveAddedClient()
     {
-
+        
         if (String.IsNullOrEmpty(clientName.text))
         {
             textNameRequired.text = Constants.NameRequired;

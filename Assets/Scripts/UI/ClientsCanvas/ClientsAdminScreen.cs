@@ -68,7 +68,7 @@ public class ClientsAdminScreen : MonoBehaviour
             {
                 ClientDataManager.DeleteClient(currentClient.ID);
                 ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
-                navigator.GoBack();
+                //navigator.GoBack();
                 actionDelete?.Invoke();
             },
             CancelCallback = null
