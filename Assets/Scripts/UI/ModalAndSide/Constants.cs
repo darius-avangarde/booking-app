@@ -8,12 +8,12 @@ public class Constants : MonoBehaviour
     public const bool PRETTY_PRINT = true;
 
     #region Property specific strings
-    public const string PROPERTIES_TITLE = "Proprietati";
+    public const string PROPERTIES_TITLE = "Proprietăți";
     public const string DELETE_PROPERTY = "Ștergeți proprietatea?";
     public const string DELETE_ROOM = "Ștergeți camera?";
     public const string DELETE_CLIENT = "Ștergeți clientul?";
     public const string DELETE_CONFIRM = "Ștergeți ";
-    public const string DELETE_CANCEL = "Anulati";
+    public const string DELETE_CANCEL = "Anulați";
     public const string NEW_PROPERTY = "Proprietate nouă";
     public const string NEW_ROOM = "Camera nouă";
     public const string ROOMS_NUMBER = "Număr de camere: ";
@@ -25,8 +25,8 @@ public class Constants : MonoBehaviour
     public const string SingleBed = "Paturi single: ";
     public const string DoubleBed = "Paturi duble: ";
     //error messages
-    public const string ERR_PROPERTY = "Nu exista proprietati, apasati pe butonul adauga proprietate";
-    public const string ERR_DISPONIBILITY = "Nu exista camere disponibile in intervalul selectat";
+    public const string ERR_PROPERTY = "Nu există proprietăți, apăsați pe butonul adaugă proprietate";
+    public const string ERR_DISPONIBILITY = "Nu există camere disponibile în intervalul selectat";
     #endregion
 
     public const string DateTimePrintFormat = "dd/MM/yy";
