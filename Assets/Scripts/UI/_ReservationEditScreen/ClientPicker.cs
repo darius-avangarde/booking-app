@@ -157,7 +157,7 @@ public class ClientPicker : MonoBehaviour
     private bool CompareString(string querry, string comparison)
     {
         querry = querry.ToLower();
-        comparison = comparison.ToLower();
+        comparison = comparison.ToLower().Trim();
         return comparison.StartsWith(querry);
     }
 }
