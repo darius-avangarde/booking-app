@@ -110,8 +110,8 @@ public class RoomScreen : MonoBehaviour
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
             Message = Constants.DELETE_DIALOG,
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () => {
                 ReservationDataManager.DeleteReservation(reservation.ID);
                 InstantiateReservations();

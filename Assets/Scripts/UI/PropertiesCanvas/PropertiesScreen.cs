@@ -62,6 +62,7 @@ public class PropertiesScreen : MonoBehaviour
                 if (property.ID == OpenRoomDropdown)
                 {
                     buttonObject.OpenRoomContents();
+                    OpenRoomDropdown = string.Empty;
                 }
                 else
                 {
@@ -116,8 +117,8 @@ public class PropertiesScreen : MonoBehaviour
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
             Message = Constants.DELETE_PROPERTY,
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
                 PropertyDataManager.DeleteProperty(property.ID);
@@ -133,8 +134,8 @@ public class PropertiesScreen : MonoBehaviour
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
             Message = Constants.DELETE_ROOM,
-            ConfirmText = "Ștergeți",
-            CancelText = "Anulați ",
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
                 IProperty selectedProperty = PropertyDataManager.GetProperty(selectedRoom.PropertyID);

@@ -75,11 +75,11 @@ public class PropertyButton : MonoBehaviour
                 RoomsContentScrollView.gameObject.SetActive(RoomsContentScrollView.gameObject.activeInHierarchy ? false : true);
                 if (RoomsContentScrollView.gameObject.activeInHierarchy)
                 {
-                    StartCoroutine(Rotate(roomArrowTransform.GetComponent<RectTransform>().rotation, Quaternion.Euler(0, 0, -90f)));
+                    StartCoroutine(Rotate(roomArrowTransform.localRotation, Quaternion.Euler(0, 0, -90f)));
                 }
                 else
                 {
-                    StartCoroutine(Rotate(roomArrowTransform.GetComponent<RectTransform>().rotation, Quaternion.Euler(0, 0, 0)));
+                    StartCoroutine(Rotate(roomArrowTransform.localRotation, Quaternion.Euler(0, 0, 0)));
                 }
                 LayoutRebuilder.ForceRebuildLayoutImmediate(layoutContent);
                 Canvas.ForceUpdateCanvases();
@@ -90,7 +90,8 @@ public class PropertyButton : MonoBehaviour
     public void OpenRoomContents()
     {
         RoomsContentScrollView.gameObject.SetActive(true);
-        StartCoroutine(Rotate(roomArrowTransform.GetComponent<RectTransform>().rotation, Quaternion.Euler(0, 0, -90f)));
+        StartCoroutine(Rotate(roomArrowTransform.localRotation, Quaternion.Euler(0, 0, -90f)));
+        Canvas.ForceUpdateCanvases();
     }
 
     private IEnumerator Rotate(Quaternion start, Quaternion final)

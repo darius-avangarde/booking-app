@@ -15,7 +15,9 @@ public class Constants : MonoBehaviour
     public const string DELETE_CONFIRM = "Ștergeți ";
     public const string DELETE_CANCEL = "Anulați";
     public const string NEW_PROPERTY = "Proprietate nouă";
-    public const string NEW_ROOM = "Camera nouă";
+    public const string EDIT_PROPERTY = "Modifică proprietatea";
+    public const string NEW_ROOM = "Cameră nouă";
+    public const string EDIT_ROOM = "Modifică camera";
     public const string ROOMS_NUMBER = "Număr de camere: ";
     public const string AVAILABLE_ROOMS = "Camere disponibile: ";
     public const string PROPERTY = "Proprietate: ";

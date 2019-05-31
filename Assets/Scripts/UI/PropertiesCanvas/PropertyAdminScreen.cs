@@ -50,7 +50,14 @@ public class PropertyAdminScreen : MonoBehaviour
     public void SetPropertyFieldsText()
     {
         propertyNameInputField.text = currentProperty.Name ?? "";
-        propertyScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+        if (string.IsNullOrEmpty(currentProperty.Name))
+        {
+            propertyScreenTitle.text = Constants.NEW_PROPERTY;
+        }
+        else
+        {
+            propertyScreenTitle.text = Constants.EDIT_PROPERTY;
+        }
         if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
