@@ -40,13 +40,9 @@ public class ReservationEditScreen : MonoBehaviour
         private Text errorText = null;
     #endregion
     #region Private variables
-        internal bool allowEdit
-        {
-            get => allowSearch;
-        }
-        private bool allowSearch = false;
+    internal bool allowEdit { get; set; } = false;
 
-        private Dictionary<string,Dropdown.OptionData> propertyOptions;
+    private Dictionary<string,Dropdown.OptionData> propertyOptions;
         private Dictionary<string,Dropdown.OptionData> roomOptions;
 
         private IReservation currentReservation;
@@ -63,7 +59,7 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void Start()
     {
-        allowSearch = false;
+        allowEdit = false;
         errorText.enabled = false;
         editConfirmation = new ConfirmationDialogOptions();
         editConfirmation.Message = Constants.EDIT_DIALOG;
@@ -142,7 +138,7 @@ public class ReservationEditScreen : MonoBehaviour
             propertyDropdown.onValueChanged.RemoveAllListeners();
             roomDropdown.onValueChanged.RemoveAllListeners();
             clientInputField.onEndEdit.RemoveAllListeners();
-            allowSearch = false;
+            allowEdit = false;
         }
 
         ///<summary>
@@ -206,6 +202,7 @@ public class ReservationEditScreen : MonoBehaviour
             UpdateEditableOptions(null, null, room);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
+            allowEdit = true;
         }
     #endregion
 
@@ -311,7 +308,7 @@ public class ReservationEditScreen : MonoBehaviour
         propertyDropdown.onValueChanged.AddListener(SelectProperty);
         roomDropdown.onValueChanged.AddListener(SelectRoom);
         clientInputField.onEndEdit.AddListener((s) => ValidateInput());
-        allowSearch = true;
+        allowEdit = true;
     }
 
     //Updates the properties dropdown with all available properties with at least one room or roomles properties

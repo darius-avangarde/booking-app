@@ -45,7 +45,7 @@ public class ClientPicker : MonoBehaviour
     private WaitForSeconds waitTime;
     private ScrollRect scrolRect;
 
-    private void Start()
+    private void OnEnable()
     {
         clientNameField.onValueChanged.AddListener(FilterClients);
         waitTime = new WaitForSeconds(searchDelay);
@@ -56,20 +56,23 @@ public class ClientPicker : MonoBehaviour
         scrolRect = scrolRectGameObj.GetComponentInChildren<ScrollRect>();
     }
 
-    private void OnDestroy()
-    {
-        clientNameField.onValueChanged.RemoveAllListeners();
-    }
-
     //Add client function attached to the add new client button in the client picker scrollrect
     public void AddNewClient()
     {
-        clientScreen.OpenAddClient(SelectAction);
+        clientScreen.OpenAddClient(SelectAction, NewClientCancel);
         if(onClickAddNewClient != null)
         {
             onClickAddNewClient.Invoke();
         }
         scrolRectGameObj.SetActive(false);
+    }
+
+    public void NewClientCancel(bool b)
+    {
+        if (b)
+        {
+            reservationEdit.allowEdit = true;
+        }
     }
 
     //triggered when the user taps outside the scrolview rect containing the client names

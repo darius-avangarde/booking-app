@@ -42,7 +42,8 @@ public class ClientsScreen : MonoBehaviour
     private List<GameObject> clientButtons = new List<GameObject>();
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
-    
+    private UnityAction<bool> cancelCallback;
+
     public void InstantiateClients()
     {
         foreach (var clientButton in clientButtons)
@@ -61,7 +62,7 @@ public class ClientsScreen : MonoBehaviour
 
     public void SaveAddedClient()
     {
-        
+
         if (String.IsNullOrEmpty(clientName.text))
         {
             textNameRequired.text = Constants.NameRequired;
@@ -84,14 +85,20 @@ public class ClientsScreen : MonoBehaviour
     }
     public void CancelAddClient()
     {
-        hasCallBack = false;
-        saveCallBack = null;
+        if (hasCallBack)
+        {
+            hasCallBack = false;
+            saveCallBack = null;
+            cancelCallback.Invoke(true);
+            cancelCallback = null;
+        }
     }
 
-    public void OpenAddClient(UnityAction<IClient> clientAdded)
+    public void OpenAddClient(UnityAction<IClient> clientAdded, UnityAction<bool> clientCancel)
     {
         hasCallBack = true;
         saveCallBack = clientAdded;
+        cancelCallback = clientCancel;
     }
 
 
