@@ -184,12 +184,12 @@ public class ClientsScreen : MonoBehaviour
 
     public void SetTextOnAddPanel()
     {
-        headerBarText.text = "Client Nou";
+        headerBarText.text = "Client nou";
     }
 
     public void SetTextOnEditPanel()
     {
-        headerBarText.text = "Editeaza client";
+        headerBarText.text = "Editează client";
     }
 
     public void ClearClientFields()
