@@ -42,7 +42,6 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         currentClient = client;
         SetClientsFieldsText();
-        Debug.Log(client.Name);
     }
 
     public void SetClientsFieldsText()

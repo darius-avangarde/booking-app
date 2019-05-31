@@ -105,8 +105,7 @@ public class ClientsScreen : MonoBehaviour
 
     public void EditClient()
     {
-        var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
-       
+        var currentClient = clientEditScreenTransform.GetComponent<ClientsEditScreen>().GetCurrentClient();
         if (String.IsNullOrEmpty(clientName.text))
         {
             textNameRequired.text = Constants.NameRequired;
@@ -196,10 +195,10 @@ public class ClientsScreen : MonoBehaviour
 
     public void ClearClientFields()
     {
-        clientName.text = " ";
-        clientPhone.text = " ";
-        clientAdress.text = " ";
-        clientEmail.text = " ";
+        clientName.text = "";
+        clientPhone.text = "";
+        clientAdress.text = "";
+        clientEmail.text = "";
     }
 
     public void ClearSearchField()
