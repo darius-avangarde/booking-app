@@ -60,6 +60,8 @@ public class ClientPicker : MonoBehaviour
     public void AddNewClient()
     {
         clientScreen.OpenAddClient(SelectAction, NewClientCancel);
+        clientScreen.ClearClientFields();
+        clientScreen.SetTextOnAddPanel();
         if(onClickAddNewClient != null)
         {
             onClickAddNewClient.Invoke();
