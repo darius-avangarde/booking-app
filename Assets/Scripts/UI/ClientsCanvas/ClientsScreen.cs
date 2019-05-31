@@ -105,7 +105,7 @@ public class ClientsScreen : MonoBehaviour
     public void EditClient()
     {
         var currentClient = clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().GetCurrentClient();
-        Client client = new Client();
+       
         if (String.IsNullOrEmpty(clientName.text))
         {
             textNameRequired.text = Constants.NameRequired;
@@ -113,6 +113,7 @@ public class ClientsScreen : MonoBehaviour
         else
 
         {
+            Client client = new Client();
             textNameRequired.text = "";
             client.Name = clientName.text;
             client.Number = clientPhone.text;

@@ -271,7 +271,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.8914522}
   m_AnchorMax: {x: 0.8907778, y: 0.9710001}
-  m_AnchoredPosition: {x: -0.099990845, y: 1.1000061}
+  m_AnchoredPosition: {x: 1.9001465, y: 25.600098}
   m_SizeDelta: {x: 6.100006, y: -6.299999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7354013814314421764
@@ -429,7 +429,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.5381262}
   m_AnchorMax: {x: 0.8907778, y: 0.59949046}
-  m_AnchoredPosition: {x: -0.099990845, y: -5.200001}
+  m_AnchoredPosition: {x: 1.9001465, y: -5.100006}
   m_SizeDelta: {x: 6.100006, y: 10.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5755424883119248435
@@ -602,6 +602,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: CancelAddClient
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &3016204526141814705
@@ -655,7 +666,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.82450956}
   m_AnchorMax: {x: 0.8907778, y: 0.8914522}
-  m_AnchoredPosition: {x: -0.099990845, y: 0.40000153}
+  m_AnchoredPosition: {x: 1.9001465, y: 46.899902}
   m_SizeDelta: {x: 6.100006, y: 7.700001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5836835217095322110
@@ -734,13 +745,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8177245008479410668}
   m_TextComponent: {fileID: 8074769236806560903}
   m_Placeholder: {fileID: 1701246725072699382}
-  m_ContentType: 5
+  m_ContentType: 0
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 6
+  m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 4
+  m_CharacterValidation: 0
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -1190,7 +1201,18 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: 
+        m_MethodName: GoBack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: CancelAddClient
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1253,7 +1275,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.46600002}
   m_AnchorMax: {x: 0.8907778, y: 0.5267739}
-  m_AnchoredPosition: {x: -1.5450001, y: 2.3999996}
+  m_AnchoredPosition: {x: 6.5998535, y: -12.600006}
   m_SizeDelta: {x: 3.0100002, y: 4.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8977640859597193586
@@ -1410,7 +1432,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.18647917}
   m_AnchorMax: {x: 1, y: 0.8765209}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.27514648}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2917326289894468233
@@ -1447,7 +1469,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -215.8}
+  m_AnchoredPosition: {x: 0, y: -215.7998}
   m_SizeDelta: {x: 0, y: 21}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &3830100338049706938
@@ -1525,7 +1547,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.6432261}
   m_AnchorMax: {x: 0.8907778, y: 0.7094905}
-  m_AnchoredPosition: {x: -0.099990845, y: 1.7999992}
+  m_AnchoredPosition: {x: 1.9001465, y: 15.300049}
   m_SizeDelta: {x: 6.100006, y: -1.6000004}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4296587694737540806
@@ -1604,13 +1626,13 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7795349207957332479}
   m_TextComponent: {fileID: 4444311024024956052}
   m_Placeholder: {fileID: 8266459561352531936}
-  m_ContentType: 4
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 1
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 3
+  m_CharacterValidation: 1
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
@@ -1675,7 +1697,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.7094905}
   m_AnchorMax: {x: 0.8907778, y: 0.785774}
-  m_AnchoredPosition: {x: -0.099990845, y: 1}
+  m_AnchoredPosition: {x: 1.9001465, y: 26.900024}
   m_SizeDelta: {x: 6.100006, y: 0.099998474}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6692829721525229365
@@ -1755,7 +1777,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 0.000061035156}
+  m_AnchoredPosition: {x: -0.00024414062, y: 0}
   m_SizeDelta: {x: 0, y: 215.80005}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &3320235236967395846
@@ -2155,7 +2177,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Editeaz\u0103 Client"
+  m_Text: "Editeaz\u0103 client"
 --- !u!1 &5569020731103299492
 GameObject:
   m_ObjectHideFlags: 0
@@ -2190,8 +2212,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.109222226, y: 0.33400002}
   m_AnchorMax: {x: 0.8907778, y: 0.40577394}
-  m_AnchoredPosition: {x: -0.099990845, y: 2.1879997}
-  m_SizeDelta: {x: 6.100006, y: 6.6240005}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5174036873633864422
 CanvasRenderer:
@@ -2708,6 +2730,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: GoBack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &9108432844866156260
@@ -2851,6 +2884,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_MethodName: GoBack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1928594542670884088
@@ -2893,7 +2937,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8397126092244970039}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.9999956, y: 0.9999956, z: 0.9999956}
   m_Children:
