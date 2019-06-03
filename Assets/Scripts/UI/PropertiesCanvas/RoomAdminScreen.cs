@@ -82,7 +82,6 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void OnRoomNameValueChanged(string value)
     {
-        roomAdminScreenTitle.text = value;
         currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.NEW_ROOM : value;
     }
 

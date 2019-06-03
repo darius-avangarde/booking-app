@@ -90,7 +90,6 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void NameChanged(string value)
     {
-        propertyScreenTitle.text = value;
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
     }
 

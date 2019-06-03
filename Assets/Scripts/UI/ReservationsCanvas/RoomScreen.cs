@@ -124,16 +124,22 @@ public class RoomScreen : MonoBehaviour
         });
     }
 
-    private void OpenRoomAdminScreen()
-    {
-        roomAdminScreenTransform.GetComponent<RoomAdminScreen>().SetCurrentPropertyRoom(currentRoom);
-        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
-    }
-
     private void OpenPropertyAdminScreen()
     {
-        propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().SetCurrentProperty(currentProperty);
+        PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
+        propertyAdminScreenScript.SetCurrentProperty(currentProperty);
+        propertyAdminScreenScript.propertiesScreen = propertiesScreen;
+        propertyAdminScreenScript.disponibilityScreen = disponibilityScreen;
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+    }
+
+    private void OpenRoomAdminScreen()
+    {
+        RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
+        roomAdminScreenScript.SetCurrentPropertyRoom(currentRoom);
+        roomAdminScreenScript.propertiesScreen = propertiesScreen;
+        roomAdminScreenScript.disponibilityScreen = disponibilityScreen;
+        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
     }
 
     private void OpenPropertiesScreen()
