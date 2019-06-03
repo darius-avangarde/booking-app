@@ -221,12 +221,6 @@ public class ReservationEditScreen : MonoBehaviour
             return;
         }
 
-        if(currentClient == null || clientInputField.text != currentClient.Name)
-        {
-            DisplayErrorAndSetInteractability(Constants.ERR_CLIENT, true, false);
-            return;
-        }
-
         if(period.Start == period.End)
         {
             DisplayErrorAndSetInteractability(Constants.ERR_DATES, true, false);
@@ -236,6 +230,12 @@ public class ReservationEditScreen : MonoBehaviour
         if(OverlapsOtherReservation(period.Start.Date, period.End.Date))
         {
             DisplayErrorAndSetInteractability(Constants.ERR_PERIOD, true, false);
+            return;
+        }
+
+        if(currentClient == null || clientInputField.text != currentClient.Name)
+        {
+            DisplayErrorAndSetInteractability(Constants.ERR_CLIENT, true, false);
             return;
         }
 
