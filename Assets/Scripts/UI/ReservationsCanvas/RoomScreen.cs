@@ -15,6 +15,8 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private ReservationEditScreen reservationScreen = null;
     [SerializeField]
+    private PropertiesScreen propertiesScreen = null;
+    [SerializeField]
     private Transform roomAdminScreenTransform = null;
     [SerializeField]
     private Transform propertyAdminScreenTransform = null;
@@ -36,10 +38,10 @@ public class RoomScreen : MonoBehaviour
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => OpenPropertiesScreen());
     }
 
-    public void UpdateRoomDetailsFields(/*DateTime date,*/ IRoom room)
+    public void UpdateRoomDetailsFields(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         //dayDateTime = date;
@@ -100,7 +102,7 @@ public class RoomScreen : MonoBehaviour
         foreach (var reservation in orderedRoomReservationList)
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-            reservationButton.GetComponent<ReservationItem>().Initialize(reservation,() => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), DeleteReservation);
+            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), DeleteReservation);
             reservationButtonList.Add(reservationButton);
         }
     }
@@ -112,7 +114,8 @@ public class RoomScreen : MonoBehaviour
             Message = Constants.DELETE_DIALOG,
             ConfirmText = Constants.DELETE_CONFIRM,
             CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () => {
+            ConfirmCallback = () =>
+            {
                 ReservationDataManager.DeleteReservation(reservation.ID);
                 InstantiateReservations();
             },
@@ -130,5 +133,19 @@ public class RoomScreen : MonoBehaviour
     {
         propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>().SetCurrentProperty(currentProperty);
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+    }
+
+    private void OpenPropertiesScreen()
+    {
+        propertiesScreen.Initialize();
+        if (currentProperty.HasRooms)
+        {
+            propertiesScreen.OpenRoomDropdown = currentRoom.ID;
+        }
+        else
+        {
+            propertiesScreen.OpenRoomDropdown = string.Empty;
+        }
+        navigator.GoBack();
     }
 }
