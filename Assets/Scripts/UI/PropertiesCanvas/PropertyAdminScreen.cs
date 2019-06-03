@@ -30,8 +30,8 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => navigator.GoBack());
-        calcelButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => GoBack());
+        calcelButton.onClick.AddListener(() => GoBack());
     }
 
     public void SetCurrentProperty(IProperty property)
@@ -107,5 +107,12 @@ public class PropertyAdminScreen : MonoBehaviour
             disponibilityScreen = null;
             navigator.GoBack();
         }
+    }
+
+    private void GoBack()
+    {
+        disponibilityScreen = null;
+        propertiesScreen = null;
+        navigator.GoBack();
     }
 }

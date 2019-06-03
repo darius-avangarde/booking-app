@@ -35,8 +35,8 @@ public class RoomAdminScreen : MonoBehaviour
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => navigator.GoBack());
-        calcelButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => GoBack());
+        calcelButton.onClick.AddListener(() => GoBack());
     }
 
     public void SetCurrentPropertyRoom(IRoom room)
@@ -145,12 +145,19 @@ public class RoomAdminScreen : MonoBehaviour
             propertiesScreen = null;
             navigator.GoBack();
         }
-        if(disponibilityScreen != null)
+        if (disponibilityScreen != null)
         {
             disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
             disponibilityScreen.Initialize();
             disponibilityScreen = null;
             navigator.GoBack();
         }
+    }
+
+    private void GoBack()
+    {
+        disponibilityScreen = null;
+        propertiesScreen = null;
+        navigator.GoBack();
     }
 }
