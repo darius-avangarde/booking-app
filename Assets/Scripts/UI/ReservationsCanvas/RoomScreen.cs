@@ -8,14 +8,15 @@ using UnityEngine.UI;
 
 public class RoomScreen : MonoBehaviour
 {
+    public PropertiesScreen propertiesScreen { get; set; }
+    public DisponibilityScreen disponibilityScreen { get; set; }
+
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private ReservationEditScreen reservationScreen = null;
-    [SerializeField]
-    private PropertiesScreen propertiesScreen = null;
     [SerializeField]
     private Transform roomAdminScreenTransform = null;
     [SerializeField]
@@ -137,15 +138,19 @@ public class RoomScreen : MonoBehaviour
 
     private void OpenPropertiesScreen()
     {
-        propertiesScreen.Initialize();
-        if (currentProperty.HasRooms)
+        if (propertiesScreen != null)
         {
-            propertiesScreen.OpenRoomDropdown = currentRoom.ID;
+            propertiesScreen.OpenRoomDropdown = currentProperty.ID;
+            propertiesScreen.Initialize();
+            propertiesScreen = null;
+            navigator.GoBack();
         }
-        else
+        if (disponibilityScreen != null)
         {
-            propertiesScreen.OpenRoomDropdown = string.Empty;
+            disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
+            disponibilityScreen.Initialize();
+            disponibilityScreen = null;
+            navigator.GoBack();
         }
-        navigator.GoBack();
     }
 }

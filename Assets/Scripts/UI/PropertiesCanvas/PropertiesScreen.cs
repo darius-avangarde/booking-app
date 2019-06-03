@@ -165,7 +165,9 @@ public class PropertiesScreen : MonoBehaviour
 
     private void OpenRoomScreen(IRoom room)
     {
-        roomScreenTransform.GetComponent<RoomScreen>().UpdateRoomDetailsFields(room);
+        RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
+        roomScreenScript.UpdateRoomDetailsFields(room);
+        roomScreenScript.propertiesScreen = this;
         navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
     }
 }
