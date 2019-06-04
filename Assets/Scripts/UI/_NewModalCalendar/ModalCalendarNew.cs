@@ -22,13 +22,17 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     [SerializeField]
     private AnimationCurve slideCurve;
 
+    #region Slide Refrence Rects
+    [Space]
     [SerializeField]
     private RectTransform slideCenter;
     [SerializeField]
     private RectTransform slideLeft;
     [SerializeField]
     private RectTransform slideRight;
+    #endregion
 
+    [Space]
     [SerializeField]
     private ModalMonthPage currentPage;
     [SerializeField]
@@ -63,7 +67,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     #endregion
 
     private Action<DateTime, DateTime> DoneCallback;
-    private DateTime focusDateTime = DateTime.Today;
+    private DateTime focusDateTime = DateTime.Today.Date;
     private IReservation currentReservation;
     private List<IReservation> roomReservationList = new List<IReservation>();
     private bool isSelectingEnd = false;
@@ -131,12 +135,12 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void Close()
     {
-        CloseModalCalendar(true);
+        CloseModalCalendar(false);
     }
 
-    public void CancelSelectedDateTimeOnModalCalendar()
+    public void Confirm()
     {
-        CloseModalCalendar(false);
+        CloseModalCalendar(true);
     }
 
     public int GetDaysVisibleFromPreviousMonth(DayOfWeek day)
@@ -153,30 +157,6 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         }
 
         return 0;
-    }
-
-    private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
-    {
-        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
-        focusDateTime = initialDateTime;
-        currentReservation = reservation;
-        roomReservationList = reservationList;
-        easyTween.OpenCloseObjectAnimation();
-        InputManager.CurrentlyOpenClosable = this;
-        DoneCallback = doneCallback;
-
-        if(currentReservation != null)
-        {
-            selectionText.text = currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat) + Constants.AndDelimiter + currentReservation.Period.End.ToString(Constants.DateTimePrintFormat);
-            confirmButton.interactable = true;
-        }
-        else
-        {
-            selectionText.text = string.Empty;
-            confirmButton.interactable = false;
-        }
-
-        currentPage.UpdatePage(focusDateTime);
     }
 
     public void HandleClickAction(ModalDayObject dayObj)
@@ -227,11 +207,40 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         UpdateDayCountText();
     }
 
+    private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
+    {
+        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
+        focusDateTime = initialDateTime;
+        currentReservation = reservation;
+        roomReservationList = reservationList;
+        easyTween.OpenCloseObjectAnimation();
+        InputManager.CurrentlyOpenClosable = this;
+        DoneCallback = doneCallback;
+
+        if(currentReservation != null)
+        {
+            selectionText.text = currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat) + Constants.AndDelimiter + currentReservation.Period.End.ToString(Constants.DateTimePrintFormat);
+            confirmButton.interactable = true;
+        }
+        else
+        {
+            selectionText.text = string.Empty;
+            confirmButton.interactable = false;
+        }
+
+        currentPage.UpdatePage(focusDateTime);
+    }
+
     private void CloseModalCalendar(bool doCallback)
     {
-        if(selectedEnd.Date == selectedStart.Date)
+        if(selectedStart == default)
         {
-            selectedEnd = selectedEnd.AddDays(1);
+            selectedStart = DateTime.Today.Date;
+        }
+
+        if(selectedEnd.Date == selectedStart.Date || selectedEnd == default)
+        {
+            selectedEnd = selectedStart.AddDays(1);
         }
 
         if(doCallback)

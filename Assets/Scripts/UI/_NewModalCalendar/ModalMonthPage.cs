@@ -172,7 +172,6 @@ public class ModalMonthPage : MonoBehaviour
                     dayObjects[d].UpdateDayColors(null, null, calendar.SelectedColor);
                 }
             }
-
         }
     }
 
