@@ -118,22 +118,21 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void ShowPreviousMonth()
     {
-        if (focusDateTime.Date > DateTime.Today.Date && !isSliding)
+        if (focusDateTime.Date > DateTime.Today.Date)
         {
             focusDateTime = focusDateTime.AddMonths(-1);
-            //UpdateCalendar(focusDateTime);
+            StopAllCoroutines();
+            isSliding = false;
             StartCoroutine(Swipe(true));
         }
     }
 
     public void ShowNextMonth()
     {
-        if(!isSliding)
-        {
-            focusDateTime = focusDateTime.AddMonths(1);
-            // UpdateCalendar(focusDateTime);
-            StartCoroutine(Swipe(false));
-        }
+        focusDateTime = focusDateTime.AddMonths(1);
+        StopAllCoroutines();
+        isSliding = false;
+        StartCoroutine(Swipe(false));
     }
 
     public void Close()
@@ -164,50 +163,53 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void HandleClickAction(ModalDayObject dayObj)
     {
-        if(!dayObj.IsReserved && !dayObj.IsStart && !isSelectingEnd)
+        if(!isSliding)
         {
-            selectedStart = dayObj.ObjDate.Date;
-            selectedEnd = dayObj.ObjDate.Date;
-            isSelectingEnd = true;
-            showSelection = true;
-            currentPage.UpdatePage(focusDateTime);
-            selectionText.text = selectedStart.ToString(Constants.DateTimePrintFormat);
-            confirmButton.interactable = allowSigleDate;
-        }
-        else if(!dayObj.IsReserved && isSelectingEnd)
-        {
-            selectedEnd = dayObj.ObjDate.Date;
-            if(selectedStart.Date > selectedEnd.Date)
+            if(!dayObj.IsReserved && !dayObj.IsStart && !isSelectingEnd)
             {
-                selectedEnd = selectedStart;
-                selectedStart = dayObj.ObjDate;
-            }
-
-            if(!OverlapsOtherReservation(selectedStart, selectedEnd) && selectedStart != selectedEnd)
-            {
+                selectedStart = dayObj.ObjDate.Date;
+                selectedEnd = dayObj.ObjDate.Date;
+                isSelectingEnd = true;
                 showSelection = true;
-                selectionText.text = selectedStart.ToString(Constants.DateTimePrintFormat) + Constants.AndDelimiter + selectedEnd.ToString(Constants.DateTimePrintFormat);
-                confirmButton.interactable = true;
+                currentPage.UpdatePage(focusDateTime);
+                selectionText.text = selectedStart.ToString(Constants.DateTimePrintFormat);
+                confirmButton.interactable = allowSigleDate;
+            }
+            else if(!dayObj.IsReserved && isSelectingEnd)
+            {
+                selectedEnd = dayObj.ObjDate.Date;
+                if(selectedStart.Date > selectedEnd.Date)
+                {
+                    selectedEnd = selectedStart;
+                    selectedStart = dayObj.ObjDate;
+                }
+
+                if(!OverlapsOtherReservation(selectedStart, selectedEnd) && selectedStart != selectedEnd)
+                {
+                    showSelection = true;
+                    selectionText.text = selectedStart.ToString(Constants.DateTimePrintFormat) + Constants.AndDelimiter + selectedEnd.ToString(Constants.DateTimePrintFormat);
+                    confirmButton.interactable = true;
+                }
+                else
+                {
+                    selectedEnd = default;
+                    selectedStart = default;
+                    selectionText.text = string.Empty;
+                    confirmButton.interactable = false;
+                }
+                currentPage.UpdatePage(focusDateTime);
+                isSelectingEnd = false;
             }
             else
             {
-                selectedEnd = default;
-                selectedStart = default;
+                showSelection = false;
+                isSelectingEnd = false;
+                currentPage.UpdatePage(focusDateTime);
                 selectionText.text = string.Empty;
                 confirmButton.interactable = false;
             }
-            currentPage.UpdatePage(focusDateTime);
-            isSelectingEnd = false;
+            UpdateDayCountText();
         }
-        else
-        {
-            showSelection = false;
-            isSelectingEnd = false;
-            currentPage.UpdatePage(focusDateTime);
-            selectionText.text = string.Empty;
-            confirmButton.interactable = false;
-        }
-        UpdateDayCountText();
     }
 
     private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
@@ -284,7 +286,6 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private IEnumerator Swipe(bool isLeft)
     {
         isSliding = true;
-
         monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
 
         cachePage.Rect.position = (isLeft) ? slideLeft.position : slideRight.position;
@@ -309,7 +310,6 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ModalMonthPage cache = currentPage;
         currentPage = cachePage;
         cachePage = cache;
-
         isSliding = false;
     }
 }
