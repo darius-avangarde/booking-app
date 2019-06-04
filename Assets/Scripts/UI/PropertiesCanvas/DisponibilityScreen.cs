@@ -264,4 +264,3 @@ public class DisponibilityScreen : MonoBehaviour
         navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
     }
 }
-
