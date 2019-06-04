@@ -20,12 +20,14 @@ public class ModalMonthPage : MonoBehaviour
     private ModalCalendarNew calendar;
 
     private List<ModalDayObject> dayObjects = new List<ModalDayObject>();
+    private DateTime currentDate;
 
 
     public void UpdatePage(DateTime selectedDateTime)
     {
         DateTime firstDayOfMonthInSelectedDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
 
+        currentDate = selectedDateTime.Date;
 
         SetDayItemsForPreviousMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
 
@@ -117,6 +119,11 @@ public class ModalMonthPage : MonoBehaviour
             dayObj.UpdateDayColors(calendar.PastColor, calendar.PastColor, calendar.PastColor);
             dayObj.IsReserved = true;
             return;
+        }
+
+        if(dateTime.Date.Month != currentDate.Month)
+        {
+            dayObj.UpdateDayColors(calendar.NotMonthColor, calendar.NotMonthColor, calendar.NotMonthColor);
         }
 
         if(calendar.RoomReservationList == null || calendar.RoomReservationList.Count == 0)
