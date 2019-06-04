@@ -9,12 +9,13 @@ public class ClientButton : MonoBehaviour
     [SerializeField]
     private Text phoneNumber = null;
     [SerializeField]
+    private string email = "ralucametes97@gmail.com";
+    [SerializeField]
     private Button clientButton;
     [SerializeField]
     private Button editButton;
     [SerializeField]
     private Button deleteButton;
-
 
     public void Initialize(IClient client, Action<IClient> callback, Action<IClient> editCallBack, Action<IClient> deleteCallback)
     {
@@ -37,4 +38,5 @@ public class ClientButton : MonoBehaviour
         }
         return ok;
     }
+
 }

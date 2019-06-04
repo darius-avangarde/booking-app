@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using static ClientDataManager;
 
@@ -43,6 +44,7 @@ public class ClientsScreen : MonoBehaviour
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
     private UnityAction<bool> cancelCallback;
+   // private IClient currentClient;
 
     public void InstantiateClients()
     {
@@ -55,7 +57,7 @@ public class ClientsScreen : MonoBehaviour
         {
 
             GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, OpenEditAdminScreen, OpenDeleteAdminScreen);
+            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, EmailUs, phoneUS);//OpenEditAdminScreen,OpenDeleteAdminScreen);
             clientButtons.Add(clientButton);
         }
     }
@@ -148,7 +150,28 @@ public class ClientsScreen : MonoBehaviour
         ClearSearchField();
     }
 
+    //------------
+    public void EmailUs(IClient currentClient)
+    {
+        //subject of the mail
+        string subject = MyEscapeURL("Custom application development");
+        //Open the Default Mail App
+        Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
+        Debug.Log(currentClient.Email + "email is:");
+    }
 
+    string MyEscapeURL(string url)
+    {
+        return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
+    }
+
+    public void phoneUS(IClient currentClient)
+    {
+        Application.OpenURL("tel://" + currentClient.Number);
+        Debug.Log(currentClient.Number + "clientScreenAdress number");
+    }
+
+    //-----------
 
     public void SearchForClient()
     {
@@ -205,4 +228,6 @@ public class ClientsScreen : MonoBehaviour
     {
         searchField.text = "";
     }
+
+   
 }
