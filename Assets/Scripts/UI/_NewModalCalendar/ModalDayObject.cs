@@ -12,6 +12,9 @@ public class ModalDayObject : MonoBehaviour
     [SerializeField]
     private Image backgroundImage;
     [SerializeField]
+    private Image currentDayImage;
+
+    [SerializeField]
     private Button buttonComp;
     [SerializeField]
     private Text dayObjText;
@@ -49,6 +52,7 @@ public class ModalDayObject : MonoBehaviour
 
     internal void UpdateDayObject(DateTime dateTime)
     {
+        currentDayImage.enabled = dateTime.Date == DateTime.Today.Date;
         objDayTime = dateTime;
         dayObjText.text = dateTime.Day.ToString();
     }
