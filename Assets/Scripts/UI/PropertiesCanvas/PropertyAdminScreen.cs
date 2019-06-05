@@ -5,15 +5,10 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
-    public PropertiesScreen propertiesScreen { get; set; }
-    public DisponibilityScreen disponibilityScreen { get; set; }
-
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private Navigator navigator = null;
-    [SerializeField]
-    private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
@@ -30,8 +25,8 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => GoBack());
-        calcelButton.onClick.AddListener(() => GoBack());
+        backButton.onClick.AddListener(() => navigator.GoBack());
+        calcelButton.onClick.AddListener(() => navigator.GoBack());
     }
 
     public void SetCurrentProperty(IProperty property)
@@ -50,14 +45,6 @@ public class PropertyAdminScreen : MonoBehaviour
     public void SetPropertyFieldsText()
     {
         propertyNameInputField.text = currentProperty.Name ?? "";
-        if (string.IsNullOrEmpty(currentProperty.Name))
-        {
-            propertyScreenTitle.text = Constants.NEW_PROPERTY;
-        }
-        else
-        {
-            propertyScreenTitle.text = Constants.EDIT_PROPERTY;
-        }
         if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
@@ -85,34 +72,28 @@ public class PropertyAdminScreen : MonoBehaviour
         {
             PropertyDataManager.SaveProperty(currentProperty);
         }
-        OpenPropertiesScreen();
+        navigator.GoBack();
+    }
+
+    public void DeleteProperty(IProperty property)
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_PROPERTY,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                PropertyDataManager.DeleteProperty(property.ID);
+                ReservationDataManager.DeleteReservationsForProperty(property.ID);
+                navigator.GoBack();
+            },
+            CancelCallback = null
+        });
     }
 
     private void NameChanged(string value)
     {
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
-    }
-
-    private void OpenPropertiesScreen()
-    {
-        if (propertiesScreen != null)
-        {
-            propertiesScreen.Initialize();
-            propertiesScreen = null;
-            navigator.GoBack();
-        }
-        if (disponibilityScreen != null)
-        {
-            disponibilityScreen.Initialize();
-            disponibilityScreen = null;
-            navigator.GoBack();
-        }
-    }
-
-    private void GoBack()
-    {
-        disponibilityScreen = null;
-        propertiesScreen = null;
-        navigator.GoBack();
     }
 }

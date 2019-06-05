@@ -14,9 +14,20 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Text roomAdminScreenTitle = null;
+    private Text propertyRoomTitle = null;
     [SerializeField]
     private InputField roomNameInputField = null;
+    [SerializeField]
+    private RectTransform roomNameInputFieldTransform = null;
+    [SerializeField]
+    private InputField multiplePrefixField = null;
+    [SerializeField]
+    private InputField multipleFloorsField = null;
+    [SerializeField]
+    private InputField multipleNrRoomsField = null;
+    [SerializeField]
+    private GameObject roomInfoInputPanel = null;
+
     [SerializeField]
     private InputField roomPriceInputField = null;
     [SerializeField]
@@ -24,12 +35,17 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField = null;
     [SerializeField]
-    private Button backButton;
+    private Toggle singleRoomToggle = null;
     [SerializeField]
-    private Button calcelButton;
+    private Toggle multipleRoomsToggle = null;
+    [SerializeField]
+    private Button backButton = null;
+    [SerializeField]
+    private Button calcelButton = null;
 
     private IProperty currentProperty;
     private IRoom currentRoom;
+    private List<IRoom> MultipleRooms = new List<IRoom>();
     private int SingleBedsNr;
     private int DoubleBedsNr;
 
@@ -50,20 +66,34 @@ public class RoomAdminScreen : MonoBehaviour
     {
         if (currentRoom != null)
         {
-            roomNameInputField.text = currentRoom.Name ?? "";
-            roomPriceInputField.text = currentRoom.Price ?? "";
+            propertyRoomTitle.text = currentProperty.Name;
+            roomNameInputField.text = currentRoom.Name ?? Constants.NEW_ROOM;
+            singleRoomToggle.isOn = true;
+            if (string.IsNullOrEmpty(currentRoom.Name))
+            {
+                roomInfoInputPanel.SetActive(true);
+            }
+            else
+            {
+                roomInfoInputPanel.SetActive(false);
+            }
+            roomPriceInputField.text = currentRoom.Price ?? Constants.PRICE;
             roomSingleBedQuantityInputField.text = currentRoom.SingleBeds.ToString();
             roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
             SingleBedsNr = currentRoom.SingleBeds;
             DoubleBedsNr = currentRoom.DoubleBeds;
-            if (string.IsNullOrEmpty(currentRoom.Name))
-            {
-                roomAdminScreenTitle.text = Constants.NEW_ROOM;
-            }
-            else
-            {
-                roomAdminScreenTitle.text = Constants.EDIT_ROOM;
-            }
+        }
+    }
+
+    public void SaveChanges()
+    {
+        if (singleRoomToggle.isOn)
+        {
+            SaveRoom();
+        }
+        else if (multipleRoomsToggle.isOn)
+        {
+            SaveMultipleRooms();
         }
     }
 
@@ -78,6 +108,45 @@ public class RoomAdminScreen : MonoBehaviour
             currentProperty.SaveRoom(currentRoom);
         }
         OpenPropertiesScreen();
+    }
+
+    public void SaveMultipleRooms()
+    {
+
+    }
+
+    public void SelectSingleRoom()
+    {
+        if (singleRoomToggle.isOn)
+        {
+            roomNameInputFieldTransform.sizeDelta = new Vector2(0, 110);
+        }
+    }
+
+    public void SelectMultipleRooms()
+    {
+        if (multipleRoomsToggle.isOn)
+        {
+            //roomNameInputFieldTransform.rect.
+        }
+    }
+
+    public void DeleteRoom(IRoom selectedRoom)
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_ROOM,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                IProperty selectedProperty = PropertyDataManager.GetProperty(selectedRoom.PropertyID);
+                selectedProperty.DeleteRoom(selectedRoom.ID);
+                ReservationDataManager.DeleteReservationsForRoom(selectedRoom.ID);
+                navigator.GoBack();
+            },
+            CancelCallback = null
+        });
     }
 
     public void OnRoomNameValueChanged(string value)
@@ -140,16 +209,16 @@ public class RoomAdminScreen : MonoBehaviour
     {
         if (propertiesScreen != null)
         {
-            propertiesScreen.OpenRoomDropdown = currentProperty.ID;
+            //propertiesScreen.OpenRoomDropdown = currentProperty.ID;
             propertiesScreen.Initialize();
             propertiesScreen = null;
             navigator.GoBack();
         }
         if (disponibilityScreen != null)
         {
-            disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
-            disponibilityScreen.Initialize();
-            disponibilityScreen = null;
+            //disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
+            //disponibilityScreen.Initialize();
+            //disponibilityScreen = null;
             navigator.GoBack();
         }
     }

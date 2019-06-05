@@ -26,7 +26,7 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Transform reservationsContent = null;
     [SerializeField]
-    private Text propertyRoomScreenTitle = null;
+    private Text roomScreenTitle = null;
     [SerializeField]
     private Button backButton;
     //[SerializeField]
@@ -49,11 +49,11 @@ public class RoomScreen : MonoBehaviour
         currentRoom = room;
         if (currentProperty.HasRooms)
         {
-            propertyRoomScreenTitle.text = room.Name ?? Constants.NEW_ROOM;
+            roomScreenTitle.text = room.Name ?? Constants.NEW_ROOM;
         }
         else
         {
-            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+            roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
         }
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -63,11 +63,11 @@ public class RoomScreen : MonoBehaviour
     {
         if (currentProperty.HasRooms)
         {
-            propertyRoomScreenTitle.text = currentRoom.Name ?? Constants.NEW_ROOM;
+            roomScreenTitle.text = currentRoom.Name ?? Constants.NEW_ROOM;
         }
         else
         {
-            propertyRoomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+            roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
         }
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -128,8 +128,8 @@ public class RoomScreen : MonoBehaviour
     {
         PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
         propertyAdminScreenScript.SetCurrentProperty(currentProperty);
-        propertyAdminScreenScript.propertiesScreen = propertiesScreen;
-        propertyAdminScreenScript.disponibilityScreen = disponibilityScreen;
+        //propertyAdminScreenScript.propertiesScreen = propertiesScreen;
+        //propertyAdminScreenScript.disponibilityScreen = disponibilityScreen;
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 
@@ -137,8 +137,8 @@ public class RoomScreen : MonoBehaviour
     {
         RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
         roomAdminScreenScript.SetCurrentPropertyRoom(currentRoom);
-        roomAdminScreenScript.propertiesScreen = propertiesScreen;
-        roomAdminScreenScript.disponibilityScreen = disponibilityScreen;
+        //roomAdminScreenScript.propertiesScreen = propertiesScreen;
+        //roomAdminScreenScript.disponibilityScreen = disponibilityScreen;
         navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
     }
 
@@ -146,15 +146,15 @@ public class RoomScreen : MonoBehaviour
     {
         if (propertiesScreen != null)
         {
-            propertiesScreen.OpenRoomDropdown = currentProperty.ID;
+            //propertiesScreen.OpenRoomDropdown = currentProperty.ID;
             propertiesScreen.Initialize();
             propertiesScreen = null;
             navigator.GoBack();
         }
         if (disponibilityScreen != null)
         {
-            disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
-            disponibilityScreen.Initialize();
+            //disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
+            //disponibilityScreen.Initialize();
             disponibilityScreen = null;
             navigator.GoBack();
         }

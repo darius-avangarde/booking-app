@@ -15,11 +15,8 @@ public class RoomButton : MonoBehaviour
     [SerializeField]
     private Button roomButton;
     [SerializeField]
-    private Button editRoomButton;
-    [SerializeField]
-    private Button deleteRoomButton;
-    [SerializeField]
     private Image disponibilityMarker = null;
+
     private IRoom currentRoom;
     private DateTime dateTimeStart = DateTime.Today.Date;
     private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
@@ -32,7 +29,7 @@ public class RoomButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IRoom room, Action<IRoom> roomCallback, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
+    public void Initialize(IRoom room, Action<IRoom> roomCallback)
     {
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
         //roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.PRICE : ("Pret: " + room.Price + " ron");
@@ -60,8 +57,6 @@ public class RoomButton : MonoBehaviour
             disponibilityMarker.color = Constants.availableItemColor;
         }
         roomButton.onClick.AddListener(() => roomCallback(room));
-        editRoomButton.onClick.AddListener(() => editCallback(room));
-        deleteRoomButton.onClick.AddListener(() => deleteCallback(room));
         currentRoom = room;
     }
 }

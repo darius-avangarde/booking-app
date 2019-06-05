@@ -8,23 +8,12 @@ using UINavigation;
 
 public class PropertyButton : MonoBehaviour
 {
-    public List<GameObject> RoomButtons { get; set; } = new List<GameObject>();
-    public Transform RoomsContentScrollView = null;
-
     [SerializeField]
     private Text propertyName = null;
     [SerializeField]
-    private Text nrOfRooms = null;
+    private Image PropertyPicture = null;
     [SerializeField]
     private Button propertyButtonItem = null;
-    [SerializeField]
-    private Button editPropertyButton = null;
-    [SerializeField]
-    private Button deletePropertyButton = null;
-    [SerializeField]
-    private Button addRoomButton = null;
-    [SerializeField]
-    private RectTransform roomArrowTransform = null;
     [SerializeField]
     private Image disponibilityMarker = null;
 
@@ -39,14 +28,14 @@ public class PropertyButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IProperty property, RectTransform layoutContent, bool disponibility, string nrRooms, Action<IProperty> addRoomCallback, Action<IRoom> PropertyRoomCallback, Action<IProperty> editCallback, Action<IProperty> deleteCallback)
+    public void Initialize(IProperty property, RectTransform layoutContent, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback)
     {
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : property.Name;
-        editPropertyButton.onClick.AddListener(() => editCallback(property));
-        deletePropertyButton.onClick.AddListener(() => deleteCallback(property));
+        //PropertyPicture.sprite
         if (!property.HasRooms)
         {
             propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetRoom(property.GetPropertyRoomID)));
+            disponibilityMarker.gameObject.SetActive(true);
             bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
                 .Any(r => r.RoomID == property.GetRoom(property.GetPropertyRoomID).ID);
             if (reservations)
@@ -60,49 +49,8 @@ public class PropertyButton : MonoBehaviour
         }
         else
         {
-            nrOfRooms.text = string.IsNullOrEmpty(nrRooms) ? Constants.ROOMS_NUMBER : nrRooms;
-            if (disponibility)
-            {
-                addRoomButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                addRoomButton.gameObject.SetActive(true);
-            }
-            addRoomButton.onClick.AddListener(() => addRoomCallback(property));
-            propertyButtonItem.onClick.AddListener(() =>
-            {
-                RoomsContentScrollView.gameObject.SetActive(RoomsContentScrollView.gameObject.activeInHierarchy ? false : true);
-                if (RoomsContentScrollView.gameObject.activeInHierarchy)
-                {
-                    StartCoroutine(Rotate(roomArrowTransform.localRotation, Quaternion.Euler(0, 0, -90f)));
-                }
-                else
-                {
-                    StartCoroutine(Rotate(roomArrowTransform.localRotation, Quaternion.Euler(0, 0, 0)));
-                }
-                LayoutRebuilder.ForceRebuildLayoutImmediate(layoutContent);
-                Canvas.ForceUpdateCanvases();
-            });
+            propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
+            disponibilityMarker.gameObject.SetActive(false);
         }
-    }
-
-    public void OpenRoomContents()
-    {
-        RoomsContentScrollView.gameObject.SetActive(true);
-        StartCoroutine(Rotate(roomArrowTransform.localRotation, Quaternion.Euler(0, 0, -90f)));
-        Canvas.ForceUpdateCanvases();
-    }
-
-    private IEnumerator Rotate(Quaternion start, Quaternion final)
-    {
-        currentTime = 0;
-        while (currentTime < 0.1f)
-        {
-            currentTime += Time.deltaTime;
-            roomArrowTransform.localRotation = Quaternion.Slerp(start, final, currentTime / 0.1f);
-            yield return null;
-        }
-        roomArrowTransform.localRotation = final;
     }
 }
