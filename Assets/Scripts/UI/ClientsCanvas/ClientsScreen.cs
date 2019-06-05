@@ -40,10 +40,13 @@ public class ClientsScreen : MonoBehaviour
     private GameObject editButton;
     [SerializeField]
     private Text textNameRequired;
+    [SerializeField]
+    private Text textEmailRequired;
     private List<GameObject> clientButtons = new List<GameObject>();
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
     private UnityAction<bool> cancelCallback;
+    private IClient myClient;
    // private IClient currentClient;
 
     public void InstantiateClients()
@@ -57,7 +60,7 @@ public class ClientsScreen : MonoBehaviour
         {
 
             GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, EmailUs, phoneUS);//OpenEditAdminScreen,OpenDeleteAdminScreen);
+            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);//,OpenDeleteAdminScreen);
             clientButtons.Add(clientButton);
         }
     }
@@ -151,13 +154,20 @@ public class ClientsScreen : MonoBehaviour
     }
 
     //------------
-    public void EmailUs(IClient currentClient)
+    public void EmailUs(IClient currentClient )
     {
-        //subject of the mail
-        string subject = MyEscapeURL("Custom application development");
-        //Open the Default Mail App
-        Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
-        Debug.Log(currentClient.Email + "email is:");
+        if (currentClient.Email == null)
+        {
+            textEmailRequired.text = "Nu exită email înregistrat!";
+        }
+        else
+        {
+            //subject of the mail
+            string subject = MyEscapeURL("Custom application development");
+            //Open the Default Mail App
+            Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
+            Debug.Log(currentClient.Email + "email is:");
+        }
     }
 
     string MyEscapeURL(string url)
@@ -165,12 +175,17 @@ public class ClientsScreen : MonoBehaviour
         return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
     }
 
-    public void phoneUS(IClient currentClient)
+    public void phoneUS(IClient currentClient = null)
     {
         Application.OpenURL("tel://" + currentClient.Number);
-        Debug.Log(currentClient.Number + "clientScreenAdress number");
+        Debug.Log(currentClient.Number + "client number");
     }
 
+    public void SmsUs(IClient currentClient = null)
+    {
+        Application.OpenURL("sms://" + currentClient.Number);
+    }
+    
     //-----------
 
     public void SearchForClient()
