@@ -30,7 +30,10 @@ public class ClientButton : MonoBehaviour
         editButton.onClick.AddListener(() => editCallback(client));
     }
 
-
+    public void InitializeClient(IClient client, Action<IClient> callback)
+    {
+        clientButton.onClick.AddListener(() => callback(client));
+    }
 
     public bool SearchClients(string input)
     {

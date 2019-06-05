@@ -42,7 +42,7 @@ public class ClientDataManager
     {
         return Data.clients.FindAll(p => !p.Deleted);
     }
-
+    
     public static IEnumerable<IClient> GetDeletedClients()
     {
         return Data.clients.FindAll(p => p.Deleted);

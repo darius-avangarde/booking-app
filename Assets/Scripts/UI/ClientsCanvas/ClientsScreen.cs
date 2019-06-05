@@ -17,6 +17,8 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private Transform clientEditScreenTransform = null;
     [SerializeField]
+    private Transform clientReservationScreenTransform = null;
+    [SerializeField]
     private GameObject clientPrefabButton = null;
     [SerializeField]
     private Transform clientInfoContent = null;
@@ -46,7 +48,6 @@ public class ClientsScreen : MonoBehaviour
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
     private UnityAction<bool> cancelCallback;
-    private IClient myClient;
    // private IClient currentClient;
 
     public void InstantiateClients()
@@ -65,6 +66,21 @@ public class ClientsScreen : MonoBehaviour
         }
     }
 
+    public void InstantiateClientsButtons()
+    {
+        foreach (var clientButton in clientButtons)
+        {
+            Destroy(clientButton);
+        }
+        clientButtons.Clear();
+        foreach (var client in ClientDataManager.GetClients())
+        {
+            GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
+            clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
+            Debug.Log("instantiate");
+            clientButtons.Add(clientButton);
+        }
+    }
     public void SaveAddedClient()
     {
 
@@ -128,7 +144,11 @@ public class ClientsScreen : MonoBehaviour
         }
     }
 
-
+    private void OpenClientScreen(IClient client)
+    {
+        Debug.Log("callback");
+        navigator.GoTo(clientReservationScreenTransform.GetComponent<NavScreen>());
+    }
     private void OpenDeleteAdminScreen(IClient client)
     {
         clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
@@ -158,7 +178,7 @@ public class ClientsScreen : MonoBehaviour
     {
         if (currentClient.Email == null)
         {
-            textEmailRequired.text = "Nu exită email înregistrat!";
+            textEmailRequired.text = "Nu există email înregistrat!";
         }
         else
         {
