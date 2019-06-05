@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System.Linq;
 
 public class ClientDataManager
 {
@@ -40,7 +41,7 @@ public class ClientDataManager
 
     public static IEnumerable<IClient> GetClients()
     {
-        return Data.clients.FindAll(p => !p.Deleted);
+        return Data.clients.FindAll(p => !p.Deleted).OrderBy(x => x.Name);
     }
     
     public static IEnumerable<IClient> GetDeletedClients()
