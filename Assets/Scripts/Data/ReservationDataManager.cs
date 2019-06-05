@@ -123,11 +123,33 @@ public static class ReservationDataManager
     }
 
     ///<summary>
+    ///Creates a new reservation with the given room, client and period data and returns it, this also saves the new reservation to file
+    ///</summary>
+    public static IReservation AddReservation(List<IRoom> rooms, IClient client, DateTime start, DateTime end)
+    {
+        Reservation newReservation = new Reservation(rooms, client.ID, start,end);
+        Data.reservations.Add(newReservation);
+        WriteReservationData();
+
+        return newReservation;
+    }
+
+    ///<summary>
     ///Updates the selected reservation's room, client, and period and returns it, this also updates the saved reservation data on file
     ///</summary>
     public static IReservation EditReservation(IReservation reservation, IRoom room, IClient client, DateTime start, DateTime end)
     {
         reservation.EditReservation(room, client, start, end);
+        WriteReservationData();
+        return reservation;
+    }
+
+    ///<summary>
+    ///Updates the selected reservation's rooms, client, and period and returns it, this also updates the saved reservation data on file
+    ///</summary>
+    public static IReservation EditReservation(IReservation reservation, List<IRoom> rooms, IClient client, DateTime start, DateTime end)
+    {
+        reservation.EditReservation(rooms, client, start, end);
         WriteReservationData();
         return reservation;
     }
@@ -142,12 +164,35 @@ public static class ReservationDataManager
         }
     }
 
+    ///<summary>
+    ///Removes all reservations for the room regardless of the number of rooms the reservation has, deleting them all.
+    ///</summary>
     public static void DeleteReservationsForRoom(string roomID)
     {
-        List<Reservation> reservations = Data.reservations.FindAll(r => r.RoomID.Equals(roomID));
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.RoomIDs.Contains(roomID));
         foreach (var reservation in reservations)
         {
             reservation.Deleted = true;
+        }
+        WriteReservationData();
+    }
+
+    ///<summary>
+    ///Removes the room from all reservations only deleteing the reservation if the given room is the only one for that reservation.
+    ///</summary>
+    public static void DeleteRoomFromReservations(string roomID)
+    {
+        List<Reservation> reservations = Data.reservations.FindAll(r => r.RoomIDs.Contains(roomID));
+        foreach (var reservation in reservations)
+        {
+            if(reservation.RoomIDs.Count == 1)
+            {
+                reservation.Deleted = true;
+            }
+            else
+            {
+                reservation.RemoveRoom(roomID);
+            }
         }
         WriteReservationData();
     }
@@ -209,8 +254,13 @@ public static class ReservationDataManager
         public string PropertyID => propertyID;
 
         [SerializeField]
-        private string roomID;
-        public string RoomID => roomID;
+        private List<string> roomIDs;
+
+        ///<summary>
+        ///Returns the first room ID
+        ///</summary>
+        public string RoomID => roomIDs[0];
+        public List<string> RoomIDs => roomIDs;
 
         public string CustomerName
         {
@@ -245,7 +295,8 @@ public static class ReservationDataManager
         {
             this.id = Guid.NewGuid().ToString();
             this.propertyID = room.PropertyID;
-            this.roomID = room.ID;
+            this.roomIDs = new List<string>();
+            this.roomIDs.Add(room.ID);
             this.period = new DateTimePeriod(DateTime.Today, DateTime.Today.AddDays(1f));
             WriteReservationData();
         }
@@ -254,7 +305,22 @@ public static class ReservationDataManager
         {
             this.id = Guid.NewGuid().ToString();
             this.propertyID = room.PropertyID;
-            this.roomID = room.ID;
+            this.roomIDs = new List<string>();
+            this.roomIDs.Add(room.ID);
+            this.customerID = customerID;
+            this.period = new DateTimePeriod(start, end);
+            WriteReservationData();
+        }
+
+        public Reservation(List<IRoom> rooms, string customerID, DateTime start, DateTime end)
+        {
+            this.id = Guid.NewGuid().ToString();
+            this.propertyID = rooms[0].PropertyID;
+            this.roomIDs = new List<string>();
+            for (int r = 0; r < rooms.Count; r++)
+            {
+                this.roomIDs.Add(rooms[r].ID);
+            }
             this.customerID = customerID;
             this.period = new DateTimePeriod(start, end);
             WriteReservationData();
@@ -263,9 +329,29 @@ public static class ReservationDataManager
         public void EditReservation(IRoom room, IClient client, DateTime start, DateTime end)
         {
             this.propertyID = room.PropertyID;
-            this.roomID = room.ID;
+            this.roomIDs = new List<string>();
+            this.roomIDs.Add(room.ID);
             this.customerID = client.ID;
             this.period = new DateTimePeriod(start, end);
+            WriteReservationData();
+        }
+
+        public void EditReservation(List<IRoom> rooms, IClient client, DateTime start, DateTime end)
+        {
+            this.propertyID = rooms[0].PropertyID;
+            this.roomIDs = new List<string>();
+            for (int r = 0; r < rooms.Count; r++)
+            {
+                this.roomIDs.Add(rooms[r].ID);
+            }
+            this.customerID = client.ID;
+            this.period = new DateTimePeriod(start, end);
+            WriteReservationData();
+        }
+
+        public void RemoveRoom(string roomID)
+        {
+            this.roomIDs.Remove(roomID);
             WriteReservationData();
         }
     }
