@@ -185,30 +185,7 @@ public class ClientsScreen : MonoBehaviour
     {
         Application.OpenURL("sms://" + currentClient.Number);
     }
-    public void CallClient()
-    {
-        //Application.OpenURL("tel://" + myClient.Number);
-        Debug.Log("some text");
-    }
-    public void SendSms()
-    {
-        SmsUs();
-    }
-    public void SendEmail()
-    {
-        if (myClient.Email == null)
-        {
-            textEmailRequired.text = "Nu exită email înregistrat!";
-        }
-        else
-        {
-            
-            string subject = MyEscapeURL("Custom application development");
-            
-            Application.OpenURL("mailto:" + myClient.Email + "?subject=" + subject);
-            Debug.Log(myClient.Email + "email is:");
-        }
-    }
+    
     //-----------
 
     public void SearchForClient()
