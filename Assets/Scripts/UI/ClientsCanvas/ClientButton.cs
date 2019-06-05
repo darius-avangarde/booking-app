@@ -9,21 +9,25 @@ public class ClientButton : MonoBehaviour
     [SerializeField]
     private Text phoneNumber = null;
     [SerializeField]
-    private string email = "ralucametes97@gmail.com";
-    [SerializeField]
     private Button clientButton;
     [SerializeField]
-    private Button editButton;
+    private Button phoneButton;
     [SerializeField]
-    private Button deleteButton;
+    private Button smsButton;
+    [SerializeField]
+    private Button mailButton;
+    [SerializeField]
+    private Button editButton;
 
-    public void Initialize(IClient client, Action<IClient> callback, Action<IClient> editCallBack, Action<IClient> deleteCallback)
+    public void Initialize(IClient client, Action<IClient> callback, Action<IClient> phoneCallBack, Action<IClient> smsCallback, Action<IClient> mailCallback, Action<IClient> editCallback)
     {
         ClientName.text = client.Name;
         phoneNumber.text = client.Number;
         clientButton.onClick.AddListener(() => callback(client));
-        editButton.onClick.AddListener(() => editCallBack(client));
-        deleteButton.onClick.AddListener(() => deleteCallback(client));
+        phoneButton.onClick.AddListener(() => phoneCallBack(client));
+        smsButton.onClick.AddListener(() => smsCallback(client));
+        mailButton.onClick.AddListener(() => mailCallback(client));
+        editButton.onClick.AddListener(() => editCallback(client));
     }
 
 

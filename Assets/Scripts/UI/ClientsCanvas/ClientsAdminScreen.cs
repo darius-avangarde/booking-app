@@ -3,6 +3,7 @@ using UnityEngine;
 using UINavigation;
 using UnityEngine.UI;
 using System;
+using UnityEngine.Networking;
 
 public class ClientsAdminScreen : MonoBehaviour
 {
@@ -28,7 +29,6 @@ public class ClientsAdminScreen : MonoBehaviour
     private IClient currentClient;
     [SerializeField]
     private ReservationEditScreen rezerv = null;
-
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -136,4 +136,33 @@ public class ClientsAdminScreen : MonoBehaviour
         rezerv.OpenAddReservation(currentClient, UpdateCallBack);
     }
 
+
+    public void CallClient()
+    {
+        Application.OpenURL("tel://" + currentClient.Number);
+    }
+    public void SendSms()
+    {
+        Application.OpenURL("sms://" + currentClient.Number);
+    }
+    public void SendEmail()
+    {
+        if (currentClient.Email == null)
+        {
+            //textEmailRequired.text = "Nu exită email înregistrat!";
+            Debug.Log("fara email");
+        }
+        else
+        {
+
+            string subject = MyEscapeURL("Custom application development");
+
+            Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
+            Debug.Log(currentClient.Email + "email is:");
+        }
+    }
+    string MyEscapeURL(string url)
+    {
+        return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
+    }
 }
