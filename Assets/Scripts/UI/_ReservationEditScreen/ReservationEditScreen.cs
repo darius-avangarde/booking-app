@@ -161,12 +161,10 @@ public class ReservationEditScreen : MonoBehaviour
         //TODO: Integrate with client screen
         public void SelectClient()
         {
-
             // Debug.Log("Unimplemented >Clients screen");
             SetClient(ClientDataManager.GetClients().ToList()[UnityEngine.Random.Range(0, ClientDataManager.GetClients().Count())]);
 
             //open clients screen (client button callback = SetClient)
-            ValidateInput();
         }
 
         //TODO: Integrate with room screen
@@ -224,7 +222,7 @@ public class ReservationEditScreen : MonoBehaviour
             periodEnd = periodStart.AddDays(1).Date;
             confirmationCallback = confirmCallback;
             deletionCallback = null;
-            UpdateEditableOptions(null, client, null);
+            UpdateEditableOptions(null, client, null, true);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
         }
@@ -333,8 +331,6 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void SetRooms(List<IRoom> rooms)
     {
-        Debug.Log(periodStart.ToString(Constants.DateTimePrintFormat) + " - " + periodEnd.ToString(Constants.DateTimePrintFormat));
-
         currentRooms = new List<IRoom>();
         currentRooms = rooms;
 
@@ -358,7 +354,7 @@ public class ReservationEditScreen : MonoBehaviour
     }
 
     //Updates all editable fields in the edit reservation screen
-    private void UpdateEditableOptions(IReservation reservation, IClient client, List<IRoom> rooms)
+    private void UpdateEditableOptions(IReservation reservation, IClient client, List<IRoom> rooms, bool fromClient = false)
     {
         currentReservation = reservation;
         currentRooms = rooms;
@@ -377,6 +373,10 @@ public class ReservationEditScreen : MonoBehaviour
         {
             deleteReservationButton.SetActive(false);
             UpdateReservationPeriod(periodStart, periodEnd);
+            if(fromClient)
+            {
+                reservationPeriodText.text += Constants.SPACE + Constants.CHOOSE + Constants.SPACE + Constants.RESERVATION_PERIOD;
+            }
         }
 
         if(rooms != null)

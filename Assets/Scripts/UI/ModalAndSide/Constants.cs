@@ -49,6 +49,7 @@ public class Constants : MonoBehaviour
         public const string DAY_COUNT_SUFF_SN = "noapte.";
         public const string CHOOSE = "Alege";
         public const string ROOMS_SELECTED = "camere selectate";
+        public const string RESERVATION_PERIOD = "perioadă";
 
         //error messages
         public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
