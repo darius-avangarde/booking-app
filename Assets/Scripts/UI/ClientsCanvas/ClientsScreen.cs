@@ -23,6 +23,8 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private GameObject clientPrefabButton = null;
     [SerializeField]
+    private GameObject clientprefabLetter = null;
+    [SerializeField]
     private Transform clientInfoContent = null;
     [SerializeField]
     private InputField searchField = null;
@@ -47,30 +49,52 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private Text textEmailRequired;
     private List<GameObject> clientButtons = new List<GameObject>();
+    private List<GameObject> letterButtons = new List<GameObject>();
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
     private UnityAction<bool> cancelCallback;
     public RectTransform Search;
     public RectTransform LayoutContent;
+    public RectTransform ClientContainer;
     private float initialSizeSearch;
+    private float initialClientContainer;
 
     private void Start()
     {
+        //initializations for different sizes
         initialSizeSearch = Search.rect.height;
+        initialClientContainer = ClientContainer.sizeDelta.y;
+
         Search.gameObject.SetActive(false);
+        ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -178 - initialSizeSearch);
+        initialClientContainer = ClientContainer.sizeDelta.y;
     }
+
+
     public void InstantiateClients()
     {
         foreach (var clientButton in clientButtons)
         {
             Destroy(clientButton);
         }
-        clientButtons.Clear();
-        foreach (var client in ClientDataManager.GetClients())
+
+        foreach (var letterButton in letterButtons)
         {
-            GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);//,OpenDeleteAdminScreen);
-            clientButtons.Add(clientButton);
+            Destroy(letterButton);
+        }
+        clientButtons.Clear();
+        letterButtons.Clear();
+        foreach (var item in ClientDataManager.GetClientsToDictionary())
+        {
+            clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
+            GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
+            letterButtons.Add(clientLetters);
+            foreach (var client in item.Value)
+            {
+                GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
+                clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);//,OpenDeleteAdminScreen);
+                clientButtons.Add(clientButton);
+            }
         }
     }
 
@@ -261,7 +285,7 @@ public class ClientsScreen : MonoBehaviour
 
     public void ClearClientFields()
     {
-        clientName.text = "";
+        clientName.text = string.Empty;
         clientPhone.text = "";
         clientAdress.text = "";
         clientEmail.text = "";
@@ -272,27 +296,49 @@ public class ClientsScreen : MonoBehaviour
         searchField.text = "";
     }
 
+    //forget about this code. It doesn't exist.
+    #region Animations
     public void SearchFieldShow(bool value)
     {
         StartCoroutine(Animate(value ? initialSizeSearch : 0, value));
     }
     private IEnumerator Animate(float target, bool value)
     {
-        if(value)
-        {
-            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
-            Search.gameObject.SetActive(true);
-        }
         float timer = 0.15f;
         float init = Search.sizeDelta.y;
-        for (float i = 0; i < timer; i += Time.deltaTime)
+
+        if (value)
         {
-            LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
-            Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(init, target, i / timer));
-            yield return null;
+            //SHOW animation for search field and clients
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
+            Search.gameObject.SetActive(true);
+            for (float i = 0; i < timer; i += Time.deltaTime)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
+                Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(0, initialSizeSearch, i / timer));
+                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer, initialClientContainer - 208, i / timer));
+                yield return null;
+            }
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, initialSizeSearch);
+            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 208);
+        }
+        else
+        {
+            //HIDE animation for search field and clients
+            for (float i = 0; i < timer; i += Time.deltaTime)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
+                Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(initialSizeSearch, 0, i / timer));
+                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer - 208, initialClientContainer, i / timer));
+                yield return null;
+            }
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
+            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer);
         }
 
-        Search.sizeDelta = new Vector2(Search.sizeDelta.x, target);
+
         Search.gameObject.SetActive(value);
+        //separator.gameobject.setactive(value)
     }
+    #endregion
 }

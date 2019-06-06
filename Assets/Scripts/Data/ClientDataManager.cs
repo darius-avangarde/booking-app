@@ -43,7 +43,14 @@ public class ClientDataManager
     {
         return Data.clients.FindAll(p => !p.Deleted).OrderBy(x => x.Name);
     }
-    
+
+    public static Dictionary<char, List<Client>> GetClientsToDictionary()
+    {
+        return Data.clients.FindAll(p => !p.Deleted).OrderBy(x => x.Name)
+                                                    .GroupBy(x => x.Name.First())
+                                                    .ToDictionary(x => x.Key, x => x.ToList());
+    }
+
     public static IEnumerable<IClient> GetDeletedClients()
     {
         return Data.clients.FindAll(p => p.Deleted);
