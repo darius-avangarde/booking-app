@@ -83,7 +83,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.RoomIDs.Contains(roomID));
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.ContainsRoom(roomID));
     }
 
 
@@ -354,6 +354,11 @@ public static class ReservationDataManager
             this.roomIDs.Remove(roomID);
             WriteReservationData();
         }
+
+        public bool ContainsRoom(string roomID)
+        {
+            return roomIDs.Contains(roomID);
+        }
     }
 
     [Serializable]
@@ -412,8 +417,7 @@ public static class ReservationDataManager
         }
 
         ///<summary>
-        ///Compares the the period to the given one, returns true if they overlap for more then one day (a reservations start date can be the same as another's end date)
-        ///<para>Ex(days): true for 22-25 and 24-26, true for 22-23 and 22-23, false for 22-23 and 23-24 etc...</para>
+        ///Do not use
         ///</summary>
         public bool Overlaps(IDateTimePeriod period)
         {

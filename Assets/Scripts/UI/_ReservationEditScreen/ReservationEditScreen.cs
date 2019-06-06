@@ -87,16 +87,16 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         public void ChangePeriod()
         {
-            string reservationID = (currentReservation != null) ? currentReservation.ID : string.Empty;
+            string reservationID = (currentReservation != null) ? currentReservation.ID : Constants.defaultCustomerName;
 
             if(currentRooms != null && currentRooms.Count > 0)
             {
                 modalCalendarDialog.OpenCallendar(
                     currentReservation,
                     ReservationDataManager.GetReservations()
-                        .Where(r => r.ID != reservationID && currentRooms.Any(ro => r.RoomIDs.Contains(ro.ID)))
+                        .Where(r => r.ID != reservationID && r.RoomIDs.Any(s => currentRooms.Any(ro => ro.ID == s)))
                         .ToList(),
-                        UpdateReservationPeriod
+                    UpdateReservationPeriod
                     );
             }
 
@@ -161,7 +161,10 @@ public class ReservationEditScreen : MonoBehaviour
         //TODO: Integrate with client screen
         public void SelectClient()
         {
-            Debug.Log("Unimplemented > Go to clients screen");
+
+            // Debug.Log("Unimplemented >Clients screen");
+            SetClient(ClientDataManager.GetClients().ToList()[UnityEngine.Random.Range(0, ClientDataManager.GetClients().Count())]);
+
             //open clients screen (client button callback = SetClient)
             ValidateInput();
         }
@@ -169,9 +172,20 @@ public class ReservationEditScreen : MonoBehaviour
         //TODO: Integrate with room screen
         public void SelectRoom()
         {
-            Debug.Log("Unimplemented > Go to Room screen");
+            string selectedRooms = string.Empty;
+            if(currentRooms != null)
+            foreach(IRoom r in currentRooms)
+            {
+                selectedRooms += r.Name + ", ";
+            }
+
+            // Debug.Log("Unimplemented >Room screen > rooms: " + selectedRooms);
+            // Debug.Log("Selecting random room");
+            List<IRoom> tr = new List<IRoom>();
+            tr.Add(currentProperty.Rooms.ToList()[UnityEngine.Random.Range(0, currentProperty.Rooms.Count())]);
+            SetRooms(tr);
+
             //Go to room screen OpenRoomScreen(Datetime start, end, selection = curentRooms, callback = SetRooms)
-            ValidateInput();
         }
     #endregion
 
@@ -319,7 +333,11 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void SetRooms(List<IRoom> rooms)
     {
+        Debug.Log(periodStart.ToString(Constants.DateTimePrintFormat) + " - " + periodEnd.ToString(Constants.DateTimePrintFormat));
+
+        currentRooms = new List<IRoom>();
         currentRooms = rooms;
+
         if(rooms != null)
         {
             if(rooms.Count == 1)
@@ -335,6 +353,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             roomButtonText.text = Constants.CHOOSE;
         }
+
         ValidateInput();
     }
 
@@ -476,12 +495,16 @@ public class ReservationEditScreen : MonoBehaviour
     //Returns true if no other reservations for this room overlap the curently set period
     private bool OverlapsOtherReservation(DateTime start, DateTime end)
     {
-        return ReservationDataManager.GetReservations().Where(r => r.RoomIDs.Any(roId => r.RoomIDs.Contains(roId)))
-        .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != Constants.defaultCustomerName)
-            && ((start.Date > r.Period.Start && start.Date < r.Period.End.Date)
-            || r.Period.Start.Date > start.Date && r.Period.End.Date < end.Date
-            || r.Period.Start.Date == start.Date || r.Period.End.Date == end.Date
-        ));
+        string currentResId = (currentReservation != null) ? currentReservation.ID : Constants.defaultCustomerName;
+
+        return ReservationDataManager.GetReservations().Where(r => currentRooms.Any(room => r.ContainsRoom(room.ID))
+            && r.ID != currentResId)  //get room reservation excluding current curent
+            .Any(r =>
+            ((start.Date > r.Period.Start.Date && start.Date < r.Period.End.Date) //start in period
+            || (end.Date > r.Period.Start.Date   && end.Date < r.Period.End.Date)   //end in period
+            || (start.Date < r.Period.Start.Date && end.Date > r.Period.End.Date)   //selection engulfs other reservation
+            || r.Period.Start.Date == periodStart.Date || r.Period.End.Date == periodEnd.Date   //start or end coincide
+            ));
     }
 
     private void SizeEditablesRect()

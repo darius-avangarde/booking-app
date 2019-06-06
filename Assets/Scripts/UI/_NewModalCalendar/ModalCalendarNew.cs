@@ -271,10 +271,10 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
         return roomReservationList
             .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != Constants.defaultCustomerName)
-            && ((start.Date > r.Period.Start && start.Date < r.Period.End.Date) //after start and before end
-            || r.Period.Start.Date > start.Date && r.Period.End.Date < end.Date
-            || r.Period.Start.Date == selectedStart.Date || r.Period.End.Date == selectedEnd.Date
-            ));
+            && ((start.Date > r.Period.Start.Date && start.Date < r.Period.End.Date) //start in period
+            || (end.Date > r.Period.Start.Date   && end.Date < r.Period.End.Date)   //end in period
+            || (start.Date < r.Period.Start.Date && end.Date > r.Period.End.Date)   //selection engulfs other reservation
+            || r.Period.Start.Date == start.Date || r.Period.End.Date == end.Date));    //start or end coincide
     }
 
     private void UpdateDayCountText()
