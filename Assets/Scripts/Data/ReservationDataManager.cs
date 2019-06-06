@@ -83,7 +83,7 @@ public static class ReservationDataManager
     ///</summary>
     public static IEnumerable<IReservation> GetActiveRoomReservations(string roomID)
     {
-        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.RoomID == roomID);
+        return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.RoomIDs.Contains(roomID));
     }
 
 

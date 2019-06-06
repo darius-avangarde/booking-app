@@ -87,7 +87,8 @@ public class RoomScreen : MonoBehaviour
 
     public void CreateNewReservation()
     {
-        reservationScreen.OpenAddReservation(currentRoom, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID)));
+        //Scuze Sergiu, a trebuit sa scot asta pt testare.
+        //reservationScreen.OpenAddReservation(currentRoom, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID)));
     }
 
     public void InstantiateReservations()

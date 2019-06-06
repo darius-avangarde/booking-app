@@ -8,6 +8,8 @@ using UnityEngine.Events;
 
 public class ReservationEditScreen : MonoBehaviour
 {
+    internal bool AllowEdit { get; set; } = false;
+
     #region Inspector references
         [Header("Navigation")]
         [SerializeField]
@@ -27,53 +29,59 @@ public class ReservationEditScreen : MonoBehaviour
         [SerializeField]
         private Dropdown propertyDropdown = null;
         [SerializeField]
-        private Dropdown roomDropdown = null;
-        [SerializeField]
-        private InputField clientInputField = null;
-        [SerializeField]
         private Text reservationPeriodText = null;
         [SerializeField]
         private Button confirmButton = null;
         [SerializeField]
-        private Button setPeriodButton = null;
-        [SerializeField]
         private Text errorText = null;
+        [SerializeField]
+        private Text roomButtonText;
+        [SerializeField]
+        private GameObject roomButton;
+        [SerializeField]
+        private Text clientButtonText;
+        [SerializeField]
+        private GameObject deleteReservationButton;
+        [SerializeField]
+        private RectTransform editablesRect;
+        [SerializeField]
+        private RectTransform editablesReferenceObject;
     #endregion
-    #region Private variables
-    internal bool allowEdit { get; set; } = false;
 
-    private Dictionary<string,Dropdown.OptionData> propertyOptions;
-        private Dictionary<string,Dropdown.OptionData> roomOptions;
+    #region Private variables
+        private Dictionary<string,Dropdown.OptionData> propertyOptions;
 
         private IReservation currentReservation;
-        private IRoom currentRoom;
+        private List<IRoom> currentRooms;
         private IProperty currentProperty;
         private IClient currentClient;
 
-        //set these on callback from calendar overlay
-        private IDateTimePeriod period;
+        private DateTime periodStart;
+        private DateTime periodEnd;
         private ConfirmationDialogOptions editConfirmation;
-
+        private ConfirmationDialogOptions deleteConfirmation;
         private UnityAction<IReservation> confirmationCallback;
+        private UnityAction deletionCallback;
     #endregion
 
     private void Start()
     {
-        allowEdit = false;
+        AllowEdit = false;
         errorText.enabled = false;
         editConfirmation = new ConfirmationDialogOptions();
         editConfirmation.Message = Constants.EDIT_DIALOG;
-        period = ReservationDataManager.DefaultPeriod();
+        deleteConfirmation = new ConfirmationDialogOptions();
+        deleteConfirmation.Message = Constants.DELETE_DIALOG;
+        periodStart = DateTime.Today.Date;
+        periodEnd = periodStart.AddDays(1).Date;
     }
 
     private void OnDestroy()
     {
         propertyDropdown.onValueChanged.RemoveAllListeners();
-        roomDropdown.onValueChanged.RemoveAllListeners();
-        clientInputField.onEndEdit.RemoveAllListeners();
     }
 
-    #region Public and internal functions
+    #region Public functions
         ///<summary>
         /// Opens the modal calendar overlay if a property is selected in order to change or set the reservation period
         ///</summary>
@@ -81,15 +89,20 @@ public class ReservationEditScreen : MonoBehaviour
         {
             string reservationID = (currentReservation != null) ? currentReservation.ID : string.Empty;
 
-            if(currentRoom != null)
+            if(currentRooms != null && currentRooms.Count > 0)
             {
                 modalCalendarDialog.OpenCallendar(
                     currentReservation,
-                    ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
-                        .Where(r => r.ID != reservationID)
+                    ReservationDataManager.GetReservations()
+                        .Where(r => r.ID != reservationID && currentRooms.Any(ro => r.RoomIDs.Contains(ro.ID)))
                         .ToList(),
                         UpdateReservationPeriod
                     );
+            }
+
+            else
+            {
+                modalCalendarDialog.OpenCallendar(periodStart, UpdateReservationPeriod);
             }
         }
 
@@ -103,29 +116,27 @@ public class ReservationEditScreen : MonoBehaviour
                 editConfirmation.ConfirmCallback = () =>
                 {
                     currentReservation.EditReservation(
-                        currentRoom,
+                        currentRooms,
                         currentClient,
-                        period.Start,
-                        period.End
+                        periodStart,
+                        periodEnd
                     );
                     if(confirmationCallback != null)
                         confirmationCallback.Invoke(currentReservation);
                     navigator.GoBack();
-                    CancelChanges();
                 };
                 confirmationDialog.Show(editConfirmation);
             }
             else
             {
                 IReservation newReservation = ReservationDataManager.AddReservation(
-                    currentRoom,
+                    currentRooms,
                     currentClient,
-                    period.Start,
-                    period.End
+                    periodStart,
+                    periodEnd
                 );
                 if(confirmationCallback != null)
                     confirmationCallback.Invoke(newReservation);
-                CancelChanges();
                 navigator.GoBack();
             }
         }
@@ -135,22 +146,31 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         public void CancelChanges()
         {
+            confirmationCallback = null;
+            deletionCallback = null;
             propertyDropdown.onValueChanged.RemoveAllListeners();
-            roomDropdown.onValueChanged.RemoveAllListeners();
-            clientInputField.onEndEdit.RemoveAllListeners();
-            allowEdit = false;
+            AllowEdit = false;
         }
 
-        ///<summary>
-        /// Sets the curent client and updates the client input field text to the client name
-        ///</summary>
-        internal void SetClient(IClient client)
+        public void RequestDelete()
         {
-            if(client != null)
-            {
-                currentClient = client;
-                clientInputField.text = client.Name;
-            }
+            deleteConfirmation.ConfirmCallback = DeleteReservation;
+            confirmationDialog.Show(deleteConfirmation);
+        }
+
+        //TODO: Integrate with client screen
+        public void SelectClient()
+        {
+            Debug.Log("Unimplemented > Go to clients screen");
+            //open clients screen (client button callback = SetClient)
+            ValidateInput();
+        }
+
+        //TODO: Integrate with room screen
+        public void SelectRoom()
+        {
+            Debug.Log("Unimplemented > Go to Room screen");
+            //Go to room screen OpenRoomScreen(Datetime start, end, selection = curentRooms, callback = SetRooms)
             ValidateInput();
         }
     #endregion
@@ -160,16 +180,18 @@ public class ReservationEditScreen : MonoBehaviour
         ///Fills/Selects the edit fields with the available data from the reservation (IReservation) parameter.
         ///<para>Use to EDIT a reservation from either the client screen or the room screen when tapping on an existing reservation's edit reservation button.</para>
         ///<para>Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
+        ///<para>Cancelation callback is triggered when the panel is exited without saving modifications.</para>
         ///</summary>
-        internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> callback)
+        internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> confirmCallback, UnityAction deleteCallback = null)
         {
-            confirmationCallback = callback;
-            period.Start = reservation.Period.Start.Date;
-            period.End = reservation.Period.End.Date;
+            confirmationCallback = confirmCallback;
+            deletionCallback = deleteCallback;
+            periodStart = reservation.Period.Start.Date;
+            periodEnd = reservation.Period.End.Date;
             UpdateEditableOptions(
                 reservation,
                 ClientDataManager.GetClient(reservation.CustomerID),
-                PropertyDataManager.GetProperty(reservation.PropertyID).GetRoom(reservation.RoomID)
+                PropertyDataManager.GetProperty(reservation.PropertyID).Rooms.Where(r => reservation.RoomIDs.Contains(r.ID)).ToList()
                 );
             titleText.text = Constants.EDIT_TITLE;
             navigator.GoTo(navScreen);
@@ -180,11 +202,14 @@ public class ReservationEditScreen : MonoBehaviour
         /// Fills/Selects the edit fields with the available data from the client (IClient) parameter.
         ///<para>Use when adding a NEW reservation from a specific clients's new reservation button.</para>
         ///<para> Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
+        ///<para>Cancelation callback is triggered when the panel is exited without saving modifications.</para>
         ///</summary>
-        internal void OpenAddReservation(IClient client, UnityAction<IReservation> callback)
+        internal void OpenAddReservation(IClient client, UnityAction<IReservation> confirmCallback)
         {
-            period = ReservationDataManager.DefaultPeriod();
-            confirmationCallback = callback;
+            periodStart = DateTime.Today.Date;
+            periodEnd = periodStart.AddDays(1).Date;
+            confirmationCallback = confirmCallback;
+            deletionCallback = null;
             UpdateEditableOptions(null, client, null);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
@@ -194,145 +219,225 @@ public class ReservationEditScreen : MonoBehaviour
         /// Fills/Selects the edit fields with the available data from the room (IRoom) parameter.
         ///<para>Use when adding a NEW reservation from a specific room's new reservation button.</para>
         ///<para>Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
+        ///<para>Cancelation callback is triggered when the panel is exited without saving modifications.</para>
         ///</summary>
-        internal void OpenAddReservation(IRoom room, UnityAction<IReservation> callback)
+        internal void OpenAddReservation(DateTime start, DateTime end, List<IRoom> rooms, UnityAction<IReservation> confirmCallback)
         {
-            period = ReservationDataManager.DefaultPeriod();
-            confirmationCallback = callback;
-            UpdateEditableOptions(null, null, room);
+            periodStart = start.Date;
+            periodEnd = end.Date;
+            confirmationCallback = confirmCallback;
+            deletionCallback = null;
+            UpdateEditableOptions(null, null, rooms);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
-            allowEdit = true;
+            AllowEdit = true;
+        }
+
+        ///<summary>
+        /// Fills/Selects the edit fields with the available data from the room (IRoom) parameter.
+        ///<para>Use when adding a NEW reservation from a specific room's new reservation button.</para>
+        ///<para>Confirmation callback is triggered if any changes are made to the newly created, or curently edited reservation, and the save button is pressed.</para>
+        ///<para>Cancelation callback is triggered when the panel is exited without saving modifications.</para>
+        ///</summary>
+        internal void OpenAddReservation(DateTime start, DateTime end, IRoom room, UnityAction<IReservation> confirmCallback)
+        {
+            periodStart = start.Date;
+            periodEnd = end.Date;
+            confirmationCallback = confirmCallback;
+            deletionCallback = null;
+            List<IRoom> sr = new List<IRoom>();
+            sr.Add(room);
+            UpdateEditableOptions(null, null, sr);
+            titleText.text = Constants.NEW_TITLE;
+            navigator.GoTo(navScreen);
+            AllowEdit = true;
         }
     #endregion
+
+    private void SetClient(IClient client)
+    {
+        if(client != null)
+        {
+            currentClient = client;
+            clientButtonText.text = client.Name;
+        }
+        else
+        {
+            clientButtonText.text = Constants.CHOOSE;
+        }
+
+        ValidateInput();
+    }
+
+    private void DeleteReservation()
+    {
+        if(deletionCallback != null)
+        {
+            deletionCallback.Invoke();
+        }
+        ReservationDataManager.DeleteReservation(currentReservation.ID);
+        currentReservation = null;
+        deleteConfirmation.ConfirmCallback = null;
+        navigator.GoBack();
+    }
 
     //Toggles the save/confirm reservation edit button off if there are any fields with invalid data and displays an error message
     private void ValidateInput()
     {
         if(currentProperty == null)
         {
-            DisplayErrorAndSetInteractability(Constants.ERR_PROP, false, false);
+            SetErrorAndInteractability(Constants.ERR_PROP, false);
             return;
         }
 
-        if(currentRoom == null)
+        if(currentRooms == null || currentRooms.Count < 0)
         {
-            DisplayErrorAndSetInteractability(Constants.ERR_ROOM, false, false);
+            SetErrorAndInteractability(Constants.ERR_ROOM, false);
             return;
         }
 
-        if(period.Start == period.End)
+        if(periodStart == periodEnd)
         {
-            DisplayErrorAndSetInteractability(Constants.ERR_DATES, true, false);
+            SetErrorAndInteractability(Constants.ERR_DATES, false);
             return;
         }
 
-        if(OverlapsOtherReservation(period.Start.Date, period.End.Date))
+        if(OverlapsOtherReservation(periodStart.Date, periodEnd.Date))
         {
-            DisplayErrorAndSetInteractability(Constants.ERR_PERIOD, true, false);
+            SetErrorAndInteractability(Constants.ERR_PERIOD, false);
             return;
         }
 
-        if(currentClient == null || clientInputField.text != currentClient.Name)
+        if(currentClient == null)
         {
-            DisplayErrorAndSetInteractability(Constants.ERR_CLIENT, true, false);
+            SetErrorAndInteractability(Constants.ERR_CLIENT, false);
             return;
         }
 
-        DisplayErrorAndSetInteractability(string.Empty, true, true);
+        SetErrorAndInteractability(string.Empty, true);
     }
 
-    //Sets the selected property object as selected from the dropdown options. This also sets the room in the case of the property not having rooms
-    private void SelectProperty(int optionIndex)
+    private void SetRooms(List<IRoom> rooms)
     {
-        if(optionIndex != 0)
+        currentRooms = rooms;
+        if(rooms != null)
         {
-            currentProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(optionIndex).Key);
-            if(!currentProperty.HasRooms)
+            if(rooms.Count == 1)
             {
-                currentRoom = currentProperty.Rooms.ToList()[0];
+                roomButtonText.text = rooms[0].Name;
             }
             else
             {
-                currentRoom = null;
+                roomButtonText.text = rooms.Count + Constants.SPACE + Constants.ROOMS_SELECTED;
             }
         }
         else
         {
-            currentProperty = null;
-            currentRoom = null;
-        }
-
-        UpdateRoomDropdown(currentProperty);
-        ValidateInput();
-    }
-
-    //Sets the selected room object as selected from the dropdown options
-    private void SelectRoom(int optionIndex)
-    {
-        if(optionIndex != 0)
-        {
-            currentRoom = currentProperty.GetRoom(roomOptions.ElementAt(optionIndex).Key);
-        }
-        else
-        {
-            currentRoom = null;
+            roomButtonText.text = Constants.CHOOSE;
         }
         ValidateInput();
     }
 
     //Updates all editable fields in the edit reservation screen
-    private void UpdateEditableOptions(IReservation reservation, IClient client, IRoom room)
+    private void UpdateEditableOptions(IReservation reservation, IClient client, List<IRoom> rooms)
     {
         currentReservation = reservation;
-        currentRoom = room;
+        currentRooms = rooms;
         currentClient = client;
 
-        UpdatePropertyDropdown();
+        InitializePropertyDropdown();
 
-        clientInputField.text = (client != null) ? client.Name : string.Empty;
+        clientButtonText.text = (client != null) ? client.Name : Constants.CHOOSE;
 
         if(reservation != null)
         {
+            deleteReservationButton.SetActive(true);
             UpdateReservationPeriod(reservation.Period.Start, reservation.Period.End);
         }
         else
         {
-            period.Start = DateTime.Today;
-            period.End = DateTime.Today;
-            reservationPeriodText.text = period.Start.ToString(Constants.DateTimePrintFormat);
+            deleteReservationButton.SetActive(false);
+            UpdateReservationPeriod(periodStart, periodEnd);
         }
 
+        if(rooms != null)
+        {
+            if(rooms.Count == 1)
+            {
+                roomButton.SetActive(PropertyDataManager.GetProperty(rooms[0].PropertyID).HasRooms);
+                roomButtonText.text = rooms[0].Name;
+            }
+            else
+            {
+                roomButton.SetActive(true);
+                roomButtonText.text = rooms.Count + Constants.SPACE + Constants.ROOMS_SELECTED;
+            }
+        }
+        else
+        {
+            roomButton.SetActive(false);
+            roomButtonText.text = Constants.CHOOSE;
+        }
+
+        SizeEditablesRect();
         ValidateInput();
 
-        propertyDropdown.onValueChanged.AddListener(SelectProperty);
-        roomDropdown.onValueChanged.AddListener(SelectRoom);
-        clientInputField.onEndEdit.AddListener((s) => ValidateInput());
-        allowEdit = true;
+        propertyDropdown.onValueChanged.AddListener(SetProperty);
+        AllowEdit = true;
+    }
+
+    //Sets the selected property object as selected from the dropdown options. This also sets the room in the case of the property not having rooms
+    private void SetProperty(int optionIndex)
+    {
+        if(optionIndex != 0)
+        {
+            roomButtonText.text = Constants.CHOOSE;
+            currentProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(optionIndex).Key);
+            if(!currentProperty.HasRooms)
+            {
+                roomButton.SetActive(false);
+                currentRooms = new List<IRoom>();
+                currentRooms.Add(currentProperty.Rooms.ToList()[0]);
+            }
+            else
+            {
+                roomButton.SetActive(true);
+                currentRooms = null;
+            }
+        }
+        else
+        {
+            roomButton.SetActive(false);
+            currentProperty = null;
+            currentRooms = null;
+        }
+
+        SizeEditablesRect();
+        ValidateInput();
     }
 
     //Updates the properties dropdown with all available properties with at least one room or roomles properties
-    private void UpdatePropertyDropdown()
+    private void InitializePropertyDropdown()
     {
         int selected = 0;
         bool searching = true;
         currentProperty = null;
 
         propertyOptions = new Dictionary<string, Dropdown.OptionData>();
-        propertyOptions.Add(String.Empty, new Dropdown.OptionData("Alege"));
+        propertyOptions.Add(String.Empty, new Dropdown.OptionData(Constants.CHOOSE));
         foreach(IProperty p in PropertyDataManager.GetProperties().Where(p => p.Rooms.Count() != 0))
         {
             propertyOptions.Add(p.ID, new Dropdown.OptionData(p.Name));
 
 
-            if (currentRoom != null)
+            if (currentRooms != null)
             {
                 if(searching)
                 {
                     selected++;
                 }
 
-                if(currentRoom.PropertyID == p.ID)
+                if(currentRooms.Any(r => r.PropertyID == p.ID))
                 {
                     currentProperty = p;
                     searching = false;
@@ -344,80 +449,25 @@ public class ReservationEditScreen : MonoBehaviour
 
         propertyDropdown.value = (searching) ? 0 : selected;
         propertyDropdown.RefreshShownValue();
-
-        UpdateRoomDropdown(currentProperty);
-    }
-
-    //Updates the room dropdown opttions, is hidden if selected property has no rooms
-    private void UpdateRoomDropdown(IProperty property)
-    {
-        if(property != null)
-        {
-            if(property.HasRooms)
-            {
-                roomDropdown.transform.parent.gameObject.SetActive(true);
-            }
-            else
-            {
-                roomDropdown.transform.parent.gameObject.SetActive(false);
-                currentRoom = property.Rooms.ToList()[0];
-                return;
-            }
-        }
-        else
-        {
-            roomDropdown.transform.parent.gameObject.SetActive(false);
-            return;
-        }
-
-        int selected = 0;
-        bool searching = true;
-
-
-        roomOptions = new Dictionary<string, Dropdown.OptionData>();
-        roomOptions.Add(String.Empty, new Dropdown.OptionData("Alege"));
-        foreach(IRoom r in property.Rooms)
-        {
-            roomOptions.Add(r.ID, new Dropdown.OptionData(r.Name));
-
-            if (currentRoom != null)
-            {
-                if(searching)
-                {
-                    selected++;
-                }
-
-                if(currentRoom.ID == r.ID)
-                {
-                    searching = false;
-                }
-            }
-        }
-
-        roomDropdown.options = roomOptions.Values.ToList();
-
-        roomDropdown.value = (searching) ? 0 : selected;
-        roomDropdown.RefreshShownValue();
     }
 
     //Callback function for the modal calendar overlay, sets selected start and end times
     private void UpdateReservationPeriod(DateTime _start, DateTime _end)
     {
-        period.Start = _start;
-        period.End = _end;
+        periodStart = _start;
+        periodEnd = _end;
 
         reservationPeriodText.text =
-            period.Start.ToString(Constants.DateTimePrintFormat)
+            periodStart.ToString(Constants.DateTimePrintFormat)
             + Constants.AndDelimiter
-            + period.End.ToString(Constants.DateTimePrintFormat);
+            + periodEnd.ToString(Constants.DateTimePrintFormat);
 
         ValidateInput();
     }
 
     //Updates and enables/disables the error text to show the given error message
-    private void DisplayErrorAndSetInteractability(string errorMessage, bool setDateAllowed, bool confirmAllowed)
+    private void SetErrorAndInteractability(string errorMessage, bool confirmAllowed)
     {
-        setPeriodButton.interactable = setDateAllowed;
         confirmButton.interactable = confirmAllowed;
         errorText.text = errorMessage;
         errorText.enabled = !string.IsNullOrEmpty(errorMessage);
@@ -426,11 +476,16 @@ public class ReservationEditScreen : MonoBehaviour
     //Returns true if no other reservations for this room overlap the curently set period
     private bool OverlapsOtherReservation(DateTime start, DateTime end)
     {
-        return ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
+        return ReservationDataManager.GetReservations().Where(r => r.RoomIDs.Any(roId => r.RoomIDs.Contains(roId)))
         .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != Constants.defaultCustomerName)
             && ((start.Date > r.Period.Start && start.Date < r.Period.End.Date)
             || r.Period.Start.Date > start.Date && r.Period.End.Date < end.Date
             || r.Period.Start.Date == start.Date || r.Period.End.Date == end.Date
         ));
+    }
+
+    private void SizeEditablesRect()
+    {
+        editablesRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, editablesReferenceObject.rect.height * ((roomButton.activeSelf) ? 4 : 3));
     }
 }

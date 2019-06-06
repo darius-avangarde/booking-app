@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,75 +8,48 @@ using UnityEngine.UI;
 public class TestEdit : MonoBehaviour
 {
     [SerializeField]
-    ReservationEditScreen edit;
-    [SerializeField]
-    Text testText;
-    [SerializeField]
-    ModalCalendarNew newCalendar;
+    private ReservationEditScreen resEd;
 
-    [SerializeField]
-    Color
-    unavailale = Constants.unavailableItemColor,
-    selected = Constants.selectedItemColor,
-    reservedAvailable = Constants.reservedAvailableItemColor,
-    reserverUnavail = Constants.reservedUnavailableItemColor,
-    avail = Constants.availableItemColor;
+    IProperty p;
+    List<IRoom> rS = new List<IRoom>();
+    List<IRoom> rM = new List<IRoom>();
+    IReservation rSin;
+    IReservation rMul;
 
-    IClient client;
-    IRoom room;
-    IReservation reservation;
-    // Start is called before the first frame update
-    void Start()
+    DateTime start;
+    DateTime end;
+
+    private void Start()
     {
+        start = DateTime.Today.AddDays(3);
+        end = DateTime.Today.AddDays(6);
 
-        client = ClientDataManager.GetClients().ToList()[0];
-        IProperty p = PropertyDataManager.GetProperties().ToList()[0];
-        room = p.Rooms.ToList()[0];
-        if(ReservationDataManager.GetReservations().Count() > 0)
-            reservation = ReservationDataManager.GetReservations().ToList()[0];
+        p = PropertyDataManager.GetProperties().ToList()[1];
+        rS.Add(p.Rooms.ToList()[0]);
+        rM = p.Rooms.ToList();
+        rSin = ReservationDataManager.GetReservations().ToList()[1];
+        rMul = ReservationDataManager.GetReservations().ToList()[0];
 
-
-        List<IReservation> rlist = ReservationDataManager.GetReservations().OrderBy(r => r.Period.Start).ToList();
-        for (int i = 0; i < rlist.Count; i++)
-        {
-            testText.text +=  Constants.NEWLINE + ClientDataManager.GetClient(rlist[i].CustomerID).Name + Constants.NEWLINE
-                + PropertyDataManager.GetProperty(rlist[i].PropertyID).GetRoom(rlist[i].RoomID).Name + Constants.NEWLINE
-                + rlist[i].Period.Start.ToString(Constants.DateTimePrintFormat) + " - " + rlist[i].Period.End.ToString(Constants.DateTimePrintFormat)+ Constants.NEWLINE;
-        }
-
+        //ReservationDataManager.GetReservations().ToList()[0].EditReservation(rM, ClientDataManager.GetClients().ToList()[0], DateTime.Today.AddDays(65).Date, DateTime.Today.AddDays(70).Date);
     }
 
-    public void OpenViewClient()
+    public void openSingleRoom()
     {
-        if(client != null)
-            edit.OpenAddReservation(client, (r) => DebugC(r,true));
-        else
-            Debug.Log("client is null");
+        resEd.OpenAddReservation(start, end, rS, (r) => Debug.Log("Reservation room count = " + r.RoomIDs.Count));
     }
 
-    public void OpenViewRoom()
+    public void openMulRoom()
     {
-        if(room != null)
-            edit.OpenAddReservation(room, (r) => DebugC(r,true));
-        else
-            Debug.Log("room is null");
+        resEd.OpenAddReservation(start, end, rM, (r) => Debug.Log("Reservation room count = " + r.RoomIDs.Count));
     }
 
-    public void OpenViewReservation()
+    public void openSingleRes()
     {
-        if(reservation != null)
-            edit.OpenEditReservation(reservation, (r) => DebugC(r,true));
-        else
-            Debug.Log("reservation is null");
+        resEd.OpenEditReservation(rSin, (r) => Debug.Log("Reservation room count = " + r.RoomIDs.Count), () => Debug.Log("delete callback"));
     }
 
-    public void OpenNewCalendar()
+    public void openMulRes()
     {
-        //newCalendar.OpenCallendar(reservation, ReservationDataManager.GetActiveRoomReservations(room.ID).ToList(), (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
-        newCalendar.OpenCallendar(System.DateTime.Today,  (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
-    }
-    private void DebugC(IReservation r, bool isEdit)
-    {
-        Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.CustomerID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
+        resEd.OpenEditReservation(rMul, (r) => Debug.Log("Reservation room count = " + r.RoomIDs.Count), () => Debug.Log("delete callback"));
     }
 }
