@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.Linq;
 using static ClientDataManager;
+using System.Collections;
 
 public class ClientsScreen : MonoBehaviour
 {
@@ -48,8 +50,15 @@ public class ClientsScreen : MonoBehaviour
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
     private UnityAction<bool> cancelCallback;
-   // private IClient currentClient;
+    public RectTransform Search;
+    public RectTransform LayoutContent;
+    private float initialSizeSearch;
 
+    private void Start()
+    {
+        initialSizeSearch = Search.rect.height;
+        Search.gameObject.SetActive(false);
+    }
     public void InstantiateClients()
     {
         foreach (var clientButton in clientButtons)
@@ -59,7 +68,6 @@ public class ClientsScreen : MonoBehaviour
         clientButtons.Clear();
         foreach (var client in ClientDataManager.GetClients())
         {
-
             GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
             clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);//,OpenDeleteAdminScreen);
             clientButtons.Add(clientButton);
@@ -174,7 +182,7 @@ public class ClientsScreen : MonoBehaviour
     }
 
     //------------
-    public void EmailUs(IClient currentClient )
+    public void EmailUs(IClient currentClient)
     {
         if (currentClient.Email == null)
         {
@@ -205,7 +213,7 @@ public class ClientsScreen : MonoBehaviour
     {
         Application.OpenURL("sms://" + currentClient.Number);
     }
-    
+
     //-----------
 
     public void SearchForClient()
@@ -264,5 +272,27 @@ public class ClientsScreen : MonoBehaviour
         searchField.text = "";
     }
 
-   
+    public void SearchFieldShow(bool value)
+    {
+        StartCoroutine(Animate(value ? initialSizeSearch : 0, value));
+    }
+    private IEnumerator Animate(float target, bool value)
+    {
+        if(value)
+        {
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
+            Search.gameObject.SetActive(true);
+        }
+        float timer = 0.15f;
+        float init = Search.sizeDelta.y;
+        for (float i = 0; i < timer; i += Time.deltaTime)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(init, target, i / timer));
+            yield return null;
+        }
+
+        Search.sizeDelta = new Vector2(Search.sizeDelta.x, target);
+        Search.gameObject.SetActive(value);
+    }
 }
