@@ -32,6 +32,8 @@ public class ClientButton : MonoBehaviour
 
     public void InitializeClient(IClient client, Action<IClient> callback)
     {
+        ClientName.text = client.Name;
+        phoneNumber.text = client.Number;
         clientButton.onClick.AddListener(() => callback(client));
     }
 
