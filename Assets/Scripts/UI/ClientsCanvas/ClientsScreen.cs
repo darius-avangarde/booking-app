@@ -19,8 +19,6 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private Transform clientEditScreenTransform = null;
     [SerializeField]
-    private Transform clientReservationScreenTransform = null;
-    [SerializeField]
     private GameObject clientPrefabButton = null;
     [SerializeField]
     private GameObject clientprefabLetter = null;
