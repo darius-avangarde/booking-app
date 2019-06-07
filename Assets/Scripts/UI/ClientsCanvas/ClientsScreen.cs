@@ -5,11 +5,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.Linq;
 using static ClientDataManager;
+using System.Collections;
 
 public class ClientsScreen : MonoBehaviour
 {
-
+    #region SerializeFieldVariables
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
@@ -19,11 +21,11 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private GameObject clientPrefabButton = null;
     [SerializeField]
+    private GameObject clientprefabLetter = null;
+    [SerializeField]
     private Transform clientInfoContent = null;
     [SerializeField]
     private InputField searchField = null;
-    [SerializeField]
-    private Transform addClientButton;
     [SerializeField]
     private Text headerBarText;
     [SerializeField]
@@ -42,28 +44,73 @@ public class ClientsScreen : MonoBehaviour
     private Text textNameRequired;
     [SerializeField]
     private Text textEmailRequired;
+    #endregion
+    #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
+    private List<GameObject> letterButtons = new List<GameObject>();
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
+    private UnityAction<IClient> selectClientCallback;
     private UnityAction<bool> cancelCallback;
-    private IClient myClient;
-   // private IClient currentClient;
+    private bool fromReservation = false;
+    #endregion
+    #region AnimationVariables
+    public RectTransform Search;
+    public RectTransform LayoutContent;
+    public RectTransform ClientContainer;
+    private float initialSizeSearch;
+    private float initialClientContainer;
+    #endregion
 
-    public void InstantiateClients()
+    private void Start()
     {
+        //initializations for different sizes
+        initialSizeSearch = Search.rect.height;
+        initialClientContainer = ClientContainer.sizeDelta.y;
+
+        Search.gameObject.SetActive(false);
+        ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -178 - initialSizeSearch);
+        initialClientContainer = ClientContainer.sizeDelta.y;
+    }
+
+
+    public void InstantiateClients(bool fromReservation = false)
+    {
+        this.fromReservation = fromReservation;
         foreach (var clientButton in clientButtons)
         {
             Destroy(clientButton);
         }
-        clientButtons.Clear();
-        foreach (var client in ClientDataManager.GetClients())
-        {
 
-            GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-            clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);//,OpenDeleteAdminScreen);
-            clientButtons.Add(clientButton);
+        foreach (var letterButton in letterButtons)
+        {
+            Destroy(letterButton);
+        }
+        clientButtons.Clear();
+        letterButtons.Clear();
+        foreach (var item in ClientDataManager.GetClientsToDictionary())
+        {
+            clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
+            GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
+            letterButtons.Add(clientLetters);
+            foreach (var client in item.Value)
+            {
+                GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
+                if(fromReservation)
+                    clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
+                else
+                    clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
+                clientButtons.Add(clientButton);
+            }
         }
     }
+
+    public void OpenClientReservation(UnityAction<IClient> callback)
+    {
+        InstantiateClients(true);
+        selectClientCallback = callback;
+    }
+    
 
     public void SaveAddedClient()
     {
@@ -75,7 +122,7 @@ public class ClientsScreen : MonoBehaviour
         else
         {
             Client client = new Client();
-            textNameRequired.text = "";
+            textNameRequired.text = string.Empty;
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
@@ -88,6 +135,8 @@ public class ClientsScreen : MonoBehaviour
             }
             hasCallBack = false;
         }
+
+        InstantiateClients(fromReservation);
     }
     public void CancelAddClient()
     {
@@ -126,14 +175,14 @@ public class ClientsScreen : MonoBehaviour
             client.Email = clientEmail.text;
             ClientDataManager.EditClient(currentClient.ID, client);
         }
+
+        InstantiateClients();
     }
 
-
-    private void OpenDeleteAdminScreen(IClient client)
+    private void OpenClientScreen(IClient client)
     {
-        clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
-        clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().DeleteClient(InstantiateClients);
-        ClearSearchField();
+        selectClientCallback(client);
+        navigator.GoBack();
     }
 
     private void OpenClientAdminScreen(IClient client)
@@ -153,12 +202,12 @@ public class ClientsScreen : MonoBehaviour
         ClearSearchField();
     }
 
-    //------------
-    public void EmailUs(IClient currentClient )
+    #region phoneSmsEmail
+    public void EmailUs(IClient currentClient)
     {
         if (currentClient.Email == null)
         {
-            textEmailRequired.text = "Nu exită email înregistrat!";
+            textEmailRequired.text = "Nu există email înregistrat!";
         }
         else
         {
@@ -185,26 +234,31 @@ public class ClientsScreen : MonoBehaviour
     {
         Application.OpenURL("sms://" + currentClient.Number);
     }
-    
-    //-----------
+
+    #endregion
 
     public void SearchForClient()
     {
         if (!string.IsNullOrEmpty(searchField.text))
         {
-
+            foreach (var item in letterButtons)
+            {
+                item.SetActive(false);
+            }
             foreach (var client in clientButtons)
             {
 
                 if (client.GetComponent<ClientButton>().SearchClients(searchField.text))
                 {
                     client.SetActive(true);
+
                 }
                 else
                 {
                     client.SetActive(false);
                 }
             }
+
         }
         else
         {
@@ -212,13 +266,12 @@ public class ClientsScreen : MonoBehaviour
             {
                 item.SetActive(true);
             }
+            foreach (var item in letterButtons)
+            {
+                item.SetActive(true);
+            }
         }
 
-    }
-
-    public void SetAddButton()
-    {
-        addClientButton.SetAsFirstSibling();
     }
 
     public void SetTextOnAddPanel()
@@ -230,19 +283,64 @@ public class ClientsScreen : MonoBehaviour
     {
         headerBarText.text = "Editează client";
     }
-
+    #region ClearFieldsForClient
     public void ClearClientFields()
     {
-        clientName.text = "";
-        clientPhone.text = "";
-        clientAdress.text = "";
-        clientEmail.text = "";
+        clientName.text = string.Empty;
+        clientPhone.text = string.Empty;
+        clientAdress.text = string.Empty;
+        clientEmail.text = string.Empty;
     }
 
     public void ClearSearchField()
     {
-        searchField.text = "";
+        searchField.text = string.Empty;
     }
+    #endregion
 
-   
+    //forget about this code. It doesn't exist.
+    #region Animations
+    public void SearchFieldShow(bool value)
+    {
+        StartCoroutine(Animate(value ? initialSizeSearch : 0, value));
+    }
+    private IEnumerator Animate(float target, bool value)
+    {
+        float timer = 0.15f;
+        float init = Search.sizeDelta.y;
+
+        if (value)
+        {
+            //SHOW animation for search field and clients
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
+            Search.gameObject.SetActive(true);
+            for (float i = 0; i < timer; i += Time.deltaTime)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
+                Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(0, initialSizeSearch, i / timer));
+                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer, initialClientContainer - 208, i / timer));
+                yield return null;
+            }
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, initialSizeSearch);
+            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 208);
+        }
+        else
+        {
+            //HIDE animation for search field and clients
+            for (float i = 0; i < timer; i += Time.deltaTime)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
+                Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(initialSizeSearch, 0, i / timer));
+                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer - 208, initialClientContainer, i / timer));
+                yield return null;
+            }
+            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
+            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer);
+        }
+
+
+        Search.gameObject.SetActive(value);
+        //separator.gameobject.setactive(value)
+    }
+    #endregion
 }
