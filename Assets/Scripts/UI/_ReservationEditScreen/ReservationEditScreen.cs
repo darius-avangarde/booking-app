@@ -264,6 +264,26 @@ public class ReservationEditScreen : MonoBehaviour
             navigator.GoTo(navScreen);
             AllowEdit = true;
         }
+
+        //TODO: Remove once new functions are implemented
+        ///<summary>
+        /// Obsolete, use
+        ///<para> OpenAddReservation(DateTime, DateTime, IRoom/List(Iroom), UnityAction(IReservation)) instead </para>
+        ///</summary>
+        internal void OpenAddReservation(IRoom room, UnityAction<IReservation> confirmCallback)
+        {
+            periodStart = DateTime.Today.Date;
+            periodEnd = DateTime.Today.AddDays(1).Date;
+            confirmationCallback = confirmCallback;
+            deletionCallback = null;
+            List<IRoom> sr = new List<IRoom>();
+            sr.Add(room);
+            UpdateEditableOptions(null, null, sr);
+            titleText.text = Constants.NEW_TITLE;
+            navigator.GoTo(navScreen);
+            AllowEdit = true;
+        }
+
     #endregion
 
     private void SetClient(IClient client)

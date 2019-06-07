@@ -62,7 +62,6 @@ public class FadeTransition : TransitionBase
             progress += speed;
             progress = Mathf.Clamp01(progress);
 
-            //UpdateScreenFade(currentScreen.CanvasGroup, 1f, 0f, progress);
             UpdateScreenFade(previousScreen.CanvasGroup, 0f, 1f, progress);
 
             yield return null;
