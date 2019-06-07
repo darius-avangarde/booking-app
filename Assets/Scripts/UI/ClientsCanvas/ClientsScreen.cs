@@ -48,17 +48,22 @@ public class ClientsScreen : MonoBehaviour
     private Text textNameRequired;
     [SerializeField]
     private Text textEmailRequired;
+    #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
     private List<GameObject> letterButtons = new List<GameObject>();
     private bool hasCallBack = false;
     private UnityAction<IClient> saveCallBack;
+    private UnityAction<IClient> selectClientCallback;
     private UnityAction<bool> cancelCallback;
+    #endregion
+    #region AnimationVariables
     public RectTransform Search;
     public RectTransform LayoutContent;
     public RectTransform ClientContainer;
     private float initialSizeSearch;
     private float initialClientContainer;
-    private UnityAction<IClient> selectClientCallback;
+    #endregion
+
     private void Start()
     {
         //initializations for different sizes
@@ -92,7 +97,7 @@ public class ClientsScreen : MonoBehaviour
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-                clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);//,OpenDeleteAdminScreen);
+                clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 clientButtons.Add(clientButton);
             }
         }
@@ -125,7 +130,6 @@ public class ClientsScreen : MonoBehaviour
             {
                 GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
                 clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
-                Debug.Log("instantiate");
                 clientButtons.Add(clientButton);
             }
         }
@@ -141,7 +145,7 @@ public class ClientsScreen : MonoBehaviour
         else
         {
             Client client = new Client();
-            textNameRequired.text = "";
+            textNameRequired.text = string.Empty;
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
@@ -197,7 +201,7 @@ public class ClientsScreen : MonoBehaviour
     private void OpenClientScreen(IClient client)
     {
         selectClientCallback(client);
-        navigator.GoTo(clientReservationScreenTransform.GetComponent<NavScreen>());
+        navigator.GoBack();
     }
     private void OpenDeleteAdminScreen(IClient client)
     {
@@ -304,14 +308,14 @@ public class ClientsScreen : MonoBehaviour
     public void ClearClientFields()
     {
         clientName.text = string.Empty;
-        clientPhone.text = "";
-        clientAdress.text = "";
-        clientEmail.text = "";
+        clientPhone.text = string.Empty;
+        clientAdress.text = string.Empty;
+        clientEmail.text = string.Empty;
     }
 
     public void ClearSearchField()
     {
-        searchField.text = "";
+        searchField.text = string.Empty;
     }
 
     //forget about this code. It doesn't exist.
