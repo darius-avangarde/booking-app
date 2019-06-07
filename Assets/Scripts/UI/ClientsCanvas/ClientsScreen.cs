@@ -11,7 +11,7 @@ using System.Collections;
 
 public class ClientsScreen : MonoBehaviour
 {
-
+    #region SerializeFieldVariables
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
@@ -26,8 +26,6 @@ public class ClientsScreen : MonoBehaviour
     private Transform clientInfoContent = null;
     [SerializeField]
     private InputField searchField = null;
-    [SerializeField]
-    private Transform addClientButton;
     [SerializeField]
     private Text headerBarText;
     [SerializeField]
@@ -46,6 +44,7 @@ public class ClientsScreen : MonoBehaviour
     private Text textNameRequired;
     [SerializeField]
     private Text textEmailRequired;
+    #endregion
     #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
     private List<GameObject> letterButtons = new List<GameObject>();
@@ -53,6 +52,7 @@ public class ClientsScreen : MonoBehaviour
     private UnityAction<IClient> saveCallBack;
     private UnityAction<IClient> selectClientCallback;
     private UnityAction<bool> cancelCallback;
+    private bool fromReservation = false;
     #endregion
     #region AnimationVariables
     public RectTransform Search;
@@ -74,8 +74,9 @@ public class ClientsScreen : MonoBehaviour
     }
 
 
-    public void InstantiateClients()
+    public void InstantiateClients(bool fromReservation = false)
     {
+        this.fromReservation = fromReservation;
         foreach (var clientButton in clientButtons)
         {
             Destroy(clientButton);
@@ -95,7 +96,10 @@ public class ClientsScreen : MonoBehaviour
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-                clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
+                if(fromReservation)
+                    clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
+                else
+                    clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 clientButtons.Add(clientButton);
             }
         }
@@ -103,35 +107,10 @@ public class ClientsScreen : MonoBehaviour
 
     public void OpenClientReservation(UnityAction<IClient> callback)
     {
-        InstantiateClientsButtons();
+        InstantiateClients(true);
         selectClientCallback = callback;
     }
-
-    public void InstantiateClientsButtons()
-    {
-        foreach (var clientButton in clientButtons)
-        {
-            Destroy(clientButton);
-        }
-        foreach (var letterButton in letterButtons)
-        {
-            Destroy(letterButton);
-        }
-        clientButtons.Clear();
-        letterButtons.Clear();
-        foreach (var item in ClientDataManager.GetClientsToDictionary())
-        {
-            clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
-            GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
-            letterButtons.Add(clientLetters);
-            foreach (var client in item.Value)
-            {
-                GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-                clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
-                clientButtons.Add(clientButton);
-            }
-        }
-    }
+    
 
     public void SaveAddedClient()
     {
@@ -156,6 +135,8 @@ public class ClientsScreen : MonoBehaviour
             }
             hasCallBack = false;
         }
+
+        InstantiateClients(fromReservation);
     }
     public void CancelAddClient()
     {
@@ -194,18 +175,14 @@ public class ClientsScreen : MonoBehaviour
             client.Email = clientEmail.text;
             ClientDataManager.EditClient(currentClient.ID, client);
         }
+
+        InstantiateClients();
     }
 
     private void OpenClientScreen(IClient client)
     {
         selectClientCallback(client);
         navigator.GoBack();
-    }
-    private void OpenDeleteAdminScreen(IClient client)
-    {
-        clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
-        clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().DeleteClient(InstantiateClients);
-        ClearSearchField();
     }
 
     private void OpenClientAdminScreen(IClient client)
@@ -225,7 +202,7 @@ public class ClientsScreen : MonoBehaviour
         ClearSearchField();
     }
 
-    //------------
+    #region phoneSmsEmail
     public void EmailUs(IClient currentClient)
     {
         if (currentClient.Email == null)
@@ -258,25 +235,30 @@ public class ClientsScreen : MonoBehaviour
         Application.OpenURL("sms://" + currentClient.Number);
     }
 
-    //-----------
+    #endregion
 
     public void SearchForClient()
     {
         if (!string.IsNullOrEmpty(searchField.text))
         {
-
+            foreach (var item in letterButtons)
+            {
+                item.SetActive(false);
+            }
             foreach (var client in clientButtons)
             {
 
                 if (client.GetComponent<ClientButton>().SearchClients(searchField.text))
                 {
                     client.SetActive(true);
+
                 }
                 else
                 {
                     client.SetActive(false);
                 }
             }
+
         }
         else
         {
@@ -284,13 +266,12 @@ public class ClientsScreen : MonoBehaviour
             {
                 item.SetActive(true);
             }
+            foreach (var item in letterButtons)
+            {
+                item.SetActive(true);
+            }
         }
 
-    }
-
-    public void SetAddButton()
-    {
-        addClientButton.SetAsFirstSibling();
     }
 
     public void SetTextOnAddPanel()
@@ -302,7 +283,7 @@ public class ClientsScreen : MonoBehaviour
     {
         headerBarText.text = "Editează client";
     }
-
+    #region ClearFieldsForClient
     public void ClearClientFields()
     {
         clientName.text = string.Empty;
@@ -315,6 +296,7 @@ public class ClientsScreen : MonoBehaviour
     {
         searchField.text = string.Empty;
     }
+    #endregion
 
     //forget about this code. It doesn't exist.
     #region Animations
