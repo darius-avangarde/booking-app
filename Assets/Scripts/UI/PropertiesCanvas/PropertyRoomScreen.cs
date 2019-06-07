@@ -10,8 +10,6 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ConfirmationDialog confirmationDialog = null;
-    [SerializeField]
     private Transform propertyAdminScreenTransform = null;
     [SerializeField]
     private Transform roomAdminScreenTransform = null;
@@ -22,16 +20,11 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Text propertyRoomScreenTitle = null;
     [SerializeField]
-    private Image BackgroundImage = null;
+    private Image propertyImage = null;
     [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
-    private Button backButton;
-
-    [SerializeField]
-    private ScrollRect scrollComponent;
-    [SerializeField]
-    private RectTransform headerBar;
+    private Button backButton = null;
 
     private List<GameObject> roomButtons = new List<GameObject>();
     private IProperty currentProperty;
@@ -45,6 +38,14 @@ public class PropertyRoomScreen : MonoBehaviour
     {
         currentProperty = property;
         propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
+        if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+        }
+        else
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+        }
     }
 
     public void Initialize()
@@ -62,16 +63,6 @@ public class PropertyRoomScreen : MonoBehaviour
                 roomButtons.Add(roomButton);
             }
         }
-    }
-
-    public void OnDragScroll()
-    {
-        if (scrollComponent.verticalNormalizedPosition > 1 && scrollComponent.verticalNormalizedPosition <= 1.45f)
-        {
-            headerBar.rect.Set(headerBar.rect.x, headerBar.rect.y, headerBar.rect.width, scrollComponent.verticalNormalizedPosition * 100);
-        }
-        //scrollComponent.verticalNormalizedPosition = Mathf.Clamp(scrollComponent.verticalNormalizedPosition, float.NegativeInfinity, 1);
-        Debug.Log(scrollComponent.verticalNormalizedPosition.ToString("#0.00"));
     }
 
     public void AddRoomItem()

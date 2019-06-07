@@ -13,7 +13,7 @@ public class RoomButton : MonoBehaviour
     //[SerializeField]
     //private Text roomBeds = null;
     [SerializeField]
-    private Button roomButton;
+    private Button roomButton = null;
     [SerializeField]
     private Image disponibilityMarker = null;
 

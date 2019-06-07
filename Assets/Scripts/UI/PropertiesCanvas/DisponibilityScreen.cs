@@ -31,11 +31,11 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private RectTransform filteredPropertiesContent = null;
     [SerializeField]
-    private Dropdown propertyDropdownList;
+    private Dropdown propertyDropdownList = null;
     [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
-    private Button backButton;
+    private Button backButton = null;
 
     private Dictionary<string, Dropdown.OptionData> propertyOptions;
     private List<GameObject> disponibilityScreenItemList = new List<GameObject>();

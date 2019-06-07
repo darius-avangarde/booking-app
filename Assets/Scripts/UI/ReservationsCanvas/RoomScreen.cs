@@ -8,9 +8,6 @@ using UnityEngine.UI;
 
 public class RoomScreen : MonoBehaviour
 {
-    public PropertiesScreen propertiesScreen { get; set; }
-    public DisponibilityScreen disponibilityScreen { get; set; }
-
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
@@ -22,24 +19,34 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Transform propertyAdminScreenTransform = null;
     [SerializeField]
-    private GameObject reservationPrefabButton = null;
-    [SerializeField]
     private Transform reservationsContent = null;
     [SerializeField]
     private Text roomScreenTitle = null;
     [SerializeField]
-    private Button backButton;
+    private Image backgroundImage = null;
+    [SerializeField]
+    private Image propertyImage = null;
+    [SerializeField]
+    private Image disponibilityMarker = null;
+    [SerializeField]
+    private GameObject reservationPrefabButton = null;
+    [SerializeField]
+    private Button backButton = null;
+    [SerializeField]
+    private Button editButton = null;
     //[SerializeField]
     //private Text roomDetails = null;
     private List<GameObject> reservationButtonList = new List<GameObject>();
-    private DateTime dayDateTime = DateTime.Today.Date;
+    private DateTime dateTimeStart = DateTime.Today.Date;
+    private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
     private IProperty currentProperty;
     private IRoom currentRoom;
     private IReservation currentReservation;
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => OpenPropertiesScreen());
+        backButton.onClick.AddListener(() => navigator.GoBack());
+        editButton.onClick.AddListener(() => EditButton());
     }
 
     public void UpdateRoomDetailsFields(IRoom room)
@@ -47,6 +54,18 @@ public class RoomScreen : MonoBehaviour
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         //dayDateTime = date;
         currentRoom = room;
+        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+            backgroundImage.gameObject.SetActive(false);
+        }
+
         if (currentProperty.HasRooms)
         {
             roomScreenTitle.text = room.Name ?? Constants.NEW_ROOM;
@@ -54,6 +73,16 @@ public class RoomScreen : MonoBehaviour
         else
         {
             roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+        }
+        bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
+                .Any(r => r.RoomID == room.ID);
+        if (reservations)
+        {
+            disponibilityMarker.color = Constants.reservedUnavailableItemColor;
+        }
+        else
+        {
+            disponibilityMarker.color = Constants.availableItemColor;
         }
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -68,6 +97,17 @@ public class RoomScreen : MonoBehaviour
         else
         {
             roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+        }
+        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+            backgroundImage.gameObject.SetActive(false);
         }
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -103,33 +143,21 @@ public class RoomScreen : MonoBehaviour
         foreach (var reservation in orderedRoomReservationList)
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), DeleteReservation);
+            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))));
             reservationButtonList.Add(reservationButton);
         }
     }
 
-    private void DeleteReservation(IReservation reservation)
+    private void DeleteReservation(GameObject reservationButton)
     {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_DIALOG,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                ReservationDataManager.DeleteReservation(reservation.ID);
-                InstantiateReservations();
-            },
-            CancelCallback = null
-        });
+        reservationButtonList.Remove(reservationButton);
+        Destroy(reservationButton);
     }
 
     private void OpenPropertyAdminScreen()
     {
         PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
         propertyAdminScreenScript.SetCurrentProperty(currentProperty);
-        //propertyAdminScreenScript.propertiesScreen = propertiesScreen;
-        //propertyAdminScreenScript.disponibilityScreen = disponibilityScreen;
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 
@@ -137,26 +165,6 @@ public class RoomScreen : MonoBehaviour
     {
         RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
         roomAdminScreenScript.SetCurrentPropertyRoom(currentRoom);
-        //roomAdminScreenScript.propertiesScreen = propertiesScreen;
-        //roomAdminScreenScript.disponibilityScreen = disponibilityScreen;
         navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
-    }
-
-    private void OpenPropertiesScreen()
-    {
-        if (propertiesScreen != null)
-        {
-            //propertiesScreen.OpenRoomDropdown = currentProperty.ID;
-            propertiesScreen.Initialize();
-            propertiesScreen = null;
-            navigator.GoBack();
-        }
-        if (disponibilityScreen != null)
-        {
-            //disponibilityScreen.OpenRoomDropdown = currentProperty.ID;
-            //disponibilityScreen.Initialize();
-            disponibilityScreen = null;
-            navigator.GoBack();
-        }
     }
 }

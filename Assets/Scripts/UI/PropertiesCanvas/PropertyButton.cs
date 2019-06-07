@@ -11,16 +11,26 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Text propertyName = null;
     [SerializeField]
-    private Image PropertyPicture = null;
+    private Image propertyImage = null;
+    [SerializeField]
+    private Image overlayLarge = null;
+    [SerializeField]
+    private Image overlaySmall = null;
     [SerializeField]
     private Button propertyButtonItem = null;
     [SerializeField]
     private Image disponibilityMarker = null;
 
+    private RectTransform propertyItemTransform;
     private DateTime dateTimeStart = DateTime.Today.Date;
     private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
     private float currentTime;
     private float maxHeight;
+
+    private void Awake()
+    {
+        propertyItemTransform = GetComponent<RectTransform>();
+    }
 
     public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
     {
@@ -28,10 +38,17 @@ public class PropertyButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IProperty property, RectTransform layoutContent, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback)
+    public void Initialize(IProperty property, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback)
     {
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : property.Name;
-        //PropertyPicture.sprite
+        if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+        }
+        else
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+        }
         if (!property.HasRooms)
         {
             propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetRoom(property.GetPropertyRoomID)));
