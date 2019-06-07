@@ -214,8 +214,8 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
     {
-        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
         focusDateTime = initialDateTime;
+        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
         currentReservation = reservation;
         roomReservationList = reservationList;
         easyTween.OpenCloseObjectAnimation();

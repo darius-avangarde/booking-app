@@ -23,6 +23,10 @@ public class ReservationEditScreen : MonoBehaviour
         [SerializeField]
         private ConfirmationDialog confirmationDialog = null;
 
+        [Header("Screen references")]
+        [SerializeField]
+        private ClientsScreen clientsScreen;
+
         [Space]
         [SerializeField]
         private Text titleText = null;
@@ -158,13 +162,9 @@ public class ReservationEditScreen : MonoBehaviour
             confirmationDialog.Show(deleteConfirmation);
         }
 
-        //TODO: Integrate with client screen
         public void SelectClient()
         {
-            // Debug.Log("Unimplemented >Clients screen");
-            SetClient(ClientDataManager.GetClients().ToList()[UnityEngine.Random.Range(0, ClientDataManager.GetClients().Count())]);
-
-            //open clients screen (client button callback = SetClient)
+            clientsScreen.OpenClientReservation(SetClient);
         }
 
         //TODO: Integrate with room screen
@@ -177,8 +177,8 @@ public class ReservationEditScreen : MonoBehaviour
                 selectedRooms += r.Name + ", ";
             }
 
-            // Debug.Log("Unimplemented >Room screen > rooms: " + selectedRooms);
-            // Debug.Log("Selecting random room");
+            Debug.Log("Unimplemented >Room screen > rooms: " + selectedRooms);
+            Debug.Log("Selecting random room");
             List<IRoom> tr = new List<IRoom>();
             tr.Add(currentProperty.Rooms.ToList()[UnityEngine.Random.Range(0, currentProperty.Rooms.Count())]);
             SetRooms(tr);
