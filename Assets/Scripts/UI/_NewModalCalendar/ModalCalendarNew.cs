@@ -124,11 +124,21 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ///</summary>
         internal void OpenCallendar(IReservation r, List<IReservation> roomReservations, Action<DateTime, DateTime> doneCallback)
         {
-            focusDateTime = (r != null) ? r.Period.Start : DateTime.Today;
-            selectedStart = r.Period.Start.Date;
-            selectedEnd = r.Period.End.Date;
+            if(r != null)
+            {
+                focusDateTime = r.Period.Start;
+                selectedStart = r.Period.Start.Date;
+                selectedEnd = r.Period.End.Date;
+            }
+            else
+            {
+                focusDateTime = DateTime.Today.Date;
+                selectedStart = focusDateTime;
+                selectedEnd = focusDateTime.AddDays(1);
+            }
+
             allowSigleDate = false;
-            UpdateDayCountText();
+            UpdateDayCountText(selectedStart, selectedEnd);
             Show(focusDateTime, r, roomReservations, doneCallback);
         }
     #endregion
@@ -225,7 +235,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
                 selectionText.text = string.Empty;
                 confirmButton.interactable = false;
             }
-            UpdateDayCountText();
+            UpdateDayCountText(selectedStart, selectedEnd);
         }
     }
 
@@ -294,9 +304,9 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
             || r.Period.Start.Date == start.Date || r.Period.End.Date == end.Date));    //start or end coincide
     }
 
-    private void UpdateDayCountText()
+    private void UpdateDayCountText(DateTime start, DateTime end)
     {
-        int days = (int)(selectedEnd - selectedStart).TotalDays;
+        int days = (int)(end - start).TotalDays;
         selectionDayCountText.text = String.Format("{0} {1} {2}", Constants.DAY_COUNT_PREF, days, (days == 1) ? Constants.DAY_COUNT_SUFF_SN : Constants.DAY_COUNT_SUFF_PL);
     }
 
