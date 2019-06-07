@@ -58,7 +58,7 @@ public class ClientsScreen : MonoBehaviour
     public RectTransform ClientContainer;
     private float initialSizeSearch;
     private float initialClientContainer;
-
+    private UnityAction<IClient> selectClientCallback;
     private void Start()
     {
         //initializations for different sizes
@@ -98,21 +98,39 @@ public class ClientsScreen : MonoBehaviour
         }
     }
 
+    public void OpenClientReservation(UnityAction<IClient> callback)
+    {
+        InstantiateClientsButtons();
+        selectClientCallback = callback;
+    }
+
     public void InstantiateClientsButtons()
     {
         foreach (var clientButton in clientButtons)
         {
             Destroy(clientButton);
         }
-        clientButtons.Clear();
-        foreach (var client in ClientDataManager.GetClients())
+        foreach (var letterButton in letterButtons)
         {
-            GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-            clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
-            Debug.Log("instantiate");
-            clientButtons.Add(clientButton);
+            Destroy(letterButton);
+        }
+        clientButtons.Clear();
+        letterButtons.Clear();
+        foreach (var item in ClientDataManager.GetClientsToDictionary())
+        {
+            clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
+            GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
+            letterButtons.Add(clientLetters);
+            foreach (var client in item.Value)
+            {
+                GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
+                clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
+                Debug.Log("instantiate");
+                clientButtons.Add(clientButton);
+            }
         }
     }
+
     public void SaveAddedClient()
     {
 
@@ -178,7 +196,7 @@ public class ClientsScreen : MonoBehaviour
 
     private void OpenClientScreen(IClient client)
     {
-        Debug.Log("callback");
+        selectClientCallback(client);
         navigator.GoTo(clientReservationScreenTransform.GetComponent<NavScreen>());
     }
     private void OpenDeleteAdminScreen(IClient client)
