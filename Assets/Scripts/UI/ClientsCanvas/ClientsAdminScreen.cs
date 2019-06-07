@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 
 public class ClientsAdminScreen : MonoBehaviour
 {
+    #region SerializeFieldVariables
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
@@ -25,10 +26,13 @@ public class ClientsAdminScreen : MonoBehaviour
     private Transform reservationInfoContent = null;
     [SerializeField]
     private GameObject reservationPrefabButton = null;
+    [SerializeField]
+    private ReservationEditScreen rezerv = null;
+    #endregion
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
     [SerializeField]
-    private ReservationEditScreen rezerv = null;
+    private ClientsScreen clientsScreen;
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -63,6 +67,7 @@ public class ClientsAdminScreen : MonoBehaviour
             {
                 ClientDataManager.DeleteClient(currentClient.ID);
                 ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
+                clientsScreen.InstantiateClients();
                 navigator.GoBack();
                 actionDelete?.Invoke();
             },
@@ -73,23 +78,7 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         DeleteClientButton();
     }
-    public void DeleteClient(Action actionDelete = null)
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_CLIENT,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                ClientDataManager.DeleteClient(currentClient.ID);
-                ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
-                actionDelete?.Invoke();
-            },
-            CancelCallback = null
-        });
-    }
-
+    
     public void SetAddReservationButton()
     {
         addReservationButton.SetAsFirstSibling();
@@ -136,7 +125,7 @@ public class ClientsAdminScreen : MonoBehaviour
         rezerv.OpenAddReservation(currentClient, UpdateCallBack);
     }
 
-
+    #region SmsPhoneEmail
     public void CallClient()
     {
         Application.OpenURL("tel://" + currentClient.Number);
@@ -165,4 +154,5 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
     }
+    #endregion
 }
