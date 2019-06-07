@@ -106,7 +106,7 @@ public class ReservationEditScreen : MonoBehaviour
 
             else
             {
-                modalCalendarDialog.OpenCallendar(periodStart, UpdateReservationPeriod);
+                modalCalendarDialog.OpenCallendar(periodStart, periodEnd, UpdateReservationPeriod);
             }
         }
 

@@ -94,9 +94,24 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ///Opens the calendar in selection mode focused on the given datetime.
         ///<para>Done callback returns either the selected datetime and the day after if only one date is selected, or the selected start and end date</para>
         ///</summary>
-        internal void OpenCallendar(DateTime focusedDay, Action<DateTime, DateTime> doneCallback)
+        internal void OpenCallendar(DateTime startDay, Action<DateTime, DateTime> doneCallback)
         {
-            focusDateTime = focusedDay;
+            focusDateTime = startDay.Date;
+            DoneCallback = doneCallback;
+            allowSigleDate = true;
+            selectionDayCountText.text = string.Empty;
+            Show(focusDateTime, null, null, doneCallback);
+        }
+
+        ///<summary>
+        ///Opens the calendar in selection mode focused on the given period.
+        ///<para>Done callback returns either the selected datetime and the day after if only one date is selected, or the selected start and end date</para>
+        ///</summary>
+        internal void OpenCallendar(DateTime startDay, DateTime endDay, Action<DateTime, DateTime> doneCallback)
+        {
+            focusDateTime = startDay.Date;
+            selectedStart = focusDateTime;
+            selectedEnd = endDay.Date;
             DoneCallback = doneCallback;
             allowSigleDate = true;
             selectionDayCountText.text = string.Empty;
@@ -110,6 +125,8 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         internal void OpenCallendar(IReservation r, List<IReservation> roomReservations, Action<DateTime, DateTime> doneCallback)
         {
             focusDateTime = (r != null) ? r.Period.Start : DateTime.Today;
+            selectedStart = r.Period.Start.Date;
+            selectedEnd = r.Period.End.Date;
             allowSigleDate = false;
             UpdateDayCountText();
             Show(focusDateTime, r, roomReservations, doneCallback);
