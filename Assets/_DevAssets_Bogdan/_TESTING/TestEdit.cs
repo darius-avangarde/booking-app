@@ -12,6 +12,10 @@ public class TestEdit : MonoBehaviour
 
     public GameObject itemPrefab;
 
+    public ConfirmationDialog cd;
+
+
+
     public Transform clientContent;
     public Transform roomContent;
     public Transform resContent;
@@ -19,8 +23,18 @@ public class TestEdit : MonoBehaviour
 
     public List<GameObject> goList = new List<GameObject>();
 
+    private ConfirmationDialogOptions opt;
 
     private void Start() {
+        opt = new ConfirmationDialogOptions();
+        opt.AditionalCallback = true;
+        opt.ConfirmCallback = () => Debug.Log("Done callback 1");
+        opt.ConfirmCallbackSecond = () => Debug.Log("Done callback 2");
+        opt.CancelCallback = () => Debug.Log("Done callback cancel");
+        opt.ConfirmText = "c 1";
+        opt.ConfirmTextSecond = "c 2";
+        opt.CancelText = " cancel";
+
         // IProperty pr = PropertyDataManager.GetProperties().Where(p => p.HasRooms && p.Rooms.Count() > 1).ToList()[0];
         // ReservationDataManager.AddReservation(pr.Rooms.ToList()[1], ClientDataManager.GetClients().ToList()[5], DateTime.Today.AddDays(6), DateTime.Today.AddDays(10));
     }
@@ -61,6 +75,12 @@ public class TestEdit : MonoBehaviour
         g.GetComponent<TestObject>().Initialize(clickAction, message, setColor);
     }
 
+    public void OpenModalConfig()
+    {
+        opt.AditionalCallback = !opt.AditionalCallback;
+        cd.Show(opt);
+    }
+
     public void DestroyChildren()
     {
         foreach(GameObject go in goList)
@@ -70,5 +90,7 @@ public class TestEdit : MonoBehaviour
 
         goList.Clear();
     }
+
+
 
 }
