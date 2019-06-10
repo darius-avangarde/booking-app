@@ -97,7 +97,7 @@ public class ClientsScreen : MonoBehaviour
             {
                 GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
                 if(fromReservation)
-                    clientButton.GetComponent<ClientButton>().InitializeClient(client, OpenClientScreen);
+                    clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
                     clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 clientButtons.Add(clientButton);
@@ -168,7 +168,7 @@ public class ClientsScreen : MonoBehaviour
 
         {
             Client client = new Client();
-            textNameRequired.text = "";
+            textNameRequired.text = string.Empty;
             client.Name = clientName.text;
             client.Number = clientPhone.text;
             client.Adress = clientAdress.text;
@@ -176,7 +176,7 @@ public class ClientsScreen : MonoBehaviour
             ClientDataManager.EditClient(currentClient.ID, client);
         }
 
-        InstantiateClients();
+        InstantiateClients(fromReservation);
     }
 
     private void OpenClientScreen(IClient client)

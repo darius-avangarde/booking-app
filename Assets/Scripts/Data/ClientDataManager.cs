@@ -47,7 +47,7 @@ public class ClientDataManager
     public static Dictionary<char, List<Client>> GetClientsToDictionary()
     {
         return Data.clients.FindAll(p => !p.Deleted).OrderBy(x => x.Name)
-                                                    .GroupBy(x => x.Name.First())
+                                                    .GroupBy(x => x.Name.ToLower().First())
                                                     .ToDictionary(x => x.Key, x => x.ToList());
     }
 
