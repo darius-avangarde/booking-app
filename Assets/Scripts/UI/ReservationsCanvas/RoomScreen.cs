@@ -52,40 +52,10 @@ public class RoomScreen : MonoBehaviour
     public void UpdateRoomDetailsFields(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
-        //dayDateTime = date;
         currentRoom = room;
-        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
-            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
-            backgroundImage.gameObject.SetActive(true);
-        }
-        else
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
-            backgroundImage.gameObject.SetActive(false);
-        }
-
-        if (currentProperty.HasRooms)
-        {
-            roomScreenTitle.text = room.Name ?? Constants.NEW_ROOM;
-        }
-        else
-        {
-            roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
-        }
-        bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
-                .Any(r => r.RoomID == room.ID);
-        if (reservations)
-        {
-            disponibilityMarker.color = Constants.reservedUnavailableItemColor;
-        }
-        else
-        {
-            disponibilityMarker.color = Constants.availableItemColor;
-        }
+        //dayDateTime = date;
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
-        InstantiateReservations();
+        //UpdateCurrentRoomDetailsFields();
     }
 
     public void UpdateCurrentRoomDetailsFields()
@@ -97,6 +67,16 @@ public class RoomScreen : MonoBehaviour
         else
         {
             roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
+        }
+        bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
+        .Any(r => r.RoomID == currentRoom.ID);
+        if (reservations)
+        {
+            disponibilityMarker.color = Constants.reservedUnavailableItemColor;
+        }
+        else
+        {
+            disponibilityMarker.color = Constants.availableItemColor;
         }
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {

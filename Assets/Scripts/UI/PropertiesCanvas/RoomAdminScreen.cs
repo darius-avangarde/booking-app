@@ -33,6 +33,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField = null;
     [SerializeField]
+    private Image backgroundImage = null;
+    [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
     private Toggle singleRoomToggle = null;
@@ -80,10 +82,13 @@ public class RoomAdminScreen : MonoBehaviour
             if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
             {
                 propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+                backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+                backgroundImage.gameObject.SetActive(true);
             }
             else
             {
                 propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+                backgroundImage.gameObject.SetActive(false);
             }
             if (string.IsNullOrEmpty(currentRoom.Name))
             {

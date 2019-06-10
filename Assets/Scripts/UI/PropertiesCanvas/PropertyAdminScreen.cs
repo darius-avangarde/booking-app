@@ -12,6 +12,8 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
+    private Image backgroundImage = null;
+    [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
     private GameObject RoomsToggleField = null;
@@ -50,7 +52,7 @@ public class PropertyAdminScreen : MonoBehaviour
             RoomsToggleField.SetActive(true);
             deleteButton.gameObject.SetActive(false);
         }
-        SetPropertyFieldsText();
+        //SetPropertyFieldsText();
     }
 
     private void SetPropertyFieldsText()
@@ -59,10 +61,13 @@ public class PropertyAdminScreen : MonoBehaviour
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.gameObject.SetActive(true);
         }
         else
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+            backgroundImage.gameObject.SetActive(false);
         }
         if (currentProperty.HasRooms)
         {
