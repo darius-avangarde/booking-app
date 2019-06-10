@@ -86,6 +86,11 @@ public class ReservationEditScreen : MonoBehaviour
     }
 
     #region Public functions
+        public void EnablePropertyDropdownListeners()
+        {
+            propertyDropdown.onValueChanged.AddListener(SetProperty);
+        }
+
         ///<summary>
         /// Opens the modal calendar overlay if a property is selected in order to change or set the reservation period
         ///</summary>
@@ -421,7 +426,6 @@ public class ReservationEditScreen : MonoBehaviour
         SizeEditablesRect();
         ValidateInput();
 
-        propertyDropdown.onValueChanged.AddListener(SetProperty);
         AllowEdit = true;
     }
 
