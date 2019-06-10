@@ -94,9 +94,24 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ///Opens the calendar in selection mode focused on the given datetime.
         ///<para>Done callback returns either the selected datetime and the day after if only one date is selected, or the selected start and end date</para>
         ///</summary>
-        internal void OpenCallendar(DateTime focusedDay, Action<DateTime, DateTime> doneCallback)
+        internal void OpenCallendar(DateTime startDay, Action<DateTime, DateTime> doneCallback)
         {
-            focusDateTime = focusedDay;
+            focusDateTime = startDay.Date;
+            DoneCallback = doneCallback;
+            allowSigleDate = true;
+            selectionDayCountText.text = string.Empty;
+            Show(focusDateTime, null, null, doneCallback);
+        }
+
+        ///<summary>
+        ///Opens the calendar in selection mode focused on the given period.
+        ///<para>Done callback returns either the selected datetime and the day after if only one date is selected, or the selected start and end date</para>
+        ///</summary>
+        internal void OpenCallendar(DateTime startDay, DateTime endDay, Action<DateTime, DateTime> doneCallback)
+        {
+            focusDateTime = startDay.Date;
+            selectedStart = focusDateTime;
+            selectedEnd = endDay.Date;
             DoneCallback = doneCallback;
             allowSigleDate = true;
             selectionDayCountText.text = string.Empty;
@@ -109,9 +124,21 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ///</summary>
         internal void OpenCallendar(IReservation r, List<IReservation> roomReservations, Action<DateTime, DateTime> doneCallback)
         {
-            focusDateTime = (r != null) ? r.Period.Start : DateTime.Today;
+            if(r != null)
+            {
+                focusDateTime = r.Period.Start;
+                selectedStart = r.Period.Start.Date;
+                selectedEnd = r.Period.End.Date;
+            }
+            else
+            {
+                focusDateTime = DateTime.Today.Date;
+                selectedStart = focusDateTime;
+                selectedEnd = focusDateTime.AddDays(1);
+            }
+
             allowSigleDate = false;
-            UpdateDayCountText();
+            UpdateDayCountText(selectedStart, selectedEnd);
             Show(focusDateTime, r, roomReservations, doneCallback);
         }
     #endregion
@@ -208,14 +235,14 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
                 selectionText.text = string.Empty;
                 confirmButton.interactable = false;
             }
-            UpdateDayCountText();
+            UpdateDayCountText(selectedStart, selectedEnd);
         }
     }
 
     private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
     {
-        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
         focusDateTime = initialDateTime;
+        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
         currentReservation = reservation;
         roomReservationList = reservationList;
         easyTween.OpenCloseObjectAnimation();
@@ -271,15 +298,15 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
         return roomReservationList
             .Any(r => ((currentReservation != null) ? r.ID != currentReservation.ID : r.ID != Constants.defaultCustomerName)
-            && ((start.Date > r.Period.Start && start.Date < r.Period.End.Date) //after start and before end
-            || r.Period.Start.Date > start.Date && r.Period.End.Date < end.Date
-            || r.Period.Start.Date == selectedStart.Date || r.Period.End.Date == selectedEnd.Date
-            ));
+            && ((start.Date > r.Period.Start.Date && start.Date < r.Period.End.Date) //start in period
+            || (end.Date > r.Period.Start.Date   && end.Date < r.Period.End.Date)   //end in period
+            || (start.Date < r.Period.Start.Date && end.Date > r.Period.End.Date)   //selection engulfs other reservation
+            || r.Period.Start.Date == start.Date || r.Period.End.Date == end.Date));    //start or end coincide
     }
 
-    private void UpdateDayCountText()
+    private void UpdateDayCountText(DateTime start, DateTime end)
     {
-        int days = (int)(selectedEnd - selectedStart).TotalDays;
+        int days = (int)(end - start).TotalDays;
         selectionDayCountText.text = String.Format("{0} {1} {2}", Constants.DAY_COUNT_PREF, days, (days == 1) ? Constants.DAY_COUNT_SUFF_SN : Constants.DAY_COUNT_SUFF_PL);
     }
 

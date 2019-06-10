@@ -1,81 +1,74 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class TestEdit : MonoBehaviour
 {
-    [SerializeField]
-    ReservationEditScreen edit;
-    [SerializeField]
-    Text testText;
-    [SerializeField]
-    ModalCalendarNew newCalendar;
+    public ReservationEditScreen resEd;
 
-    [SerializeField]
-    Color
-    unavailale = Constants.unavailableItemColor,
-    selected = Constants.selectedItemColor,
-    reservedAvailable = Constants.reservedAvailableItemColor,
-    reserverUnavail = Constants.reservedUnavailableItemColor,
-    avail = Constants.availableItemColor;
+    public GameObject itemPrefab;
 
-    IClient client;
-    IRoom room;
-    IReservation reservation;
-    // Start is called before the first frame update
-    void Start()
+    public Transform clientContent;
+    public Transform roomContent;
+    public Transform resContent;
+
+
+    public List<GameObject> goList = new List<GameObject>();
+
+
+    private void Start() {
+        // IProperty pr = PropertyDataManager.GetProperties().Where(p => p.HasRooms && p.Rooms.Count() > 1).ToList()[0];
+        // ReservationDataManager.AddReservation(pr.Rooms.ToList()[1], ClientDataManager.GetClients().ToList()[5], DateTime.Today.AddDays(6), DateTime.Today.AddDays(10));
+    }
+
+    public void RefreshLists()
     {
-
-        client = ClientDataManager.GetClients().ToList()[0];
-        IProperty p = PropertyDataManager.GetProperties().ToList()[0];
-        room = p.Rooms.ToList()[0];
-        if(ReservationDataManager.GetReservations().Count() > 0)
-            reservation = ReservationDataManager.GetReservations().ToList()[0];
-
-
-        List<IReservation> rlist = ReservationDataManager.GetReservations().OrderBy(r => r.Period.Start).ToList();
-        for (int i = 0; i < rlist.Count; i++)
+        DestroyChildren();
+        foreach(IClient c in ClientDataManager.GetClients())
         {
-            testText.text +=  Constants.NEWLINE + ClientDataManager.GetClient(rlist[i].CustomerID).Name + Constants.NEWLINE
-                + PropertyDataManager.GetProperty(rlist[i].PropertyID).GetRoom(rlist[i].RoomID).Name + Constants.NEWLINE
-                + rlist[i].Period.Start.ToString(Constants.DateTimePrintFormat) + " - " + rlist[i].Period.End.ToString(Constants.DateTimePrintFormat)+ Constants.NEWLINE;
+            CreateObject(() => resEd.OpenAddReservation(c, (r) => Debug.Log(r.ID)), c.Name, clientContent, Color.cyan);
         }
 
+        foreach(IProperty p in PropertyDataManager.GetProperties())
+        {
+            if(p.HasRooms)
+            {
+                CreateObject(() => resEd.OpenAddReservation(DateTime.Today, DateTime.Today.AddDays(3), p.Rooms.ToList(), (res) => Debug.Log("confirm callback")), "all rooms in" + p.Name, roomContent, Color.yellow);
+            }
+            foreach(IRoom r in p.Rooms)
+            {
+                List<IRoom> roomlist = new List<IRoom>();
+                roomlist.Add(r);
+                CreateObject(() => resEd.OpenAddReservation(DateTime.Today, DateTime.Today.AddDays(3), roomlist, (res) => Debug.Log("confirm callback")), r.Name, roomContent, Color.white);
+            }
+        }
+
+
+        foreach(IReservation r in ReservationDataManager.GetReservations())
+        {
+            CreateObject(() => resEd.OpenEditReservation(r, (res) => Debug.Log("Reservation for: \n" + res.CustomerName), () => Debug.Log("Deleted res callback")), "Reservation for: \n" + r.CustomerName + "\n with" + r.RoomIDs.Count + "rooms", resContent, Color.grey);
+        }
     }
 
-    public void OpenViewClient()
+    public void CreateObject(UnityAction clickAction, string message, Transform parent, Color setColor)
     {
-        if(client != null)
-            edit.OpenAddReservation(client, (r) => DebugC(r,true));
-        else
-            Debug.Log("client is null");
+        GameObject g = Instantiate(itemPrefab, parent);
+        goList.Add(g);
+        g.GetComponent<TestObject>().Initialize(clickAction, message, setColor);
     }
 
-    public void OpenViewRoom()
+    public void DestroyChildren()
     {
-        if(room != null)
-            edit.OpenAddReservation(room, (r) => DebugC(r,true));
-        else
-            Debug.Log("room is null");
+        foreach(GameObject go in goList)
+        {
+            Destroy(go);
+        }
+
+        goList.Clear();
     }
 
-    public void OpenViewReservation()
-    {
-        if(reservation != null)
-            edit.OpenEditReservation(reservation, (r) => DebugC(r,true));
-        else
-            Debug.Log("reservation is null");
-    }
-
-    public void OpenNewCalendar()
-    {
-        //newCalendar.OpenCallendar(reservation, ReservationDataManager.GetActiveRoomReservations(room.ID).ToList(), (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
-        newCalendar.OpenCallendar(System.DateTime.Today,  (s,e) => Debug.Log(s.ToShortDateString() + " - " + e.ToShortDateString()));
-    }
-    private void DebugC(IReservation r, bool isEdit)
-    {
-        Debug.Log("Confirmed " + ((isEdit) ? "edit" : "add") + " reservation for: " + ClientDataManager.GetClient(r.CustomerID).Name +  " in room: " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID).Name);
-    }
 }

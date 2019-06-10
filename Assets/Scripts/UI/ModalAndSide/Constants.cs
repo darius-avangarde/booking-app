@@ -37,6 +37,7 @@ public class Constants : MonoBehaviour
     public const string NameRequired = " Te rog adaugă un nume!";
     public const string defaultCustomerName = "NumeClient";
     public const string defaultPropertyPicture = "DefaultPicture";
+    public const string SPACE = " ";
 
     #region Reservation specific strings
         public const string CLIENTS_TITLE = "Clienți";
@@ -48,6 +49,9 @@ public class Constants : MonoBehaviour
         public const string DAY_COUNT_PREF = "Ați selectat";
         public const string DAY_COUNT_SUFF_PL = "nopți.";
         public const string DAY_COUNT_SUFF_SN = "noapte.";
+        public const string CHOOSE = "Alege";
+        public const string ROOMS_SELECTED = "camere selectate";
+        public const string RESERVATION_PERIOD = "perioadă";
 
         //error messages
         public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
