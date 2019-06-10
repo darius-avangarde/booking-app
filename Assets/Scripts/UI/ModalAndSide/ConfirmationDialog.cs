@@ -36,7 +36,7 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     {
         if(options.AditionalCallback)
         {
-            confirmButtonText.text = options.ConfirmTextSecond;
+            confirmSecondButtonText.text = options.ConfirmTextSecond;
             ConfirmCallbackSecond = options.ConfirmCallbackSecond;
             confirmSecondButton.SetActive(true);
         }
