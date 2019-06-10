@@ -41,9 +41,7 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private GameObject editButton;
     [SerializeField]
-    private Text textNameRequired;
-    [SerializeField]
-    private Text textEmailRequired;
+    private InputManager inputManager;
     #endregion
     #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
@@ -53,6 +51,7 @@ public class ClientsScreen : MonoBehaviour
     private UnityAction<IClient> selectClientCallback;
     private UnityAction<bool> cancelCallback;
     private bool fromReservation = false;
+    
     #endregion
     #region AnimationVariables
     public RectTransform Search;
@@ -115,19 +114,17 @@ public class ClientsScreen : MonoBehaviour
     public void SaveAddedClient()
     {
 
-        if (String.IsNullOrEmpty(clientName.text))
+        if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace) || String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = Constants.NameRequired;
+            return;
         }
         else
         {
             Client client = new Client();
-            textNameRequired.text = string.Empty;
-            client.Name = clientName.text;
-            client.Number = clientPhone.text;
-            client.Adress = clientAdress.text;
-            client.Email = clientEmail.text;
-            ClientDataManager.AddClient(client);
+            SetClient(client);
+          // if (!String.IsNullOrEmpty(clientEmail.text) && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true)
+                ClientDataManager.AddClient(client);
+           
             if (hasCallBack)
             {
                 saveCallBack.Invoke(client);
@@ -137,6 +134,14 @@ public class ClientsScreen : MonoBehaviour
         }
 
         InstantiateClients(fromReservation);
+    }
+
+    private void SetClient(Client client)
+    {
+        client.Name = clientName.text;
+        client.Number = clientPhone.text;
+        client.Email = clientEmail.text;
+        client.Adress = clientAdress.text;
     }
     public void CancelAddClient()
     {
@@ -156,23 +161,17 @@ public class ClientsScreen : MonoBehaviour
         cancelCallback = clientCancel;
     }
 
-
     public void EditClient()
     {
         var currentClient = clientEditScreenTransform.GetComponent<ClientsEditScreen>().GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text))
+        if (String.IsNullOrEmpty(clientName.text)|| String.IsNullOrEmpty(clientPhone.text))
         {
-            textNameRequired.text = Constants.NameRequired;
+            return;
         }
         else
-
         {
             Client client = new Client();
-            textNameRequired.text = string.Empty;
-            client.Name = clientName.text;
-            client.Number = clientPhone.text;
-            client.Adress = clientAdress.text;
-            client.Email = clientEmail.text;
+            SetClient(client);
             ClientDataManager.EditClient(currentClient.ID, client);
         }
 
@@ -205,17 +204,15 @@ public class ClientsScreen : MonoBehaviour
     #region phoneSmsEmail
     public void EmailUs(IClient currentClient)
     {
-        if (currentClient.Email == null)
+        if (string.IsNullOrEmpty(currentClient.Email))
         {
-            textEmailRequired.text = "Nu există email înregistrat!";
+            inputManager.Message("Nu există email înregistrat!"); // textul in constante!!!
+
         }
         else
         {
-            //subject of the mail
             string subject = MyEscapeURL("Custom application development");
-            //Open the Default Mail App
             Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
-            Debug.Log(currentClient.Email + "email is:");
         }
     }
 
@@ -226,15 +223,13 @@ public class ClientsScreen : MonoBehaviour
 
     public void phoneUS(IClient currentClient = null)
     {
-        Application.OpenURL("tel://" + currentClient.Number);
-        Debug.Log(currentClient.Number + "client number");
+            Application.OpenURL("tel://" + currentClient.Number);
     }
 
     public void SmsUs(IClient currentClient = null)
     {
-        Application.OpenURL("sms://" + currentClient.Number);
+            Application.OpenURL("sms:" + currentClient.Number);
     }
-
     #endregion
 
     public void SearchForClient()
@@ -274,6 +269,14 @@ public class ClientsScreen : MonoBehaviour
 
     }
 
+    public void SetFunctionsOnAddButton()
+    {
+        SetTextOnAddPanel();
+        saveButton.gameObject.SetActive(true);
+        editButton.gameObject.SetActive(false);
+        ClearSearchField(); 
+    }
+    
     public void SetTextOnAddPanel()
     {
         headerBarText.text = "Client nou";

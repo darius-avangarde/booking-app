@@ -28,11 +28,14 @@ public class ClientsAdminScreen : MonoBehaviour
     private GameObject reservationPrefabButton = null;
     [SerializeField]
     private ReservationEditScreen rezerv = null;
+    [SerializeField]
+    private InputManager inputManager;
     #endregion
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
     [SerializeField]
     private ClientsScreen clientsScreen;
+
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -128,26 +131,23 @@ public class ClientsAdminScreen : MonoBehaviour
     #region SmsPhoneEmail
     public void CallClient()
     {
-        Application.OpenURL("tel://" + currentClient.Number);
+            Application.OpenURL("tel://" + currentClient.Number);
     }
     public void SendSms()
     {
-        Application.OpenURL("sms://" + currentClient.Number);
+       
+            Application.OpenURL("sms:" + currentClient.Number);
     }
     public void SendEmail()
     {
-        if (currentClient.Email == null)
+        if (string.IsNullOrEmpty(currentClient.Email))
         {
-            //textEmailRequired.text = "Nu exită email înregistrat!";
-            Debug.Log("fara email");
+            inputManager.Message("Nu există email înregistrat!");
         }
         else
         {
-
             string subject = MyEscapeURL("Custom application development");
-
             Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
-            Debug.Log(currentClient.Email + "email is:");
         }
     }
     string MyEscapeURL(string url)

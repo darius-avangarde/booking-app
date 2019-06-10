@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ClientsEditScreen : MonoBehaviour
@@ -14,6 +16,9 @@ public class ClientsEditScreen : MonoBehaviour
     private IClient currentClient;
     [SerializeField]
     private Text textError;
+    [SerializeField]
+    private Text textNameRequired;
+
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -35,16 +40,29 @@ public class ClientsEditScreen : MonoBehaviour
     {
         if (RegexUtilities.IsValidEmail(clientEmail.text.ToString()))
         {
-            Debug.Log("Email correct");
-            Debug.Log(clientEmail.text);
+            textError.text = string.Empty;
+            textError.gameObject.SetActive(false);
         }
 
         else
 
         {
-           
-            Debug.Log("Invalid adress");
-            textError.text = "Please insert a valid e-mail!";
+            textError.gameObject.SetActive(true);
+            textError.text = "Inserează o adresă de email validă!";
+        }
+    }
+
+    public void ValidateClientName()
+    {
+        if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
+        {
+            textNameRequired.text = Constants.NameRequired;
+            textNameRequired.gameObject.SetActive(true);
+        }
+        else
+        {
+            textNameRequired.text = string.Empty;
+            textNameRequired.gameObject.SetActive(false);
         }
     }
 
