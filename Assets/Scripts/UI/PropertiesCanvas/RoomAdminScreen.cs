@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
@@ -207,7 +208,7 @@ public class RoomAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = Constants.DELETE_ROOM,
+            Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM,
             ConfirmText = Constants.DELETE_CONFIRM,
             CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
