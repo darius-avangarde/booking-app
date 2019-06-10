@@ -147,7 +147,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     {
         if (focusDateTime.Date > DateTime.Today.Date)
         {
-            focusDateTime = focusDateTime.AddMonths(-1);
+            focusDateTime = focusDateTime.AddMonths(-1).Date;
             StopAllCoroutines();
             isSliding = false;
             StartCoroutine(Swipe(true));
@@ -156,7 +156,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void ShowNextMonth()
     {
-        focusDateTime = focusDateTime.AddMonths(1);
+        focusDateTime = focusDateTime.AddMonths(1).Date;
         StopAllCoroutines();
         isSliding = false;
         StartCoroutine(Swipe(false));
@@ -242,7 +242,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
     {
         focusDateTime = initialDateTime;
-        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
+        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + ((focusDateTime.Year != DateTime.Today.Year) ? Constants.SPACE + focusDateTime.Year : string.Empty);
         currentReservation = reservation;
         roomReservationList = reservationList;
         easyTween.OpenCloseObjectAnimation();
@@ -313,7 +313,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private IEnumerator Swipe(bool isLeft)
     {
         isSliding = true;
-        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + " " + focusDateTime.Year;
+        monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + ((focusDateTime.Year != DateTime.Today.Year) ? Constants.SPACE + focusDateTime.Year : string.Empty);
 
         cachePage.Rect.position = (isLeft) ? slideLeft.position : slideRight.position;
         cachePage.UpdatePage(focusDateTime);
