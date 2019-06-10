@@ -52,6 +52,8 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private Color pastColor;
     [SerializeField]
     private Color notMonthColor;
+    [SerializeField]
+    private Color overlapColor;
     #endregion
 
     #region Public readonly properties
@@ -67,6 +69,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     public Color CurrentColor => currentColor;
     public Color PastColor => pastColor;
     public Color NotMonthColor => notMonthColor;
+    public Color OverlapColor => overlapColor;
     #endregion
 
     private Action<DateTime, DateTime> DoneCallback;
