@@ -177,8 +177,8 @@ public class ReservationEditScreen : MonoBehaviour
         //TODO: Integrate with room screen
         public void SelectRoom()
         {
-            //Go to room screen OpenRoomScreen(Datetime start, end, selection = curentRooms, callback = SetRooms)
-            //availabilityScreen.OpenASD(currentReservation, periodStart, periodEnd, curentRooms, SetRooms)
+        //Go to room screen OpenRoomScreen(Datetime start, end, selection = curentRooms, callback = SetRooms)
+        availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, currentRooms, SetRooms);
         }
     #endregion
 

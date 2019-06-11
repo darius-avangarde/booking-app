@@ -8,7 +8,8 @@ using UnityEngine.UI;
 public class RoomButton : MonoBehaviour
 {
     public DisponibilityScreen DisponibilitySccreenComponent { get; set; }
-    public bool selected = false;
+    public bool Selected = false;
+    public Image disponibilityMarker;
 
     [SerializeField]
     private Text roomName = null;
@@ -20,8 +21,8 @@ public class RoomButton : MonoBehaviour
     //private Text personsNumber = null;
     [SerializeField]
     private Button roomButton = null;
-    [SerializeField]
-    private Image disponibilityMarker = null;
+    //[SerializeField]
+    //private Image disponibilityMarker = null;
     [SerializeField]
     private Image selectMarker = null;
 
@@ -86,9 +87,9 @@ public class RoomButton : MonoBehaviour
 
     public void SelectToggleMark()
     {
-        if (selected)
+        if (Selected)
         {
-            selected = false;
+            Selected = false;
             selectMarker.gameObject.SetActive(false);
             if (DisponibilitySccreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
@@ -97,9 +98,8 @@ public class RoomButton : MonoBehaviour
         }
         else
         {
-            selected = true;
+            Selected = true;
             selectMarker.gameObject.SetActive(true);
-            disponibilityMarker.color = Color.white;
             if (!DisponibilitySccreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
                 DisponibilitySccreenComponent.selectedRooms.Add(currentRoom);

@@ -38,6 +38,7 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private Button backButton = null;
 
+    private Action<DateTime, DateTime, List<IRoom>> selectionCallback;
     private Dictionary<string, Dropdown.OptionData> propertyOptions;
     private Dictionary<string, int> propertyDropdownOptions;
     private List<GameObject> propertyItemList = new List<GameObject>();
@@ -49,6 +50,7 @@ public class DisponibilityScreen : MonoBehaviour
     private DateTime endDate = DateTime.Today.AddDays(1).Date;
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
+    private bool fromReservation = false;
 
     private void Awake()
     {
@@ -86,7 +88,14 @@ public class DisponibilityScreen : MonoBehaviour
             selectedProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(lastDropdownOption).Key);
             disponibilityDatePeriod.text = startDate.Day + " " + Constants.MonthNamesDict[startDate.Month] + " " + startDate.Year
                                     + " - " + endDate.Day + " " + Constants.MonthNamesDict[endDate.Month] + " " + endDate.Year;
-            reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
+            if (currentReservation != null)
+            {
+                reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).Where(r => r != currentReservation).ToList();
+            }
+            else
+            {
+                reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
+            }
             InstantiateRooms(selectedProperty);
         }
     }
@@ -96,7 +105,14 @@ public class DisponibilityScreen : MonoBehaviour
         int propertyIndex = 0;
         disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
                                 + " - " + endDate.Day + "/" + endDate.Month + "/" + endDate.Year;
-        reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
+        if (currentReservation != null)
+        {
+            reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).Where(r => r != currentReservation).ToList();
+        }
+        else
+        {
+            reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).ToList();
+        }
         propertyOptions = new Dictionary<string, Dropdown.OptionData>();
         propertyDropdownOptions = new Dictionary<string, int>();
         propertyOptions.Add(String.Empty, new Dropdown.OptionData("Toate Proprietatile"));
@@ -125,13 +141,6 @@ public class DisponibilityScreen : MonoBehaviour
                     if (roomReservation)
                     {
                         index++;
-                    }
-                    if (currentReservation != null)
-                    {
-                        if (roomReservation && reservations.Any(r => r.RoomID == currentReservation.ID))
-                        {
-                             index--;
-                        }
                     }
                 }
                 if (index == property.Rooms.Count())
@@ -187,8 +196,17 @@ public class DisponibilityScreen : MonoBehaviour
                         roomItemList.Add(roomButton);
                         nrRooms++;
                     }
+                    else
+                    {
+                        //if room is reserved, remove from selected rooms
+                        if (selectedRooms.Any(r => r.ID == room.ID))
+                        {
+                            selectedRooms.Remove(room);
+                        }
+                    }
                 }
                 availableRoomsNumber.text = Constants.AVAILABLE_ROOMS + nrRooms;
+                CheckRoomsSelection();
             }
             else
             {
@@ -206,17 +224,33 @@ public class DisponibilityScreen : MonoBehaviour
         {
             roomSelection = false;
             StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.sizeDelta.x, 1354)));
+            foreach (var room in roomItemList)
+            {
+                room.GetComponent<RoomButton>().disponibilityMarker.color = Constants.availableItemColor;
+            }
         }
         else
         {
             roomSelection = true;
             StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.sizeDelta.x, 1194)));
+            foreach (var room in roomItemList)
+            {
+                room.GetComponent<RoomButton>().disponibilityMarker.color = Color.white;
+            }
         }
     }
 
     public void MakeReservation()
     {
-        reservationScreenComponent.OpenAddReservation(startDate, endDate, selectedRooms, null);
+        if (fromReservation)
+        {
+            selectionCallback.Invoke(startDate, endDate, selectedRooms);
+            navigator.GoBack();
+        }
+        else
+        {
+            reservationScreenComponent.OpenAddReservation(startDate, endDate, selectedRooms, null);
+        }
     }
 
     public void CancelSelection()
@@ -226,11 +260,18 @@ public class DisponibilityScreen : MonoBehaviour
         foreach (var room in roomItemList)
         {
             RoomButton roomObject = room.GetComponent<RoomButton>();
-            if (roomObject.selected)
+            if (roomObject.Selected)
             {
                 roomObject.SelectToggleMark();
             }
         }
+    }
+
+    public void ClearChanges()
+    {
+        selectionCallback = null;
+        currentReservation = null;
+        fromReservation = false;
     }
 
     private void SelectDropdownProperty(IProperty property)
@@ -256,13 +297,16 @@ public class DisponibilityScreen : MonoBehaviour
         CheckRoomsSelection();
     }
 
-    public void OpenDisponibility(DateTime start, DateTime end, List<IRoom> selectedRooms)
+    public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
-        navigator.GoTo(this.GetComponent<NavScreen>());
+        fromReservation = true;
+        currentReservation = current;
         startDate = start;
         endDate = end;
         this.selectedRooms = selectedRooms;
+        navigator.GoTo(this.GetComponent<NavScreen>());
         SelectDropdownProperty(selectedRooms[0]);
+        selectionCallback = confirmSelection;
     }
 
     private IEnumerator ExpandFooterBar(Vector2 endSize)
