@@ -26,6 +26,8 @@ public class ReservationEditScreen : MonoBehaviour
         [Header("Screen references")]
         [SerializeField]
         private ClientsScreen clientsScreen;
+        [SerializeField]
+        private DisponibilityScreen availabilityScreen;
 
         [Space]
         [SerializeField]
@@ -175,20 +177,8 @@ public class ReservationEditScreen : MonoBehaviour
         //TODO: Integrate with room screen
         public void SelectRoom()
         {
-            string selectedRooms = string.Empty;
-            if(currentRooms != null)
-            foreach(IRoom r in currentRooms)
-            {
-                selectedRooms += r.Name + ", ";
-            }
-
-            Debug.Log("Unimplemented >Room screen > rooms: " + selectedRooms);
-            Debug.Log("Selecting random room");
-            List<IRoom> tr = new List<IRoom>();
-            tr.Add(currentProperty.Rooms.ToList()[UnityEngine.Random.Range(0, currentProperty.Rooms.Count())]);
-            SetRooms(tr);
-
             //Go to room screen OpenRoomScreen(Datetime start, end, selection = curentRooms, callback = SetRooms)
+            //availabilityScreen.OpenASD(currentReservation, periodStart, periodEnd, curentRooms, SetRooms)
         }
     #endregion
 
@@ -354,8 +344,11 @@ public class ReservationEditScreen : MonoBehaviour
         SetErrorAndInteractability(string.Empty, true);
     }
 
-    private void SetRooms(List<IRoom> rooms)
+    private void SetRooms(DateTime start, DateTime end, List<IRoom> rooms)
     {
+        periodStart = start.Date;
+        periodEnd = end.Date;
+        UpdateReservationPeriod(periodStart, periodEnd);
         currentRooms = new List<IRoom>();
         currentRooms = rooms;
 

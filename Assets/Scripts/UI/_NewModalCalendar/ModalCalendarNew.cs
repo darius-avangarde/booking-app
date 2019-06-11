@@ -82,6 +82,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private bool isSliding = false;
     private DateTime selectedStart;
     private DateTime selectedEnd;
+    private DateTime previousMonthLimit;
 
 
     private void Start()
@@ -148,7 +149,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
     public void ShowPreviousMonth()
     {
-        if (focusDateTime.Date > DateTime.Today.Date)
+        if (focusDateTime.Date > previousMonthLimit.Date)
         {
             focusDateTime = focusDateTime.AddMonths(-1).Date;
             StopAllCoroutines();
@@ -245,6 +246,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private void Show(DateTime initialDateTime, IReservation reservation, List<IReservation> reservationList, Action<DateTime, DateTime> doneCallback)
     {
         focusDateTime = initialDateTime;
+        previousMonthLimit = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
         monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + ((focusDateTime.Year != DateTime.Today.Year) ? Constants.SPACE + focusDateTime.Year : string.Empty);
         currentReservation = reservation;
         roomReservationList = reservationList;
