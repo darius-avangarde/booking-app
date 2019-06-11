@@ -349,7 +349,6 @@ public class ReservationEditScreen : MonoBehaviour
         periodStart = start.Date;
         periodEnd = end.Date;
         UpdateReservationPeriod(periodStart, periodEnd);
-        currentRooms = new List<IRoom>();
         currentRooms = rooms;
 
         if(rooms != null)
