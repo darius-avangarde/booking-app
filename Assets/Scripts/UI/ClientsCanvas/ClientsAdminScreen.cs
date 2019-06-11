@@ -28,11 +28,14 @@ public class ClientsAdminScreen : MonoBehaviour
     private GameObject reservationPrefabButton = null;
     [SerializeField]
     private ReservationEditScreen rezerv = null;
+    [SerializeField]
+    private InputManager inputManager;
     #endregion
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
     [SerializeField]
     private ClientsScreen clientsScreen;
+
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -78,7 +81,7 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         DeleteClientButton();
     }
-    
+
     public void SetAddReservationButton()
     {
         addReservationButton.SetAsFirstSibling();
@@ -100,10 +103,10 @@ public class ClientsAdminScreen : MonoBehaviour
     }
 
     private void UpdateCallBack(IReservation reserv)
-
     {
         SetCurrentClients(ClientDataManager.GetClient(reserv.CustomerID));
     }
+
     private void DeleteReservation(IReservation reservation)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -128,31 +131,22 @@ public class ClientsAdminScreen : MonoBehaviour
     #region SmsPhoneEmail
     public void CallClient()
     {
-        Application.OpenURL("tel://" + currentClient.Number);
+        clientsScreen.phoneUS(currentClient);
     }
     public void SendSms()
     {
-        Application.OpenURL("sms://" + currentClient.Number);
+        clientsScreen.SmsUs(currentClient);
     }
     public void SendEmail()
     {
-        if (currentClient.Email == null)
+        if (string.IsNullOrEmpty(currentClient.Email))
         {
-            //textEmailRequired.text = "Nu exită email înregistrat!";
-            Debug.Log("fara email");
+            inputManager.Message("Nu există email înregistrat!"); //text in ConstantsScript!!!!
         }
         else
         {
-
-            string subject = MyEscapeURL("Custom application development");
-
-            Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
-            Debug.Log(currentClient.Email + "email is:");
+            clientsScreen.EmailUs(currentClient);
         }
-    }
-    string MyEscapeURL(string url)
-    {
-        return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
     }
     #endregion
 }

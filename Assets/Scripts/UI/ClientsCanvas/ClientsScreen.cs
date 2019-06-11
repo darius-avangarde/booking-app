@@ -41,9 +41,7 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private GameObject editButton;
     [SerializeField]
-    private Text textNameRequired;
-    [SerializeField]
-    private Text textEmailRequired;
+    private InputManager inputManager;
     #endregion
     #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
@@ -73,7 +71,6 @@ public class ClientsScreen : MonoBehaviour
         initialClientContainer = ClientContainer.sizeDelta.y;
     }
 
-
     public void InstantiateClients(bool fromReservation = false)
     {
         this.fromReservation = fromReservation;
@@ -96,7 +93,7 @@ public class ClientsScreen : MonoBehaviour
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-                if(fromReservation)
+                if (fromReservation)
                     clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
                     clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
@@ -110,24 +107,21 @@ public class ClientsScreen : MonoBehaviour
         InstantiateClients(true);
         selectClientCallback = callback;
     }
-    
+
 
     public void SaveAddedClient()
     {
-
-        if (String.IsNullOrEmpty(clientName.text))
+        if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace) || String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = Constants.NameRequired;
+            return;
         }
         else
         {
             Client client = new Client();
-            textNameRequired.text = string.Empty;
-            client.Name = clientName.text;
-            client.Number = clientPhone.text;
-            client.Adress = clientAdress.text;
-            client.Email = clientEmail.text;
-            ClientDataManager.AddClient(client);
+            SetClient(client);
+            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
+                ClientDataManager.AddClient(client);
+
             if (hasCallBack)
             {
                 saveCallBack.Invoke(client);
@@ -137,6 +131,14 @@ public class ClientsScreen : MonoBehaviour
         }
 
         InstantiateClients(fromReservation);
+    }
+
+    private void SetClient(Client client)
+    {
+        client.Name = clientName.text;
+        client.Number = clientPhone.text;
+        client.Email = clientEmail.text;
+        client.Adress = clientAdress.text;
     }
     public void CancelAddClient()
     {
@@ -156,24 +158,19 @@ public class ClientsScreen : MonoBehaviour
         cancelCallback = clientCancel;
     }
 
-
     public void EditClient()
     {
         var currentClient = clientEditScreenTransform.GetComponent<ClientsEditScreen>().GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text))
+        if (String.IsNullOrEmpty(clientName.text) || String.IsNullOrEmpty(clientPhone.text))
         {
-            textNameRequired.text = Constants.NameRequired;
+            return;
         }
         else
-
         {
             Client client = new Client();
-            textNameRequired.text = string.Empty;
-            client.Name = clientName.text;
-            client.Number = clientPhone.text;
-            client.Adress = clientAdress.text;
-            client.Email = clientEmail.text;
-            ClientDataManager.EditClient(currentClient.ID, client);
+            SetClient(client);
+            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
+                ClientDataManager.EditClient(currentClient.ID, client);
         }
 
         InstantiateClients(fromReservation);
@@ -205,17 +202,14 @@ public class ClientsScreen : MonoBehaviour
     #region phoneSmsEmail
     public void EmailUs(IClient currentClient)
     {
-        if (currentClient.Email == null)
+        if (string.IsNullOrEmpty(currentClient.Email))
         {
-            textEmailRequired.text = "Nu există email înregistrat!";
+            inputManager.Message("Nu există email înregistrat!"); // textul in constante!!!
         }
         else
         {
-            //subject of the mail
             string subject = MyEscapeURL("Custom application development");
-            //Open the Default Mail App
             Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
-            Debug.Log(currentClient.Email + "email is:");
         }
     }
 
@@ -227,14 +221,12 @@ public class ClientsScreen : MonoBehaviour
     public void phoneUS(IClient currentClient = null)
     {
         Application.OpenURL("tel://" + currentClient.Number);
-        Debug.Log(currentClient.Number + "client number");
     }
 
     public void SmsUs(IClient currentClient = null)
     {
-        Application.OpenURL("sms://" + currentClient.Number);
+        Application.OpenURL("sms:" + currentClient.Number);
     }
-
     #endregion
 
     public void SearchForClient()
@@ -274,6 +266,14 @@ public class ClientsScreen : MonoBehaviour
 
     }
 
+    public void SetFunctionsOnAddButton()
+    {
+        SetTextOnAddPanel();
+        saveButton.gameObject.SetActive(true);
+        editButton.gameObject.SetActive(false);
+        ClearSearchField();
+    }
+
     public void SetTextOnAddPanel()
     {
         headerBarText.text = "Client nou";
@@ -291,14 +291,12 @@ public class ClientsScreen : MonoBehaviour
         clientAdress.text = string.Empty;
         clientEmail.text = string.Empty;
     }
-
     public void ClearSearchField()
     {
         searchField.text = string.Empty;
     }
     #endregion
 
-    //forget about this code. It doesn't exist.
     #region Animations
     public void SearchFieldShow(bool value)
     {

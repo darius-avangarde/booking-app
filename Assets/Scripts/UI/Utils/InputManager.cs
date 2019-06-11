@@ -57,7 +57,7 @@ public class InputManager : MonoBehaviour
                     quitObjectText.color = textDefaultColor;
 
                     //Start quit timer
-                    StartCoroutine(QuitingTimer());
+                    StartCoroutine(quitingTimer("Press back again to close the app!"));
 
                 }
                 else
@@ -68,8 +68,18 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private IEnumerator QuitingTimer()
+    public void Message(string currentText)
     {
+        QuitOverlayCanvas.SetActive(true);
+        quitObjectImage.color = imageDefaultColor;
+        quitObjectText.color = textDefaultColor;
+
+        StartCoroutine(quitingTimer(currentText));
+    }
+
+    private IEnumerator quitingTimer(string currentText)
+    {
+        quitObjectText.text = currentText;
         //Wait for a frame so that Input.GetKeyDown is no longer true
         yield return null;
 
