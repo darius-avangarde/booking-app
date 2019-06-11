@@ -51,7 +51,6 @@ public class ClientsScreen : MonoBehaviour
     private UnityAction<IClient> selectClientCallback;
     private UnityAction<bool> cancelCallback;
     private bool fromReservation = false;
-    
     #endregion
     #region AnimationVariables
     public RectTransform Search;
@@ -71,7 +70,6 @@ public class ClientsScreen : MonoBehaviour
         ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -178 - initialSizeSearch);
         initialClientContainer = ClientContainer.sizeDelta.y;
     }
-
 
     public void InstantiateClients(bool fromReservation = false)
     {
@@ -95,7 +93,7 @@ public class ClientsScreen : MonoBehaviour
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
-                if(fromReservation)
+                if (fromReservation)
                     clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
                     clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
@@ -109,11 +107,10 @@ public class ClientsScreen : MonoBehaviour
         InstantiateClients(true);
         selectClientCallback = callback;
     }
-    
+
 
     public void SaveAddedClient()
     {
-
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace) || String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
             return;
@@ -122,9 +119,9 @@ public class ClientsScreen : MonoBehaviour
         {
             Client client = new Client();
             SetClient(client);
-          // if (!String.IsNullOrEmpty(clientEmail.text) && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true)
+            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
                 ClientDataManager.AddClient(client);
-           
+
             if (hasCallBack)
             {
                 saveCallBack.Invoke(client);
@@ -164,7 +161,7 @@ public class ClientsScreen : MonoBehaviour
     public void EditClient()
     {
         var currentClient = clientEditScreenTransform.GetComponent<ClientsEditScreen>().GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text)|| String.IsNullOrEmpty(clientPhone.text))
+        if (String.IsNullOrEmpty(clientName.text) || String.IsNullOrEmpty(clientPhone.text))
         {
             return;
         }
@@ -172,7 +169,8 @@ public class ClientsScreen : MonoBehaviour
         {
             Client client = new Client();
             SetClient(client);
-            ClientDataManager.EditClient(currentClient.ID, client);
+            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
+                ClientDataManager.EditClient(currentClient.ID, client);
         }
 
         InstantiateClients(fromReservation);
@@ -207,7 +205,6 @@ public class ClientsScreen : MonoBehaviour
         if (string.IsNullOrEmpty(currentClient.Email))
         {
             inputManager.Message("Nu există email înregistrat!"); // textul in constante!!!
-
         }
         else
         {
@@ -223,12 +220,12 @@ public class ClientsScreen : MonoBehaviour
 
     public void phoneUS(IClient currentClient = null)
     {
-            Application.OpenURL("tel://" + currentClient.Number);
+        Application.OpenURL("tel://" + currentClient.Number);
     }
 
     public void SmsUs(IClient currentClient = null)
     {
-            Application.OpenURL("sms:" + currentClient.Number);
+        Application.OpenURL("sms:" + currentClient.Number);
     }
     #endregion
 
@@ -274,9 +271,9 @@ public class ClientsScreen : MonoBehaviour
         SetTextOnAddPanel();
         saveButton.gameObject.SetActive(true);
         editButton.gameObject.SetActive(false);
-        ClearSearchField(); 
+        ClearSearchField();
     }
-    
+
     public void SetTextOnAddPanel()
     {
         headerBarText.text = "Client nou";
@@ -294,14 +291,12 @@ public class ClientsScreen : MonoBehaviour
         clientAdress.text = string.Empty;
         clientEmail.text = string.Empty;
     }
-
     public void ClearSearchField()
     {
         searchField.text = string.Empty;
     }
     #endregion
 
-    //forget about this code. It doesn't exist.
     #region Animations
     public void SearchFieldShow(bool value)
     {

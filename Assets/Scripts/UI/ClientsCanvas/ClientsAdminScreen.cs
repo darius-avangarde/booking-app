@@ -81,7 +81,7 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         DeleteClientButton();
     }
-    
+
     public void SetAddReservationButton()
     {
         addReservationButton.SetAsFirstSibling();
@@ -103,10 +103,10 @@ public class ClientsAdminScreen : MonoBehaviour
     }
 
     private void UpdateCallBack(IReservation reserv)
-
     {
         SetCurrentClients(ClientDataManager.GetClient(reserv.CustomerID));
     }
+
     private void DeleteReservation(IReservation reservation)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -131,28 +131,22 @@ public class ClientsAdminScreen : MonoBehaviour
     #region SmsPhoneEmail
     public void CallClient()
     {
-            Application.OpenURL("tel://" + currentClient.Number);
+        clientsScreen.phoneUS(currentClient);
     }
     public void SendSms()
     {
-       
-            Application.OpenURL("sms:" + currentClient.Number);
+        clientsScreen.SmsUs(currentClient);
     }
     public void SendEmail()
     {
         if (string.IsNullOrEmpty(currentClient.Email))
         {
-            inputManager.Message("Nu există email înregistrat!");
+            inputManager.Message("Nu există email înregistrat!"); //text in ConstantsScript!!!!
         }
         else
         {
-            string subject = MyEscapeURL("Custom application development");
-            Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
+            clientsScreen.EmailUs(currentClient);
         }
-    }
-    string MyEscapeURL(string url)
-    {
-        return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
     }
     #endregion
 }

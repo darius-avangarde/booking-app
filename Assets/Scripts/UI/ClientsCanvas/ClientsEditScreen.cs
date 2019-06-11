@@ -38,20 +38,17 @@ public class ClientsEditScreen : MonoBehaviour
     }
     public void ValidAdress()
     {
-        if (RegexUtilities.IsValidEmail(clientEmail.text.ToString()))
+        if (RegexUtilities.IsValidEmail(clientEmail.text.ToString()) || String.IsNullOrEmpty(clientEmail.text))
         {
             textError.text = string.Empty;
             textError.gameObject.SetActive(false);
         }
-
         else
-
         {
             textError.gameObject.SetActive(true);
             textError.text = "Inserează o adresă de email validă!";
         }
     }
-
     public void ValidateClientName()
     {
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
@@ -65,5 +62,17 @@ public class ClientsEditScreen : MonoBehaviour
             textNameRequired.gameObject.SetActive(false);
         }
     }
-
+    public void ValidateClientPhone()
+    {
+        if (String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
+        {
+            textNameRequired.text = "Te rog adaugă un număr de telefon!";
+            textNameRequired.gameObject.SetActive(true);
+        }
+        else
+        {
+            textNameRequired.text = string.Empty;
+            textNameRequired.gameObject.SetActive(false);
+        }
+    }
 }
