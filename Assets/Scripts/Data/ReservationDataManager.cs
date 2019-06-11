@@ -217,6 +217,22 @@ public static class ReservationDataManager
         WriteReservationData();
     }
 
+    ///<summary>
+    /// Deletes unused reservations from the persistant data file.
+    ///</summary>
+    public static void DeleteUnusedReservationsFromFile(bool deletePast, bool deleteDeleted)
+    {
+        if(deletePast)
+        {
+            Data.reservations.RemoveAll(r => r.Period.End.Date < DateTime.Today.Date);
+        }
+        if(deleteDeleted)
+        {
+            Data.reservations.RemoveAll(r => r.Deleted);
+        }
+        WriteReservationData();
+    }
+
     public static IDateTimePeriod DefaultPeriod()
     {
         return new DateTimePeriod(DateTime.Today, DateTime.Today);
