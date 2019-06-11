@@ -51,7 +51,7 @@ public class PropertyButton : MonoBehaviour
         }
         if (!property.HasRooms)
         {
-            propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetRoom(property.GetPropertyRoomID)));
+            propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetPropertyRoom()));
             disponibilityMarker.gameObject.SetActive(true);
             bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
                 .Any(r => r.RoomID == property.GetRoom(property.GetPropertyRoomID).ID);

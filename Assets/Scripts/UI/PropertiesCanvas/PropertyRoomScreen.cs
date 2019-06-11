@@ -59,7 +59,7 @@ public class PropertyRoomScreen : MonoBehaviour
             foreach (var room in currentProperty.Rooms)
             {
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);
-                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomScreen);
+                roomButton.GetComponent<RoomButton>().Initialize(room, null, OpenRoomScreen);
                 roomButtons.Add(roomButton);
             }
         }

@@ -145,6 +145,10 @@ public class PropertyAdminScreen : MonoBehaviour
     private void NameChanged(string value)
     {
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
+        if (!currentProperty.HasRooms)
+        {
+            currentProperty.GetPropertyRoom().Name = currentProperty.Name;
+        }
     }
 
     private IEnumerator UploadPhoto()
