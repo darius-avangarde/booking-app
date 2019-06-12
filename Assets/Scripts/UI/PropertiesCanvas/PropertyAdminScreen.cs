@@ -83,10 +83,9 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void AddPhoto()
     {
-
-
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
+            AditionalCallback = true,
             Message = Constants.OPEN_CAMERA_GALLERY,
             ConfirmText = Constants.OPEN_CAMERA,
             ConfirmTextSecond = Constants.OPEN_GALLERY,
@@ -107,7 +106,6 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void SaveProperty()
     {
-        NameChanged(propertyNameInputField.text);
         if (HasRoomsToggle.isOn)
         {
             currentProperty.HasRooms = true;
@@ -124,6 +122,7 @@ public class PropertyAdminScreen : MonoBehaviour
         {
             ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
         }
+        NameChanged(propertyNameInputField.text);
         navigator.GoBack();
     }
 
