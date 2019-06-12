@@ -1,30 +1,35 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RoomButton : MonoBehaviour
 {
+    public DisponibilityScreen DisponibilitySccreenComponent { get; set; }
+    public bool Selected = false;
+    public Image disponibilityMarker;
+
     [SerializeField]
     private Text roomName = null;
     //[SerializeField]
     //private Text roomPrice = null;
     //[SerializeField]
     //private Text roomBeds = null;
+    //[SerializeField]
+    //private Text personsNumber = null;
     [SerializeField]
-    private Button roomButton;
+    private Button roomButton = null;
+    //[SerializeField]
+    //private Image disponibilityMarker = null;
     [SerializeField]
-    private Button editRoomButton;
-    [SerializeField]
-    private Button deleteRoomButton;
-    [SerializeField]
-    private Image disponibilityMarker = null;
+    private Image selectMarker = null;
+
     private IRoom currentRoom;
     private DateTime dateTimeStart = DateTime.Today.Date;
     private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
-    //[SerializeField]
-    //private Text personsNumber = null;
+    private bool reservations = false;
 
     public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
     {
@@ -32,9 +37,11 @@ public class RoomButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IRoom room, Action<IRoom> roomCallback, Action<IRoom> editCallback, Action<IRoom> deleteCallback)
+    public void Initialize(IRoom room, DisponibilityScreen disponibilityScript, Action<IRoom> roomCallback)
     {
+        selectMarker.gameObject.SetActive(false);
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
+        DisponibilitySccreenComponent = disponibilityScript;
         //roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.PRICE : ("Pret: " + room.Price + " ron");
         //roomBeds.text = null;
         //if (room.SingleBeds != 0)
@@ -49,7 +56,7 @@ public class RoomButton : MonoBehaviour
         //{
         //    roomBeds.text += Constants.DoubleBed + room.DoubleBeds;
         //}
-        bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
+        reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
                 .Any(r => r.RoomID == room.ID);
         if (reservations)
         {
@@ -60,8 +67,58 @@ public class RoomButton : MonoBehaviour
             disponibilityMarker.color = Constants.availableItemColor;
         }
         roomButton.onClick.AddListener(() => roomCallback(room));
-        editRoomButton.onClick.AddListener(() => editCallback(room));
-        deleteRoomButton.onClick.AddListener(() => deleteCallback(room));
         currentRoom = room;
+        if(disponibilityScript != null)
+        {
+            if (disponibilityScript.selectedRooms.Any(r => r.ID == currentRoom.ID))
+            {
+                SelectToggleMark();
+            }
+        }
+    }
+
+    public void StartPressing()
+    {
+        if (DisponibilitySccreenComponent != null)
+        {
+            StartCoroutine(SelectionMode());
+        }
+    }
+
+    public void SelectToggleMark()
+    {
+        if (Selected)
+        {
+            Selected = false;
+            selectMarker.gameObject.SetActive(false);
+            if (DisponibilitySccreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
+            {
+                DisponibilitySccreenComponent.selectedRooms.Remove(currentRoom);
+            }
+        }
+        else
+        {
+            Selected = true;
+            selectMarker.gameObject.SetActive(true);
+            if (!DisponibilitySccreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
+            {
+                DisponibilitySccreenComponent.selectedRooms.Add(currentRoom);
+            }
+            DisponibilitySccreenComponent.CheckRoomsSelection();
+        }
+    }
+
+    private IEnumerator SelectionMode()
+    {
+        if (!DisponibilitySccreenComponent.roomSelection)
+        {
+            double timer = 0;
+            while (timer < 1f)
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+        SelectToggleMark();
     }
 }
