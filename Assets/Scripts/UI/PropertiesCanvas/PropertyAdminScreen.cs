@@ -83,21 +83,25 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void AddPhoto()
     {
+
+
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Deschideți galeria sau camera foto?",
-            ConfirmText = "Camera",
-            CancelText = "Galerie",
+            Message = Constants.OPEN_CAMERA_GALLERY,
+            ConfirmText = Constants.OPEN_CAMERA,
+            ConfirmTextSecond = Constants.OPEN_GALLERY,
+            CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
                 ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
                 addedPhoto = true;
             },
-            CancelCallback = () =>
+            ConfirmCallbackSecond = () =>
             {
                 ImageDataManager.PickImage(currentProperty.ID, propertyImage);
                 addedPhoto = true;
-            }
+            },
+            CancelCallback = null
         });
     }
 

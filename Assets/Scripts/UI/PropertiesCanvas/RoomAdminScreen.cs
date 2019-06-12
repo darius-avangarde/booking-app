@@ -142,6 +142,12 @@ public class RoomAdminScreen : MonoBehaviour
         int rooms = int.Parse(multipleNrRoomsField.text);
         if (floors > 0)
         {
+            for (int j = 1; j <= rooms; j++)
+            {
+                IRoom newRoom = currentProperty.AddRoom();
+                newRoom.Name = $"{multiplePrefixField.text} {j}";
+                currentProperty.SaveRoom(newRoom);
+            }
             for (int i = 1; i <= floors; i++)
             {
                 for (int j = 1; j <= rooms; j++)
@@ -149,11 +155,11 @@ public class RoomAdminScreen : MonoBehaviour
                     IRoom newRoom = currentProperty.AddRoom();
                     if (j < 10)
                     {
-                        newRoom.Name = multiplePrefixField.text + " " + i + '0' + j;
+                        newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
                     }
                     else
                     {
-                        newRoom.Name = multiplePrefixField.text + " " + i + j;
+                        newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
                     }
                     currentProperty.SaveRoom(newRoom);
                 }
@@ -164,14 +170,7 @@ public class RoomAdminScreen : MonoBehaviour
             for (int j = 1; j <= rooms; j++)
             {
                 IRoom newRoom = currentProperty.AddRoom();
-                if (j < 10)
-                {
-                    newRoom.Name = multiplePrefixField.text + " " + '0' + j;
-                }
-                else
-                {
-                    newRoom.Name = multiplePrefixField.text + " " + j;
-                }
+                newRoom.Name = $"{multiplePrefixField.text} {j}";
                 currentProperty.SaveRoom(newRoom);
             }
         }
