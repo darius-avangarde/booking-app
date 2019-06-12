@@ -54,10 +54,11 @@ public class DisponibilityScreen : MonoBehaviour
     private IProperty selectedProperty;
     private DateTime startDate = DateTime.Today.Date;
     private DateTime endDate = DateTime.Today.AddDays(1).Date;
+    private float disponibilityHeight;
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
     private bool fromReservation = false;
-    private float disponibilityHeight;
+    private bool shouldSelectRooms = false;
     private bool vibrate = true;
 
     private void Awake()
@@ -66,17 +67,21 @@ public class DisponibilityScreen : MonoBehaviour
         disponibilityHeight = disponibilityScrollView.offsetMin.y;
     }
 
-    public void Initialize()
+    public void SetDefaultDate()
     {
         startDate = DateTime.Today.Date;
         endDate = DateTime.Today.AddDays(1).Date;
+    }
+
+    public void Initialize()
+    {
         lastDropdownOption = 0;
         SelectProperty(lastDropdownOption);
     }
 
     public void ShowModalCalendar()
     {
-        calendarScreen.OpenCallendar(startDate, SetNewDatePeriod);
+        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
     }
 
     private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
@@ -89,6 +94,10 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void SelectProperty(int optionIndex)
     {
+        if (!shouldSelectRooms)
+        {
+            CancelSelection();
+        }
         propertyDropdownList.value = optionIndex;
         if (optionIndex == 0)
         {
@@ -111,11 +120,13 @@ public class DisponibilityScreen : MonoBehaviour
             }
             InstantiateRooms(selectedProperty);
         }
+        shouldSelectRooms = false;
     }
 
     private void InstantiateProperties()
     {
         StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
+        CancelSelection();
         int propertyIndex = 0;
         backgroundImage.gameObject.SetActive(false);
         disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
@@ -173,7 +184,6 @@ public class DisponibilityScreen : MonoBehaviour
             }
             else
             {
-                buttonObject.InitializeDateTime(startDate, endDate);
                 bool roomReservation = reservations.Any(r => r.ContainsRoom(property.GetPropertyRoom().ID));
                 if (roomReservation)
                 {
@@ -181,6 +191,7 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 else
                 {
+                    buttonObject.InitializeDateTime(startDate, endDate);
                     buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
@@ -234,7 +245,7 @@ public class DisponibilityScreen : MonoBehaviour
                     }
                     else
                     {
-                        //if room is reserved, remove from selected rooms
+                        //if room is reserved in the given date time period, remove it from selected rooms
                         if (selectedRooms.Any(r => r.ID == room.ID))
                         {
                             selectedRooms.Remove(room);
@@ -249,6 +260,7 @@ public class DisponibilityScreen : MonoBehaviour
                 StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
                 GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
                 PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
+                buttonObject.InitializeDateTime(startDate, endDate);
                 buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty);
                 propertyItemList.Add(propertyButton);
             }
@@ -344,16 +356,17 @@ public class DisponibilityScreen : MonoBehaviour
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
         fromReservation = true;
-        startDate = start;
-        endDate = end;
         if (current != null)
         {
             currentReservation = current;
         }
+        startDate = start;
+        endDate = end;
         navigator.GoTo(this.GetComponent<NavScreen>());
-        this.selectedRooms = selectedRooms;
         if (selectedRooms != null)
         {
+            shouldSelectRooms = true;
+            this.selectedRooms = selectedRooms;
             SelectDropdownProperty(selectedRooms[0]);
         }
         selectionCallback = confirmSelection;

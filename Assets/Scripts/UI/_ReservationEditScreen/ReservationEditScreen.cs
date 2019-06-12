@@ -35,6 +35,8 @@ public class ReservationEditScreen : MonoBehaviour
         [SerializeField]
         private Dropdown propertyDropdown = null;
         [SerializeField]
+        private Text propertyButtonText;
+        [SerializeField]
         private Text reservationPeriodText = null;
         [SerializeField]
         private Button confirmButton = null;
@@ -107,13 +109,15 @@ public class ReservationEditScreen : MonoBehaviour
                     ReservationDataManager.GetReservations()
                         .Where(r => r.ID != reservationID && r.RoomIDs.Any(s => currentRooms.Any(ro => ro.ID == s)))
                         .ToList(),
-                    UpdateReservationPeriod
+                    UpdateReservationPeriod,
+                    periodStart,
+                    periodEnd
                     );
             }
 
             else
             {
-                modalCalendarDialog.OpenCallendar(periodStart, periodEnd, UpdateReservationPeriod);
+                modalCalendarDialog.OpenCallendar(periodStart, periodEnd, UpdateReservationPeriod, false);
             }
         }
 
@@ -172,6 +176,12 @@ public class ReservationEditScreen : MonoBehaviour
         public void SelectClient()
         {
             clientsScreen.OpenClientReservation(SetClient);
+        }
+
+        public void SelectProperty()
+        {
+            availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, null, SetProperty);
+            SetProperty(0);
         }
 
         public void SelectRoom()
@@ -342,6 +352,14 @@ public class ReservationEditScreen : MonoBehaviour
         SetErrorAndInteractability(string.Empty, true);
     }
 
+    private void SetProperty(DateTime start, DateTime end, List<IRoom> rooms)
+    {
+        currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
+        propertyButtonText.text = currentProperty.Name;
+        SizeEditablesRect();
+        SetRooms(start, end, rooms);
+    }
+
     private void SetRooms(DateTime start, DateTime end, List<IRoom> rooms)
     {
         periodStart = start.Date;
@@ -377,7 +395,15 @@ public class ReservationEditScreen : MonoBehaviour
 
         InitializePropertyDropdown();
 
-        clientButtonText.text = (client != null) ? client.Name : Constants.CHOOSE;
+        if(client != null)
+        {
+            clientButtonText.text = client.Name;
+            propertyButtonText.text = Constants.CHOOSE;
+        }
+        else
+        {
+            clientButtonText.text = Constants.CHOOSE;
+        }
 
         if(reservation != null)
         {
@@ -397,6 +423,8 @@ public class ReservationEditScreen : MonoBehaviour
 
         if(rooms != null)
         {
+            propertyButtonText.text = PropertyDataManager.GetProperty(rooms[0].PropertyID).Name;
+
             if(rooms.Count == 1)
             {
                 roomButton.SetActive(PropertyDataManager.GetProperty(rooms[0].PropertyID).HasRooms);

@@ -23,7 +23,7 @@ public class ModalMonthPage : MonoBehaviour
     private DateTime currentDate;
 
 
-    public void UpdatePage(DateTime selectedDateTime)
+    public void UpdatePage(DateTime selectedDateTime, bool showPreviousSelection = false)
     {
         DateTime firstDayOfMonthInSelectedDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
 
@@ -34,6 +34,11 @@ public class ModalMonthPage : MonoBehaviour
         SetDayItemsForCurrentMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
 
         SetDayItemsForNextMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
+
+        if(showPreviousSelection)
+        {
+            UpdatePreviousSelection();
+        }
 
         UpdateCurentReservationPeriod();
 
@@ -212,6 +217,31 @@ public class ModalMonthPage : MonoBehaviour
                             dayObjects[d].UpdateDayColors(null, null,  OverlapCol(dayObjects[d].IsEnd || dayObjects[d].IsReserved));
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private void UpdatePreviousSelection()
+    {
+        for(int d = 0; d < dayObjects.Count; d++)
+        {
+            if(dayObjects[d].ObjDate >= DateTime.Today.Date)
+            {
+                if(dayObjects[d].ObjDate.Date == calendar.SelectedStart.Date)
+                {
+                    dayObjects[d].UpdateDayColors(null, (dayObjects[d].IsStart || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor, null);
+                }
+                if(dayObjects[d].ObjDate > calendar.SelectedStart.Date && dayObjects[d].ObjDate < calendar.SelectedEnd.Date)
+                {
+                    dayObjects[d].UpdateDayColors(
+                        (dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor,
+                        (dayObjects[d].IsStart || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor,
+                        (dayObjects[d].IsEnd || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor);
+                }
+                if (dayObjects[d].ObjDate.Date == calendar.SelectedEnd.Date)
+                {
+                    dayObjects[d].UpdateDayColors(null, null, (dayObjects[d].IsEnd || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor);
                 }
             }
         }
