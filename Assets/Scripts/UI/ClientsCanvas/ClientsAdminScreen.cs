@@ -21,8 +21,6 @@ public class ClientsAdminScreen : MonoBehaviour
     [SerializeField]
     private Text clientScreenEmail = null;
     [SerializeField]
-    private Transform addReservationButton;
-    [SerializeField]
     private Transform reservationInfoContent = null;
     [SerializeField]
     private GameObject reservationPrefabButton = null;
@@ -80,11 +78,6 @@ public class ClientsAdminScreen : MonoBehaviour
     public void DeleteClientCurrent()
     {
         DeleteClientButton();
-    }
-
-    public void SetAddReservationButton()
-    {
-        addReservationButton.SetAsFirstSibling();
     }
 
     public void InstantiateReservations()
