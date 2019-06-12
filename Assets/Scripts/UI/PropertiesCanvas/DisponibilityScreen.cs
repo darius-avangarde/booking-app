@@ -145,7 +145,7 @@ public class DisponibilityScreen : MonoBehaviour
                 int index = 0;
                 foreach (var room in property.Rooms)
                 {
-                    bool roomReservation = reservations.Any(r => r.RoomID == room.ID);
+                    bool roomReservation = reservations.Any(r => r.ContainsRoom(room.ID));
                     if (roomReservation)
                     {
                         index++;
@@ -159,7 +159,7 @@ public class DisponibilityScreen : MonoBehaviour
             else
             {
                 buttonObject.InitializeDateTime(startDate, endDate);
-                bool roomReservation = reservations.Any(r => r.RoomID == property.GetPropertyRoom().ID);
+                bool roomReservation = reservations.Any(r => r.ContainsRoom(property.GetPropertyRoom().ID));
                 if (roomReservation)
                 {
                     Destroy(propertyButton);
@@ -203,7 +203,7 @@ public class DisponibilityScreen : MonoBehaviour
             {
                 foreach (var room in property.Rooms)
                 {
-                    bool roomReservation = reservations.Any(r => r.RoomID == room.ID);
+                    bool roomReservation = reservations.Any(r => r.ContainsRoom(room.ID));
                     if (!roomReservation)
                     {
                         GameObject roomButton = Instantiate(roomItemPrefab, filteredPropertiesContent);
