@@ -83,10 +83,9 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void AddPhoto()
     {
-
-
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
+            AditionalCallback = true,
             Message = Constants.OPEN_CAMERA_GALLERY,
             ConfirmText = Constants.OPEN_CAMERA,
             ConfirmTextSecond = Constants.OPEN_GALLERY,
