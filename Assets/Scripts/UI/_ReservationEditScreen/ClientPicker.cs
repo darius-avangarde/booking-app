@@ -73,7 +73,7 @@ public class ClientPicker : MonoBehaviour
     {
         if (b)
         {
-            reservationEdit.allowEdit = true;
+            reservationEdit.AllowEdit = true;
         }
     }
 
@@ -86,7 +86,7 @@ public class ClientPicker : MonoBehaviour
     //callback assigned to the client picker objects (sets the active client in the edit reservation screen and concludes search)
     internal void SelectAction(IClient client)
     {
-        reservationEdit.SetClient(client);
+        //reservationEdit.SetClient(client);
         scrolRectGameObj.SetActive(false);
         addClientButton.SetActive(false);
     }
@@ -94,7 +94,7 @@ public class ClientPicker : MonoBehaviour
     //Filters the input field value on change if allowed to search, and starts load coroutine before populating scrolrect with matching clients
     private void FilterClients(string value)
     {
-        if(reservationEdit.allowEdit)
+        if(reservationEdit.AllowEdit)
         {
             if(!scrolRectGameObj.activeSelf)
             {

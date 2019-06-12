@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
@@ -7,167 +8,123 @@ using UnityEngine.UI;
 
 public class PropertiesScreen : MonoBehaviour
 {
-    public string OpenRoomDropdown { get; set; }
-
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ConfirmationDialog confirmationDialog = null;
-    [SerializeField]
     private Transform propertyAdminScreenTransform = null;
     [SerializeField]
-    private Transform roomAdminScreenTransform = null;
+    private Transform propertyRoomScreenTransform = null;
     [SerializeField]
     private Transform roomScreenTransform = null;
     [SerializeField]
-    private GameObject propertyWithRoomsPrefab = null;
-    [SerializeField]
-    private GameObject propertyWithoutRoomsPrefab = null;
-    [SerializeField]
-    private GameObject roomPrefabButton = null;
-    [SerializeField]
-    private Transform addPropertyButton = null;
+    private GameObject propertyItemPrefab = null;
     [SerializeField]
     private RectTransform propertyInfoContent = null;
     [SerializeField]
-    private Button backButton;
+    private Button thumbnailsViewButton = null;
+    [SerializeField]
+    private Button listViewButton = null;
+    [SerializeField]
+    private Button addPropertyButton = null;
+    [SerializeField]
+    private Button backButton = null;
 
-    private Transform roomsContentScrollView = null;
-    private List<GameObject> propertyButtons = new List<GameObject>();
-    private List<GameObject> roomButtons = new List<GameObject>();
-    private int nrRooms = 0;
-    private int index = 0;
+    private List<GameObject> propertyButtonList = new List<GameObject>();
+    private bool thumbnails = false;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        addPropertyButton.onClick.AddListener(() => AddPropertyItem());
     }
 
     public void Initialize()
     {
-        foreach (var propertyButton in propertyButtons)
+        foreach (var propertyButton in propertyButtonList)
         {
             Destroy(propertyButton);
         }
+        propertyButtonList = new List<GameObject>();
         foreach (var property in PropertyDataManager.GetProperties())
         {
             GameObject propertyButton;
-            if (property.HasRooms)
-            {
-                propertyButton = Instantiate(propertyWithRoomsPrefab, propertyInfoContent);
-                PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
-                roomsContentScrollView = buttonObject.RoomsContentScrollView;
-                roomButtons = buttonObject.RoomButtons;
-                InstantiateRooms(property);
-                if (property.ID == OpenRoomDropdown)
-                {
-                    buttonObject.OpenRoomContents();
-                    OpenRoomDropdown = string.Empty;
-                }
-                else
-                {
-                    roomsContentScrollView.gameObject.SetActive(false);
-                }
-            }
-            else
-            {
-                propertyButton = Instantiate(propertyWithoutRoomsPrefab, propertyInfoContent);
-            }
-            string rooms = Constants.ROOMS_NUMBER + nrRooms;
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, propertyInfoContent, false, rooms, AddRoomItem, OpenRoomScreen, OpenPropertyAdminScreen, DeleteProperty);
-            propertyButtons.Add(propertyButton);
-            nrRooms = 0;
-            index++;
+            propertyButton = Instantiate(propertyItemPrefab, propertyInfoContent);
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenRoomScreen, OpenPropertyRoomScreen);
+            propertyButtonList.Add(propertyButton);
         }
-        addPropertyButton.SetSiblingIndex(index);
+        ExpandThumbnails(thumbnails);
     }
 
-    private void InstantiateRooms(IProperty property)
+    public void ExpandThumbnails(bool expand)
     {
-        foreach (var roomButton in roomButtons)
+        StopAllCoroutines();
+        foreach (GameObject property in propertyButtonList)
         {
-            Destroy(roomButton);
-        }
-        if (property != null)
-        {
-            foreach (var room in property.Rooms)
-            {
-                GameObject roomButton = Instantiate(roomPrefabButton, roomsContentScrollView);
-                roomButton.GetComponent<RoomButton>().Initialize(room, OpenRoomScreen, OpenRoomAdminScreen, DeleteRoom);
-                roomButtons.Add(roomButton);
-                nrRooms++;
-            }
+            StartCoroutine(ExpandView(expand, property.GetComponent<RectTransform>()));
         }
     }
 
-    public void AddPropertyItem()
+    private void AddPropertyItem()
     {
         IProperty property = PropertyDataManager.AddProperty();
         OpenPropertyAdminScreen(property);
-    }
-
-    private void AddRoomItem(IProperty selectedProperty)
-    {
-        IRoom room = selectedProperty.AddRoom();
-        OpenRoomAdminScreen(room);
-    }
-
-    private void DeleteProperty(IProperty property)
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_PROPERTY,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                PropertyDataManager.DeleteProperty(property.ID);
-                ReservationDataManager.DeleteReservationsForProperty(property.ID);
-                Initialize();
-            },
-            CancelCallback = null
-        });
-    }
-
-    private void DeleteRoom(IRoom selectedRoom)
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_ROOM,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                IProperty selectedProperty = PropertyDataManager.GetProperty(selectedRoom.PropertyID);
-                selectedProperty.DeleteRoom(selectedRoom.ID);
-                ReservationDataManager.DeleteReservationsForRoom(selectedRoom.ID);
-                Initialize();
-            },
-            CancelCallback = null
-        });
     }
 
     private void OpenPropertyAdminScreen(IProperty property)
     {
         PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
         propertyAdminScreenScript.SetCurrentProperty(property);
-        propertyAdminScreenScript.propertiesScreen = this;
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 
-    private void OpenRoomAdminScreen(IRoom room)
+    private void OpenPropertyRoomScreen(IProperty property)
     {
-        RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
-        roomAdminScreenScript.SetCurrentPropertyRoom(room);
-        roomAdminScreenScript.propertiesScreen = this;
-        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
+        PropertyRoomScreen propertyRoomScreenScript = propertyRoomScreenTransform.GetComponent<PropertyRoomScreen>();
+        propertyRoomScreenScript.SetCurrentProperty(property);
+        navigator.GoTo(propertyRoomScreenTransform.GetComponent<NavScreen>());
     }
 
     private void OpenRoomScreen(IRoom room)
     {
         RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
         roomScreenScript.UpdateRoomDetailsFields(room);
-        roomScreenScript.propertiesScreen = this;
         navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
+    }
+
+    public IEnumerator ExpandView(bool expand, RectTransform property)
+    {
+        thumbnails = expand;
+        if (expand)
+        {
+            thumbnailsViewButton.gameObject.SetActive(false);
+            listViewButton.gameObject.SetActive(true);
+            Vector2 endSize = new Vector2(property.sizeDelta.x, 750f);
+            float currentTime = 0;
+            while (currentTime < 0.5f)
+            {
+                currentTime += Time.deltaTime;
+                property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+                Canvas.ForceUpdateCanvases();
+                yield return null;
+            }
+            property.sizeDelta = endSize;
+        }
+        else
+        {
+            listViewButton.gameObject.SetActive(false);
+            thumbnailsViewButton.gameObject.SetActive(true);
+            Vector2 endSize = new Vector2(property.sizeDelta.x, 285f);
+            float currentTime = 0;
+            while (currentTime < 0.5f)
+            {
+                currentTime += Time.deltaTime;
+                property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+                Canvas.ForceUpdateCanvases();
+                yield return null;
+            }
+            property.sizeDelta = endSize;
+        }
     }
 }

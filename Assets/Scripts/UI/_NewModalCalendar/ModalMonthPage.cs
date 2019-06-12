@@ -198,22 +198,27 @@ public class ModalMonthPage : MonoBehaviour
                 {
                     if(dayObjects[d].ObjDate.Date > calendar.CurrentReservation.Period.Start.Date && dayObjects[d].ObjDate.Date < calendar.CurrentReservation.Period.End.Date)
                     {
-                        dayObjects[d].UpdateDayColors(calendar.CurrentColor, calendar.CurrentColor, calendar.CurrentColor);
+                        dayObjects[d].UpdateDayColors(OverlapCol(dayObjects[d].IsReserved || dayObjects[d].IsStart || dayObjects[d].IsEnd), OverlapCol(dayObjects[d].IsStart || dayObjects[d].IsReserved), OverlapCol(dayObjects[d].IsEnd || dayObjects[d].IsReserved));
                     }
                     else
                     {
                         if(dayObjects[d].ObjDate.Date == calendar.CurrentReservation.Period.Start.Date)
                         {
-                            dayObjects[d].UpdateDayColors(null,calendar.CurrentColor, null);
+                            dayObjects[d].UpdateDayColors(null, OverlapCol(dayObjects[d].IsStart || dayObjects[d].IsReserved), null);
                         }
 
                         if(dayObjects[d].ObjDate.Date == calendar.CurrentReservation.Period.End.Date)
                         {
-                            dayObjects[d].UpdateDayColors(null, null, calendar.CurrentColor);
+                            dayObjects[d].UpdateDayColors(null, null,  OverlapCol(dayObjects[d].IsEnd || dayObjects[d].IsReserved));
                         }
                     }
                 }
             }
         }
+    }
+
+    private Color OverlapCol(bool isOverlap)
+    {
+        return isOverlap ? calendar.OverlapColor : calendar.CurrentColor;
     }
 }
