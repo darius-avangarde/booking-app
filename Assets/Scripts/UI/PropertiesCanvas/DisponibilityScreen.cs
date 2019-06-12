@@ -66,10 +66,14 @@ public class DisponibilityScreen : MonoBehaviour
         disponibilityHeight = disponibilityScrollView.offsetMin.y;
     }
 
-    public void Initialize()
+    public void SetDefaultDate()
     {
         startDate = DateTime.Today.Date;
         endDate = DateTime.Today.AddDays(1).Date;
+    }
+
+    public void Initialize()
+    {
         lastDropdownOption = 0;
         SelectProperty(lastDropdownOption);
     }
@@ -173,7 +177,6 @@ public class DisponibilityScreen : MonoBehaviour
             }
             else
             {
-                buttonObject.InitializeDateTime(startDate, endDate);
                 bool roomReservation = reservations.Any(r => r.ContainsRoom(property.GetPropertyRoom().ID));
                 if (roomReservation)
                 {
@@ -181,6 +184,7 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 else
                 {
+                    buttonObject.InitializeDateTime(startDate, endDate);
                     buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
@@ -249,6 +253,7 @@ public class DisponibilityScreen : MonoBehaviour
                 StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
                 GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
                 PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
+                buttonObject.InitializeDateTime(startDate, endDate);
                 buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty);
                 propertyItemList.Add(propertyButton);
             }
@@ -348,9 +353,9 @@ public class DisponibilityScreen : MonoBehaviour
         {
             currentReservation = current;
         }
-        navigator.GoTo(this.GetComponent<NavScreen>());
         startDate = start;
         endDate = end;
+        navigator.GoTo(this.GetComponent<NavScreen>());
         if (selectedRooms != null)
         {
             this.selectedRooms = selectedRooms;
