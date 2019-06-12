@@ -54,10 +54,11 @@ public class DisponibilityScreen : MonoBehaviour
     private IProperty selectedProperty;
     private DateTime startDate = DateTime.Today.Date;
     private DateTime endDate = DateTime.Today.AddDays(1).Date;
+    private float disponibilityHeight;
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
     private bool fromReservation = false;
-    private float disponibilityHeight;
+    private bool shouldSelectRooms = false;
     private bool vibrate = true;
 
     private void Awake()
@@ -93,6 +94,10 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void SelectProperty(int optionIndex)
     {
+        if (!shouldSelectRooms)
+        {
+            CancelSelection();
+        }
         propertyDropdownList.value = optionIndex;
         if (optionIndex == 0)
         {
@@ -115,11 +120,13 @@ public class DisponibilityScreen : MonoBehaviour
             }
             InstantiateRooms(selectedProperty);
         }
+        shouldSelectRooms = false;
     }
 
     private void InstantiateProperties()
     {
         StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
+        CancelSelection();
         int propertyIndex = 0;
         backgroundImage.gameObject.SetActive(false);
         disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
@@ -358,6 +365,7 @@ public class DisponibilityScreen : MonoBehaviour
         navigator.GoTo(this.GetComponent<NavScreen>());
         if (selectedRooms != null)
         {
+            shouldSelectRooms = true;
             this.selectedRooms = selectedRooms;
             SelectDropdownProperty(selectedRooms[0]);
         }
