@@ -40,7 +40,7 @@ public class RoomButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IRoom room, DisponibilityScreen disponibilityScript, Action<IRoom> roomCallback)
+    public void Initialize(IRoom room, DisponibilityScreen disponibilityScript, Action<IRoom> roomCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
     {
         selectMarker.gameObject.SetActive(false);
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
@@ -74,7 +74,14 @@ public class RoomButton : MonoBehaviour
         {
             roomButton.enabled = false;
             roomScrollButton.enabled = true;
-            roomScrollButton.OnClick.AddListener(() => roomCallback(room));
+            if (reservationCallback != null)
+            {
+                roomScrollButton.OnClick.AddListener(() => reservationCallback(dateTimeStart, dateTimeEnd, SendCurrentRoom()));
+            }
+            else
+            {
+                roomScrollButton.OnClick.AddListener(() => roomCallback(room));
+            }
             roomScrollButton.OnPointerDownEvent.AddListener(() => StartCoroutine(SelectionMode()));
             roomScrollButton.OnPointerUpEvent.AddListener(() => StopAllCoroutines());
             roomScrollButton.OnDragEvent.AddListener(() => StopAllCoroutines());
@@ -90,6 +97,13 @@ public class RoomButton : MonoBehaviour
             roomButton.onClick.AddListener(() => roomCallback(room));
         }
     }
+
+    private List<IRoom> SendCurrentRoom()
+    {
+        List<IRoom> currentRoomList = new List<IRoom>();
+        currentRoomList.Add(currentRoom);
+        return currentRoomList;
+    } 
 
     public void SelectToggleMark()
     {

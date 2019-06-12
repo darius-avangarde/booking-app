@@ -175,7 +175,7 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 else
                 {
-                    buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
+                    buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
                     propertyItemList.Add(propertyButton);
@@ -192,7 +192,14 @@ public class DisponibilityScreen : MonoBehaviour
                 else
                 {
                     buttonObject.InitializeDateTime(startDate, endDate);
-                    buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
+                    if (fromReservation)
+                    {
+                        buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, selectionCallback);
+                    }
+                    else
+                    {
+                        buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
+                    }
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
                     propertyItemList.Add(propertyButton);
@@ -239,7 +246,14 @@ public class DisponibilityScreen : MonoBehaviour
                         GameObject roomButton = Instantiate(roomItemPrefab, filteredPropertiesContent);
                         RoomButton roomObject = roomButton.GetComponent<RoomButton>();
                         roomObject.InitializeDateTime(startDate, endDate);
-                        roomObject.Initialize(room, this, OpenRoomScreen);
+                        if (fromReservation)
+                        {
+                            roomObject.Initialize(room, this, OpenRoomScreen, selectionCallback);
+                        }
+                        else
+                        {
+                            roomObject.Initialize(room, this, OpenRoomScreen, null);
+                        }
                         roomItemList.Add(roomButton);
                         nrRooms++;
                     }
@@ -261,7 +275,14 @@ public class DisponibilityScreen : MonoBehaviour
                 GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
                 PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
                 buttonObject.InitializeDateTime(startDate, endDate);
-                buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty);
+                if (fromReservation)
+                {
+                    buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
+                }
+                else
+                {
+                    buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, null);
+                }
                 propertyItemList.Add(propertyButton);
             }
         }
@@ -300,7 +321,6 @@ public class DisponibilityScreen : MonoBehaviour
         if (fromReservation)
         {
             selectionCallback.Invoke(startDate, endDate, selectedRooms);
-            navigator.GoBack();
         }
         else
         {

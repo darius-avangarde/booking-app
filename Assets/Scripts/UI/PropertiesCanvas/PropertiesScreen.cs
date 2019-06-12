@@ -49,7 +49,7 @@ public class PropertiesScreen : MonoBehaviour
         {
             GameObject propertyButton;
             propertyButton = Instantiate(propertyItemPrefab, propertyInfoContent);
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenRoomScreen, OpenPropertyRoomScreen);
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenRoomScreen, OpenPropertyRoomScreen, null);
             propertyButtonList.Add(propertyButton);
         }
         ExpandThumbnails(thumbnails);
