@@ -54,6 +54,8 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     private Color notMonthColor;
     [SerializeField]
     private Color overlapColor;
+    [SerializeField]
+    private Color previousColor;
     #endregion
 
     #region Public readonly properties
@@ -70,6 +72,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
     public Color PastColor => pastColor;
     public Color NotMonthColor => notMonthColor;
     public Color OverlapColor => overlapColor;
+    public Color PreviousColor => previousColor;
     #endregion
 
     private Action<DateTime, DateTime> DoneCallback;
@@ -111,13 +114,13 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ///Opens the calendar in selection mode focused on the given period.
         ///<para>Done callback returns either the selected datetime and the day after if only one date is selected, or the selected start and end date</para>
         ///</summary>
-        internal void OpenCallendar(DateTime startDay, DateTime endDay, Action<DateTime, DateTime> doneCallback)
+        internal void OpenCallendar(DateTime startDay, DateTime endDay, Action<DateTime, DateTime> doneCallback, bool _allowSigleDate)
         {
             focusDateTime = startDay.Date;
             selectedStart = focusDateTime;
             selectedEnd = endDay.Date;
             DoneCallback = doneCallback;
-            allowSigleDate = true;
+            allowSigleDate = _allowSigleDate;
             selectionDayCountText.text = string.Empty;
             Show(focusDateTime, null, null, doneCallback);
         }
@@ -126,20 +129,11 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         ///Opens the calendar in reservation edit mode for the given IReservation, and room reservations list.
         ///<para>Done callback returns the selected start and end date</para>
         ///</summary>
-        internal void OpenCallendar(IReservation r, List<IReservation> roomReservations, Action<DateTime, DateTime> doneCallback)
+        internal void OpenCallendar(IReservation r, List<IReservation> roomReservations, Action<DateTime, DateTime> doneCallback, DateTime startDay, DateTime endDay)
         {
-            if(r != null)
-            {
-                focusDateTime = r.Period.Start;
-                selectedStart = r.Period.Start.Date;
-                selectedEnd = r.Period.End.Date;
-            }
-            else
-            {
-                focusDateTime = DateTime.Today.Date;
-                selectedStart = focusDateTime;
-                selectedEnd = focusDateTime.AddDays(1);
-            }
+            focusDateTime = startDay.Date;
+            selectedStart = focusDateTime;
+            selectedEnd = endDay.Date;
 
             allowSigleDate = false;
             UpdateDayCountText(selectedStart, selectedEnd);
@@ -228,14 +222,14 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
                     selectionText.text = string.Empty;
                     confirmButton.interactable = false;
                 }
-                currentPage.UpdatePage(focusDateTime);
+                currentPage.UpdatePage(focusDateTime, true);
                 isSelectingEnd = false;
             }
             else
             {
                 showSelection = false;
                 isSelectingEnd = false;
-                currentPage.UpdatePage(focusDateTime);
+                currentPage.UpdatePage(focusDateTime, true);
                 selectionText.text = string.Empty;
                 confirmButton.interactable = false;
             }
@@ -265,7 +259,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
             confirmButton.interactable = false;
         }
 
-        currentPage.UpdatePage(focusDateTime);
+        currentPage.UpdatePage(focusDateTime, true);
     }
 
     private void CloseModalCalendar(bool doCallback)
@@ -321,7 +315,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + ((focusDateTime.Year != DateTime.Today.Year) ? Constants.SPACE + focusDateTime.Year : string.Empty);
 
         cachePage.Rect.position = (isLeft) ? slideLeft.position : slideRight.position;
-        cachePage.UpdatePage(focusDateTime);
+        cachePage.UpdatePage(focusDateTime, true);
 
         Vector3 startCache = cachePage.Rect.position;
         Vector3 endCache = slideCenter.position;
