@@ -21,6 +21,7 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Image disponibilityMarker = null;
 
+    private IProperty currentProperty;
     private RectTransform propertyItemTransform;
     private DateTime dateTimeStart = DateTime.Today.Date;
     private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
@@ -38,8 +39,9 @@ public class PropertyButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IProperty property, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback)
+    public void Initialize(IProperty property, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
     {
+        currentProperty = property;
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : property.Name;
         if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
         {
@@ -51,7 +53,14 @@ public class PropertyButton : MonoBehaviour
         }
         if (!property.HasRooms)
         {
-            propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetPropertyRoom()));
+            if (reservationCallback != null)
+            {
+                propertyButtonItem.onClick.AddListener(() => reservationCallback(dateTimeStart, dateTimeEnd, SendCurrentRoom()));
+            }
+            else
+            {
+                propertyButtonItem.onClick.AddListener(() => PropertyRoomCallback(property.GetPropertyRoom()));
+            }
             disponibilityMarker.gameObject.SetActive(true);
             bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
                 .Any(r => r.RoomID == property.GetRoom(property.GetPropertyRoomID).ID);
@@ -69,5 +78,12 @@ public class PropertyButton : MonoBehaviour
             propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
             disponibilityMarker.gameObject.SetActive(false);
         }
+    }
+
+    private List<IRoom> SendCurrentRoom()
+    {
+        List<IRoom> currentRoomList = new List<IRoom>();
+        currentRoomList.Add(currentProperty.GetPropertyRoom());
+        return currentRoomList;
     }
 }
