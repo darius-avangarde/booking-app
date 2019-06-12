@@ -208,7 +208,7 @@ public class ClientsScreen : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentClient.Email))
         {
-            inputManager.Message("Nu există email înregistrat!"); // textul in constante!!!
+            inputManager.Message(Constants.MessageEmail);
         }
         else
         {
@@ -280,12 +280,12 @@ public class ClientsScreen : MonoBehaviour
 
     public void SetTextOnAddPanel()
     {
-        headerBarText.text = "Client nou";
+        headerBarText.text = Constants.NEW_CLIENT;
     }
 
     public void SetTextOnEditPanel()
     {
-        headerBarText.text = "Editează client";
+        headerBarText.text = Constants.EDIT_CLIENT;
     }
     #region ClearFieldsForClient
     public void ClearClientFields()

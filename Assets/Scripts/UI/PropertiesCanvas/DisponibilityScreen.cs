@@ -68,24 +68,29 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void Initialize()
     {
-        CheckRoomsSelection();
+        startDate = DateTime.Today.Date;
+        endDate = DateTime.Today.AddDays(1).Date;
+        lastDropdownOption = 0;
         SelectProperty(lastDropdownOption);
     }
 
     public void ShowModalCalendar()
     {
-        calendarScreen.OpenCallendar(startDate, SetNewDatePeriod);
+        //calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod);
+        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod);
     }
 
     private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
     {
         this.startDate = startDate;
         this.endDate = endDate;
+        lastDropdownOption = 0;
         SelectProperty(lastDropdownOption);
     }
 
     public void SelectProperty(int optionIndex)
     {
+        propertyDropdownList.value = optionIndex;
         if (optionIndex == 0)
         {
             lastDropdownOption = optionIndex;
@@ -230,7 +235,7 @@ public class DisponibilityScreen : MonoBehaviour
                     }
                     else
                     {
-                        //if room is reserved, remove from selected rooms
+                        //if room is reserved in the given date time period, remove it from selected rooms
                         if (selectedRooms.Any(r => r.ID == room.ID))
                         {
                             selectedRooms.Remove(room);
@@ -331,6 +336,7 @@ public class DisponibilityScreen : MonoBehaviour
         {
             RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
             roomScreenScript.UpdateRoomDetailsFields(room);
+            roomScreenScript.UpdateDateTime(startDate, endDate);
             navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
         }
         CheckRoomsSelection();
@@ -339,19 +345,19 @@ public class DisponibilityScreen : MonoBehaviour
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
         fromReservation = true;
-        startDate = start;
-        endDate = end;
         if (current != null)
         {
             currentReservation = current;
         }
+        navigator.GoTo(this.GetComponent<NavScreen>());
+        startDate = start;
+        endDate = end;
         this.selectedRooms = selectedRooms;
         if (selectedRooms != null)
         {
             SelectDropdownProperty(selectedRooms[0]);
         }
         selectionCallback = confirmSelection;
-        navigator.GoTo(this.GetComponent<NavScreen>());
     }
 
     private IEnumerator ExpandFooterBar(Vector2 scrollEndSize, Vector2 buttonsEndSize)

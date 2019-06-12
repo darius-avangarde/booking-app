@@ -14,10 +14,8 @@ public class ReservationButton : MonoBehaviour
     private Button reservationButton;
     [SerializeField]
     private Button editButton;
-    [SerializeField]
-    private Button deleteButton;
     private IProperty currentProperty;
-    public void Initialize(IReservation reservation, Action editCallback, Action<IReservation> deleteCallback)
+    public void Initialize(IReservation reservation, Action editCallback)
     {
         currentProperty = PropertyDataManager.GetProperty(reservation.PropertyID);
         propertyName.text = currentProperty.Name;
@@ -33,6 +31,5 @@ public class ReservationButton : MonoBehaviour
         string endPeriod = reservation.Period.End.ToString("dd/MM/yy");
         reservationPeriod.text = startPeriod + "  -  " + endPeriod;
         editButton.onClick.AddListener(() => editCallback());
-        deleteButton.onClick.AddListener(() => deleteCallback(reservation));
     }
 }

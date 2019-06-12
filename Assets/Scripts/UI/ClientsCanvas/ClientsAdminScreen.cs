@@ -97,7 +97,7 @@ public class ClientsAdminScreen : MonoBehaviour
         foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID))
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
-            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack), DeleteReservation);
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack));
             reservationButtons.Add(reservationButton);
         }
     }
@@ -105,22 +105,6 @@ public class ClientsAdminScreen : MonoBehaviour
     private void UpdateCallBack(IReservation reserv)
     {
         SetCurrentClients(ClientDataManager.GetClient(reserv.CustomerID));
-    }
-
-    private void DeleteReservation(IReservation reservation)
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_DIALOG,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                ReservationDataManager.DeleteReservation(reservation.ID);
-                InstantiateReservations();
-            },
-            CancelCallback = null
-        });
     }
 
     public void AddReservationForClient()
@@ -141,7 +125,7 @@ public class ClientsAdminScreen : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentClient.Email))
         {
-            inputManager.Message("Nu există email înregistrat!"); //text in ConstantsScript!!!!
+            inputManager.Message(Constants.MessageEmail);
         }
         else
         {
