@@ -5,33 +5,38 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
-    public PropertiesScreen propertiesScreen { get; set; }
-    public DisponibilityScreen disponibilityScreen { get; set; }
-
-    [SerializeField]
-    private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Text propertyScreenTitle = null;
+    private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
-    private Toggle HasRoomsToggle;
+    private Image backgroundImage = null;
     [SerializeField]
-    private Toggle NoRoomsToggle;
+    private Image propertyImage = null;
     [SerializeField]
-    private GameObject RoomsToggleField;
+    private GameObject RoomsToggleField = null;
     [SerializeField]
-    private Button backButton;
+    private Toggle HasRoomsToggle = null;
     [SerializeField]
-    private Button calcelButton;
+    private Toggle NoRoomsToggle = null;
+    [SerializeField]
+    private Button addPhotoButton = null;
+    [SerializeField]
+    private Button deleteButton = null;
+    [SerializeField]
+    private Button backButton = null;
+    [SerializeField]
+    private Button calcelButton = null;
+
     private IProperty currentProperty;
+    private bool addedPhoto = false;
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => GoBack());
-        calcelButton.onClick.AddListener(() => GoBack());
+        backButton.onClick.AddListener(() => navigator.GoBack());
+        calcelButton.onClick.AddListener(() => navigator.GoBack());
     }
 
     public void SetCurrentProperty(IProperty property)
@@ -40,23 +45,29 @@ public class PropertyAdminScreen : MonoBehaviour
         if(currentProperty.Name != null)
         {
             RoomsToggleField.SetActive(false);
+            deleteButton.gameObject.SetActive(true);
         }
         else
         {
             RoomsToggleField.SetActive(true);
+            deleteButton.gameObject.SetActive(false);
         }
+        //SetPropertyFieldsText();
     }
 
-    public void SetPropertyFieldsText()
+    private void SetPropertyFieldsText()
     {
         propertyNameInputField.text = currentProperty.Name ?? "";
-        if (string.IsNullOrEmpty(currentProperty.Name))
+        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
-            propertyScreenTitle.text = Constants.NEW_PROPERTY;
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.gameObject.SetActive(true);
         }
         else
         {
-            propertyScreenTitle.text = Constants.EDIT_PROPERTY;
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+            backgroundImage.gameObject.SetActive(false);
         }
         if (currentProperty.HasRooms)
         {
@@ -68,6 +79,30 @@ public class PropertyAdminScreen : MonoBehaviour
             NoRoomsToggle.isOn = true;
             HasRoomsToggle.isOn = false;
         }
+    }
+
+    public void AddPhoto()
+    {
+
+
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.OPEN_CAMERA_GALLERY,
+            ConfirmText = Constants.OPEN_CAMERA,
+            ConfirmTextSecond = Constants.OPEN_GALLERY,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
+                addedPhoto = true;
+            },
+            ConfirmCallbackSecond = () =>
+            {
+                ImageDataManager.PickImage(currentProperty.ID, propertyImage);
+                addedPhoto = true;
+            },
+            CancelCallback = null
+        });
     }
 
     public void SaveProperty()
@@ -85,34 +120,45 @@ public class PropertyAdminScreen : MonoBehaviour
         {
             PropertyDataManager.SaveProperty(currentProperty);
         }
-        OpenPropertiesScreen();
+        if (addedPhoto)
+        {
+            ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
+        }
+        navigator.GoBack();
+    }
+
+    public void DeleteProperty()
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_PROPERTY,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                PropertyDataManager.DeleteProperty(currentProperty.ID);
+                ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
+                ImageDataManager.DeletePropertyPhoto(currentProperty.ID);
+                navigator.GoBack();
+                navigator.GoBack();
+            },
+            CancelCallback = null
+        });
     }
 
     private void NameChanged(string value)
     {
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
-    }
-
-    private void OpenPropertiesScreen()
-    {
-        if (propertiesScreen != null)
+        if (!currentProperty.HasRooms)
         {
-            propertiesScreen.Initialize();
-            propertiesScreen = null;
-            navigator.GoBack();
-        }
-        if (disponibilityScreen != null)
-        {
-            disponibilityScreen.Initialize();
-            disponibilityScreen = null;
-            navigator.GoBack();
+            currentProperty.GetPropertyRoom().Name = currentProperty.Name;
         }
     }
 
-    private void GoBack()
+    private IEnumerator UploadPhoto()
     {
-        disponibilityScreen = null;
-        propertiesScreen = null;
-        navigator.GoBack();
+        yield return null;
+        //yield return WaitUntil((t) => ImageDataManager.TakePhoto(currentProperty.ID));
+        propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
     }
 }
