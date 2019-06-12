@@ -357,7 +357,7 @@ public class ReservationEditScreen : MonoBehaviour
             }
             else
             {
-                roomButtonText.text = rooms.Count + Constants.SPACE + Constants.ROOMS_SELECTED;
+                roomButtonText.text = $"{rooms.Count} {Constants.ROOMS_SELECTED}";
             }
         }
         else
@@ -390,7 +390,8 @@ public class ReservationEditScreen : MonoBehaviour
             UpdateReservationPeriod(periodStart, periodEnd);
             if(fromClient)
             {
-                reservationPeriodText.text += Constants.SPACE + Constants.CHOOSE + Constants.SPACE + Constants.RESERVATION_PERIOD;
+                reservationPeriodText.text += $" {Constants.CHOOSE} {Constants.ROOMS_SELECTED} {Constants.RESERVATION_PERIOD}";
+
             }
         }
 
@@ -404,7 +405,7 @@ public class ReservationEditScreen : MonoBehaviour
             else
             {
                 roomButton.SetActive(true);
-                roomButtonText.text = rooms.Count + Constants.SPACE + Constants.ROOMS_SELECTED;
+                roomButtonText.text = $"{rooms.Count} {Constants.ROOMS_SELECTED}";
             }
         }
         else
@@ -490,11 +491,7 @@ public class ReservationEditScreen : MonoBehaviour
         periodStart = _start;
         periodEnd = _end;
 
-        reservationPeriodText.text =
-            periodStart.ToString(Constants.DateTimePrintFormat)
-            + Constants.AndDelimiter
-            + periodEnd.ToString(Constants.DateTimePrintFormat);
-
+        reservationPeriodText.text = $"{periodStart.ToString(Constants.DateTimePrintFormat)} - {periodEnd.ToString(Constants.DateTimePrintFormat)}";
         ValidateInput();
     }
 
