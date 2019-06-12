@@ -30,7 +30,13 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private RectTransform disponibilityScrollView = null;
     [SerializeField]
+    private RectTransform headerBar = null;
+    [SerializeField]
+    private RectTransform footerBar = null;
+    [SerializeField]
     private Dropdown propertyDropdownList = null;
+    [SerializeField]
+    private Image backgroundImage = null;
     [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
@@ -51,10 +57,13 @@ public class DisponibilityScreen : MonoBehaviour
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
     private bool fromReservation = false;
+    private float disponibilityHeight;
+    private bool vibrate = true;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        disponibilityHeight = disponibilityScrollView.offsetMin.y;
     }
 
     public void Initialize()
@@ -86,8 +95,8 @@ public class DisponibilityScreen : MonoBehaviour
         {
             lastDropdownOption = optionIndex;
             selectedProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(lastDropdownOption).Key);
-            disponibilityDatePeriod.text = startDate.Day + " " + Constants.MonthNamesDict[startDate.Month] + " " + startDate.Year
-                                    + " - " + endDate.Day + " " + Constants.MonthNamesDict[endDate.Month] + " " + endDate.Year;
+            disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
+                                + " - " + endDate.Day + "/" + endDate.Month + "/" + endDate.Year;
             if (currentReservation != null)
             {
                 reservations = ReservationDataManager.GetReservationsBetween(startDate, endDate).Where(r => r != currentReservation).ToList();
@@ -102,7 +111,9 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void InstantiateProperties()
     {
+        StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
         int propertyIndex = 0;
+        backgroundImage.gameObject.SetActive(false);
         disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
                                 + " - " + endDate.Day + "/" + endDate.Month + "/" + endDate.Year;
         if (currentReservation != null)
@@ -137,7 +148,7 @@ public class DisponibilityScreen : MonoBehaviour
                 int index = 0;
                 foreach (var room in property.Rooms)
                 {
-                    bool roomReservation = reservations.Any(r => r.RoomID == room.ID);
+                    bool roomReservation = reservations.Any(r => r.ContainsRoom(room.ID));
                     if (roomReservation)
                     {
                         index++;
@@ -147,21 +158,32 @@ public class DisponibilityScreen : MonoBehaviour
                 {
                     Destroy(propertyButton);
                 }
+                else
+                {
+                    buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
+                    propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
+                    propertyDropdownOptions.Add(property.ID, propertyIndex);
+                    propertyItemList.Add(propertyButton);
+                    propertyIndex++;
+                }
             }
             else
             {
                 buttonObject.InitializeDateTime(startDate, endDate);
-                bool roomReservation = reservations.Any(r => r.RoomID == property.GetPropertyRoom().ID);
+                bool roomReservation = reservations.Any(r => r.ContainsRoom(property.GetPropertyRoom().ID));
                 if (roomReservation)
                 {
                     Destroy(propertyButton);
                 }
+                else
+                {
+                    buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
+                    propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
+                    propertyDropdownOptions.Add(property.ID, propertyIndex);
+                    propertyItemList.Add(propertyButton);
+                    propertyIndex++;
+                }
             }
-            buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty);
-            propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
-            propertyDropdownOptions.Add(property.ID, propertyIndex);
-            propertyItemList.Add(propertyButton);
-            propertyIndex++;
         }
         propertyDropdownList.options = propertyOptions.Values.ToList();
         propertyDropdownList.RefreshShownValue();
@@ -176,17 +198,27 @@ public class DisponibilityScreen : MonoBehaviour
         foreach (var roomButton in roomItemList)
         {
             Destroy(roomButton);
-            nrRooms = 0;
         }
         roomItemList = new List<GameObject>();
         propertyItemList = new List<GameObject>();
+        if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
+        {
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+            backgroundImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            backgroundImage.gameObject.SetActive(false);
+        }
         if (property != null)
         {
             if (property.HasRooms)
             {
+                nrRooms = 0;
+                StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 560), new Vector2(disponibilityScrollView.offsetMax.x, -560)));
                 foreach (var room in property.Rooms)
                 {
-                    bool roomReservation = reservations.Any(r => r.RoomID == room.ID);
+                    bool roomReservation = reservations.Any(r => r.ContainsRoom(room.ID));
                     if (!roomReservation)
                     {
                         GameObject roomButton = Instantiate(roomItemPrefab, filteredPropertiesContent);
@@ -210,6 +242,7 @@ public class DisponibilityScreen : MonoBehaviour
             }
             else
             {
+                StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
                 GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
                 PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
                 buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty);
@@ -222,8 +255,9 @@ public class DisponibilityScreen : MonoBehaviour
     {
         if (selectedRooms.Count() == 0)
         {
+            vibrate = true;
             roomSelection = false;
-            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.sizeDelta.x, 1354)));
+            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight), new Vector2(footerBar.anchoredPosition.x, -160)));
             foreach (var room in roomItemList)
             {
                 room.GetComponent<RoomButton>().disponibilityMarker.color = Constants.availableItemColor;
@@ -231,8 +265,13 @@ public class DisponibilityScreen : MonoBehaviour
         }
         else
         {
+            if (vibrate)
+            {
+                Handheld.Vibrate();
+                vibrate = false;
+            }
             roomSelection = true;
-            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.sizeDelta.x, 1194)));
+            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight + 160), new Vector2(footerBar.anchoredPosition.x, 0)));
             foreach (var room in roomItemList)
             {
                 room.GetComponent<RoomButton>().disponibilityMarker.color = Color.white;
@@ -300,24 +339,45 @@ public class DisponibilityScreen : MonoBehaviour
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
         fromReservation = true;
-        currentReservation = current;
         startDate = start;
         endDate = end;
+        if (current != null)
+        {
+            currentReservation = current;
+        }
         this.selectedRooms = selectedRooms;
-        navigator.GoTo(this.GetComponent<NavScreen>());
-        SelectDropdownProperty(selectedRooms[0]);
+        if (selectedRooms != null)
+        {
+            SelectDropdownProperty(selectedRooms[0]);
+        }
         selectionCallback = confirmSelection;
+        navigator.GoTo(this.GetComponent<NavScreen>());
     }
 
-    private IEnumerator ExpandFooterBar(Vector2 endSize)
+    private IEnumerator ExpandFooterBar(Vector2 scrollEndSize, Vector2 buttonsEndSize)
     {
         float currentTime = 0;
         while (currentTime < 0.4f)
         {
             currentTime += Time.deltaTime;
-            disponibilityScrollView.sizeDelta = Vector2.Lerp(disponibilityScrollView.sizeDelta, endSize, currentTime / 0.4f);
+            disponibilityScrollView.offsetMin = Vector2.Lerp(disponibilityScrollView.offsetMin, scrollEndSize, currentTime / 0.4f);
+            footerBar.anchoredPosition = Vector2.Lerp(footerBar.anchoredPosition, buttonsEndSize, currentTime / 0.4f);
             yield return null;
         }
-        disponibilityScrollView.sizeDelta = endSize;
+        disponibilityScrollView.offsetMin = scrollEndSize;
+        footerBar.anchoredPosition = buttonsEndSize;
+    }
+
+    private IEnumerator ExpandHeaderBar(Vector2 headerEndSize, Vector2 scrollEndSize)
+    {
+        float currentTime = 0;
+        while (currentTime < 0.4f)
+        {
+            currentTime += Time.deltaTime;
+            headerBar.sizeDelta = Vector2.Lerp(headerBar.sizeDelta, headerEndSize, currentTime / 0.4f);
+            disponibilityScrollView.offsetMax = Vector2.Lerp(disponibilityScrollView.offsetMax, scrollEndSize, currentTime / 0.4f);
+            yield return null;
+        }
+        headerBar.sizeDelta = headerEndSize;
     }
 }

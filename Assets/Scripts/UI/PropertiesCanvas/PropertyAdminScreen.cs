@@ -85,25 +85,27 @@ public class PropertyAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Deschideți galeria sau camera foto?",
-            ConfirmText = "Camera",
-            CancelText = "Galerie",
+            AditionalCallback = true,
+            Message = Constants.OPEN_CAMERA_GALLERY,
+            ConfirmText = Constants.OPEN_CAMERA,
+            ConfirmTextSecond = Constants.OPEN_GALLERY,
+            CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
                 ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
                 addedPhoto = true;
             },
-            CancelCallback = () =>
+            ConfirmCallbackSecond = () =>
             {
                 ImageDataManager.PickImage(currentProperty.ID, propertyImage);
                 addedPhoto = true;
-            }
+            },
+            CancelCallback = null
         });
     }
 
     public void SaveProperty()
     {
-        NameChanged(propertyNameInputField.text);
         if (HasRoomsToggle.isOn)
         {
             currentProperty.HasRooms = true;
@@ -120,6 +122,7 @@ public class PropertyAdminScreen : MonoBehaviour
         {
             ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
         }
+        NameChanged(propertyNameInputField.text);
         navigator.GoBack();
     }
 

@@ -3,13 +3,14 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class RoomButton : MonoBehaviour
 {
     public DisponibilityScreen DisponibilitySccreenComponent { get; set; }
-    public bool Selected = false;
     public Image disponibilityMarker;
+    public bool Selected { get; set; } = false;
 
     [SerializeField]
     private Text roomName = null;
@@ -21,6 +22,8 @@ public class RoomButton : MonoBehaviour
     //private Text personsNumber = null;
     [SerializeField]
     private Button roomButton = null;
+    [SerializeField]
+    private ScrollButton roomScrollButton = null;
     //[SerializeField]
     //private Image disponibilityMarker = null;
     [SerializeField]
@@ -66,22 +69,25 @@ public class RoomButton : MonoBehaviour
         {
             disponibilityMarker.color = Constants.availableItemColor;
         }
-        roomButton.onClick.AddListener(() => roomCallback(room));
         currentRoom = room;
-        if(disponibilityScript != null)
+        if (disponibilityScript != null)
         {
+            roomButton.enabled = false;
+            roomScrollButton.enabled = true;
+            roomScrollButton.OnClick.AddListener(() => roomCallback(room));
+            roomScrollButton.OnPointerDownEvent.AddListener(() => StartCoroutine(SelectionMode()));
+            roomScrollButton.OnPointerUpEvent.AddListener(() => StopAllCoroutines());
+            roomScrollButton.OnDragEvent.AddListener(() => StopAllCoroutines());
             if (disponibilityScript.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
                 SelectToggleMark();
             }
         }
-    }
-
-    public void StartPressing()
-    {
-        if (DisponibilitySccreenComponent != null)
+        else
         {
-            StartCoroutine(SelectionMode());
+            roomScrollButton.enabled = false;
+            roomButton.enabled = true;
+            roomButton.onClick.AddListener(() => roomCallback(room));
         }
     }
 
@@ -113,7 +119,7 @@ public class RoomButton : MonoBehaviour
         if (!DisponibilitySccreenComponent.roomSelection)
         {
             double timer = 0;
-            while (timer < 1f)
+            while (timer < 0.6f)
             {
                 timer += Time.deltaTime;
                 yield return null;

@@ -113,6 +113,7 @@ public class ClientsScreen : MonoBehaviour
     {
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace) || String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
+            clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetTextRequired();
             return;
         }
         else
@@ -120,7 +121,10 @@ public class ClientsScreen : MonoBehaviour
             Client client = new Client();
             SetClient(client);
             if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
+            {
                 ClientDataManager.AddClient(client);
+                navigator.GoBack();
+            }
 
             if (hasCallBack)
             {
