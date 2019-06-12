@@ -372,9 +372,9 @@ public class ReservationEditScreen : MonoBehaviour
 
         if(rooms != null)
         {
+            roomButton.SetActive(currentProperty.HasRooms);
             if(rooms.Count == 1)
             {
-                roomButton.SetActive(currentProperty.HasRooms);
                 roomButtonText.text = rooms[0].Name;
             }
             else
