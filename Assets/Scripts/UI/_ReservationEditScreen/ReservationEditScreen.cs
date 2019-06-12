@@ -354,10 +354,12 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void SetProperty(DateTime start, DateTime end, List<IRoom> rooms)
     {
-        currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
-        propertyButtonText.text = currentProperty.Name;
-        SizeEditablesRect();
-        SetRooms(start, end, rooms);
+        if(!availabilityScreen.roomSelection)
+        {
+            currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
+            propertyButtonText.text = currentProperty.Name;
+            SetRooms(start, end, rooms);
+        }
     }
 
     private void SetRooms(DateTime start, DateTime end, List<IRoom> rooms)
@@ -371,6 +373,7 @@ public class ReservationEditScreen : MonoBehaviour
         {
             if(rooms.Count == 1)
             {
+                roomButton.SetActive(currentProperty.HasRooms);
                 roomButtonText.text = rooms[0].Name;
             }
             else
@@ -383,6 +386,8 @@ public class ReservationEditScreen : MonoBehaviour
             roomButtonText.text = Constants.CHOOSE;
         }
 
+        SizeEditablesRect();
+        navigator.GoBack();
         ValidateInput();
     }
 
