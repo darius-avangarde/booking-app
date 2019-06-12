@@ -30,7 +30,11 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private RectTransform disponibilityScrollView = null;
     [SerializeField]
+    private RectTransform footerBar = null;
+    [SerializeField]
     private Dropdown propertyDropdownList = null;
+    [SerializeField]
+    private Image backgroundImage = null;
     [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
@@ -51,10 +55,13 @@ public class DisponibilityScreen : MonoBehaviour
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
     private bool fromReservation = false;
+    private float disponibilityHeight;
+    private bool vibrate = true;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        disponibilityHeight = disponibilityScrollView.offsetMin.y;
     }
 
     public void Initialize()
@@ -103,6 +110,7 @@ public class DisponibilityScreen : MonoBehaviour
     private void InstantiateProperties()
     {
         int propertyIndex = 0;
+        backgroundImage.gameObject.SetActive(false);
         disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
                                 + " - " + endDate.Day + "/" + endDate.Month + "/" + endDate.Year;
         if (currentReservation != null)
@@ -180,6 +188,15 @@ public class DisponibilityScreen : MonoBehaviour
         }
         roomItemList = new List<GameObject>();
         propertyItemList = new List<GameObject>();
+        if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
+        {
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+            backgroundImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            backgroundImage.gameObject.SetActive(false);
+        }
         if (property != null)
         {
             if (property.HasRooms)
@@ -222,8 +239,9 @@ public class DisponibilityScreen : MonoBehaviour
     {
         if (selectedRooms.Count() == 0)
         {
+            vibrate = true;
             roomSelection = false;
-            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.sizeDelta.x, 1354)));
+            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight), new Vector2(footerBar.anchoredPosition.x, -160)));
             foreach (var room in roomItemList)
             {
                 room.GetComponent<RoomButton>().disponibilityMarker.color = Constants.availableItemColor;
@@ -231,8 +249,13 @@ public class DisponibilityScreen : MonoBehaviour
         }
         else
         {
+            if (vibrate)
+            {
+                Handheld.Vibrate();
+                vibrate = false;
+            }
             roomSelection = true;
-            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.sizeDelta.x, 1194)));
+            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight + 160), new Vector2(footerBar.anchoredPosition.x, 0)));
             foreach (var room in roomItemList)
             {
                 room.GetComponent<RoomButton>().disponibilityMarker.color = Color.white;
@@ -309,15 +332,17 @@ public class DisponibilityScreen : MonoBehaviour
         selectionCallback = confirmSelection;
     }
 
-    private IEnumerator ExpandFooterBar(Vector2 endSize)
+    private IEnumerator ExpandFooterBar(Vector2 scrollEndSize, Vector2 buttonsEndSize)
     {
         float currentTime = 0;
         while (currentTime < 0.4f)
         {
             currentTime += Time.deltaTime;
-            disponibilityScrollView.sizeDelta = Vector2.Lerp(disponibilityScrollView.sizeDelta, endSize, currentTime / 0.4f);
+            disponibilityScrollView.offsetMin = Vector2.Lerp(disponibilityScrollView.offsetMin, scrollEndSize, currentTime / 0.4f);
+            footerBar.anchoredPosition = Vector2.Lerp(footerBar.anchoredPosition, buttonsEndSize, currentTime / 0.4f);
             yield return null;
         }
-        disponibilityScrollView.sizeDelta = endSize;
+        disponibilityScrollView.offsetMin = scrollEndSize;
+        footerBar.anchoredPosition = buttonsEndSize;
     }
 }
