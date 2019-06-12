@@ -320,6 +320,7 @@ public class DisponibilityScreen : MonoBehaviour
     {
         if (fromReservation)
         {
+            roomSelection = false;
             selectionCallback.Invoke(startDate, endDate, selectedRooms);
         }
         else
