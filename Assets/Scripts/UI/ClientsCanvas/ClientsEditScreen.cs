@@ -75,4 +75,10 @@ public class ClientsEditScreen : MonoBehaviour
             textNameRequired.gameObject.SetActive(false);
         }
     }
+
+    public void SetTextRequired()
+    {
+        textNameRequired.gameObject.SetActive(true);
+        textNameRequired.text = "Numele și telefonul sunt necesare!";
+    }
 }
