@@ -46,7 +46,7 @@ public class ClientsEditScreen : MonoBehaviour
         else
         {
             textError.gameObject.SetActive(true);
-            textError.text = "Inserează o adresă de email validă!";
+            textError.text = Constants.Valid_Email;
         }
     }
     public void ValidateClientName()
@@ -66,7 +66,7 @@ public class ClientsEditScreen : MonoBehaviour
     {
         if (String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = "Te rog adaugă un număr de telefon!";
+            textNameRequired.text = Constants.PhoneRequired;
             textNameRequired.gameObject.SetActive(true);
         }
         else
@@ -79,6 +79,6 @@ public class ClientsEditScreen : MonoBehaviour
     public void SetTextRequired()
     {
         textNameRequired.gameObject.SetActive(true);
-        textNameRequired.text = "Numele și telefonul sunt necesare!";
+        textNameRequired.text = Constants.Name_Phone_Required;
     }
 }
