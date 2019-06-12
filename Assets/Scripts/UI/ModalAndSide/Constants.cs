@@ -28,6 +28,10 @@ public class Constants : MonoBehaviour
     public const string PRICE = "Pret: ";
     public const string SingleBed = "Paturi single: ";
     public const string DoubleBed = "Paturi duble: ";
+    public const string OPEN_CAMERA_GALLERY = "Deschideți galeria sau camera foto?";
+    public const string OPEN_CAMERA = "Camera";
+    public const string OPEN_GALLERY = "Galeria";
+
     //error messages
     public const string ERR_PROPERTY = "Nu există proprietăți, apăsați pe butonul adaugă proprietate";
     public const string ERR_DISPONIBILITY = "Nu există camere disponibile în intervalul selectat";
