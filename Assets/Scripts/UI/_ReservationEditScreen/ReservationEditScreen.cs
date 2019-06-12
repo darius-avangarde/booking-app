@@ -360,6 +360,7 @@ public class ReservationEditScreen : MonoBehaviour
             propertyButtonText.text = currentProperty.Name;
             SetRooms(start, end, rooms);
         }
+        availabilityScreen.CheckRoomsSelection();
     }
 
     private void SetRooms(DateTime start, DateTime end, List<IRoom> rooms)
