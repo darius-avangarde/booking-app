@@ -76,8 +76,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void ShowModalCalendar()
     {
-        //calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod);
-        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod);
+        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
     }
 
     private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
@@ -352,9 +351,9 @@ public class DisponibilityScreen : MonoBehaviour
         navigator.GoTo(this.GetComponent<NavScreen>());
         startDate = start;
         endDate = end;
-        this.selectedRooms = selectedRooms;
         if (selectedRooms != null)
         {
+            this.selectedRooms = selectedRooms;
             SelectDropdownProperty(selectedRooms[0]);
         }
         selectionCallback = confirmSelection;
