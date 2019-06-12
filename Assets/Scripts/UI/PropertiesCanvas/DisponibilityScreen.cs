@@ -68,7 +68,9 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void Initialize()
     {
-        CheckRoomsSelection();
+        startDate = DateTime.Today.Date;
+        endDate = DateTime.Today.AddDays(1).Date;
+        lastDropdownOption = 0;
         SelectProperty(lastDropdownOption);
     }
 
@@ -81,11 +83,13 @@ public class DisponibilityScreen : MonoBehaviour
     {
         this.startDate = startDate;
         this.endDate = endDate;
+        lastDropdownOption = 0;
         SelectProperty(lastDropdownOption);
     }
 
     public void SelectProperty(int optionIndex)
     {
+        propertyDropdownList.value = optionIndex;
         if (optionIndex == 0)
         {
             lastDropdownOption = optionIndex;
@@ -331,6 +335,7 @@ public class DisponibilityScreen : MonoBehaviour
         {
             RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
             roomScreenScript.UpdateRoomDetailsFields(room);
+            roomScreenScript.UpdateDateTime(startDate, endDate);
             navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
         }
         CheckRoomsSelection();
@@ -345,13 +350,13 @@ public class DisponibilityScreen : MonoBehaviour
         {
             currentReservation = current;
         }
+        navigator.GoTo(this.GetComponent<NavScreen>());
         this.selectedRooms = selectedRooms;
         if (selectedRooms != null)
         {
             SelectDropdownProperty(selectedRooms[0]);
         }
         selectionCallback = confirmSelection;
-        navigator.GoTo(this.GetComponent<NavScreen>());
     }
 
     private IEnumerator ExpandFooterBar(Vector2 scrollEndSize, Vector2 buttonsEndSize)

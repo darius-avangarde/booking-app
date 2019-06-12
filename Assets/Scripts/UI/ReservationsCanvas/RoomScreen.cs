@@ -49,6 +49,12 @@ public class RoomScreen : MonoBehaviour
         editButton.onClick.AddListener(() => EditButton());
     }
 
+    public void UpdateDateTime(DateTime start, DateTime end)
+    {
+        dateTimeStart = start;
+        dateTimeEnd = end;
+    }
+
     public void UpdateRoomDetailsFields(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
@@ -107,7 +113,7 @@ public class RoomScreen : MonoBehaviour
 
     public void CreateNewReservation()
     {
-        reservationScreen.OpenAddReservation(currentRoom, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID)));
+        reservationScreen.OpenAddReservation(dateTimeStart, dateTimeEnd, currentRoom, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID)));
     }
 
     public void InstantiateReservations()
