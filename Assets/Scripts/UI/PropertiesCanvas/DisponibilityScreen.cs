@@ -76,7 +76,8 @@ public class DisponibilityScreen : MonoBehaviour
 
     public void ShowModalCalendar()
     {
-        calendarScreen.OpenCallendar(startDate, SetNewDatePeriod);
+        //calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod);
+        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod);
     }
 
     private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
@@ -234,7 +235,7 @@ public class DisponibilityScreen : MonoBehaviour
                     }
                     else
                     {
-                        //if room is reserved, remove from selected rooms
+                        //if room is reserved in the given date time period, remove it from selected rooms
                         if (selectedRooms.Any(r => r.ID == room.ID))
                         {
                             selectedRooms.Remove(room);
@@ -344,13 +345,13 @@ public class DisponibilityScreen : MonoBehaviour
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
         fromReservation = true;
-        startDate = start;
-        endDate = end;
         if (current != null)
         {
             currentReservation = current;
         }
         navigator.GoTo(this.GetComponent<NavScreen>());
+        startDate = start;
+        endDate = end;
         this.selectedRooms = selectedRooms;
         if (selectedRooms != null)
         {
