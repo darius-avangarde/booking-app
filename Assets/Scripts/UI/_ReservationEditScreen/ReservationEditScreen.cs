@@ -395,7 +395,15 @@ public class ReservationEditScreen : MonoBehaviour
 
         InitializePropertyDropdown();
 
-        clientButtonText.text = (client != null) ? client.Name : Constants.CHOOSE;
+        if(client != null)
+        {
+            clientButtonText.text = client.Name;
+            propertyButtonText.text = Constants.CHOOSE;
+        }
+        else
+        {
+            clientButtonText.text = Constants.CHOOSE;
+        }
 
         if(reservation != null)
         {
@@ -415,6 +423,8 @@ public class ReservationEditScreen : MonoBehaviour
 
         if(rooms != null)
         {
+            propertyButtonText.text = PropertyDataManager.GetProperty(rooms[0].PropertyID).Name;
+
             if(rooms.Count == 1)
             {
                 roomButton.SetActive(PropertyDataManager.GetProperty(rooms[0].PropertyID).HasRooms);
