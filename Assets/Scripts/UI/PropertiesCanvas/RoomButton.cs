@@ -139,6 +139,7 @@ public class RoomButton : MonoBehaviour
                 yield return null;
             }
         }
+        //if holded select else click
         SelectToggleMark();
     }
 }
