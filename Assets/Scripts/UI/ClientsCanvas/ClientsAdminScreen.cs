@@ -28,11 +28,12 @@ public class ClientsAdminScreen : MonoBehaviour
     private ReservationEditScreen rezerv = null;
     [SerializeField]
     private InputManager inputManager;
+    [SerializeField]
+    private ClientsScreen clientsScreen;
     #endregion
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
-    [SerializeField]
-    private ClientsScreen clientsScreen;
+    
 
     public IClient GetCurrentClient()
     {
