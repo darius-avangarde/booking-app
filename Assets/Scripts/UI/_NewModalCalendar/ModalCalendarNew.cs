@@ -218,7 +218,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
                 if(!OverlapsOtherReservation(selectedStart, selectedEnd) && selectedStart != selectedEnd)
                 {
                     showSelection = true;
-                    selectionText.text = selectedStart.ToString(Constants.DateTimePrintFormat) + Constants.AndDelimiter + selectedEnd.ToString(Constants.DateTimePrintFormat);
+                    selectionText.text = $"{selectedStart.ToString(Constants.DateTimePrintFormat)} - {selectedEnd.ToString(Constants.DateTimePrintFormat)}";
                     confirmButton.interactable = true;
                 }
                 else
@@ -256,7 +256,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
 
         if(currentReservation != null)
         {
-            selectionText.text = currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat) + Constants.AndDelimiter + currentReservation.Period.End.ToString(Constants.DateTimePrintFormat);
+            selectionText.text = $"{currentReservation.Period.Start.ToString(Constants.DateTimePrintFormat)} - {currentReservation.Period.End.ToString(Constants.DateTimePrintFormat)}";
             confirmButton.interactable = true;
         }
         else
