@@ -321,14 +321,12 @@ public class ReservationEditScreen : MonoBehaviour
         if(currentProperty == null)
         {
             SetErrorAndInteractability(Constants.ERR_PROP, false);
-            propertyButtonText.text = Constants.CHOOSE;
             return;
         }
 
         if(currentRooms == null || currentRooms.Count < 0)
         {
             SetErrorAndInteractability(Constants.ERR_ROOM, false);
-            propertyButtonText.text = Constants.CHOOSE;
             return;
         }
 
