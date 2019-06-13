@@ -84,8 +84,8 @@ public class PropertyRoomScreen : MonoBehaviour
 
     private void OpenRoomAdminScreen(IRoom room)
     {
-        roomAdminScreen.SetCurrentPropertyRoom(room);
         navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());
+        roomAdminScreen.SetCurrentPropertyRoom(room);
     }
 
     private void OpenPropertyAdminScreen(IProperty property)
