@@ -336,7 +336,7 @@ public class DisponibilityScreen : MonoBehaviour
         {
             if (vibrate)
             {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
                 VibrationController vib = new VibrationController();
                 if (vib.hasVibrator())
                 {
