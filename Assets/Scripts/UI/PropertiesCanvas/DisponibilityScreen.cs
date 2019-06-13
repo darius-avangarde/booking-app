@@ -90,6 +90,10 @@ public class DisponibilityScreen : MonoBehaviour
         this.endDate = endDate;
         shouldSelectRooms = true;
         InstantiateProperties();
+        if(lastDropdownOption == 0)
+        {
+            selectedProperty = null;
+        }
         if (selectedProperty != null)
         {
             SelectDropdownProperty(selectedProperty);
@@ -106,7 +110,6 @@ public class DisponibilityScreen : MonoBehaviour
         if (optionIndex == 0)
         {
             lastDropdownOption = optionIndex;
-            selectedProperty = null;
             InstantiateProperties();
         }
         else
