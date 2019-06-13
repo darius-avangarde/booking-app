@@ -381,7 +381,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void BackButtonFunction()
     {
-        if (propertyDropdownList.value == 0)
+        if (propertyDropdownList.value == 0 || fromReservation)
         {
             navigator.GoBack();
         }
@@ -421,17 +421,13 @@ public class DisponibilityScreen : MonoBehaviour
         }
         startDate = start;
         endDate = end;
+        navigator.GoTo(this.GetComponent<NavScreen>());
         if (selectedRooms != null)
         {
-            shouldSelectRooms = true;
             this.selectedRooms = selectedRooms;
             selectedProperty = PropertyDataManager.GetProperty(selectedRooms[0].PropertyID);
-            navigator.GoTo(this.GetComponent<NavScreen>());
+            shouldSelectRooms = true;
             SelectDropdownProperty(selectedProperty);
-        }
-        else
-        {
-            navigator.GoTo(this.GetComponent<NavScreen>());
         }
         selectionCallback = confirmSelection;
     }
