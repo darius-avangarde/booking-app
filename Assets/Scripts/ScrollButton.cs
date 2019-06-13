@@ -60,7 +60,6 @@ public class ScrollButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandle
 		{
 			ScrollRectParent.OnDrag(eventData);
 		}
-        OnDragEvent.Invoke();
     }
 	public void OnEndDrag(PointerEventData eventData)
 	{
@@ -72,10 +71,11 @@ public class ScrollButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandle
 	}
 	public void OnBeginDrag(PointerEventData eventData)
 	{
-		if (ScrollRectParent != null)
+        OnDragEvent.Invoke();
+        if (ScrollRectParent != null)
 		{
 			ScrollRectParent.OnBeginDrag(eventData);
 			IsDragging = true;
 		}
-	}
+    }
 }

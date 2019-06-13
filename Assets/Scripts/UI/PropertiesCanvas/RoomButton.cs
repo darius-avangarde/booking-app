@@ -131,7 +131,7 @@ public class RoomButton : MonoBehaviour
         }
     }
 
-    private void ClickOrSellect()
+        private void ClickOrSellect()
     {
         StopAllCoroutines();
         if (!pressAndHold)
@@ -168,5 +168,6 @@ public class RoomButton : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         StopAllCoroutines();
+        DisponibilitySccreenComponent.CheckRoomsSelection();
     }
 }

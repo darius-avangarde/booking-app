@@ -63,7 +63,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void Awake()
     {
-        backButton.onClick.AddListener(() => navigator.GoBack());
+        backButton.onClick.AddListener(() => BackButtonFunction());
         disponibilityHeight = disponibilityScrollView.offsetMin.y;
     }
 
@@ -88,8 +88,9 @@ public class DisponibilityScreen : MonoBehaviour
     {
         this.startDate = startDate;
         this.endDate = endDate;
-        lastDropdownOption = 0;
-        SelectProperty(lastDropdownOption);
+        shouldSelectRooms = true;
+        InstantiateProperties();
+        SelectDropdownProperty(selectedProperty);
     }
 
     public void SelectProperty(int optionIndex)
@@ -171,7 +172,25 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 if (index == property.Rooms.Count())
                 {
-                    Destroy(propertyButton);
+                    if(selectedProperty != null)
+                    {
+                        if (selectedProperty.ID == property.ID)
+                        {
+                            buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
+                            propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
+                            propertyDropdownOptions.Add(property.ID, propertyIndex);
+                            propertyItemList.Add(propertyButton);
+                            propertyIndex++;
+                        }
+                        else
+                        {
+                            Destroy(propertyButton);
+                        }
+                    }
+                    else
+                    {
+                        Destroy(propertyButton);
+                    }
                 }
                 else
                 {
@@ -267,6 +286,14 @@ public class DisponibilityScreen : MonoBehaviour
                     }
                 }
                 availableRoomsNumber.text = Constants.AVAILABLE_ROOMS + nrRooms;
+                if(nrRooms == 0)
+                {
+                    availableRoomsNumber.color = Constants.reservedUnavailableItemColor;
+                }
+                else
+                {
+                    availableRoomsNumber.color = Constants.defaultTextCollor;
+                }
                 CheckRoomsSelection();
             }
             else
@@ -297,7 +324,12 @@ public class DisponibilityScreen : MonoBehaviour
             StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight), new Vector2(footerBar.anchoredPosition.x, -160)));
             foreach (var room in roomItemList)
             {
-                room.GetComponent<RoomButton>().disponibilityMarker.color = Constants.availableItemColor;
+                RoomButton roomObject = room.GetComponent<RoomButton>();
+                roomObject.disponibilityMarker.color = Constants.availableItemColor;
+                if (roomObject.Selected)
+                {
+                    roomObject.SelectToggleMark();
+                }
             }
         }
         else
@@ -332,14 +364,6 @@ public class DisponibilityScreen : MonoBehaviour
     {
         selectedRooms = new List<IRoom>();
         CheckRoomsSelection();
-        foreach (var room in roomItemList)
-        {
-            RoomButton roomObject = room.GetComponent<RoomButton>();
-            if (roomObject.Selected)
-            {
-                roomObject.SelectToggleMark();
-            }
-        }
     }
 
     public void ClearChanges()
@@ -347,6 +371,18 @@ public class DisponibilityScreen : MonoBehaviour
         selectionCallback = null;
         currentReservation = null;
         fromReservation = false;
+    }
+
+    private void BackButtonFunction()
+    {
+        if(propertyDropdownList.value == 0)
+        {
+            navigator.GoBack();
+        }
+        else
+        {
+            SelectProperty(0);
+        }
     }
 
     private void SelectDropdownProperty(IProperty property)
