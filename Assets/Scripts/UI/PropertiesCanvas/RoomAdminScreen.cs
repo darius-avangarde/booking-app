@@ -148,7 +148,7 @@ public class RoomAdminScreen : MonoBehaviour
                 newRoom.Name = $"{multiplePrefixField.text} {j}";
                 currentProperty.SaveRoom(newRoom);
             }
-            for (int i = 1; i <= floors; i++)
+            for (int i = 1; i < floors; i++)
             {
                 for (int j = 1; j <= rooms; j++)
                 {
