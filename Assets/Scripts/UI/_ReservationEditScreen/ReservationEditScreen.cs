@@ -179,7 +179,7 @@ public class ReservationEditScreen : MonoBehaviour
 
         public void SelectProperty()
         {
-            availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, null, SetProperty);
+            availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, null, SetRooms);
             SetProperty(0);
         }
 
@@ -351,19 +351,14 @@ public class ReservationEditScreen : MonoBehaviour
         SetErrorAndInteractability(string.Empty, true);
     }
 
-    private void SetProperty(DateTime start, DateTime end, List<IRoom> rooms)
-    {
-        currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
-        propertyButtonText.text = currentProperty.Name;
-        SetRooms(start, end, rooms);
-    }
-
     private void SetRooms(DateTime start, DateTime end, List<IRoom> rooms)
     {
         periodStart = start.Date;
         periodEnd = end.Date;
         UpdateReservationPeriod(periodStart, periodEnd);
+        currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
         currentRooms = rooms;
+        propertyButtonText.text = currentProperty.Name;
 
         if(rooms != null)
         {
