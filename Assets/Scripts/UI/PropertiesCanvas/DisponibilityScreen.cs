@@ -304,7 +304,11 @@ public class DisponibilityScreen : MonoBehaviour
         {
             if (vibrate)
             {
-                Handheld.Vibrate();
+                VibrationController vib = new VibrationController();
+                if (vib.hasVibrator())
+                {
+                    vib.vibrate(250);
+                }
                 vibrate = false;
             }
             roomSelection = true;
