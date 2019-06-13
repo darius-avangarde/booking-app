@@ -63,7 +63,7 @@ public class PropertyButton : MonoBehaviour
             }
             disponibilityMarker.gameObject.SetActive(true);
             bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
-                .Any(r => r.RoomID == property.GetRoom(property.GetPropertyRoomID).ID);
+                .Any(r => r.ContainsRoom(property.GetRoom(property.GetPropertyRoomID).ID));
             if (reservations)
             {
                 disponibilityMarker.color = Constants.reservedUnavailableItemColor;

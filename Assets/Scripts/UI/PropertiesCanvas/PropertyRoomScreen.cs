@@ -10,11 +10,11 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Transform propertyAdminScreenTransform = null;
+    private PropertyAdminScreen propertyAdminScreen = null;
     [SerializeField]
-    private Transform roomAdminScreenTransform = null;
+    private RoomAdminScreen roomAdminScreen = null;
     [SerializeField]
-    private Transform roomScreenTransform = null;
+    private RoomScreen roomScreen = null;
     [SerializeField]
     private Transform roomsContentScrollView = null;
     [SerializeField]
@@ -78,25 +78,19 @@ public class PropertyRoomScreen : MonoBehaviour
 
     private void OpenRoomScreen(IRoom room)
     {
-        RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
-        roomScreenScript.UpdateRoomDetailsFields(room);
-        //roomScreenScript.propertiesScreen = this;
-        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
+        roomScreen.UpdateRoomDetailsFields(room);
+        navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 
     private void OpenRoomAdminScreen(IRoom room)
     {
-        RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
-        roomAdminScreenScript.SetCurrentPropertyRoom(room);
-        //roomAdminScreenScript.propertiesScreen = this;
-        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
+        roomAdminScreen.SetCurrentPropertyRoom(room);
+        navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());
     }
 
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
-        propertyAdminScreenScript.SetCurrentProperty(property);
-        //propertyAdminScreenScript.propertiesScreen = this;
-        navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+        propertyAdminScreen.SetCurrentProperty(property);
+        navigator.GoTo(propertyAdminScreen.GetComponent<NavScreen>());
     }
 }

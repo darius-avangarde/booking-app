@@ -15,9 +15,11 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private ReservationEditScreen reservationScreen = null;
     [SerializeField]
-    private Transform roomAdminScreenTransform = null;
+    private PropertyRoomScreen propertyRoomScreen = null;
     [SerializeField]
-    private Transform propertyAdminScreenTransform = null;
+    private RoomAdminScreen roomAdminScreen = null;
+    [SerializeField]
+    private PropertyAdminScreen propertyAdminScreenTransform = null;
     [SerializeField]
     private Transform reservationsContent = null;
     [SerializeField]
@@ -61,7 +63,7 @@ public class RoomScreen : MonoBehaviour
         currentRoom = room;
         //dayDateTime = date;
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
-        //UpdateCurrentRoomDetailsFields();
+        UpdateCurrentRoomDetailsFields();
     }
 
     public void UpdateCurrentRoomDetailsFields()
@@ -75,7 +77,7 @@ public class RoomScreen : MonoBehaviour
             roomScreenTitle.text = currentProperty.Name ?? Constants.NEW_PROPERTY;
         }
         bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
-        .Any(r => r.RoomID == currentRoom.ID);
+        .Any(r => r.ContainsRoom(currentRoom.ID));
         if (reservations)
         {
             disponibilityMarker.color = Constants.reservedUnavailableItemColor;
@@ -134,6 +136,11 @@ public class RoomScreen : MonoBehaviour
         }
     }
 
+    public void OnHidingSetProperty()
+    {
+        propertyRoomScreen.SetCurrentProperty(currentProperty);
+    }
+
     private void DeleteReservation(GameObject reservationButton)
     {
         reservationButtonList.Remove(reservationButton);
@@ -142,15 +149,13 @@ public class RoomScreen : MonoBehaviour
 
     private void OpenPropertyAdminScreen()
     {
-        PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
-        propertyAdminScreenScript.SetCurrentProperty(currentProperty);
+        propertyAdminScreenTransform.SetCurrentProperty(currentProperty);
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 
     private void OpenRoomAdminScreen()
     {
-        RoomAdminScreen roomAdminScreenScript = roomAdminScreenTransform.GetComponent<RoomAdminScreen>();
-        roomAdminScreenScript.SetCurrentPropertyRoom(currentRoom);
-        navigator.GoTo(roomAdminScreenTransform.GetComponent<NavScreen>());
+        roomAdminScreen.SetCurrentPropertyRoom(currentRoom);
+        navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());
     }
 }
