@@ -29,9 +29,12 @@ public class RoomButton : MonoBehaviour
     [SerializeField]
     private Image selectMarker = null;
 
+    Action<DateTime, DateTime, List<IRoom>> reservationCallback;
+    Action<IRoom> roomCallback;
     private IRoom currentRoom;
     private DateTime dateTimeStart = DateTime.Today.Date;
     private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
+    private bool pressAndHold = false;
     private bool reservations = false;
 
     public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
@@ -76,15 +79,15 @@ public class RoomButton : MonoBehaviour
             roomScrollButton.enabled = true;
             if (reservationCallback != null)
             {
-                roomScrollButton.OnClick.AddListener(() => reservationCallback(dateTimeStart, dateTimeEnd, SendCurrentRoom()));
+                this.reservationCallback = reservationCallback;
             }
             else
             {
-                roomScrollButton.OnClick.AddListener(() => roomCallback(room));
+                this.roomCallback = roomCallback;
             }
             roomScrollButton.OnPointerDownEvent.AddListener(() => StartCoroutine(SelectionMode()));
-            roomScrollButton.OnPointerUpEvent.AddListener(() => StopAllCoroutines());
-            roomScrollButton.OnDragEvent.AddListener(() => StopAllCoroutines());
+            roomScrollButton.OnDragEvent.AddListener(() => StartCoroutine(StopCoroutineDelay()));
+            roomScrollButton.OnClick.AddListener(() => ClickOrSellect());
             if (disponibilityScript.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
                 SelectToggleMark();
@@ -103,7 +106,7 @@ public class RoomButton : MonoBehaviour
         List<IRoom> currentRoomList = new List<IRoom>();
         currentRoomList.Add(currentRoom);
         return currentRoomList;
-    } 
+    }
 
     public void SelectToggleMark()
     {
@@ -128,8 +131,26 @@ public class RoomButton : MonoBehaviour
         }
     }
 
+    private void ClickOrSellect()
+    {
+        StopAllCoroutines();
+        if (!pressAndHold)
+        {
+            if (reservationCallback != null)
+            {
+                reservationCallback.Invoke(dateTimeStart, dateTimeEnd, SendCurrentRoom());
+            }
+            else
+            {
+                roomCallback.Invoke(currentRoom);
+            }
+        }
+        DisponibilitySccreenComponent.CheckRoomsSelection();
+    }
+
     private IEnumerator SelectionMode()
     {
+        pressAndHold = false;
         if (!DisponibilitySccreenComponent.roomSelection)
         {
             double timer = 0;
@@ -139,7 +160,13 @@ public class RoomButton : MonoBehaviour
                 yield return null;
             }
         }
-        //if holded select else click
+        pressAndHold = true;
         SelectToggleMark();
+    }
+
+    private IEnumerator StopCoroutineDelay()
+    {
+        yield return new WaitForSeconds(0.2f);
+        StopAllCoroutines();
     }
 }

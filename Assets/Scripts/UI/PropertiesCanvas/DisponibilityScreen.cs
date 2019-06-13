@@ -320,7 +320,6 @@ public class DisponibilityScreen : MonoBehaviour
     {
         if (fromReservation)
         {
-            roomSelection = false;
             selectionCallback.Invoke(startDate, endDate, selectedRooms);
         }
         else
@@ -364,14 +363,10 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void OpenRoomScreen(IRoom room)
     {
-        if (!roomSelection)
-        {
-            RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
-            roomScreenScript.UpdateRoomDetailsFields(room);
-            roomScreenScript.UpdateDateTime(startDate, endDate);
-            navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
-        }
-        CheckRoomsSelection();
+        RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
+        roomScreenScript.UpdateRoomDetailsFields(room);
+        roomScreenScript.UpdateDateTime(startDate, endDate);
+        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
     }
 
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
