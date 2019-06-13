@@ -88,7 +88,6 @@ public class DisponibilityScreen : MonoBehaviour
     {
         this.startDate = startDate;
         this.endDate = endDate;
-        shouldSelectRooms = true;
         InstantiateProperties();
         if(lastDropdownOption == 0)
         {
@@ -393,9 +392,10 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void SelectDropdownProperty(IProperty property)
     {
-        selectedProperty = property;
         lastDropdownOption = propertyDropdownOptions[property.ID];
         propertyDropdownList.value = lastDropdownOption;
+        //nu se apeleaza OnValueChanged pe Dropdown?
+        SelectProperty(lastDropdownOption);
     }
 
     private void SelectDropdownProperty(IRoom propertyRoom)
@@ -403,6 +403,7 @@ public class DisponibilityScreen : MonoBehaviour
         selectedProperty = PropertyDataManager.GetProperty(propertyRoom.PropertyID);
         lastDropdownOption = propertyDropdownOptions[selectedProperty.ID];
         propertyDropdownList.value = lastDropdownOption;
+        SelectProperty(lastDropdownOption);
     }
 
     private void OpenRoomScreen(IRoom room)
