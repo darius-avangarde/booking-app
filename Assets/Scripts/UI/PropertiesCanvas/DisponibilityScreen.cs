@@ -106,6 +106,7 @@ public class DisponibilityScreen : MonoBehaviour
         if (optionIndex == 0)
         {
             lastDropdownOption = optionIndex;
+            selectedProperty = null;
             InstantiateProperties();
         }
         else
