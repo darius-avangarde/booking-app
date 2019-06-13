@@ -172,20 +172,13 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 if (index == property.Rooms.Count())
                 {
-                    if(selectedProperty != null)
+                    if (selectedProperty != null && selectedProperty.ID == property.ID)
                     {
-                        if (selectedProperty.ID == property.ID)
-                        {
-                            buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
-                            propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
-                            propertyDropdownOptions.Add(property.ID, propertyIndex);
-                            propertyItemList.Add(propertyButton);
-                            propertyIndex++;
-                        }
-                        else
-                        {
-                            Destroy(propertyButton);
-                        }
+                        buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
+                        propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
+                        propertyDropdownOptions.Add(property.ID, propertyIndex);
+                        propertyItemList.Add(propertyButton);
+                        propertyIndex++;
                     }
                     else
                     {
@@ -286,13 +279,13 @@ public class DisponibilityScreen : MonoBehaviour
                     }
                 }
                 availableRoomsNumber.text = Constants.AVAILABLE_ROOMS + nrRooms;
-                if(nrRooms == 0)
+                if (nrRooms == 0)
                 {
                     availableRoomsNumber.color = Constants.reservedUnavailableItemColor;
                 }
                 else
                 {
-                    availableRoomsNumber.color = Constants.defaultTextCollor;
+                    availableRoomsNumber.color = Constants.defaultTextColor;
                 }
                 CheckRoomsSelection();
             }
@@ -381,7 +374,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void BackButtonFunction()
     {
-        if(propertyDropdownList.value == 0)
+        if (propertyDropdownList.value == 0)
         {
             navigator.GoBack();
         }
