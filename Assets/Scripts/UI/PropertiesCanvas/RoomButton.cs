@@ -36,6 +36,7 @@ public class RoomButton : MonoBehaviour
     private DateTime dateTimeEnd = DateTime.Today.AddDays(1).Date;
     private bool pressAndHold = false;
     private bool reservations = false;
+    private bool firstSelection = false;
 
     public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
     {
@@ -145,6 +146,14 @@ public class RoomButton : MonoBehaviour
                 roomCallback.Invoke(currentRoom);
             }
         }
+        else
+        {
+            if (!firstSelection)
+            {
+                SelectToggleMark();
+            }
+            firstSelection = false;
+        }
         DisponibilitySccreenComponent.CheckRoomsSelection();
     }
 
@@ -159,9 +168,10 @@ public class RoomButton : MonoBehaviour
                 timer += Time.deltaTime;
                 yield return null;
             }
+            SelectToggleMark();
+            firstSelection = true;
         }
         pressAndHold = true;
-        SelectToggleMark();
     }
 
     private IEnumerator StopCoroutineDelay()
