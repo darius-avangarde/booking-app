@@ -336,7 +336,13 @@ public class DisponibilityScreen : MonoBehaviour
         {
             if (vibrate)
             {
-                Handheld.Vibrate();
+#if UNITY_ANDROID
+                VibrationController vib = new VibrationController();
+                if (vib.hasVibrator())
+                {
+                    vib.vibrate(250);
+                }
+#endif
                 vibrate = false;
             }
             roomSelection = true;

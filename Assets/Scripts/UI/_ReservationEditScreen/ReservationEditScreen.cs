@@ -225,7 +225,7 @@ public class ReservationEditScreen : MonoBehaviour
             periodEnd = periodStart.AddDays(1).Date;
             confirmationCallback = confirmCallback;
             deletionCallback = null;
-            UpdateEditableOptions(null, client, null, true);
+            UpdateEditableOptions(null, client, null);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
         }
@@ -372,9 +372,9 @@ public class ReservationEditScreen : MonoBehaviour
 
         if(rooms != null)
         {
+            roomButton.SetActive(currentProperty.HasRooms);
             if(rooms.Count == 1)
             {
-                roomButton.SetActive(currentProperty.HasRooms);
                 roomButtonText.text = rooms[0].Name;
             }
             else
@@ -393,7 +393,7 @@ public class ReservationEditScreen : MonoBehaviour
     }
 
     //Updates all editable fields in the edit reservation screen
-    private void UpdateEditableOptions(IReservation reservation, IClient client, List<IRoom> rooms, bool fromClient = false)
+    private void UpdateEditableOptions(IReservation reservation, IClient client, List<IRoom> rooms)
     {
         currentReservation = reservation;
         currentRooms = rooms;
@@ -420,11 +420,6 @@ public class ReservationEditScreen : MonoBehaviour
         {
             deleteReservationButton.SetActive(false);
             UpdateReservationPeriod(periodStart, periodEnd);
-            if(fromClient)
-            {
-                reservationPeriodText.text += $" {Constants.CHOOSE} {Constants.ROOMS_SELECTED} {Constants.RESERVATION_PERIOD}";
-
-            }
         }
 
         if(rooms != null)
