@@ -38,7 +38,10 @@ public class ScrollButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandle
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-        OnPointerDownEvent.Invoke();
+        if (OnHover && !IsDragging)
+        {
+            OnPointerDownEvent.Invoke();
+        }
     }
 
 	public void OnPointerEnter(PointerEventData eventData)
