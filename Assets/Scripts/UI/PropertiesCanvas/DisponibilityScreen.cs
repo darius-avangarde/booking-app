@@ -20,7 +20,7 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private ModalCalendarNew calendarScreen = null;
     [SerializeField]
-    private Transform roomScreenTransform = null;
+    private RoomScreen roomScreen = null;
     [SerializeField]
     private GameObject propertyItemPrefab = null;
     [SerializeField]
@@ -90,7 +90,14 @@ public class DisponibilityScreen : MonoBehaviour
         this.endDate = endDate;
         shouldSelectRooms = true;
         InstantiateProperties();
-        SelectDropdownProperty(selectedProperty);
+        if(lastDropdownOption == 0)
+        {
+            selectedProperty = null;
+        }
+        if (selectedProperty != null)
+        {
+            SelectDropdownProperty(selectedProperty);
+        }
     }
 
     public void SelectProperty(int optionIndex)
@@ -386,22 +393,23 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void SelectDropdownProperty(IProperty property)
     {
+        selectedProperty = property;
         lastDropdownOption = propertyDropdownOptions[property.ID];
         propertyDropdownList.value = lastDropdownOption;
     }
 
     private void SelectDropdownProperty(IRoom propertyRoom)
     {
-        lastDropdownOption = propertyDropdownOptions[PropertyDataManager.GetProperty(propertyRoom.PropertyID).ID];
+        selectedProperty = PropertyDataManager.GetProperty(propertyRoom.PropertyID);
+        lastDropdownOption = propertyDropdownOptions[selectedProperty.ID];
         propertyDropdownList.value = lastDropdownOption;
     }
 
     private void OpenRoomScreen(IRoom room)
     {
-        RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
-        roomScreenScript.UpdateRoomDetailsFields(room);
-        roomScreenScript.UpdateDateTime(startDate, endDate);
-        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
+        roomScreen.UpdateRoomDetailsFields(room);
+        roomScreen.UpdateDateTime(startDate, endDate);
+        navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
@@ -413,12 +421,17 @@ public class DisponibilityScreen : MonoBehaviour
         }
         startDate = start;
         endDate = end;
-        navigator.GoTo(this.GetComponent<NavScreen>());
         if (selectedRooms != null)
         {
             shouldSelectRooms = true;
             this.selectedRooms = selectedRooms;
-            SelectDropdownProperty(selectedRooms[0]);
+            selectedProperty = PropertyDataManager.GetProperty(selectedRooms[0].PropertyID);
+            navigator.GoTo(this.GetComponent<NavScreen>());
+            SelectDropdownProperty(selectedProperty);
+        }
+        else
+        {
+            navigator.GoTo(this.GetComponent<NavScreen>());
         }
         selectionCallback = confirmSelection;
     }

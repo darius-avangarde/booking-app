@@ -11,15 +11,15 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Transform propertyAdminScreenTransform = null;
+    private PropertyAdminScreen propertyAdminScreen = null;
     [SerializeField]
-    private Transform propertyRoomScreenTransform = null;
+    private PropertyRoomScreen propertyRoomScreen = null;
     [SerializeField]
-    private Transform roomScreenTransform = null;
-    [SerializeField]
-    private GameObject propertyItemPrefab = null;
+    private RoomScreen roomScreen = null;
     [SerializeField]
     private RectTransform propertyInfoContent = null;
+    [SerializeField]
+    private GameObject propertyItemPrefab = null;
     [SerializeField]
     private Button thumbnailsViewButton = null;
     [SerializeField]
@@ -72,23 +72,20 @@ public class PropertiesScreen : MonoBehaviour
 
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        PropertyAdminScreen propertyAdminScreenScript = propertyAdminScreenTransform.GetComponent<PropertyAdminScreen>();
-        propertyAdminScreenScript.SetCurrentProperty(property);
-        navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+        propertyAdminScreen.SetCurrentProperty(property);
+        navigator.GoTo(propertyAdminScreen.GetComponent<NavScreen>());
     }
 
     private void OpenPropertyRoomScreen(IProperty property)
     {
-        PropertyRoomScreen propertyRoomScreenScript = propertyRoomScreenTransform.GetComponent<PropertyRoomScreen>();
-        propertyRoomScreenScript.SetCurrentProperty(property);
-        navigator.GoTo(propertyRoomScreenTransform.GetComponent<NavScreen>());
+        propertyRoomScreen.SetCurrentProperty(property);
+        navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
 
     private void OpenRoomScreen(IRoom room)
     {
-        RoomScreen roomScreenScript = roomScreenTransform.GetComponent<RoomScreen>();
-        roomScreenScript.UpdateRoomDetailsFields(room);
-        navigator.GoTo(roomScreenTransform.GetComponent<NavScreen>());
+        roomScreen.UpdateRoomDetailsFields(room);
+        navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 
     public IEnumerator ExpandView(bool expand, RectTransform property)
