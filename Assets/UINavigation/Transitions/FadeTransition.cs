@@ -12,6 +12,7 @@ public class FadeTransition : TransitionBase
     public override IEnumerator Play(NavScreen currentScreen, NavScreen nextScreen)
     {
         nextScreen.RectTransform.SetAsLastSibling();
+        nextScreen.gameObject.SetActive(true);
         nextScreen.OnShowing();
 
         if (currentScreen != null)
@@ -38,6 +39,7 @@ public class FadeTransition : TransitionBase
         if (currentScreen != null)
         {
             currentScreen.OnHidden();
+            currentScreen.gameObject.SetActive(false);
             currentScreen.CanvasGroup.alpha = 0f;
         }
     }
@@ -52,6 +54,7 @@ public class FadeTransition : TransitionBase
         {
             var currentScreenIndex = currentScreen.RectTransform.GetSiblingIndex();
             previousScreen.RectTransform.SetSiblingIndex(currentScreenIndex);
+            previousScreen.gameObject.SetActive(true);
             previousScreen.OnShowing();
             previousScreen.CanvasGroup.alpha = 1f;
         }
@@ -68,6 +71,7 @@ public class FadeTransition : TransitionBase
         } while (progress < 1f);
 
         currentScreen.OnHidden();
+        currentScreen.gameObject.SetActive(false);
         if (previousScreen != null)
         {
             previousScreen.OnShown();

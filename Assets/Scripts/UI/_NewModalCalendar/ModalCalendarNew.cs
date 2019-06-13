@@ -8,7 +8,7 @@ using System.Linq;
 public class ModalCalendarNew : MonoBehaviour, IClosable
 {
     [SerializeField]
-    private EasyTween easyTween = null;
+    private ModalFadeObject modalFade = null;
     [SerializeField]
     private Text monthName = null;
     [SerializeField]
@@ -94,6 +94,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         currentPage.UpdatePage(DateTime.Today.Date);
         cachePage.CreateDayItems();
         cachePage.UpdatePage(DateTime.Today.Date);
+        gameObject.SetActive(false);
     }
 
     #region OpenCalendarFunctions
@@ -244,7 +245,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
         monthName.text = Constants.MonthNamesDict[focusDateTime.Month] + ((focusDateTime.Year != DateTime.Today.Year) ? Constants.SPACE + focusDateTime.Year : string.Empty);
         currentReservation = reservation;
         roomReservationList = reservationList;
-        easyTween.OpenCloseObjectAnimation();
+        modalFade.FadeIn();
         InputManager.CurrentlyOpenClosable = this;
         DoneCallback = doneCallback;
 
@@ -279,7 +280,7 @@ public class ModalCalendarNew : MonoBehaviour, IClosable
             DoneCallback?.Invoke(selectedStart.Date, selectedEnd.Date);
         }
         DoneCallback = null;
-        easyTween.OpenCloseObjectAnimation();
+        modalFade.FadeOut();
         InputManager.CurrentlyOpenClosable = null;
         showSelection = false;
         isSelectingEnd = false;

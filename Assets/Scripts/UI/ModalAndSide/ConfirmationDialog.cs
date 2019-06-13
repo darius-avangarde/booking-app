@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ConfirmationDialog : MonoBehaviour, IClosable
 {
     [SerializeField]
-    private EasyTween easyTween = null;
+    private ModalFadeObject modalFade = null;
     [SerializeField]
     private Text messageText = null;
     [SerializeField]
@@ -24,6 +24,11 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     private Action ConfirmCallback;
     private Action ConfirmCallbackSecond;
     private Action CancelCallback;
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
 
     private void Reset()
     {
@@ -50,14 +55,14 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
         cancelButtonText.text = options.CancelText ?? defaultCancelButtonText;
         ConfirmCallback = options.ConfirmCallback;
         CancelCallback = options.CancelCallback;
-        easyTween.OpenCloseObjectAnimation();
+        modalFade.FadeIn();
         InputManager.CurrentlyOpenClosable = this;
     }
 
     public void Confirm()
     {
         ConfirmCallback?.Invoke();
-        easyTween.OpenCloseObjectAnimation();
+        modalFade.FadeOut();
         InputManager.CurrentlyOpenClosable = null;
         Reset();
     }
@@ -65,7 +70,7 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     public void ConfirmSecond()
     {
         ConfirmCallbackSecond?.Invoke();
-        easyTween.OpenCloseObjectAnimation();
+        modalFade.FadeOut();
         InputManager.CurrentlyOpenClosable = null;
         Reset();
     }
@@ -73,7 +78,7 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     public void Cancel()
     {
         CancelCallback?.Invoke();
-        easyTween.OpenCloseObjectAnimation();
+        modalFade.FadeOut();
         InputManager.CurrentlyOpenClosable = null;
         Reset();
     }

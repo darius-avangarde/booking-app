@@ -136,8 +136,7 @@ public class ReservationEditScreen : MonoBehaviour
                         periodStart,
                         periodEnd
                     );
-                    if(confirmationCallback != null)
-                        confirmationCallback.Invoke(currentReservation);
+                    confirmationCallback?.Invoke(currentReservation);
                     navigator.GoBack();
                 };
                 confirmationDialog.Show(editConfirmation);
@@ -150,8 +149,8 @@ public class ReservationEditScreen : MonoBehaviour
                     periodStart,
                     periodEnd
                 );
-                if(confirmationCallback != null)
-                    confirmationCallback.Invoke(newReservation);
+
+                confirmationCallback?.Invoke(newReservation);
                 navigator.GoBack();
             }
         }
@@ -161,8 +160,8 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         public void CancelChanges()
         {
-            confirmationCallback = null;
-            deletionCallback = null;
+            //confirmationCallback = null;
+            //deletionCallback = null;
             propertyDropdown.onValueChanged.RemoveAllListeners();
             AllowEdit = false;
         }
@@ -354,13 +353,9 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void SetProperty(DateTime start, DateTime end, List<IRoom> rooms)
     {
-        if(!availabilityScreen.roomSelection)
-        {
-            currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
-            propertyButtonText.text = currentProperty.Name;
-            SetRooms(start, end, rooms);
-        }
-        availabilityScreen.CheckRoomsSelection();
+        currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
+        propertyButtonText.text = currentProperty.Name;
+        SetRooms(start, end, rooms);
     }
 
     private void SetRooms(DateTime start, DateTime end, List<IRoom> rooms)

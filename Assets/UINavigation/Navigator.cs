@@ -51,6 +51,13 @@ namespace UINavigation
 
         void Start()
         {
+            foreach(NavScreen n in FindObjectsOfType<NavScreen>())
+            {
+                if(n != initialScreen)
+                    n.gameObject.SetActive(false);
+            }
+
+
             if (!initialized)
             {
                 Initialize();
