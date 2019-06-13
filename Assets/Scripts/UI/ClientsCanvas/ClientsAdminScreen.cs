@@ -3,7 +3,7 @@ using UnityEngine;
 using UINavigation;
 using UnityEngine.UI;
 using System;
-using UnityEngine.Networking;
+using System.Linq;
 
 public class ClientsAdminScreen : MonoBehaviour
 {
@@ -33,7 +33,7 @@ public class ClientsAdminScreen : MonoBehaviour
     #endregion
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
-    
+
 
     public IClient GetCurrentClient()
     {
@@ -88,7 +88,7 @@ public class ClientsAdminScreen : MonoBehaviour
             Destroy(reservationButton);
         }
 
-        foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID))
+        foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID).OrderBy(r => r.Period.Start))
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
             reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack));

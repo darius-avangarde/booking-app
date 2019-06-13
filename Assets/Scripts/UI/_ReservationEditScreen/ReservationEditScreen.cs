@@ -180,7 +180,6 @@ public class ReservationEditScreen : MonoBehaviour
         public void SelectProperty()
         {
             availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, null, SetRooms);
-            SetProperty(0);
         }
 
         public void SelectRoom()

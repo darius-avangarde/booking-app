@@ -21,7 +21,14 @@ public class ReservationButton : MonoBehaviour
         propertyName.text = currentProperty.Name;
         if (currentProperty.HasRooms)
         {
-            cameraName.text = currentProperty.GetRoom(reservation.RoomID).Name;
+            if(reservation.RoomIDs.Count == 1)
+            {
+                cameraName.text = currentProperty.GetRoom(reservation.RoomID).Name;
+            }
+            else
+            {
+                cameraName.text =$"{reservation.RoomIDs.Count} {Constants.ROOMS_SELECTED}";
+            }
         }
         else
         {
