@@ -86,6 +86,7 @@ public class Constants : MonoBehaviour
     public readonly static Color graphBarColor2 = new Color(0.909804f, 0.6705883f, 0.1882353f);
     public readonly static Color unavailableItemColor = new Color(0.8941177f, 0.8745098f, 0.854902f);
     public readonly static Color selectedItemColor = new Color(0.05490196f, 0.5294118f, 0.5568628f);
+    public readonly static Color defaultTextColor = new Color(0.74901960f, 0.74901960f, 0.74901960f);
 
     public static Dictionary<int, string> MonthNamesDict = new Dictionary<int, string>()
     {
