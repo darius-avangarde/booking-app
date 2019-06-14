@@ -65,6 +65,7 @@ public class DisponibilityScreen : MonoBehaviour
     {
         backButton.onClick.AddListener(() => BackButtonFunction());
         disponibilityHeight = disponibilityScrollView.offsetMin.y;
+        propertyDropdownList.onValueChanged.AddListener(SelectProperty);
     }
 
     public void SetDefaultDate()
@@ -89,8 +90,12 @@ public class DisponibilityScreen : MonoBehaviour
     {
         this.startDate = startDate;
         this.endDate = endDate;
+        if (selectedProperty != null)
+        {
+            shouldSelectRooms = true;
+        }
         InstantiateProperties();
-        if(lastDropdownOption == 0)
+        if (lastDropdownOption == 0)
         {
             selectedProperty = null;
         }
@@ -133,7 +138,10 @@ public class DisponibilityScreen : MonoBehaviour
     private void InstantiateProperties()
     {
         StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
-        CancelSelection();
+        if (!shouldSelectRooms)
+        {
+            CancelSelection();
+        }
         int propertyIndex = 0;
         backgroundImage.gameObject.SetActive(false);
         disponibilityDatePeriod.text = startDate.Day + "/" + startDate.Month + "/" + startDate.Year
@@ -387,23 +395,34 @@ public class DisponibilityScreen : MonoBehaviour
         else
         {
             propertyDropdownList.value = 0;
-            SelectProperty(0);
         }
     }
 
     private void SelectDropdownProperty(IProperty property)
     {
-        lastDropdownOption = propertyDropdownOptions[property.ID];
-        propertyDropdownList.value = lastDropdownOption;
-        SelectProperty(lastDropdownOption);
+        if (lastDropdownOption == propertyDropdownOptions[property.ID])
+        {
+            SelectProperty(lastDropdownOption);
+        }
+        else
+        {
+            lastDropdownOption = propertyDropdownOptions[property.ID];
+            propertyDropdownList.value = lastDropdownOption;
+        }
     }
 
     private void SelectDropdownProperty(IRoom propertyRoom)
     {
         selectedProperty = PropertyDataManager.GetProperty(propertyRoom.PropertyID);
-        lastDropdownOption = propertyDropdownOptions[selectedProperty.ID];
-        propertyDropdownList.value = lastDropdownOption;
-        SelectProperty(lastDropdownOption);
+        if (lastDropdownOption == propertyDropdownOptions[selectedProperty.ID])
+        {
+            SelectProperty(lastDropdownOption);
+        }
+        else
+        {
+            lastDropdownOption = propertyDropdownOptions[selectedProperty.ID];
+            propertyDropdownList.value = lastDropdownOption;
+        }
     }
 
     private void OpenRoomScreen(IRoom room)

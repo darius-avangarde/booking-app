@@ -191,8 +191,9 @@ public class RoomAdminScreen : MonoBehaviour
             floors = int.Parse(multipleFloorsField.text);
         }
         int rooms = int.Parse(multipleNrRoomsField.text);
-        if (rooms <= 0)
+        if (rooms > 0)
         {
+            errorMessage.text = string.Empty;
             if (floors > 0)
             {
                 for (int j = 1; j <= rooms; j++)
