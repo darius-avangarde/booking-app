@@ -213,7 +213,17 @@ public class DisponibilityScreen : MonoBehaviour
                 bool roomReservation = reservations.Any(r => r.ContainsRoom(property.GetPropertyRoom().ID));
                 if (roomReservation)
                 {
-                    Destroy(propertyButton);
+                    if (selectedProperty != null && selectedProperty.ID == property.ID)
+                    {
+                        propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
+                        propertyDropdownOptions.Add(property.ID, propertyIndex);
+                        propertyIndex++;
+                        Destroy(propertyButton);
+                    }
+                    else
+                    {
+                        Destroy(propertyButton);
+                    }
                 }
                 else
                 {
@@ -305,19 +315,29 @@ public class DisponibilityScreen : MonoBehaviour
             }
             else
             {
-                StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
-                GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
-                PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
-                buttonObject.InitializeDateTime(startDate, endDate);
-                if (fromReservation)
+                if (!reservations.Any(r => r.ContainsRoom(property.GetPropertyRoom().ID)))
                 {
-                    buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
+                    StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
+                    GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
+                    PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
+                    buttonObject.InitializeDateTime(startDate, endDate);
+                    Debug.Log(fromReservation);
+                    if (fromReservation)
+                    {
+                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
+                    }
+                    else
+                    {
+                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, null);
+                    }
+                    propertyItemList.Add(propertyButton);
                 }
                 else
                 {
-                    buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, null);
+                    StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 560), new Vector2(disponibilityScrollView.offsetMax.x, -560)));
+                    availableRoomsNumber.text = "Properietatea nu este disponibila";
+                    availableRoomsNumber.color = Constants.reservedUnavailableItemColor;
                 }
-                propertyItemList.Add(propertyButton);
             }
         }
     }
@@ -332,7 +352,7 @@ public class DisponibilityScreen : MonoBehaviour
             foreach (var room in roomItemList)
             {
                 RoomButton roomObject = room.GetComponent<RoomButton>();
-                roomObject.disponibilityMarker.color = Constants.availableItemColor;
+                roomObject.DisponibilityMarker.color = Constants.availableItemColor;
                 if (roomObject.Selected)
                 {
                     roomObject.SelectToggleMark();
@@ -356,7 +376,7 @@ public class DisponibilityScreen : MonoBehaviour
             StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight + 160), new Vector2(footerBar.anchoredPosition.x, 0)));
             foreach (var room in roomItemList)
             {
-                room.GetComponent<RoomButton>().disponibilityMarker.color = Color.white;
+                room.GetComponent<RoomButton>().DisponibilityMarker.color = Color.white;
             }
         }
     }
@@ -383,6 +403,7 @@ public class DisponibilityScreen : MonoBehaviour
     {
         selectionCallback = null;
         currentReservation = null;
+        selectedProperty = null;
         fromReservation = false;
     }
 
@@ -400,14 +421,29 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void SelectDropdownProperty(IProperty property)
     {
-        if (lastDropdownOption == propertyDropdownOptions[property.ID])
+        if (property.HasRooms)
         {
-            SelectProperty(lastDropdownOption);
+            if (lastDropdownOption == propertyDropdownOptions[property.ID])
+            {
+                SelectProperty(lastDropdownOption);
+            }
+            else
+            {
+                lastDropdownOption = propertyDropdownOptions[property.ID];
+                propertyDropdownList.value = lastDropdownOption;
+            }
         }
         else
         {
-            lastDropdownOption = propertyDropdownOptions[property.ID];
-            propertyDropdownList.value = lastDropdownOption;
+            if (lastDropdownOption == propertyDropdownOptions[property.ID])
+            {
+                SelectProperty(lastDropdownOption);
+            }
+            else
+            {
+                lastDropdownOption = propertyDropdownOptions[property.ID];
+                propertyDropdownList.value = lastDropdownOption;
+            }
         }
     }
 
@@ -435,6 +471,7 @@ public class DisponibilityScreen : MonoBehaviour
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
         fromReservation = true;
+        selectionCallback = confirmSelection;
         if (current != null)
         {
             currentReservation = current;
@@ -444,12 +481,11 @@ public class DisponibilityScreen : MonoBehaviour
         navigator.GoTo(this.GetComponent<NavScreen>());
         if (selectedRooms != null)
         {
-            this.selectedRooms = selectedRooms;
+            this.selectedRooms = new List<IRoom>(selectedRooms);
             selectedProperty = PropertyDataManager.GetProperty(selectedRooms[0].PropertyID);
             shouldSelectRooms = true;
             SelectDropdownProperty(selectedProperty);
         }
-        selectionCallback = confirmSelection;
     }
 
     private IEnumerator ExpandFooterBar(Vector2 scrollEndSize, Vector2 buttonsEndSize)
