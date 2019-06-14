@@ -67,7 +67,7 @@ public class ClickedWaveAnimation : MonoBehaviour {
 
 		for (int i = 0; i < hits.Count ; i++)
 		{
-			if (hits[i].gameObject.GetComponent<Button>())
+			if (hits[i].gameObject.GetComponent<Button>() || hits[i].gameObject.GetComponent<Toggle>())
 			{
 				// prevent ripple animation from playing on button in the background
 				// if the clicked button doesn't have the animation
