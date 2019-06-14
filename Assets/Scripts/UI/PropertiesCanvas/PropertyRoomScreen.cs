@@ -22,6 +22,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
+    private Image backgroundImage = null;
+    [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
     private Button backButton = null;
@@ -41,11 +43,15 @@ public class PropertyRoomScreen : MonoBehaviour
         if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.gameObject.SetActive(true);
         }
         else
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+            backgroundImage.gameObject.SetActive(false);
         }
+
     }
 
     public void Initialize()

@@ -1,4 +1,4 @@
-using UINavigation;
+﻿using UINavigation;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -57,7 +57,7 @@ public class InputManager : MonoBehaviour
                     quitObjectText.color = textDefaultColor;
 
                     //Start quit timer
-                    StartCoroutine(quitingTimer("Press back again to close the app!"));
+                    StartCoroutine(QuitingTimer());
 
                 }
                 else
@@ -74,12 +74,33 @@ public class InputManager : MonoBehaviour
         quitObjectImage.color = imageDefaultColor;
         quitObjectText.color = textDefaultColor;
 
-        StartCoroutine(quitingTimer(currentText));
+        StartCoroutine(ShowMessage(currentText));
     }
 
-    private IEnumerator quitingTimer(string currentText)
+    private IEnumerator ShowMessage(string currentText)
     {
         quitObjectText.text = currentText;
+        //Wait for a frame so that Input.GetKeyDown is no longer true
+        yield return null;
+
+        //3 seconds timer
+        const float timerTime = 1f;
+        float counter = 0;
+
+        while (counter < timerTime)
+        {
+            //Increment counter while it is < timer time(3)
+            counter += Time.deltaTime;
+            yield return null;
+        }
+
+        StartCoroutine(MessageFader());
+        clickedBefore = false;
+    }
+
+    private IEnumerator QuitingTimer()
+    {
+        quitObjectText.text = "Apăsați încă o dată pentru a închide!";
         //Wait for a frame so that Input.GetKeyDown is no longer true
         yield return null;
 
@@ -104,12 +125,12 @@ public class InputManager : MonoBehaviour
         }
 
         //Timer has finished and NO QUIT(NO second press) so deactivate
-        StartCoroutine(QuitFader());
+        StartCoroutine(MessageFader());
         //Reset clickedBefore so that Input can be checked again in the Update function
         clickedBefore = false;
     }
 
-    private IEnumerator QuitFader()
+    private IEnumerator MessageFader()
     {
         currentImageCollor = quitObjectImage.color;
         currentTextCollor = quitObjectText.color;
