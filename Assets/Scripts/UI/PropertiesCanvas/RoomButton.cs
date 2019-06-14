@@ -137,7 +137,6 @@ public class RoomButton : MonoBehaviour
         StopAllCoroutines();
         if (!pressAndHold)
         {
-            Debug.Log(reservationCallback);
             if (reservationCallback != null)
             {
                 reservationCallback.Invoke(dateTimeStart, dateTimeEnd, SendCurrentRoom());

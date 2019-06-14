@@ -321,7 +321,6 @@ public class DisponibilityScreen : MonoBehaviour
                     GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
                     PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
                     buttonObject.InitializeDateTime(startDate, endDate);
-                    Debug.Log(fromReservation);
                     if (fromReservation)
                     {
                         buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
