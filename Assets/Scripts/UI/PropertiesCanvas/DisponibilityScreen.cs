@@ -76,6 +76,7 @@ public class DisponibilityScreen : MonoBehaviour
     public void Initialize()
     {
         lastDropdownOption = 0;
+        propertyDropdownList.value = lastDropdownOption;
         SelectProperty(lastDropdownOption);
     }
 
@@ -105,7 +106,6 @@ public class DisponibilityScreen : MonoBehaviour
         {
             CancelSelection();
         }
-        propertyDropdownList.value = optionIndex;
         if (optionIndex == 0)
         {
             lastDropdownOption = optionIndex;
@@ -148,8 +148,8 @@ public class DisponibilityScreen : MonoBehaviour
         }
         propertyOptions = new Dictionary<string, Dropdown.OptionData>();
         propertyDropdownOptions = new Dictionary<string, int>();
-        propertyOptions.Add(String.Empty, new Dropdown.OptionData("Toate Proprietatile"));
-        propertyDropdownOptions.Add("Toate Proprietatile", propertyIndex);
+        propertyOptions.Add(String.Empty, new Dropdown.OptionData("Toate Proprietățile"));
+        propertyDropdownOptions.Add("Toate Proprietățile", propertyIndex);
         propertyIndex++;
         foreach (var roomButton in roomItemList)
         {
@@ -386,6 +386,7 @@ public class DisponibilityScreen : MonoBehaviour
         }
         else
         {
+            propertyDropdownList.value = 0;
             SelectProperty(0);
         }
     }
@@ -394,7 +395,6 @@ public class DisponibilityScreen : MonoBehaviour
     {
         lastDropdownOption = propertyDropdownOptions[property.ID];
         propertyDropdownList.value = lastDropdownOption;
-        //nu se apeleaza OnValueChanged pe Dropdown?
         SelectProperty(lastDropdownOption);
     }
 
