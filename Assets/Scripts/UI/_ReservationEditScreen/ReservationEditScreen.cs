@@ -8,8 +8,6 @@ using UnityEngine.Events;
 
 public class ReservationEditScreen : MonoBehaviour
 {
-    internal bool AllowEdit { get; set; } = false;
-
     #region Inspector references
         [Header("Navigation")]
         [SerializeField]
@@ -32,8 +30,6 @@ public class ReservationEditScreen : MonoBehaviour
         [Space]
         [SerializeField]
         private Text titleText = null;
-        [SerializeField]
-        private Dropdown propertyDropdown = null;
         [SerializeField]
         private Text propertyButtonText;
         [SerializeField]
@@ -74,7 +70,6 @@ public class ReservationEditScreen : MonoBehaviour
 
     private void Start()
     {
-        AllowEdit = false;
         errorText.enabled = false;
         editConfirmation = new ConfirmationDialogOptions();
         editConfirmation.Message = Constants.EDIT_DIALOG;
@@ -84,16 +79,7 @@ public class ReservationEditScreen : MonoBehaviour
         periodEnd = periodStart.AddDays(1).Date;
     }
 
-    private void OnDestroy()
-    {
-        propertyDropdown.onValueChanged.RemoveAllListeners();
-    }
-
     #region Public functions
-        public void EnablePropertyDropdownListeners()
-        {
-            propertyDropdown.onValueChanged.AddListener(SetProperty);
-        }
 
         ///<summary>
         /// Opens the modal calendar overlay if a property is selected in order to change or set the reservation period
@@ -155,17 +141,6 @@ public class ReservationEditScreen : MonoBehaviour
             }
         }
 
-        ///<summary>
-        /// Removes listeners, trigger on hidden in nav screen
-        ///</summary>
-        public void CancelChanges()
-        {
-            //confirmationCallback = null;
-            //deletionCallback = null;
-            propertyDropdown.onValueChanged.RemoveAllListeners();
-            AllowEdit = false;
-        }
-
         public void RequestDelete()
         {
             deleteConfirmation.ConfirmCallback = DeleteReservation;
@@ -184,7 +159,7 @@ public class ReservationEditScreen : MonoBehaviour
 
         public void SelectRoom()
         {
-            availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, currentRooms, SetRooms);
+            availabilityScreen.OpenDisponibility(currentReservation, periodStart, periodEnd, new List<IRoom>(currentRooms), SetRooms);
         }
     #endregion
 
@@ -240,10 +215,9 @@ public class ReservationEditScreen : MonoBehaviour
             periodEnd = end.Date;
             confirmationCallback = confirmCallback;
             deletionCallback = null;
-            UpdateEditableOptions(null, null, rooms);
+            UpdateEditableOptions(null, null, new List<IRoom>(rooms));
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
-            AllowEdit = true;
         }
 
         ///<summary>
@@ -263,7 +237,6 @@ public class ReservationEditScreen : MonoBehaviour
             UpdateEditableOptions(null, null, sr);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
-            AllowEdit = true;
         }
 
         //TODO: Remove once new functions are implemented
@@ -282,7 +255,6 @@ public class ReservationEditScreen : MonoBehaviour
             UpdateEditableOptions(null, null, sr);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
-            AllowEdit = true;
         }
 
     #endregion
@@ -356,7 +328,7 @@ public class ReservationEditScreen : MonoBehaviour
         periodEnd = end.Date;
         UpdateReservationPeriod(periodStart, periodEnd);
         currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
-        currentRooms = rooms;
+        currentRooms = new List<IRoom>(rooms);
         propertyButtonText.text = currentProperty.Name;
 
         if(rooms != null)
@@ -388,8 +360,6 @@ public class ReservationEditScreen : MonoBehaviour
         currentRooms = rooms;
         currentClient = client;
 
-        InitializePropertyDropdown();
-
         if(client != null)
         {
             clientButtonText.text = client.Name;
@@ -413,11 +383,12 @@ public class ReservationEditScreen : MonoBehaviour
 
         if(rooms != null)
         {
-            propertyButtonText.text = PropertyDataManager.GetProperty(rooms[0].PropertyID).Name;
+            currentProperty = PropertyDataManager.GetProperty(rooms[0].PropertyID);
+            propertyButtonText.text = currentProperty.Name;
 
             if(rooms.Count == 1)
             {
-                roomButton.SetActive(PropertyDataManager.GetProperty(rooms[0].PropertyID).HasRooms);
+                roomButton.SetActive(currentProperty.HasRooms);
                 roomButtonText.text = rooms[0].Name;
             }
             else
@@ -428,14 +399,13 @@ public class ReservationEditScreen : MonoBehaviour
         }
         else
         {
+            currentProperty = null;
             roomButton.SetActive(false);
             roomButtonText.text = Constants.CHOOSE;
         }
 
         SizeEditablesRect();
         ValidateInput();
-
-        AllowEdit = true;
     }
 
     //Sets the selected property object as selected from the dropdown options. This also sets the room in the case of the property not having rooms
@@ -466,41 +436,6 @@ public class ReservationEditScreen : MonoBehaviour
 
         SizeEditablesRect();
         ValidateInput();
-    }
-
-    //Updates the properties dropdown with all available properties with at least one room or roomles properties
-    private void InitializePropertyDropdown()
-    {
-        int selected = 0;
-        bool searching = true;
-        currentProperty = null;
-
-        propertyOptions = new Dictionary<string, Dropdown.OptionData>();
-        propertyOptions.Add(String.Empty, new Dropdown.OptionData(Constants.CHOOSE));
-        foreach(IProperty p in PropertyDataManager.GetProperties().Where(p => p.Rooms.Count() != 0))
-        {
-            propertyOptions.Add(p.ID, new Dropdown.OptionData(p.Name));
-
-
-            if (currentRooms != null)
-            {
-                if(searching)
-                {
-                    selected++;
-                }
-
-                if(currentRooms.Any(r => r.PropertyID == p.ID))
-                {
-                    currentProperty = p;
-                    searching = false;
-                }
-            }
-        }
-
-        propertyDropdown.options = propertyOptions.Values.ToList();
-
-        propertyDropdown.value = (searching) ? 0 : selected;
-        propertyDropdown.RefreshShownValue();
     }
 
     //Callback function for the modal calendar overlay, sets selected start and end times
