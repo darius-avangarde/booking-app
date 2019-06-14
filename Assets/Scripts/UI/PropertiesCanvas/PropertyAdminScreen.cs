@@ -42,7 +42,7 @@ public class PropertyAdminScreen : MonoBehaviour
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-        if(currentProperty.Name != null)
+        if (currentProperty.Name != null)
         {
             RoomsToggleField.SetActive(false);
             deleteButton.gameObject.SetActive(true);
@@ -106,6 +106,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void SaveProperty()
     {
+        NameChanged(propertyNameInputField.text);
         if (HasRoomsToggle.isOn)
         {
             currentProperty.HasRooms = true;
@@ -113,16 +114,17 @@ public class PropertyAdminScreen : MonoBehaviour
         else
         {
             currentProperty.HasRooms = false;
+            PropertyDataManager.CreatePropertyRoom(currentProperty);
+            currentProperty.GetPropertyRoom().Name = currentProperty.Name;
+        }
+                if (addedPhoto)
+        {
+            ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
         }
         if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
         {
             PropertyDataManager.SaveProperty(currentProperty);
         }
-        if (addedPhoto)
-        {
-            ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
-        }
-        NameChanged(propertyNameInputField.text);
         navigator.GoBack();
     }
 
@@ -148,10 +150,6 @@ public class PropertyAdminScreen : MonoBehaviour
     private void NameChanged(string value)
     {
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
-        if (!currentProperty.HasRooms)
-        {
-            currentProperty.GetPropertyRoom().Name = currentProperty.Name;
-        }
     }
 
     private IEnumerator UploadPhoto()

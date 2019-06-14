@@ -63,15 +63,16 @@ public static class PropertyDataManager
         return newProperty;
     }
 
+    public static void CreatePropertyRoom(IProperty property)
+    {
+        IRoom newRoom = property.AddRoom();
+        newRoom.Name = property.Name;
+        property.SaveRoom(newRoom);
+        property.GetPropertyRoomID = newRoom.ID;
+    }
+
     public static void SaveProperty(IProperty property)
     {
-        if (!property.HasRooms)
-        {
-            IRoom newRoom = property.AddRoom();
-            newRoom.Name = property.Name;
-            property.SaveRoom(newRoom);
-            property.GetPropertyRoomID = newRoom.ID;
-        }
         Data.properties.Add((Property)property);
         WritePropertyData();
     }
@@ -178,7 +179,7 @@ public static class PropertyDataManager
         public void SaveRoom(IRoom room)
         {
             rooms.Add((Room)room);
-            WritePropertyData();
+            //WritePropertyData();
         }
 
         public void DeleteRoom(string ID)

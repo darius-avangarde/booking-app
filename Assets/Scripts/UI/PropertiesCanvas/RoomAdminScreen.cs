@@ -279,6 +279,21 @@ public class RoomAdminScreen : MonoBehaviour
         });
     }
 
+    public void DefaultValues()
+    {
+        roomNameInputField.text = string.Empty;
+        roomPriceInputField.text = string.Empty;
+        roomSingleBedQuantityInputField.text = string.Empty;
+        roomDoubleBedQuantityInputField.text = string.Empty;
+        errorMessage.text = string.Empty;
+        multiplePrefixField.text = string.Empty;
+        multipleFloorsField.text = string.Empty;
+        multipleNrRoomsField.text = string.Empty;
+        currentProperty = null;
+        currentRoom = null;
+        canSave = true;
+    }
+
     public void OnRoomNameValueChanged(string value)
     {
         currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.NEW_ROOM : value;

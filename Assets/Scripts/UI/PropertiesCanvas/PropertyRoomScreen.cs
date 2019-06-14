@@ -56,6 +56,7 @@ public class PropertyRoomScreen : MonoBehaviour
         }
         if (currentProperty != null)
         {
+            propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
             foreach (var room in currentProperty.Rooms)
             {
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);

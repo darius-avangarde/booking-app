@@ -103,6 +103,7 @@ public class DisponibilityScreen : MonoBehaviour
         {
             SelectDropdownProperty(selectedProperty);
         }
+        selectedProperty = null;
     }
 
     public void SelectProperty(int optionIndex)
