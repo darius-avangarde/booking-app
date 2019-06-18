@@ -224,7 +224,7 @@ public class ClientsScreen : MonoBehaviour
 
     public void phoneUS(IClient currentClient = null)
     {
-        Application.OpenURL("tel://" + currentClient.Number);
+        Application.OpenURL("tel:" + currentClient.Number);
     }
 
     public void SmsUs(IClient currentClient = null)
@@ -305,6 +305,10 @@ public class ClientsScreen : MonoBehaviour
     public void SearchFieldShow(bool value)
     {
         StartCoroutine(Animate(value ? initialSizeSearch : 0, value));
+        if(!value)
+        {
+            ClearSearchField();
+        }
     }
     private IEnumerator Animate(float target, bool value)
     {
