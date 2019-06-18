@@ -59,12 +59,13 @@ public static class ReservationDataManager
     public static IEnumerable<IReservation> GetReservationsBetween(DateTime from, DateTime to)
     {
         return Data.reservations.FindAll(r => !r.Deleted &&
-            (r.Period.End.Date > from.Date && r.Period.End.Date < to.Date) ||       //check if interval start is between from/to
-            (r.Period.Start.Date > from.Date && r.Period.Start.Date < to.Date) ||   //check if interval end is between from/to
-            (from.Date > r.Period.Start.Date && from.Date < r.Period.End.Date) ||   //check if from is in interval
-            (to.Date > r.Period.Start.Date && to.Date < r.Period.End.Date) ||       //check if to is in interval
-            (from.Date == r.Period.Start || to.Date == r.Period.End.Date)           //chek if either start or end matches any reservation's start or end resepectively
-            );
+            (
+                (r.Period.End.Date > from.Date && r.Period.End.Date < to.Date) ||       //check if interval start is between from/to
+                (r.Period.Start.Date > from.Date && r.Period.Start.Date < to.Date) ||   //check if interval end is between from/to
+                (from.Date > r.Period.Start.Date && from.Date < r.Period.End.Date) ||   //check if from is in interval
+                (to.Date > r.Period.Start.Date && to.Date < r.Period.End.Date) ||       //check if to is in interval
+                (from.Date == r.Period.Start || to.Date == r.Period.End.Date)           //chek if either start or end matches any reservation's start or end resepectively
+            ));
     }
 
     public static IEnumerable<IReservation> GetDeletedReservations()
