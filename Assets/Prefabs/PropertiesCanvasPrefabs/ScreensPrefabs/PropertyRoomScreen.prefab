@@ -546,6 +546,7 @@ GameObject:
   - component: {fileID: 4052320136166603480}
   - component: {fileID: 1032687242134322848}
   - component: {fileID: 1892255998012851431}
+  - component: {fileID: 97141811344375095}
   m_Layer: 5
   m_Name: PropertyImage
   m_TagString: Untagged
@@ -567,10 +568,10 @@ RectTransform:
   m_Father: {fileID: 107652057379977518}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.0024414062}
-  m_SizeDelta: {x: 0, y: 2560}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1032687242134322848
 CanvasRenderer:
@@ -609,6 +610,20 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &97141811344375095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2830014714849418034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1254083943, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AspectMode: 4
+  m_AspectRatio: 1.44
 --- !u!1 &2995361358356646234
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,6 +1428,7 @@ MonoBehaviour:
   roomsContentScrollView: {fileID: 3308950834100019107}
   propertyRoomScreenTitle: {fileID: 8360392361819660888}
   propertyImage: {fileID: 1892255998012851431}
+  propertyImageAspectFitter: {fileID: 97141811344375095}
   roomItemPrefab: {fileID: 863656070, guid: c4bfd08dd39708842ad4523d6d77c65c, type: 3}
   backButton: {fileID: 4831426655694948984}
 --- !u!114 &900711786

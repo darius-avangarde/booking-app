@@ -38,6 +38,8 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
+    private AspectRatioFitter backgroundImageAspectFitter = null;
+    [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
     private Text availableRoomsNumber = null;
@@ -253,11 +255,13 @@ public class DisponibilityScreen : MonoBehaviour
         {
             backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
             backgroundImage.gameObject.SetActive(true);
+            backgroundImageAspectFitter.aspectRatio = (float)backgroundImage.sprite.texture.width/backgroundImage.sprite.texture.height;
         }
         else
         {
             backgroundImage.gameObject.SetActive(false);
         }
+
         if (property != null)
         {
             if (property.HasRooms)
