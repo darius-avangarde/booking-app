@@ -13,6 +13,8 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
+    private AspectRatioFitter propertyImageAspectFitter = null;
+    [SerializeField]
     private Image overlayLarge = null;
     [SerializeField]
     private Image overlaySmall = null;
@@ -51,6 +53,11 @@ public class PropertyButton : MonoBehaviour
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
         }
+
+        //set the aspect ratio of the
+        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
+
+
         if (!property.HasRooms)
         {
             if (reservationCallback != null)

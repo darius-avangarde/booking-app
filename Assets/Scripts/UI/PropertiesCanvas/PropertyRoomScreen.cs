@@ -22,6 +22,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
+    private AspectRatioFitter propertyImageAspectFitter = null;
+    [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
     private Button backButton = null;
@@ -46,6 +48,7 @@ public class PropertyRoomScreen : MonoBehaviour
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
         }
+        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
     }
 
     public void Initialize()
