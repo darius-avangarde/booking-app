@@ -31,7 +31,6 @@ public class PropertyAdminScreen : MonoBehaviour
     private Button calcelButton = null;
 
     private IProperty currentProperty;
-    private bool addedPhoto = false;
 
     private void Awake()
     {
@@ -79,6 +78,7 @@ public class PropertyAdminScreen : MonoBehaviour
             NoRoomsToggle.isOn = true;
             HasRoomsToggle.isOn = false;
         }
+        ImageDataManager.AddedPhoto = false;
     }
 
     public void AddPhoto()
@@ -93,12 +93,10 @@ public class PropertyAdminScreen : MonoBehaviour
             ConfirmCallback = () =>
             {
                 ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
-                addedPhoto = true;
             },
             ConfirmCallbackSecond = () =>
             {
                 ImageDataManager.PickImage(currentProperty.ID, propertyImage);
-                addedPhoto = true;
             },
             CancelCallback = null
         });
@@ -117,7 +115,7 @@ public class PropertyAdminScreen : MonoBehaviour
             PropertyDataManager.CreatePropertyRoom(currentProperty);
             currentProperty.GetPropertyRoom().Name = currentProperty.Name;
         }
-                if (addedPhoto)
+        if (ImageDataManager.AddedPhoto)
         {
             ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
         }
@@ -150,12 +148,5 @@ public class PropertyAdminScreen : MonoBehaviour
     private void NameChanged(string value)
     {
         currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
-    }
-
-    private IEnumerator UploadPhoto()
-    {
-        yield return null;
-        //yield return WaitUntil((t) => ImageDataManager.TakePhoto(currentProperty.ID));
-        propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
     }
 }

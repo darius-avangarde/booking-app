@@ -72,7 +72,7 @@ public static class PropertyDataManager
     }
 
     public static void SaveProperty(IProperty property)
-    {
+    { 
         Data.properties.Add((Property)property);
         WritePropertyData();
     }

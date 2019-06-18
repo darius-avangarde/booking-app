@@ -39,10 +39,14 @@ public class PropertyRoomScreen : MonoBehaviour
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
+    }
+
+    public void Initialize()
+    {
         propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
-        if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
+        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
             backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
             backgroundImage.gameObject.SetActive(true);
         }
@@ -51,11 +55,6 @@ public class PropertyRoomScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
-
-    }
-
-    public void Initialize()
-    {
         foreach (var roomButton in roomButtons)
         {
             Destroy(roomButton);

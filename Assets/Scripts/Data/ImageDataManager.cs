@@ -9,6 +9,7 @@ using UnityEngine.Networking;
 public class ImageDataManager
 {
     public const string DATA_FILE_NAME = "ImageData.json";
+    public static bool AddedPhoto;
     public static Hashtable PropertyPhotos = new Hashtable();
     private static string PropertyPhotosFolder = Path.Combine(Application.persistentDataPath, "PropertyPhotos");
 
@@ -19,6 +20,7 @@ public class ImageDataManager
             //Debug.Log("Image path: " + path);
             if (!string.IsNullOrEmpty(path))
             {
+                AddedPhoto = true;
                 // Create Texture from selected image
                 Texture2D texture = NativeGallery.LoadImageAtPath(path, 1080, false);
                 if (texture == null)
@@ -30,18 +32,23 @@ public class ImageDataManager
                 Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
             }
+            else
+            {
+                AddedPhoto = false;
+            }
         }, "Select an image");
         //Debug.Log("Permission result: " + permission);
     }
 
     public static void TakePhoto(string propertyID, Image propertyImage)
     {
-        Sprite downloadedImage = null;
+        AddedPhoto = false;
         NativeCamera.Permission permission = NativeCamera.TakePicture((path) =>
         {
             //Debug.Log("Image path: " + path);
             if (!string.IsNullOrEmpty(path))
             {
+                AddedPhoto = true;
                 // Create a Texture2D from the captured image
                 Texture2D texture = NativeCamera.LoadImageAtPath(path, 1080, false);
                 if (texture == null)
@@ -49,8 +56,12 @@ public class ImageDataManager
                     Debug.Log("Couldn't load texture from " + path);
                     return;
                 }
-                downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
+            }
+            else
+            {
+                AddedPhoto = false;
             }
         });
         //Debug.Log("Permission result: " + permission);
