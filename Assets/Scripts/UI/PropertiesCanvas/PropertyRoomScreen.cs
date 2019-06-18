@@ -22,9 +22,11 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
+    private AspectRatioFitter propertyImageAspectFitter = null;
+    [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private AspectRatioFitter propertyImageAspectFitter = null;
+    private AspectRatioFitter backgroundImageAspectFitter = null;
     [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
@@ -57,7 +59,7 @@ public class PropertyRoomScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
-        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
+        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
         foreach (var roomButton in roomButtons)
         {
             Destroy(roomButton);

@@ -29,8 +29,11 @@ public class PropertyAdminScreen : MonoBehaviour
     private Button backButton = null;
     [SerializeField]
     private Button calcelButton = null;
+    [SerializeField]
+    private Text errorMessage = null;
 
     private IProperty currentProperty;
+    private bool canSave = true;
 
     private void Awake()
     {
@@ -56,6 +59,8 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void SetPropertyFieldsText()
     {
+        canSave = true;
+        errorMessage.text = string.Empty;
         propertyNameInputField.text = currentProperty.Name ?? "";
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
@@ -105,25 +110,28 @@ public class PropertyAdminScreen : MonoBehaviour
     public void SaveProperty()
     {
         NameChanged(propertyNameInputField.text);
-        if (HasRoomsToggle.isOn)
+        if (canSave)
         {
-            currentProperty.HasRooms = true;
+            if (HasRoomsToggle.isOn)
+            {
+                currentProperty.HasRooms = true;
+            }
+            else
+            {
+                currentProperty.HasRooms = false;
+                PropertyDataManager.CreatePropertyRoom(currentProperty);
+                currentProperty.GetPropertyRoom().Name = currentProperty.Name;
+            }
+            if (ImageDataManager.AddedPhoto)
+            {
+                ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
+            }
+            if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
+            {
+                PropertyDataManager.SaveProperty(currentProperty);
+            }
+            navigator.GoBack();
         }
-        else
-        {
-            currentProperty.HasRooms = false;
-            PropertyDataManager.CreatePropertyRoom(currentProperty);
-            currentProperty.GetPropertyRoom().Name = currentProperty.Name;
-        }
-        if (ImageDataManager.AddedPhoto)
-        {
-            ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
-        }
-        if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
-        {
-            PropertyDataManager.SaveProperty(currentProperty);
-        }
-        navigator.GoBack();
     }
 
     public void DeleteProperty()
@@ -147,6 +155,15 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void NameChanged(string value)
     {
-        currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
+        if (string.IsNullOrEmpty(value))
+        {
+            errorMessage.text = "Introduceți numele proprietății!";
+            canSave = false;
+        }
+        else
+        {
+            currentProperty.Name = value;
+            canSave = true;
+        }
     }
 }
