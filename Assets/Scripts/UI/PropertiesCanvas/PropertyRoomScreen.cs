@@ -24,6 +24,10 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private AspectRatioFitter propertyImageAspectFitter = null;
     [SerializeField]
+    private Image backgroundImage = null;
+    [SerializeField]
+    private AspectRatioFitter backgroundImageAspectFitter = null;
+    [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
     private Button backButton = null;
@@ -39,26 +43,30 @@ public class PropertyRoomScreen : MonoBehaviour
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-        propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
-        if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
-        }
-        else
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
-        }
-        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
     }
 
     public void Initialize()
     {
+        propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
+        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+            backgroundImage.gameObject.SetActive(false);
+        }
+        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
         foreach (var roomButton in roomButtons)
         {
             Destroy(roomButton);
         }
         if (currentProperty != null)
         {
+            propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
             foreach (var room in currentProperty.Rooms)
             {
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);

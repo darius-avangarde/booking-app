@@ -34,9 +34,13 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField = null;
     [SerializeField]
+    private Image propertyImage = null;
+    [SerializeField]
+    private AspectRatioFitter propertyImageAspectFitter = null;
+    [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private Image propertyImage = null;
+    private AspectRatioFitter backgroundImageAspectFitter = null;
     [SerializeField]
     private Toggle singleRoomToggle = null;
     [SerializeField]
@@ -94,6 +98,7 @@ public class RoomAdminScreen : MonoBehaviour
                 propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
                 backgroundImage.gameObject.SetActive(false);
             }
+            propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
             if (string.IsNullOrEmpty(currentRoom.Name))
             {
                 roomInfoInputPanel.SetActive(true);
@@ -277,6 +282,21 @@ public class RoomAdminScreen : MonoBehaviour
             },
             CancelCallback = null
         });
+    }
+
+    public void DefaultValues()
+    {
+        roomNameInputField.text = string.Empty;
+        roomPriceInputField.text = string.Empty;
+        roomSingleBedQuantityInputField.text = string.Empty;
+        roomDoubleBedQuantityInputField.text = string.Empty;
+        errorMessage.text = string.Empty;
+        multiplePrefixField.text = string.Empty;
+        multipleFloorsField.text = string.Empty;
+        multipleNrRoomsField.text = string.Empty;
+        currentProperty = null;
+        currentRoom = null;
+        canSave = true;
     }
 
     public void OnRoomNameValueChanged(string value)

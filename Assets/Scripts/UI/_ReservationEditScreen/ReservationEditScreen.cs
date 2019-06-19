@@ -59,6 +59,7 @@ public class ReservationEditScreen : MonoBehaviour
         private List<IRoom> currentRooms;
         private IProperty currentProperty;
         private IClient currentClient;
+        private bool isInitialized = false;
 
         private DateTime periodStart;
         private DateTime periodEnd;
@@ -68,19 +69,22 @@ public class ReservationEditScreen : MonoBehaviour
         private UnityAction deletionCallback;
     #endregion
 
-    private void Start()
+    private void Initialize()
     {
-        errorText.enabled = false;
-        editConfirmation = new ConfirmationDialogOptions();
-        editConfirmation.Message = Constants.EDIT_DIALOG;
-        deleteConfirmation = new ConfirmationDialogOptions();
-        deleteConfirmation.Message = Constants.DELETE_DIALOG;
-        periodStart = DateTime.Today.Date;
-        periodEnd = periodStart.AddDays(1).Date;
+        if(!isInitialized)
+        {
+           isInitialized = true;
+            errorText.enabled = false;
+            editConfirmation = new ConfirmationDialogOptions();
+            editConfirmation.Message = Constants.EDIT_DIALOG;
+            deleteConfirmation = new ConfirmationDialogOptions();
+            deleteConfirmation.Message = Constants.DELETE_DIALOG;
+            periodStart = DateTime.Today.Date;
+            periodEnd = periodStart.AddDays(1).Date;
+        }
     }
 
     #region Public functions
-
         ///<summary>
         /// Opens the modal calendar overlay if a property is selected in order to change or set the reservation period
         ///</summary>
@@ -172,6 +176,7 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         internal void OpenEditReservation(IReservation reservation, UnityAction<IReservation> confirmCallback, UnityAction deleteCallback = null)
         {
+            Initialize();
             confirmationCallback = confirmCallback;
             deletionCallback = deleteCallback;
             periodStart = reservation.Period.Start.Date;
@@ -194,6 +199,7 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         internal void OpenAddReservation(IClient client, UnityAction<IReservation> confirmCallback)
         {
+            Initialize();
             periodStart = DateTime.Today.Date;
             periodEnd = periodStart.AddDays(1).Date;
             confirmationCallback = confirmCallback;
@@ -201,6 +207,7 @@ public class ReservationEditScreen : MonoBehaviour
             UpdateEditableOptions(null, client, null);
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
+
         }
 
         ///<summary>
@@ -211,6 +218,7 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         internal void OpenAddReservation(DateTime start, DateTime end, List<IRoom> rooms, UnityAction<IReservation> confirmCallback)
         {
+            Initialize();
             periodStart = start.Date;
             periodEnd = end.Date;
             confirmationCallback = confirmCallback;
@@ -218,6 +226,7 @@ public class ReservationEditScreen : MonoBehaviour
             UpdateEditableOptions(null, null, new List<IRoom>(rooms));
             titleText.text = Constants.NEW_TITLE;
             navigator.GoTo(navScreen);
+
         }
 
         ///<summary>
@@ -228,26 +237,9 @@ public class ReservationEditScreen : MonoBehaviour
         ///</summary>
         internal void OpenAddReservation(DateTime start, DateTime end, IRoom room, UnityAction<IReservation> confirmCallback)
         {
+            Initialize();
             periodStart = start.Date;
             periodEnd = end.Date;
-            confirmationCallback = confirmCallback;
-            deletionCallback = null;
-            List<IRoom> sr = new List<IRoom>();
-            sr.Add(room);
-            UpdateEditableOptions(null, null, sr);
-            titleText.text = Constants.NEW_TITLE;
-            navigator.GoTo(navScreen);
-        }
-
-        //TODO: Remove once new functions are implemented
-        ///<summary>
-        /// Obsolete, use
-        ///<para> OpenAddReservation(DateTime, DateTime, IRoom/List(Iroom), UnityAction(IReservation)) instead </para>
-        ///</summary>
-        internal void OpenAddReservation(IRoom room, UnityAction<IReservation> confirmCallback)
-        {
-            periodStart = DateTime.Today.Date;
-            periodEnd = DateTime.Today.AddDays(1).Date;
             confirmationCallback = confirmCallback;
             deletionCallback = null;
             List<IRoom> sr = new List<IRoom>();
@@ -373,7 +365,8 @@ public class ReservationEditScreen : MonoBehaviour
         if(reservation != null)
         {
             deleteReservationButton.SetActive(true);
-            UpdateReservationPeriod(reservation.Period.Start, reservation.Period.End);
+            UpdateReservationPeriod(reservation.Period.Start.Date, reservation.Period.End.Date);
+
         }
         else
         {
@@ -408,42 +401,11 @@ public class ReservationEditScreen : MonoBehaviour
         ValidateInput();
     }
 
-    //Sets the selected property object as selected from the dropdown options. This also sets the room in the case of the property not having rooms
-    private void SetProperty(int optionIndex)
-    {
-        if(optionIndex != 0)
-        {
-            roomButtonText.text = Constants.CHOOSE;
-            currentProperty = PropertyDataManager.GetProperty(propertyOptions.ElementAt(optionIndex).Key);
-            if(!currentProperty.HasRooms)
-            {
-                roomButton.SetActive(false);
-                currentRooms = new List<IRoom>();
-                currentRooms.Add(currentProperty.Rooms.ToList()[0]);
-            }
-            else
-            {
-                roomButton.SetActive(true);
-                currentRooms = null;
-            }
-        }
-        else
-        {
-            roomButton.SetActive(false);
-            currentProperty = null;
-            currentRooms = null;
-        }
-
-        SizeEditablesRect();
-        ValidateInput();
-    }
-
     //Callback function for the modal calendar overlay, sets selected start and end times
     private void UpdateReservationPeriod(DateTime _start, DateTime _end)
     {
         periodStart = _start;
         periodEnd = _end;
-
         reservationPeriodText.text = $"{periodStart.ToString(Constants.DateTimePrintFormat)} - {periodEnd.ToString(Constants.DateTimePrintFormat)}";
         ValidateInput();
     }

@@ -8,8 +8,8 @@ using UnityEngine.UI;
 
 public class RoomButton : MonoBehaviour
 {
-    public DisponibilityScreen DisponibilitySccreenComponent { get; set; }
-    public Image disponibilityMarker;
+    public DisponibilityScreen DisponibilityScreenComponent { get; set; }
+    public Image DisponibilityMarker;
     public bool Selected { get; set; } = false;
 
     [SerializeField]
@@ -48,7 +48,7 @@ public class RoomButton : MonoBehaviour
     {
         selectMarker.gameObject.SetActive(false);
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
-        DisponibilitySccreenComponent = disponibilityScript;
+        DisponibilityScreenComponent = disponibilityScript;
         //roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.PRICE : ("Pret: " + room.Price + " ron");
         //roomBeds.text = null;
         //if (room.SingleBeds != 0)
@@ -64,14 +64,14 @@ public class RoomButton : MonoBehaviour
         //    roomBeds.text += Constants.DoubleBed + room.DoubleBeds;
         //}
         reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
-                .Any(r => r.RoomID == room.ID);
+                .Any(r => r.ContainsRoom(room.ID));
         if (reservations)
         {
-            disponibilityMarker.color = Constants.reservedUnavailableItemColor;
+            DisponibilityMarker.color = Constants.reservedUnavailableItemColor;
         }
         else
         {
-            disponibilityMarker.color = Constants.availableItemColor;
+            DisponibilityMarker.color = Constants.availableItemColor;
         }
         currentRoom = room;
         if (disponibilityScript != null)
@@ -88,7 +88,7 @@ public class RoomButton : MonoBehaviour
             }
             roomScrollButton.OnPointerDownEvent.AddListener(() => StartCoroutine(SelectionMode()));
             roomScrollButton.OnDragEvent.AddListener(() => StartCoroutine(StopCoroutineDelay()));
-            roomScrollButton.OnClick.AddListener(() => ClickOrSellect());
+            roomScrollButton.OnClick.AddListener(() => ClickOrSelect());
             if (disponibilityScript.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
                 SelectToggleMark();
@@ -115,24 +115,24 @@ public class RoomButton : MonoBehaviour
         {
             Selected = false;
             selectMarker.gameObject.SetActive(false);
-            if (DisponibilitySccreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
+            if (DisponibilityScreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
-                DisponibilitySccreenComponent.selectedRooms.Remove(currentRoom);
+                DisponibilityScreenComponent.selectedRooms.Remove(currentRoom);
             }
         }
         else
         {
             Selected = true;
             selectMarker.gameObject.SetActive(true);
-            if (!DisponibilitySccreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
+            if (!DisponibilityScreenComponent.selectedRooms.Any(r => r.ID == currentRoom.ID))
             {
-                DisponibilitySccreenComponent.selectedRooms.Add(currentRoom);
+                DisponibilityScreenComponent.selectedRooms.Add(currentRoom);
             }
-            DisponibilitySccreenComponent.CheckRoomsSelection();
+            DisponibilityScreenComponent.CheckRoomsSelection();
         }
     }
 
-    private void ClickOrSellect()
+    private void ClickOrSelect()
     {
         StopAllCoroutines();
         if (!pressAndHold)
@@ -154,13 +154,13 @@ public class RoomButton : MonoBehaviour
             }
             firstSelection = false;
         }
-        DisponibilitySccreenComponent.CheckRoomsSelection();
+        DisponibilityScreenComponent.CheckRoomsSelection();
     }
 
     private IEnumerator SelectionMode()
     {
         pressAndHold = false;
-        if (!DisponibilitySccreenComponent.roomSelection)
+        if (!DisponibilityScreenComponent.roomSelection)
         {
             double timer = 0;
             while (timer < 0.6f)

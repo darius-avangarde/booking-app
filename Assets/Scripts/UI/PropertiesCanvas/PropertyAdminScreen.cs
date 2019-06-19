@@ -12,9 +12,13 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
+    private Image propertyImage = null;
+    [SerializeField]
+    private AspectRatioFitter propertyImageAspectFitter = null;
+    [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private Image propertyImage = null;
+    private AspectRatioFitter backgroundImageAspectFitter = null;
     [SerializeField]
     private GameObject RoomsToggleField = null;
     [SerializeField]
@@ -29,9 +33,11 @@ public class PropertyAdminScreen : MonoBehaviour
     private Button backButton = null;
     [SerializeField]
     private Button calcelButton = null;
+    [SerializeField]
+    private Text errorMessage = null;
 
     private IProperty currentProperty;
-    private bool addedPhoto = false;
+    private bool canSave = true;
 
     private void Awake()
     {
@@ -42,7 +48,7 @@ public class PropertyAdminScreen : MonoBehaviour
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-        if(currentProperty.Name != null)
+        if (currentProperty.Name != null)
         {
             RoomsToggleField.SetActive(false);
             deleteButton.gameObject.SetActive(true);
@@ -57,6 +63,8 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void SetPropertyFieldsText()
     {
+        canSave = true;
+        errorMessage.text = string.Empty;
         propertyNameInputField.text = currentProperty.Name ?? "";
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
@@ -69,6 +77,7 @@ public class PropertyAdminScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
+        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
         if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
@@ -79,6 +88,7 @@ public class PropertyAdminScreen : MonoBehaviour
             NoRoomsToggle.isOn = true;
             HasRoomsToggle.isOn = false;
         }
+        ImageDataManager.AddedPhoto = false;
     }
 
     public void AddPhoto()
@@ -93,12 +103,10 @@ public class PropertyAdminScreen : MonoBehaviour
             ConfirmCallback = () =>
             {
                 ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
-                addedPhoto = true;
             },
             ConfirmCallbackSecond = () =>
             {
                 ImageDataManager.PickImage(currentProperty.ID, propertyImage);
-                addedPhoto = true;
             },
             CancelCallback = null
         });
@@ -106,24 +114,29 @@ public class PropertyAdminScreen : MonoBehaviour
 
     public void SaveProperty()
     {
-        if (HasRoomsToggle.isOn)
-        {
-            currentProperty.HasRooms = true;
-        }
-        else
-        {
-            currentProperty.HasRooms = false;
-        }
-        if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
-        {
-            PropertyDataManager.SaveProperty(currentProperty);
-        }
-        if (addedPhoto)
-        {
-            ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
-        }
         NameChanged(propertyNameInputField.text);
-        navigator.GoBack();
+        if (canSave)
+        {
+            if (HasRoomsToggle.isOn)
+            {
+                currentProperty.HasRooms = true;
+            }
+            else
+            {
+                currentProperty.HasRooms = false;
+                PropertyDataManager.CreatePropertyRoom(currentProperty);
+                currentProperty.GetPropertyRoom().Name = currentProperty.Name;
+            }
+            if (ImageDataManager.AddedPhoto)
+            {
+                ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
+            }
+            if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
+            {
+                PropertyDataManager.SaveProperty(currentProperty);
+            }
+            navigator.GoBack();
+        }
     }
 
     public void DeleteProperty()
@@ -147,17 +160,15 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void NameChanged(string value)
     {
-        currentProperty.Name = string.IsNullOrEmpty(value) ? Constants.NEW_PROPERTY : value;
-        if (!currentProperty.HasRooms)
+        if (string.IsNullOrEmpty(value))
         {
-            currentProperty.GetPropertyRoom().Name = currentProperty.Name;
+            errorMessage.text = "Introduceți numele proprietății!";
+            canSave = false;
         }
-    }
-
-    private IEnumerator UploadPhoto()
-    {
-        yield return null;
-        //yield return WaitUntil((t) => ImageDataManager.TakePhoto(currentProperty.ID));
-        propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+        else
+        {
+            currentProperty.Name = value;
+            canSave = true;
+        }
     }
 }
