@@ -19,6 +19,8 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private RectTransform propertyInfoContent = null;
     [SerializeField]
+    private ScrollRect propertiesScrollView = null;
+    [SerializeField]
     private GameObject propertyItemPrefab = null;
     [SerializeField]
     private Button thumbnailsViewButton = null;
@@ -30,6 +32,7 @@ public class PropertiesScreen : MonoBehaviour
     private Button backButton = null;
 
     private List<GameObject> propertyButtonList = new List<GameObject>();
+    private float tempPosition = 0;
     private bool thumbnails = false;
 
     private void Awake()
@@ -58,6 +61,7 @@ public class PropertiesScreen : MonoBehaviour
     public void ExpandThumbnails(bool expand)
     {
         StopAllCoroutines();
+        tempPosition = propertiesScrollView.verticalNormalizedPosition;
         foreach (GameObject property in propertyButtonList)
         {
             StartCoroutine(ExpandView(expand, property.GetComponent<RectTransform>()));
@@ -103,6 +107,7 @@ public class PropertiesScreen : MonoBehaviour
                 property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
                 Canvas.ForceUpdateCanvases();
+                propertiesScrollView.verticalNormalizedPosition = tempPosition;
                 yield return null;
             }
             property.sizeDelta = endSize;
@@ -119,6 +124,7 @@ public class PropertiesScreen : MonoBehaviour
                 property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
                 Canvas.ForceUpdateCanvases();
+                propertiesScrollView.verticalNormalizedPosition = tempPosition;
                 yield return null;
             }
             property.sizeDelta = endSize;
