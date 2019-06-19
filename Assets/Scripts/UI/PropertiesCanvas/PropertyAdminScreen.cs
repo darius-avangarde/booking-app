@@ -12,9 +12,13 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
+    private Image propertyImage = null;
+    [SerializeField]
+    private AspectRatioFitter propertyImageAspectFitter = null;
+    [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private Image propertyImage = null;
+    private AspectRatioFitter backgroundImageAspectFitter = null;
     [SerializeField]
     private GameObject RoomsToggleField = null;
     [SerializeField]
@@ -73,6 +77,7 @@ public class PropertyAdminScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
+        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
         if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
