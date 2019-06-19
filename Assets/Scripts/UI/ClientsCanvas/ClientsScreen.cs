@@ -298,6 +298,7 @@ public class ClientsScreen : MonoBehaviour
     public void ClearSearchField()
     {
         searchField.text = string.Empty;
+        Debug.Log("pressed");
     }
     #endregion
 
@@ -346,7 +347,6 @@ public class ClientsScreen : MonoBehaviour
 
 
         Search.gameObject.SetActive(value);
-        //separator.gameobject.setactive(value)
     }
     #endregion
 }
