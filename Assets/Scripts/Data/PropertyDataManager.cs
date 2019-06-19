@@ -179,7 +179,7 @@ public static class PropertyDataManager
         public void SaveRoom(IRoom room)
         {
             rooms.Add((Room)room);
-            //WritePropertyData();
+            WritePropertyData();
         }
 
         public void DeleteRoom(string ID)
