@@ -144,33 +144,40 @@ public class RoomAdminScreen : MonoBehaviour
         }
         else if (multipleRoomsToggle.isOn)
         {
-            if (string.IsNullOrEmpty(multipleNrRoomsField.text))
+            if (currentProperty.MultipleRooms.Count() > 0)
             {
-                errorMessage.text = "Trebuie sa adaugati un numar de camere";
-                canSave = false;
+                SaveOverCurrentRooms();
             }
             else
             {
-                errorMessage.text = string.Empty;
-                canSave = true;
-            }
-            foreach (var room in currentProperty.Rooms)
-            {
-                if ($"{multiplePrefixField.text} {1}".Trim().ToLower() == room.Name.Trim().ToLower())
+                if (string.IsNullOrEmpty(multipleNrRoomsField.text))
                 {
-                    errorMessage.text = "Exista deja camere cu acest nume, schimbati sau adaugati un prefix";
+                    errorMessage.text = "Trebuie sa adaugati un numar de camere";
                     canSave = false;
-                    break;
                 }
                 else
                 {
                     errorMessage.text = string.Empty;
                     canSave = true;
                 }
-            }
-            if (canSave)
-            {
-                SaveMultipleRooms();
+                foreach (var room in currentProperty.Rooms)
+                {
+                    if ($"{multiplePrefixField.text} {1}".Trim().ToLower() == room.Name.Trim().ToLower())
+                    {
+                        errorMessage.text = "Exista deja camere cu acest nume, schimbati sau adaugati un prefix";
+                        canSave = false;
+                        break;
+                    }
+                    else
+                    {
+                        errorMessage.text = string.Empty;
+                        canSave = true;
+                    }
+                }
+                if (canSave)
+                {
+                    SaveMultipleRooms();
+                }
             }
         }
     }
@@ -199,12 +206,14 @@ public class RoomAdminScreen : MonoBehaviour
         if (rooms > 0)
         {
             errorMessage.text = string.Empty;
+            currentProperty.FloorRooms = rooms;
             if (floors > 0)
             {
                 for (int j = 1; j <= rooms; j++)
                 {
                     IRoom newRoom = currentProperty.AddRoom();
                     newRoom.Name = $"{multiplePrefixField.text} {j}";
+                    newRoom.Multiple = true;
                     currentProperty.SaveRoom(newRoom);
                 }
                 for (int i = 1; i < floors; i++)
@@ -220,6 +229,7 @@ public class RoomAdminScreen : MonoBehaviour
                         {
                             newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
                         }
+                        newRoom.Multiple = true;
                         currentProperty.SaveRoom(newRoom);
                     }
                 }
@@ -230,6 +240,87 @@ public class RoomAdminScreen : MonoBehaviour
                 {
                     IRoom newRoom = currentProperty.AddRoom();
                     newRoom.Name = $"{multiplePrefixField.text} {j}";
+                    newRoom.Multiple = true;
+                    currentProperty.SaveRoom(newRoom);
+                }
+            }
+            navigator.GoBack();
+        }
+        else
+        {
+            errorMessage.text = "Numarul de camere nu poate sa fie 0";
+        }
+    }
+
+    public void SaveOverCurrentRooms()
+    {
+        int previousFloors = currentProperty.MultipleRooms.Count() / currentProperty.FloorRooms;
+        int previousRooms = currentProperty.FloorRooms;
+        int floors = 0;
+        if (!string.IsNullOrEmpty(multipleFloorsField.text))
+        {
+            floors = int.Parse(multipleFloorsField.text);
+        }
+        int rooms = int.Parse(multipleNrRoomsField.text);
+        if (rooms > 0)
+        {
+            currentProperty.FloorRooms = previousRooms + rooms;
+            errorMessage.text = string.Empty;
+            if (floors > 0)
+            {
+                int maxFloor = Mathf.Max(previousFloors, floors);
+                for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
+                {
+                    IRoom newRoom = currentProperty.AddRoom();
+                    newRoom.Name = $"{multiplePrefixField.text} {j}";
+                    newRoom.Multiple = true;
+                    currentProperty.SaveRoom(newRoom);
+                }
+                for (int i = 1; i < maxFloor; i++)
+                {
+                    if (i <= previousFloors)
+                    {
+                        for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
+                        {
+                            IRoom newRoom = currentProperty.AddRoom();
+                            if (j < 10)
+                            {
+                                newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
+                            }
+                            else
+                            {
+                                newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
+                            }
+                            newRoom.Multiple = true;
+                            currentProperty.SaveRoom(newRoom);
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 1; j <= rooms; j++)
+                        {
+                            IRoom newRoom = currentProperty.AddRoom();
+                            if (j < 10)
+                            {
+                                newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
+                            }
+                            else
+                            {
+                                newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
+                            }
+                            newRoom.Multiple = true;
+                            currentProperty.SaveRoom(newRoom);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
+                {
+                    IRoom newRoom = currentProperty.AddRoom();
+                    newRoom.Name = $"{multiplePrefixField.text} {j}";
+                    newRoom.Multiple = true;
                     currentProperty.SaveRoom(newRoom);
                 }
             }
