@@ -101,11 +101,11 @@ public class PropertyAdminScreen : MonoBehaviour
             CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
-                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
+                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage, propertyImageAspectFitter);
             },
             ConfirmCallbackSecond = () =>
             {
-                ImageDataManager.PickImage(currentProperty.ID, propertyImage);
+                ImageDataManager.PickImage(currentProperty.ID, propertyImage, propertyImageAspectFitter);
             },
             CancelCallback = null
         });
