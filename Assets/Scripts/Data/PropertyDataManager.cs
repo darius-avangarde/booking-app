@@ -266,6 +266,18 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
+        private int roomNumber = 0;
+        public int RoomNumber
+        {
+            get => roomNumber;
+            set
+            {
+                roomNumber = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
         private int singleBeds;
         public int SingleBeds
         {
