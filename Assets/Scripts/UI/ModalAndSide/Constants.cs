@@ -74,6 +74,9 @@ public class Constants : MonoBehaviour
         public const string ROOMS_SELECTED = "camere selectate";
         public const string RESERVATION_PERIOD = "perioadă";
 
+        public const string RESERVATION_MODIFIED = "Rezervare modificată";
+        public const string RESERVATION_SAVED = "Rezervare salvată";
+
         //error messages
         public const string ERR_PROP = "Specificați proprietatea pentru această rezervare";
         public const string ERR_ROOM = "Specificați camera pentru această rezervare";
