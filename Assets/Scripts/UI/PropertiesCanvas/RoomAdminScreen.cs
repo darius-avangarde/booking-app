@@ -81,18 +81,6 @@ public class RoomAdminScreen : MonoBehaviour
             new ToggleOption(Constants.REPLACE_ROOMS, SaveMultipleRooms),
             new ToggleOption(Constants.ADD_OVER_ROOMS, SaveOverCurrentRooms)
             );
-
-        modalDialogOptions.Message = Constants.DELETE_ROOM;
-        modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
-        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
-        modalDialogOptions.ConfirmCallback = () =>
-        {
-            currentProperty.DeleteRoom(currentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
-            navigator.GoBack();
-            navigator.GoBack();
-        };
-        modalDialogOptions.CancelCallback = null;
     }
 
     public void SetCurrentPropertyRoom(IRoom room)
@@ -390,6 +378,16 @@ public class RoomAdminScreen : MonoBehaviour
     public void DeleteRoom()
     {
         modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+        modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
+        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        modalDialogOptions.ConfirmCallback = () =>
+        {
+            currentProperty.DeleteRoom(currentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            navigator.GoBack();
+            navigator.GoBack();
+        };
+        modalDialogOptions.CancelCallback = null;
         confirmationDialog.Show(modalDialogOptions);
     }
 
@@ -412,6 +410,16 @@ public class RoomAdminScreen : MonoBehaviour
     {
         errorMessage.text = string.Empty;
         canSave = true;
+    }
+
+    public void ShowInfo()
+    {
+        modalDialogOptions.Message = "";
+        modalDialogOptions.ConfirmText = Constants.CONFIRM;
+        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        modalDialogOptions.ConfirmCallback = null;
+        modalDialogOptions.CancelCallback = null;
+        confirmationDialog.Show(modalDialogOptions);
     }
 
     private void OpenToggleDialog()
