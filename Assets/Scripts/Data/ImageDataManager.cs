@@ -11,6 +11,7 @@ public class ImageDataManager
     public const string DATA_FILE_NAME = "ImageData.json";
     public static bool AddedPhoto;
     public static Hashtable PropertyPhotos = new Hashtable();
+    public static Hashtable BlurPropertyPhotos = new Hashtable();
     private static string PropertyPhotosFolder = Path.Combine(Application.persistentDataPath, "PropertyPhotos");
 
     public static void PickImage(string propertyID, Image propertyImage, AspectRatioFitter imageAspectRatio)
@@ -72,15 +73,20 @@ public class ImageDataManager
     public static void SaveImage(string propertyID, Texture2D propertyImage)
     {
         string filePath = Path.Combine(PropertyPhotosFolder, propertyID + ".png");
+        string blurFilePath = Path.Combine(PropertyPhotosFolder, propertyID + "_blur.png");
         DirectoryInfo dirInf = new DirectoryInfo(PropertyPhotosFolder);
         if (!dirInf.Exists)
         {
             Directory.CreateDirectory(PropertyPhotosFolder);
         }
         File.WriteAllBytes(filePath, propertyImage.EncodeToPNG());
-
         Sprite downloadedImage = Sprite.Create(propertyImage, new Rect(0, 0, propertyImage.width, propertyImage.height), new Vector2(0.5f, 0.5f));
         PropertyPhotos[propertyID] = downloadedImage;
+
+        propertyImage = TextureUtils.ResizeAndBlur(propertyImage);
+        File.WriteAllBytes(blurFilePath, propertyImage.EncodeToPNG());
+        Sprite downloadedImageBlur = Sprite.Create(propertyImage, new Rect(0, 0, propertyImage.width, propertyImage.height), new Vector2(0.5f, 0.5f));
+        BlurPropertyPhotos[propertyID] = downloadedImageBlur;
     }
 
     public static void LoadAllPropertyImages()
@@ -89,16 +95,28 @@ public class ImageDataManager
         PropertyPhotos[Constants.defaultPropertyPicture] = Sprite.Create(defaultPicture, new Rect(0, 0, defaultPicture.width, defaultPicture.height), new Vector2(0.5f, 0.5f));
         foreach (IProperty property in PropertyDataManager.GetProperties())
         {
-            if (GetPropertyPhoto(property.ID) != null && !PropertyPhotos.ContainsKey(property.ID))
+            if (GetPropertyPhoto(property.ID, false) != null && !PropertyPhotos.ContainsKey(property.ID))
             {
-                PropertyPhotos[property.ID] = GetPropertyPhoto(property.ID);
+                PropertyPhotos[property.ID] = GetPropertyPhoto(property.ID, false);
+            }
+            if (GetPropertyPhoto(property.ID, true) != null && !BlurPropertyPhotos.ContainsKey(property.ID))
+            {
+                BlurPropertyPhotos[property.ID] = GetPropertyPhoto(property.ID, true);
             }
         }
     }
 
-    private static Sprite GetPropertyPhoto(string propertyID)
+    private static Sprite GetPropertyPhoto(string propertyID, bool blur)
     {
-        string filePath = Path.Combine(PropertyPhotosFolder, propertyID + ".png");
+        string filePath;
+        if (blur)
+        {
+            filePath = Path.Combine(PropertyPhotosFolder, propertyID + "_blur.png");
+        }
+        else
+        {
+            filePath = Path.Combine(PropertyPhotosFolder, propertyID + ".png");
+        }
         DirectoryInfo dirInf = new DirectoryInfo(PropertyPhotosFolder);
         if (!dirInf.Exists)
         {
@@ -106,7 +124,7 @@ public class ImageDataManager
         }
         if (File.Exists(filePath))
         {
-            Texture2D texture = NativeGallery.LoadImageAtPath(filePath, 1080);
+            Texture2D texture = NativeGallery.LoadImageAtPath(filePath, 1080, false);
             Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
 
             return downloadedImage;
@@ -120,6 +138,7 @@ public class ImageDataManager
     public static void DeletePropertyPhoto(string propertyID)
     {
         string filePath = Path.Combine(PropertyPhotosFolder, propertyID + ".png");
+        string blurFilePath = Path.Combine(PropertyPhotosFolder, propertyID + "_blur.png");
         DirectoryInfo dirInf = new DirectoryInfo(PropertyPhotosFolder);
         if (!dirInf.Exists)
         {
@@ -129,6 +148,11 @@ public class ImageDataManager
         {
             PropertyPhotos.Remove(propertyID);
             File.Delete(filePath);
+        }
+        if (File.Exists(blurFilePath))
+        {
+            BlurPropertyPhotos.Remove(propertyID);
+            File.Delete(blurFilePath);
         }
     }
 }

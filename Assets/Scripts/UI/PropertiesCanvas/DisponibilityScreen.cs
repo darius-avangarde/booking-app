@@ -264,7 +264,7 @@ public class DisponibilityScreen : MonoBehaviour
         propertyItemList = new List<GameObject>();
         if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
         {
-            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.BlurPropertyPhotos[property.ID];
             backgroundImage.gameObject.SetActive(true);
             backgroundImageAspectFitter.aspectRatio = (float)backgroundImage.sprite.texture.width/backgroundImage.sprite.texture.height;
         }
