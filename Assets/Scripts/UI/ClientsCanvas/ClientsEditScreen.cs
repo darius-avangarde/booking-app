@@ -18,6 +18,8 @@ public class ClientsEditScreen : MonoBehaviour
     private Text textError;
     [SerializeField]
     private Text textNameRequired;
+    [SerializeField]
+    private InfoBox infoDialog = null;
 
     public IClient GetCurrentClient()
     {
@@ -80,5 +82,10 @@ public class ClientsEditScreen : MonoBehaviour
     {
         textNameRequired.gameObject.SetActive(true);
         textNameRequired.text = Constants.Name_Phone_Required;
+    }
+
+    public void ShowInfo()
+    {
+        infoDialog.Show(  $"{Environment.NewLine}*Câmpurile marcate cu steluță sunt obligatorii.");
     }
 }
