@@ -42,7 +42,7 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
-    private Text availableRoomsNumber = null;
+    private Text availableNumber = null;
     [SerializeField]
     private Button backButton = null;
 
@@ -140,7 +140,6 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void InstantiateProperties()
     {
-        StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 450), new Vector2(disponibilityScrollView.offsetMax.x, -450)));
         if (!shouldSelectRooms)
         {
             CancelSelection();
@@ -233,11 +232,11 @@ public class DisponibilityScreen : MonoBehaviour
                     buttonObject.InitializeDateTime(startDate, endDate);
                     if (fromReservation)
                     {
-                        buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, selectionCallback);
+                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
                     }
                     else
                     {
-                        buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
+                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, null);
                     }
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
@@ -246,6 +245,9 @@ public class DisponibilityScreen : MonoBehaviour
                 }
             }
         }
+        StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 560), new Vector2(disponibilityScrollView.offsetMax.x, -560)));
+        availableNumber.text = $"{Constants.AVAILABLE_PROPERTIES} {propertyItemList.Count()}";
+        availableNumber.color = Constants.defaultTextColor;
         propertyDropdownList.options = propertyOptions.Values.ToList();
         propertyDropdownList.RefreshShownValue();
     }
@@ -307,14 +309,14 @@ public class DisponibilityScreen : MonoBehaviour
                         }
                     }
                 }
-                availableRoomsNumber.text = Constants.AVAILABLE_ROOMS + nrRooms;
+                availableNumber.text = Constants.AVAILABLE_ROOMS + nrRooms;
                 if (nrRooms == 0)
                 {
-                    availableRoomsNumber.color = Constants.reservedUnavailableItemColor;
+                    availableNumber.color = Constants.reservedUnavailableItemColor;
                 }
                 else
                 {
-                    availableRoomsNumber.color = Constants.defaultTextColor;
+                    availableNumber.color = Constants.defaultTextColor;
                 }
                 CheckRoomsSelection();
             }
@@ -339,8 +341,8 @@ public class DisponibilityScreen : MonoBehaviour
                 else
                 {
                     StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 560), new Vector2(disponibilityScrollView.offsetMax.x, -560)));
-                    availableRoomsNumber.text = Constants.ERR_DISPONIBILITY;
-                    availableRoomsNumber.color = Constants.reservedUnavailableItemColor;
+                    availableNumber.text = Constants.ERR_DISPONIBILITY;
+                    availableNumber.color = Constants.reservedUnavailableItemColor;
                 }
             }
         }

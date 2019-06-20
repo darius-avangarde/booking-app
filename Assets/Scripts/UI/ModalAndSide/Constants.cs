@@ -25,6 +25,7 @@ public class Constants : MonoBehaviour
     public const string MULTIPLE_ROOMS = "Camere noi";
     public const string EDIT_ROOM = "Modifică camera";
     public const string ROOMS_NUMBER = "Număr de camere: ";
+    public const string AVAILABLE_PROPERTIES = "Proprietăți disponibile: ";
     public const string AVAILABLE_ROOMS = "Camere disponibile: ";
     public const string PROPERTY = "Proprietate: ";
     public const string PERSONS = "Persoane: ";
