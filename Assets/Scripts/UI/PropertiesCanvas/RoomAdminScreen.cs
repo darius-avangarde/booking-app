@@ -12,6 +12,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
+    private ToggleDialog toggleDialog = null;
+    [SerializeField]
     private Text propertyRoomTitle = null;
     [SerializeField]
     private InputField roomNameInputField = null;
@@ -54,6 +56,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private Text errorMessage = null;
 
+    private ToggleDialogOptions toggleDialogOptions = new ToggleDialogOptions();
+    private ConfirmationDialogOptions modalDialogOptions = new ConfirmationDialogOptions();
     private IProperty currentProperty;
     private IRoom currentRoom;
     private List<IRoom> MultipleRooms = new List<IRoom>();
@@ -69,6 +73,26 @@ public class RoomAdminScreen : MonoBehaviour
         calcelButton.onClick.AddListener(() => navigator.GoBack());
         deleteButton.onClick.AddListener(() => DeleteRoom());
         defaultRoomName = roomNameInputFieldTransform.offsetMax;
+
+        toggleDialogOptions.TitleMessage = Constants.ADD_MULTIPLE_ROOMS;
+        toggleDialogOptions.ConfirmText = Constants.CONFIRM;
+        toggleDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        toggleDialogOptions.SetOptions(
+            new ToggleOption(Constants.REPLACE_ROOMS, SaveMultipleRooms),
+            new ToggleOption(Constants.ADD_OVER_ROOMS, SaveOverCurrentRooms)
+            );
+
+        modalDialogOptions.Message = Constants.DELETE_ROOM;
+        modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
+        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        modalDialogOptions.ConfirmCallback = () =>
+        {
+            currentProperty.DeleteRoom(currentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            navigator.GoBack();
+            navigator.GoBack();
+        };
+        modalDialogOptions.CancelCallback = null;
     }
 
     public void SetCurrentPropertyRoom(IRoom room)
@@ -123,61 +147,72 @@ public class RoomAdminScreen : MonoBehaviour
     {
         if (singleRoomToggle.isOn)
         {
-            foreach (var room in currentProperty.Rooms)
+            if (!string.IsNullOrEmpty(roomNameInputField.text))
             {
-                if (roomNameInputField.text.Trim().ToLower() == room.Name.Trim().ToLower())
-                {
-                    errorMessage.text = "Exista deja o camera cu acest nume";
-                    canSave = false;
-                    break;
-                }
-                else
-                {
-                    errorMessage.text = string.Empty;
-                    canSave = true;
-                }
-            }
-            if (canSave)
-            {
-                SaveRoom();
-            }
-        }
-        else if (multipleRoomsToggle.isOn)
-        {
-            if (currentProperty.MultipleRooms.Count() > 0)
-            {
-                SaveOverCurrentRooms();
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(multipleNrRoomsField.text))
-                {
-                    errorMessage.text = "Trebuie sa adaugati un numar de camere";
-                    canSave = false;
-                }
-                else
-                {
-                    errorMessage.text = string.Empty;
-                    canSave = true;
-                }
                 foreach (var room in currentProperty.Rooms)
                 {
-                    if ($"{multiplePrefixField.text} {1}".Trim().ToLower() == room.Name.Trim().ToLower())
+                    if (roomNameInputField.text.Trim().ToLower() == room.Name.Trim().ToLower())
                     {
-                        errorMessage.text = "Exista deja camere cu acest nume, schimbati sau adaugati un prefix";
+                        errorMessage.text = Constants.ERR_ROOM_TAKEN;
                         canSave = false;
                         break;
                     }
                     else
                     {
-                        errorMessage.text = string.Empty;
-                        canSave = true;
+                        ResetError();
                     }
                 }
                 if (canSave)
                 {
-                    SaveMultipleRooms();
+                    SaveRoom();
                 }
+            }
+            else
+            {
+                errorMessage.text = Constants.ERR_ROOM_NAME;
+            }
+        }
+        else if (multipleRoomsToggle.isOn)
+        {
+            if (!string.IsNullOrEmpty(multipleNrRoomsField.text) && int.Parse(multipleNrRoomsField.text) > 0)
+            {
+                if (currentProperty.MultipleRooms.Count() > 0)
+                {
+                    OpenToggleDialog();
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(multipleNrRoomsField.text))
+                    {
+                        errorMessage.text = Constants.ERR_ROOM_NUMBER;
+                        canSave = false;
+                    }
+                    else
+                    {
+                        ResetError();
+                    }
+                    foreach (var room in currentProperty.Rooms)
+                    {
+                        if ($"{multiplePrefixField.text} {1}".Trim().ToLower() == room.Name.Trim().ToLower())
+                        {
+                            errorMessage.text = Constants.ERR_MULTIPLE_ROOMS_NAME;
+                            canSave = false;
+                            break;
+                        }
+                        else
+                        {
+                            ResetError();
+                        }
+                    }
+                    if (canSave)
+                    {
+                        SaveMultipleRooms();
+                    }
+                }
+            }
+            else
+            {
+                errorMessage.text = Constants.ERR_ROOM_NULL_NUMBER;
             }
         }
     }
@@ -197,26 +232,103 @@ public class RoomAdminScreen : MonoBehaviour
 
     private void SaveMultipleRooms()
     {
+        if (currentProperty.MultipleRooms.Count() > 0)
+        {
+            foreach (var room in currentProperty.MultipleRooms)
+            {
+                currentProperty.DeleteRoom(room.ID);
+            }
+        }
         int floors = 0;
         if (!string.IsNullOrEmpty(multipleFloorsField.text))
         {
             floors = int.Parse(multipleFloorsField.text);
         }
         int rooms = int.Parse(multipleNrRoomsField.text);
-        if (rooms > 0)
+        ResetError();
+        currentProperty.FloorRooms = rooms;
+        if (floors > 0)
         {
-            errorMessage.text = string.Empty;
-            currentProperty.FloorRooms = rooms;
-            if (floors > 0)
+            for (int j = 1; j <= rooms; j++)
+            {
+                IRoom newRoom = currentProperty.AddRoom();
+                newRoom.Name = $"{multiplePrefixField.text} {j}";
+                newRoom.Multiple = true;
+                currentProperty.SaveRoom(newRoom);
+            }
+            for (int i = 1; i < floors; i++)
             {
                 for (int j = 1; j <= rooms; j++)
                 {
                     IRoom newRoom = currentProperty.AddRoom();
-                    newRoom.Name = $"{multiplePrefixField.text} {j}";
+                    if (j < 10)
+                    {
+                        newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
+                    }
+                    else
+                    {
+                        newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
+                    }
                     newRoom.Multiple = true;
                     currentProperty.SaveRoom(newRoom);
                 }
-                for (int i = 1; i < floors; i++)
+            }
+        }
+        else
+        {
+            for (int j = 1; j <= rooms; j++)
+            {
+                IRoom newRoom = currentProperty.AddRoom();
+                newRoom.Name = $"{multiplePrefixField.text} {j}";
+                newRoom.Multiple = true;
+                currentProperty.SaveRoom(newRoom);
+            }
+        }
+        navigator.GoBack();
+    }
+
+    public void SaveOverCurrentRooms()
+    {
+        int previousFloors = currentProperty.MultipleRooms.Count() / currentProperty.FloorRooms;
+        int previousRooms = currentProperty.FloorRooms;
+        int floors = 0;
+        if (!string.IsNullOrEmpty(multipleFloorsField.text))
+        {
+            floors = int.Parse(multipleFloorsField.text);
+        }
+        int rooms = int.Parse(multipleNrRoomsField.text);
+        currentProperty.FloorRooms = previousRooms + rooms;
+        ResetError();
+        if (floors > 0)
+        {
+            int maxFloor = Mathf.Max(previousFloors, floors);
+            for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
+            {
+                IRoom newRoom = currentProperty.AddRoom();
+                newRoom.Name = $"{multiplePrefixField.text} {j}";
+                newRoom.Multiple = true;
+                currentProperty.SaveRoom(newRoom);
+            }
+            for (int i = 1; i < maxFloor; i++)
+            {
+                if (i < previousFloors)
+                {
+                    for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
+                    {
+                        IRoom newRoom = currentProperty.AddRoom();
+                        if (j < 10)
+                        {
+                            newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
+                        }
+                        else
+                        {
+                            newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
+                        }
+                        newRoom.Multiple = true;
+                        currentProperty.SaveRoom(newRoom);
+                    }
+                }
+                else
                 {
                     for (int j = 1; j <= rooms; j++)
                     {
@@ -234,108 +346,25 @@ public class RoomAdminScreen : MonoBehaviour
                     }
                 }
             }
-            else
-            {
-                for (int j = 1; j <= rooms; j++)
-                {
-                    IRoom newRoom = currentProperty.AddRoom();
-                    newRoom.Name = $"{multiplePrefixField.text} {j}";
-                    newRoom.Multiple = true;
-                    currentProperty.SaveRoom(newRoom);
-                }
-            }
-            navigator.GoBack();
         }
         else
         {
-            errorMessage.text = "Numarul de camere nu poate sa fie 0";
-        }
-    }
-
-    public void SaveOverCurrentRooms()
-    {
-        int previousFloors = currentProperty.MultipleRooms.Count() / currentProperty.FloorRooms;
-        int previousRooms = currentProperty.FloorRooms;
-        int floors = 0;
-        if (!string.IsNullOrEmpty(multipleFloorsField.text))
-        {
-            floors = int.Parse(multipleFloorsField.text);
-        }
-        int rooms = int.Parse(multipleNrRoomsField.text);
-        if (rooms > 0)
-        {
-            currentProperty.FloorRooms = previousRooms + rooms;
-            errorMessage.text = string.Empty;
-            if (floors > 0)
+            for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
             {
-                int maxFloor = Mathf.Max(previousFloors, floors);
-                for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
-                {
-                    IRoom newRoom = currentProperty.AddRoom();
-                    newRoom.Name = $"{multiplePrefixField.text} {j}";
-                    newRoom.Multiple = true;
-                    currentProperty.SaveRoom(newRoom);
-                }
-                for (int i = 1; i < maxFloor; i++)
-                {
-                    if (i <= previousFloors)
-                    {
-                        for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
-                        {
-                            IRoom newRoom = currentProperty.AddRoom();
-                            if (j < 10)
-                            {
-                                newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
-                            }
-                            else
-                            {
-                                newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
-                            }
-                            newRoom.Multiple = true;
-                            currentProperty.SaveRoom(newRoom);
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 1; j <= rooms; j++)
-                        {
-                            IRoom newRoom = currentProperty.AddRoom();
-                            if (j < 10)
-                            {
-                                newRoom.Name = $"{multiplePrefixField.text} {i}0{j}";
-                            }
-                            else
-                            {
-                                newRoom.Name = $"{multiplePrefixField.text} {i}{j}";
-                            }
-                            newRoom.Multiple = true;
-                            currentProperty.SaveRoom(newRoom);
-                        }
-                    }
-                }
+                IRoom newRoom = currentProperty.AddRoom();
+                newRoom.Name = $"{multiplePrefixField.text} {j}";
+                newRoom.Multiple = true;
+                currentProperty.SaveRoom(newRoom);
             }
-            else
-            {
-                for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
-                {
-                    IRoom newRoom = currentProperty.AddRoom();
-                    newRoom.Name = $"{multiplePrefixField.text} {j}";
-                    newRoom.Multiple = true;
-                    currentProperty.SaveRoom(newRoom);
-                }
-            }
-            navigator.GoBack();
         }
-        else
-        {
-            errorMessage.text = "Numarul de camere nu poate sa fie 0";
-        }
+        navigator.GoBack();
     }
 
     public void SelectSingleRoom()
     {
         if (singleRoomToggle.isOn)
         {
+            ResetError();
             StopAllCoroutines();
             roomNameInputField.interactable = true;
             roomNameInputField.text = roomNameCache;
@@ -348,6 +377,7 @@ public class RoomAdminScreen : MonoBehaviour
     {
         if (multipleRoomsToggle.isOn)
         {
+            ResetError();
             StopAllCoroutines();
             roomNameCache = roomNameInputField.text;
             roomNameInputField.text = Constants.MULTIPLE_ROOMS;
@@ -359,20 +389,8 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void DeleteRoom()
     {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                currentProperty.DeleteRoom(currentRoom.ID);
-                ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
-                navigator.GoBack();
-                navigator.GoBack();
-            },
-            CancelCallback = null
-        });
+        modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+        confirmationDialog.Show(modalDialogOptions);
     }
 
     public void DefaultValues()
@@ -388,6 +406,17 @@ public class RoomAdminScreen : MonoBehaviour
         currentProperty = null;
         currentRoom = null;
         canSave = true;
+    }
+
+    public void ResetError()
+    {
+        errorMessage.text = string.Empty;
+        canSave = true;
+    }
+
+    private void OpenToggleDialog()
+    {
+        toggleDialog.Show(toggleDialogOptions);
     }
 
     public void OnRoomNameValueChanged(string value)

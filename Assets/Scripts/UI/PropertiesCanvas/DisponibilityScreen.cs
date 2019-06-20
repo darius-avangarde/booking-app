@@ -339,7 +339,7 @@ public class DisponibilityScreen : MonoBehaviour
                 else
                 {
                     StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 560), new Vector2(disponibilityScrollView.offsetMax.x, -560)));
-                    availableRoomsNumber.text = "Properietatea nu este disponibila";
+                    availableRoomsNumber.text = Constants.ERR_DISPONIBILITY;
                     availableRoomsNumber.color = Constants.reservedUnavailableItemColor;
                 }
             }
