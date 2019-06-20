@@ -101,11 +101,11 @@ public class PropertyAdminScreen : MonoBehaviour
             CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
-                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage, propertyImageAspectFitter);
+                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage, backgroundImage, propertyImageAspectFitter, backgroundImageAspectFitter);
             },
             ConfirmCallbackSecond = () =>
             {
-                ImageDataManager.PickImage(currentProperty.ID, propertyImage, propertyImageAspectFitter);
+                ImageDataManager.PickImage(currentProperty.ID, propertyImage, backgroundImage, propertyImageAspectFitter, backgroundImageAspectFitter);
             },
             CancelCallback = null
         });
@@ -128,7 +128,7 @@ public class PropertyAdminScreen : MonoBehaviour
             }
             if (ImageDataManager.AddedPhoto)
             {
-                ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture);
+                ImageDataManager.SaveImage(currentProperty.ID, propertyImage.sprite.texture, backgroundImage.sprite.texture);
             }
             if (PropertyDataManager.GetProperty(currentProperty.ID) == null)
             {

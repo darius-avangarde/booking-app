@@ -14,7 +14,7 @@ public class ImageDataManager
     public static Hashtable BlurPropertyPhotos = new Hashtable();
     private static string PropertyPhotosFolder = Path.Combine(Application.persistentDataPath, "PropertyPhotos");
 
-    public static void PickImage(string propertyID, Image propertyImage, AspectRatioFitter imageAspectRatio)
+    public static void PickImage(string propertyID, Image propertyImage, Image backgroundImage, AspectRatioFitter imageAspectRatio, AspectRatioFitter backgroundAspectRatio)
     {
         NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
         {
@@ -33,6 +33,11 @@ public class ImageDataManager
                 Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
                 imageAspectRatio.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
+
+                Texture2D blurredImage = TextureUtils.ResizeAndBlur(texture);
+                Sprite downloadedBlurredImage = Sprite.Create(blurredImage, new Rect(0, 0, blurredImage.width, blurredImage.height), new Vector2(0.5f, 0.5f));
+                backgroundImage.sprite = downloadedBlurredImage;
+                backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
             }
             else
             {
@@ -42,7 +47,7 @@ public class ImageDataManager
         //Debug.Log("Permission result: " + permission);
     }
 
-    public static void TakePhoto(string propertyID, Image propertyImage, AspectRatioFitter imageAspectRatio)
+    public static void TakePhoto(string propertyID, Image propertyImage, Image backgroundImage, AspectRatioFitter imageAspectRatio, AspectRatioFitter backgroundAspectRatio)
     {
         AddedPhoto = false;
         NativeCamera.Permission permission = NativeCamera.TakePicture((path) =>
@@ -61,6 +66,11 @@ public class ImageDataManager
                 Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
                 imageAspectRatio.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
+
+                Texture2D blurredImage = TextureUtils.ResizeAndBlur(texture);
+                Sprite downloadedBlurredImage = Sprite.Create(blurredImage, new Rect(0, 0, blurredImage.width, blurredImage.height), new Vector2(0.5f, 0.5f));
+                backgroundImage.sprite = downloadedBlurredImage;
+                backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
             }
             else
             {
@@ -70,7 +80,7 @@ public class ImageDataManager
         //Debug.Log("Permission result: " + permission);
     }
 
-    public static void SaveImage(string propertyID, Texture2D propertyImage)
+    public static void SaveImage(string propertyID, Texture2D propertyImage, Texture2D backgroundImage)
     {
         string filePath = Path.Combine(PropertyPhotosFolder, propertyID + ".png");
         string blurFilePath = Path.Combine(PropertyPhotosFolder, propertyID + "_blur.png");
@@ -83,9 +93,8 @@ public class ImageDataManager
         Sprite downloadedImage = Sprite.Create(propertyImage, new Rect(0, 0, propertyImage.width, propertyImage.height), new Vector2(0.5f, 0.5f));
         PropertyPhotos[propertyID] = downloadedImage;
 
-        propertyImage = TextureUtils.ResizeAndBlur(propertyImage);
-        File.WriteAllBytes(blurFilePath, propertyImage.EncodeToPNG());
-        Sprite downloadedImageBlur = Sprite.Create(propertyImage, new Rect(0, 0, propertyImage.width, propertyImage.height), new Vector2(0.5f, 0.5f));
+        File.WriteAllBytes(blurFilePath, backgroundImage.EncodeToPNG());
+        Sprite downloadedImageBlur = Sprite.Create(backgroundImage, new Rect(0, 0, backgroundImage.width, backgroundImage.height), new Vector2(0.5f, 0.5f));
         BlurPropertyPhotos[propertyID] = downloadedImageBlur;
     }
 
