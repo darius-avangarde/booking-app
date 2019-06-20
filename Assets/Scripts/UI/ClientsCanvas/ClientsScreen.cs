@@ -298,7 +298,6 @@ public class ClientsScreen : MonoBehaviour
     public void ClearSearchField()
     {
         searchField.text = string.Empty;
-        Debug.Log("pressed");
     }
     #endregion
 
