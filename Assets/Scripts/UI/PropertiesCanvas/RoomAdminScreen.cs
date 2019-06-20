@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
@@ -13,6 +14,8 @@ public class RoomAdminScreen : MonoBehaviour
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private ToggleDialog toggleDialog = null;
+    [SerializeField]
+    private InfoBox infoDialog = null;
     [SerializeField]
     private Text propertyRoomTitle = null;
     [SerializeField]
@@ -50,6 +53,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private Button deleteButton = null;
     [SerializeField]
+    private Button infoButton = null;
+    [SerializeField]
     private Button backButton = null;
     [SerializeField]
     private Button calcelButton = null;
@@ -72,7 +77,20 @@ public class RoomAdminScreen : MonoBehaviour
         backButton.onClick.AddListener(() => navigator.GoBack());
         calcelButton.onClick.AddListener(() => navigator.GoBack());
         deleteButton.onClick.AddListener(() => DeleteRoom());
+        infoButton.onClick.AddListener(() => ShowInfo());
         defaultRoomName = roomNameInputFieldTransform.offsetMax;
+
+        modalDialogOptions.Message = Constants.DELETE_ROOM;
+        modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
+        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        modalDialogOptions.ConfirmCallback = () =>
+        {
+            currentProperty.DeleteRoom(currentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            navigator.GoBack();
+            navigator.GoBack();
+        };
+        modalDialogOptions.CancelCallback = null;
 
         toggleDialogOptions.TitleMessage = Constants.ADD_MULTIPLE_ROOMS;
         toggleDialogOptions.ConfirmText = Constants.CONFIRM;
@@ -123,6 +141,7 @@ public class RoomAdminScreen : MonoBehaviour
                 propertyRoomTitle.gameObject.SetActive(false);
                 deleteButton.gameObject.SetActive(true);
             }
+            infoButton.gameObject.SetActive(false);
             roomPriceInputField.text = currentRoom.Price ?? Constants.PRICE;
             roomSingleBedQuantityInputField.text = currentRoom.SingleBeds.ToString();
             roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
@@ -364,6 +383,7 @@ public class RoomAdminScreen : MonoBehaviour
         {
             ResetError();
             StopAllCoroutines();
+            infoButton.gameObject.SetActive(false);
             roomNameInputField.interactable = true;
             roomNameInputField.text = roomNameCache;
             StartCoroutine(HideNameInput(defaultRoomName));
@@ -377,6 +397,7 @@ public class RoomAdminScreen : MonoBehaviour
         {
             ResetError();
             StopAllCoroutines();
+            infoButton.gameObject.SetActive(true);
             roomNameCache = roomNameInputField.text;
             roomNameInputField.text = Constants.MULTIPLE_ROOMS;
             roomNameInputField.interactable = false;
@@ -424,12 +445,10 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void ShowInfo()
     {
-        modalDialogOptions.Message = "";
-        modalDialogOptions.ConfirmText = Constants.CONFIRM;
-        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
-        modalDialogOptions.ConfirmCallback = null;
-        modalDialogOptions.CancelCallback = null;
-        confirmationDialog.Show(modalDialogOptions);
+        infoDialog.Show($"<b>Prefix:</b>{Environment.NewLine}Este adaugat inainte de numarul camerei" +
+            $"{Environment.NewLine}{Environment.NewLine}<b>Etaje:</b>{Environment.NewLine}Reprezinta numarul de etaje ale proprietatii, inclusiv parterul" +
+            $"{Environment.NewLine}{Environment.NewLine}<b>Camere/Etaj:</b>{Environment.NewLine}Reprezinta numarul de camere ale unui etaj" +
+            $"{Environment.NewLine}{Environment.NewLine}*Campurile marcate cu steluta sunt obligatorii.{Environment.NewLine}");
     }
 
     private void OpenToggleDialog()
