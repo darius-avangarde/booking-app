@@ -4,6 +4,7 @@ public interface IRoom
     string ID { get; }
     string Name { get; set; }
     string Price { get; set; }
+    int RoomNumber { get; set; }
     int SingleBeds { get; set; }
     int DoubleBeds { get; set; }
     int Persons { get; }
