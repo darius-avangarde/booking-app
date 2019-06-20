@@ -17,6 +17,8 @@ public class ReservationEditScreen : MonoBehaviour
 
         [Header("Modal dialogues")]
         [SerializeField]
+        private InputManager inputManager;
+        [SerializeField]
         private ModalCalendarNew modalCalendarDialog = null;
         [SerializeField]
         private ConfirmationDialog confirmationDialog = null;
@@ -128,6 +130,7 @@ public class ReservationEditScreen : MonoBehaviour
                     );
                     confirmationCallback?.Invoke(currentReservation);
                     navigator.GoBack();
+                    inputManager.Message(Constants.RESERVATION_MODIFIED);
                 };
                 confirmationDialog.Show(editConfirmation);
             }
@@ -142,6 +145,7 @@ public class ReservationEditScreen : MonoBehaviour
 
                 confirmationCallback?.Invoke(newReservation);
                 navigator.GoBack();
+                inputManager.Message(Constants.RESERVATION_SAVED);
             }
         }
 
