@@ -16,6 +16,8 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     private Text confirmSecondButtonText = null;
     [SerializeField]
     private GameObject confirmSecondButton = null;
+    [SerializeField]
+    private HorizontalLayoutGroup ButtonsLayoutGroup = null;
 
     public string defaultMessage = "Sunteți sigur?";
     public string defaultConfirmButtonText = "Confirmați";
@@ -44,10 +46,14 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
             confirmSecondButtonText.text = options.ConfirmTextSecond;
             ConfirmCallbackSecond = options.ConfirmCallbackSecond;
             confirmSecondButton.SetActive(true);
+            ButtonsLayoutGroup.padding.left = -40;
+            ButtonsLayoutGroup.padding.right = -40;
         }
         else
         {
             confirmSecondButton.SetActive(false);
+            ButtonsLayoutGroup.padding.left = 100;
+            ButtonsLayoutGroup.padding.right = 100;
         }
 
         messageText.text = options.Message ?? defaultMessage;

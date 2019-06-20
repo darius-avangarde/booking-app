@@ -63,8 +63,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void SetPropertyFieldsText()
     {
-        canSave = true;
-        errorMessage.text = string.Empty;
+        ResetError();
         propertyNameInputField.text = currentProperty.Name ?? "";
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
@@ -102,11 +101,11 @@ public class PropertyAdminScreen : MonoBehaviour
             CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
-                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage);
+                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage, propertyImageAspectFitter);
             },
             ConfirmCallbackSecond = () =>
             {
-                ImageDataManager.PickImage(currentProperty.ID, propertyImage);
+                ImageDataManager.PickImage(currentProperty.ID, propertyImage, propertyImageAspectFitter);
             },
             CancelCallback = null
         });
@@ -158,17 +157,23 @@ public class PropertyAdminScreen : MonoBehaviour
         });
     }
 
+    public void ResetError()
+    {
+        canSave = true;
+        errorMessage.text = string.Empty;
+    }
+
     private void NameChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
         {
-            errorMessage.text = "Introduceți numele proprietății!";
+            errorMessage.text = Constants.ERR_PROPERTY_NAME;
             canSave = false;
         }
         else
         {
             currentProperty.Name = value;
-            canSave = true;
+            ResetError();
         }
     }
 }

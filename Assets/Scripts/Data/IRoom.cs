@@ -7,4 +7,5 @@ public interface IRoom
     int SingleBeds { get; set; }
     int DoubleBeds { get; set; }
     int Persons { get; }
+    bool Multiple { get; set; }
 }

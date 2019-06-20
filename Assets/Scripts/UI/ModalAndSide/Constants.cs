@@ -15,6 +15,10 @@ public class Constants : MonoBehaviour
     public const string DELETE_CLIENT = "Ștergeți clientul?";
     public const string DELETE_CONFIRM = "Ștergeți";
     public const string DELETE_CANCEL = "Anulați";
+    public const string ADD_MULTIPLE_ROOMS = "Doriți adăugarea camerelor la cele existente, sau înlocuirea lor?";
+    public const string REPLACE_ROOMS = "Inlocuire";
+    public const string ADD_OVER_ROOMS = "Adaugare";
+    public const string CONFIRM = "OK";
     public const string NEW_PROPERTY = "Proprietate nouă";
     public const string EDIT_PROPERTY = "Modifică proprietatea";
     public const string NEW_ROOM = "Cameră nouă";
@@ -34,7 +38,13 @@ public class Constants : MonoBehaviour
 
     //error messages
     public const string ERR_PROPERTY = "Nu există proprietăți, apăsați pe butonul adaugă proprietate";
-    public const string ERR_DISPONIBILITY = "Nu există camere disponibile în intervalul selectat";
+    public const string ERR_PROPERTY_NAME = "Introduceți numele proprietății!";
+    public const string ERR_DISPONIBILITY = "Properietatea nu este disponibilă";
+    public const string ERR_ROOM_NAME = "Trebuie să introduceți numele camerei.";
+    public const string ERR_MULTIPLE_ROOMS_NAME = "Există deja camere cu acest nume, schimbați sau adăugați un prefix";
+    public const string ERR_ROOM_TAKEN = "Există deja o cameră cu acest nume";
+    public const string ERR_ROOM_NUMBER = "Trebuie să adăugați un numar de camere";
+    public const string ERR_ROOM_NULL_NUMBER = "Numărul de camere nu poate să fie null sau 0";
     #endregion
 
     public const string DateTimePrintFormat = "dd/MM/yy";

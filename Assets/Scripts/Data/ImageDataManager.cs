@@ -13,7 +13,7 @@ public class ImageDataManager
     public static Hashtable PropertyPhotos = new Hashtable();
     private static string PropertyPhotosFolder = Path.Combine(Application.persistentDataPath, "PropertyPhotos");
 
-    public static void PickImage(string propertyID, Image propertyImage)
+    public static void PickImage(string propertyID, Image propertyImage, AspectRatioFitter imageAspectRatio)
     {
         NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
         {
@@ -31,6 +31,7 @@ public class ImageDataManager
 
                 Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
+                imageAspectRatio.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
             }
             else
             {
@@ -40,7 +41,7 @@ public class ImageDataManager
         //Debug.Log("Permission result: " + permission);
     }
 
-    public static void TakePhoto(string propertyID, Image propertyImage)
+    public static void TakePhoto(string propertyID, Image propertyImage, AspectRatioFitter imageAspectRatio)
     {
         AddedPhoto = false;
         NativeCamera.Permission permission = NativeCamera.TakePicture((path) =>
@@ -58,6 +59,7 @@ public class ImageDataManager
                 }
                 Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
+                imageAspectRatio.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
             }
             else
             {

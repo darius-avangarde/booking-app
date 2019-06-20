@@ -32,7 +32,7 @@ public class PropertiesScreen : MonoBehaviour
     private Button backButton = null;
 
     private List<GameObject> propertyButtonList = new List<GameObject>();
-    private float tempPosition = 0;
+    private float tempPosition = 1;
     private bool thumbnails = false;
 
     private void Awake()
@@ -55,6 +55,7 @@ public class PropertiesScreen : MonoBehaviour
             propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenRoomScreen, OpenPropertyRoomScreen, null);
             propertyButtonList.Add(propertyButton);
         }
+        propertiesScrollView.verticalNormalizedPosition = tempPosition;
         ExpandThumbnails(thumbnails);
     }
 
@@ -66,6 +67,11 @@ public class PropertiesScreen : MonoBehaviour
         {
             StartCoroutine(ExpandView(expand, property.GetComponent<RectTransform>()));
         }
+    }
+
+    public void LastPosition()
+    {
+        tempPosition = propertiesScrollView.verticalNormalizedPosition;
     }
 
     private void AddPropertyItem()

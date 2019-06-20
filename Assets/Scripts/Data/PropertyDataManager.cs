@@ -130,6 +130,18 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
+        private int floorRooms = 0;
+        public int FloorRooms
+        {
+            get => floorRooms;
+            set
+            {
+                floorRooms = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
         private bool deleted = false;
         public bool Deleted
         {
@@ -149,6 +161,7 @@ public static class PropertyDataManager
         [SerializeField]
         private List<Room> rooms = new List<Room>();
         public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
+        public IEnumerable<IRoom> MultipleRooms => rooms.FindAll(r => !r.Deleted && r.Multiple);
         public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
 
         [SerializeField]
@@ -236,6 +249,18 @@ public static class PropertyDataManager
             set
             {
                 deleted = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
+        private bool multiple = false;
+        public bool Multiple
+        {
+            get => multiple;
+            set
+            {
+                multiple = value;
                 WritePropertyData();
             }
         }
