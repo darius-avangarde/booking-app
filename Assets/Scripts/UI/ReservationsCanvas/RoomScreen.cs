@@ -93,7 +93,7 @@ public class RoomScreen : MonoBehaviour
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
-            backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+            backgroundImage.sprite = (Sprite)ImageDataManager.BlurPropertyPhotos[currentProperty.ID];
             backgroundImage.gameObject.SetActive(true);
         }
         else

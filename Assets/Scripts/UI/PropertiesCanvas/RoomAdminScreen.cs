@@ -120,7 +120,7 @@ public class RoomAdminScreen : MonoBehaviour
             if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
             {
                 propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
-                backgroundImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
+                backgroundImage.sprite = (Sprite)ImageDataManager.BlurPropertyPhotos[currentProperty.ID];
                 backgroundImage.gameObject.SetActive(true);
             }
             else
@@ -445,10 +445,7 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void ShowInfo()
     {
-        infoDialog.Show($"<b>Prefix:</b>{Environment.NewLine}Este adaugat inainte de numarul camerei" +
-            $"{Environment.NewLine}{Environment.NewLine}<b>Etaje:</b>{Environment.NewLine}Reprezinta numarul de etaje ale proprietatii, inclusiv parterul" +
-            $"{Environment.NewLine}{Environment.NewLine}<b>Camere/Etaj:</b>{Environment.NewLine}Reprezinta numarul de camere ale unui etaj" +
-            $"{Environment.NewLine}{Environment.NewLine}*Campurile marcate cu steluta sunt obligatorii.{Environment.NewLine}");
+        infoDialog.Show($"<b>Prefix:</b>{Environment.NewLine}Este adăugat înainte de numărul camerei{Environment.NewLine}{Environment.NewLine}<b>Etaje:</b>{Environment.NewLine}Reprezintă numărul de etaje ale proprietății, inclusiv parterul{Environment.NewLine}{Environment.NewLine}<b>Camere/Etaj:</b>{Environment.NewLine}Reprezintă numărul de camere ale unui etaj{Environment.NewLine}{Environment.NewLine}*Câmpurile marcate cu steluță sunt obligatorii.");
     }
 
     private void OpenToggleDialog()

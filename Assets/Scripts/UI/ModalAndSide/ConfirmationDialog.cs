@@ -48,12 +48,14 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
             confirmSecondButton.SetActive(true);
             ButtonsLayoutGroup.padding.left = -40;
             ButtonsLayoutGroup.padding.right = -40;
+            ButtonsLayoutGroup.spacing = 20;
         }
         else
         {
             confirmSecondButton.SetActive(false);
-            ButtonsLayoutGroup.padding.left = 100;
-            ButtonsLayoutGroup.padding.right = 100;
+            ButtonsLayoutGroup.padding.left = 60;
+            ButtonsLayoutGroup.padding.right = 60;
+            ButtonsLayoutGroup.spacing = 60;
         }
 
         messageText.text = options.Message ?? defaultMessage;
