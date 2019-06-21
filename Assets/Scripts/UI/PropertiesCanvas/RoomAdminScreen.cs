@@ -312,7 +312,6 @@ public class RoomAdminScreen : MonoBehaviour
         ResetError();
         if (floors > 0)
         {
-            int maxFloor = Mathf.Max(previousFloors, floors);
             for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
             {
                 IRoom newRoom = currentProperty.AddRoom();
@@ -321,7 +320,7 @@ public class RoomAdminScreen : MonoBehaviour
                 newRoom.Multiple = true;
                 currentProperty.SaveRoom(newRoom);
             }
-            for (int i = 1; i < maxFloor; i++)
+            for (int i = 1; i < floors; i++)
             {
                 if (i < previousFloors)
                 {

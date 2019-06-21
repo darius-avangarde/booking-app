@@ -15,10 +15,6 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private AspectRatioFitter propertyImageAspectFitter = null;
     [SerializeField]
-    private Image overlayLarge = null;
-    [SerializeField]
-    private Image overlaySmall = null;
-    [SerializeField]
     private Button propertyButtonItem = null;
     [SerializeField]
     private Image disponibilityMarker = null;
@@ -49,11 +45,11 @@ public class PropertyButton : MonoBehaviour
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
         }
-        else
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
-        }
-
+        //else
+        //{
+        //    propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
+        //}
+        
         //set the aspect ratio of the
         propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
 

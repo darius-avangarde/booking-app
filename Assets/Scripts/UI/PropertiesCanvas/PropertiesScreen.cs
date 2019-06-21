@@ -30,6 +30,7 @@ public class PropertiesScreen : MonoBehaviour
     private Button addPropertyButton = null;
     [SerializeField]
     private Button backButton = null;
+    private Canvas canvasComponent;
 
     private List<GameObject> propertyButtonList = new List<GameObject>();
     private float tempPosition = 1;
@@ -45,7 +46,7 @@ public class PropertiesScreen : MonoBehaviour
     {
         foreach (var propertyButton in propertyButtonList)
         {
-            Destroy(propertyButton);
+            DestroyImmediate(propertyButton);
         }
         propertyButtonList = new List<GameObject>();
         foreach (var property in PropertyDataManager.GetProperties())
@@ -111,8 +112,8 @@ public class PropertiesScreen : MonoBehaviour
             {
                 currentTime += Time.deltaTime;
                 property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
-                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
-                Canvas.ForceUpdateCanvases();
+                //LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+                //Canvas.ForceUpdateCanvases();
                 propertiesScrollView.verticalNormalizedPosition = tempPosition;
                 yield return null;
             }
@@ -128,8 +129,8 @@ public class PropertiesScreen : MonoBehaviour
             {
                 currentTime += Time.deltaTime;
                 property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
-                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
-                Canvas.ForceUpdateCanvases();
+                //LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+                //Canvas.ForceUpdateCanvases();
                 propertiesScrollView.verticalNormalizedPosition = tempPosition;
                 yield return null;
             }

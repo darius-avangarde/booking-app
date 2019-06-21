@@ -74,11 +74,11 @@ public class DisponibilityScreen : MonoBehaviour
     {
         startDate = DateTime.Today.Date;
         endDate = DateTime.Today.AddDays(1).Date;
+        lastDropdownOption = 0;
     }
 
     public void Initialize()
     {
-        lastDropdownOption = 0;
         propertyDropdownList.value = lastDropdownOption;
         SelectProperty(lastDropdownOption);
     }
@@ -163,11 +163,11 @@ public class DisponibilityScreen : MonoBehaviour
         propertyIndex++;
         foreach (var roomButton in roomItemList)
         {
-            Destroy(roomButton);
+            DestroyImmediate(roomButton);
         }
         foreach (var propertyItem in propertyItemList)
         {
-            Destroy(propertyItem);
+            DestroyImmediate(propertyItem);
         }
         roomItemList = new List<GameObject>();
         propertyItemList = new List<GameObject>();
@@ -198,7 +198,7 @@ public class DisponibilityScreen : MonoBehaviour
                     }
                     else
                     {
-                        Destroy(propertyButton);
+                        DestroyImmediate(propertyButton);
                     }
                 }
                 else
@@ -220,11 +220,11 @@ public class DisponibilityScreen : MonoBehaviour
                         propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                         propertyDropdownOptions.Add(property.ID, propertyIndex);
                         propertyIndex++;
-                        Destroy(propertyButton);
+                        DestroyImmediate(propertyButton);
                     }
                     else
                     {
-                        Destroy(propertyButton);
+                        DestroyImmediate(propertyButton);
                     }
                 }
                 else
@@ -256,11 +256,11 @@ public class DisponibilityScreen : MonoBehaviour
     {
         foreach (var propertyItem in propertyItemList)
         {
-            Destroy(propertyItem);
+            DestroyImmediate(propertyItem);
         }
         foreach (var roomButton in roomItemList)
         {
-            Destroy(roomButton);
+            DestroyImmediate(roomButton);
         }
         roomItemList = new List<GameObject>();
         propertyItemList = new List<GameObject>();

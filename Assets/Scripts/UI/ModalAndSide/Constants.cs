@@ -45,7 +45,7 @@ public class Constants : MonoBehaviour
     public const string ERR_MULTIPLE_ROOMS_NAME = "Există deja camere cu acest nume, schimbați sau adăugați un prefix";
     public const string ERR_ROOM_TAKEN = "Există deja o cameră cu acest nume";
     public const string ERR_ROOM_NUMBER = "Trebuie să adăugați un numar de camere";
-    public const string ERR_ROOM_NULL_NUMBER = "Numărul de camere nu poate să fie null sau 0";
+    public const string ERR_ROOM_NULL_NUMBER = "Numărul de camere nu poate să fie 0";
     #endregion
 
     public const string DateTimePrintFormat = "dd/MM/yy";
