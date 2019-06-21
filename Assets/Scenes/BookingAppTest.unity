@@ -161,9 +161,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56014e6f11eff044ebf3cfef8ec3788e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaveObject: {fileID: 100000, guid: 9b803f85cde2c1c4db04360f0106130a, type: 3}
-  CanvasMain: {fileID: 88020306}
-  PoolSize: 5
+  waveObjectPrefab: {fileID: 8787705557359718718, guid: 16de299ad8eb40049b6a74eec1686a80,
+    type: 3}
+  canvasMain: {fileID: 88020306}
+  poolSize: 5
+  waveTime: 0.5
+  waveMaxColor: {r: 0.7490196, g: 0.7490196, b: 0.7490196, a: 0.8}
+  endScaleFactor: 10
 --- !u!114 &88020309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -767,7 +771,7 @@ PrefabInstance:
     - target: {fileID: 6621684968306949978, guid: 4998922f3e4ae9346bd33d903333c2af,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000011603725
+      value: -0.00007103541
       objectReference: {fileID: 0}
     - target: {fileID: 6621684967305403084, guid: 4998922f3e4ae9346bd33d903333c2af,
         type: 3}
@@ -3065,7 +3069,7 @@ PrefabInstance:
     - target: {fileID: 3308950834100019107, guid: e1bd4e081724cc44e94b594a87ca7489,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00003267452
+      value: -0.00008939579
       objectReference: {fileID: 0}
     - target: {fileID: 3308950834968993376, guid: e1bd4e081724cc44e94b594a87ca7489,
         type: 3}
@@ -4226,7 +4230,7 @@ PrefabInstance:
     - target: {fileID: 3268317773138484120, guid: 9f4c63726d49a934cb2912f8ee05fcc5,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00002333632
+      value: 0.000023452663
       objectReference: {fileID: 0}
     - target: {fileID: 3268317773138484120, guid: 9f4c63726d49a934cb2912f8ee05fcc5,
         type: 3}
@@ -5396,7 +5400,7 @@ PrefabInstance:
     - target: {fileID: 7868911076942911958, guid: 59183efad2c28f54297dd38eaae4833e,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000017355977
+      value: 0.00004113771
       objectReference: {fileID: 0}
     - target: {fileID: 7868911076942911958, guid: 59183efad2c28f54297dd38eaae4833e,
         type: 3}

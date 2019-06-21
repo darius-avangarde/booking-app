@@ -1,22 +1,63 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ClickedWaveAnimation : MonoBehaviour {
 
-	public GameObject WaveObject;
-	public GameObject CanvasMain;
+	[SerializeField]
+	private GameObject waveObjectPrefab;
+	[SerializeField]
+	private GameObject canvasMain;
+	[SerializeField]
+	private int poolSize = 5;
 
-	public int PoolSize;
+	[SerializeField]
+	private float waveTime = 0.15f;
 
-	private Pool poolClass;
+	[Space]
+	[SerializeField]
+	private Color waveMaxColor;
+
+	[Space]
+	[SerializeField]
+	private float endScaleFactor = 10.0f;
+
+	private Vector3 startScale;
+	private Vector3 endScale;
+	private List<WaveObject> pool = new List<WaveObject>();
+
 
 	void Start()
 	{
-		poolClass = gameObject.AddComponent<Pool>();
-		poolClass.CreatePool(WaveObject, PoolSize);
+		endScale = Vector3.one * endScaleFactor;
+		AddToPool(poolSize);
+	}
+
+	private void AddToPool(int size)
+	{
+		Color endColor = waveMaxColor;
+		endColor.a = 0;
+
+		for (int i = 0; i < size; i++)
+		{
+			WaveObject wave = Instantiate(waveObjectPrefab).GetComponent<WaveObject>();
+			pool.Add(wave);
+			wave.StartColor = endColor;
+			wave.gameObject.SetActive(false);
+		}
+	}
+
+	private WaveObject GetFreeObject()
+	{
+		for (int i = 0; i < pool.Count; i++)
+		{
+			if(!pool[i].gameObject.activeInHierarchy)
+			{
+				return pool[i];
+			}
+		}
+		return null;
 	}
 
 	void Update ()
@@ -27,37 +68,37 @@ public class ClickedWaveAnimation : MonoBehaviour {
 #endif
 		    )
 		{
-			GameObject hittedUIButton = UiHitted();
+			GameObject hitUIButton = UiHit();
 
-			if (hittedUIButton)
+			if (hitUIButton)
 			{
-				CreateWave(hittedUIButton.transform);
+				CreateWave(hitUIButton.transform);
 			}
 		}
 	}
 
-	void CreateWave(Transform Parent)
+	private void CreateWave(Transform Parent)
 	{
-		GameObject wave = poolClass.GetObject();
+		WaveObject wave = GetFreeObject();
 
-		if (wave)
+		if (wave != null)
 		{
-			wave.transform.SetParent( CanvasMain.transform );
-			wave.GetComponent<MaskableGraphic>().color = Parent.GetComponent<MaskableGraphic>().color - new Color(.1f, .1f, .1f);
+			wave.transform.SetParent( canvasMain.transform );
+			wave.transform.SetAsLastSibling();
 
 			Vector3 mousePos = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-
 			mousePos.x = mousePos.x * Screen.width - Screen.width / 2f;
 			mousePos.y = mousePos.y * Screen.height - Screen.height / 2f;
 			mousePos.z = 0f;
 
-			wave.GetComponent<RectTransform>().localPosition = mousePos / CanvasMain.transform.localScale.x;
-			wave.transform.SetParent( Parent );
-			wave.GetComponent<EasyTween>().OpenCloseObjectAnimation();
+			wave.transform.localPosition = mousePos / canvasMain.transform.localScale.x;
+			wave.transform.SetParent(Parent);
+
+			wave.StartWaveAnimation(waveTime, endScale, waveMaxColor);
 		}
 	}
 
-	public GameObject UiHitted()
+	private GameObject UiHit()
 	{
 		PointerEventData pe = new PointerEventData(EventSystem.current);
 		pe.position =  Input.mousePosition;
@@ -69,57 +110,7 @@ public class ClickedWaveAnimation : MonoBehaviour {
 		{
 			if (hits[i].gameObject.GetComponent<Button>() || hits[i].gameObject.GetComponent<Toggle>())
 			{
-				// prevent ripple animation from playing on button in the background
-				// if the clicked button doesn't have the animation
 				return hits[i].gameObject.GetComponent<Mask>() ? hits[i].gameObject : null;
-			}
-		}
-
-		// for (int i = 0; i < hits.Count ; i++)
-		// {
-		// 	if (hits[i].gameObject.GetComponent<Button>() && hits[i].gameObject.GetComponent<Mask>())
-		// 	{
-		// 		return hits[i].gameObject;
-		// 	}
-		// }
-
-		return null;
-	}
-}
-
-public class Pool : MonoBehaviour {
-
-	private GameObject[] ObjectPool;
-	private GameObject ObjectToPool;
-
-	public void CreatePool(GameObject ObjectToPool, int numberOfObjects)
-	{
-		ObjectPool = new GameObject[numberOfObjects];
-		this.ObjectToPool = ObjectToPool;
-
-		for (int i = 0; i < ObjectPool.Length; i++)
-		{
-			ObjectPool[i] = Instantiate(ObjectToPool) as GameObject;
-			ObjectPool[i].SetActive(false);
-		}
-	}
-
-	public GameObject GetObject()
-	{
-		for (int i = 0; i < ObjectPool.Length; i++)
-		{
-			if (ObjectPool[i])
-			{
-				if (!ObjectPool[i].activeSelf)
-				{
-					ObjectPool[i].SetActive(true);
-					return ObjectPool[i];
-				}
-			}
-			else
-			{
-				ObjectPool[i] = Instantiate(ObjectToPool) as GameObject;
-				ObjectPool[i].SetActive(false);
 			}
 		}
 
