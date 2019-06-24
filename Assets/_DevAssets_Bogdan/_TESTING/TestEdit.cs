@@ -1,96 +1,48 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class TestEdit : MonoBehaviour
 {
-    public ReservationEditScreen resEd;
+    public Sprite replaceSprite;
+    public Sprite defaultHeader;
+    public RectTransform smallHeaderTransform;
+    public RectTransform fullRect;
 
-    public GameObject itemPrefab;
-
-    public ConfirmationDialog cd;
-
-
-
-    public Transform clientContent;
-    public Transform roomContent;
-    public Transform resContent;
+    public Image headerSmall;
+    public Image headerLarge;
+    public Image blurredBackground;
 
 
-    public List<GameObject> goList = new List<GameObject>();
-
-    private ConfirmationDialogOptions opt;
-
-    private void Start() {
-        opt = new ConfirmationDialogOptions();
-        opt.AditionalCallback = true;
-        opt.ConfirmCallback = () => Debug.Log("Done callback 1");
-        opt.ConfirmCallbackSecond = () => Debug.Log("Done callback 2");
-        opt.CancelCallback = () => Debug.Log("Done callback cancel");
-        opt.ConfirmText = "c 1";
-        opt.ConfirmTextSecond = "c 2";
-        opt.CancelText = " cancel";
-
-        // IProperty pr = PropertyDataManager.GetProperties().Where(p => p.HasRooms && p.Rooms.Count() > 1).ToList()[0];
-        // ReservationDataManager.AddReservation(pr.Rooms.ToList()[1], ClientDataManager.GetClients().ToList()[5], DateTime.Today.AddDays(6), DateTime.Today.AddDays(10));
-    }
-
-    public void RefreshLists()
+    [ContextMenu("Resize images")]
+    public void ResizeTargetImage()
     {
-        DestroyChildren();
-        foreach(IClient c in ClientDataManager.GetClients())
-        {
-            CreateObject(() => resEd.OpenAddReservation(c, (r) => Debug.Log(r.ID)), c.Name, clientContent, Color.cyan);
-        }
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
 
-        foreach(IProperty p in PropertyDataManager.GetProperties())
-        {
-            if(p.HasRooms)
-            {
-                CreateObject(() => resEd.OpenAddReservation(DateTime.Today, DateTime.Today.AddDays(3), p.Rooms.ToList(), (res) => Debug.Log("confirm callback")), "all rooms in" + p.Name, roomContent, Color.yellow);
-            }
-            foreach(IRoom r in p.Rooms)
-            {
-                List<IRoom> roomlist = new List<IRoom>();
-                roomlist.Add(r);
-                CreateObject(() => resEd.OpenAddReservation(DateTime.Today, DateTime.Today.AddDays(3), roomlist, (res) => Debug.Log("confirm callback")), r.Name, roomContent, Color.white);
-            }
-        }
+        Texture2D smallHead;
+        Texture2D largeHead;
+        Texture2D blurred;
 
+        TextureUtils.GeneratePropertyImages(replaceSprite.texture, smallHeaderTransform.rect, defaultHeader.texture, fullRect.rect, out smallHead, out largeHead, out blurred);
 
-        foreach(IReservation r in ReservationDataManager.GetReservations())
-        {
-            CreateObject(() => resEd.OpenEditReservation(r, (res) => Debug.Log("Reservation for: \n" + res.CustomerName), () => Debug.Log("Deleted res callback")), "Reservation for: \n" + r.CustomerName + "\n with" + r.RoomIDs.Count + "rooms", resContent, Color.grey);
-        }
+        Sprite small = Sprite.Create(smallHead, new Rect(0, 0, smallHead.width, smallHead.height), new Vector2(0.5f, 0.5f));
+        Sprite large = Sprite.Create(largeHead, new Rect(0, 0, largeHead.width, largeHead.height), new Vector2(0.5f, 0.5f));
+        Sprite blurBG = Sprite.Create(blurred, new Rect(0, 0, blurred.width, blurred.height), new Vector2(0.5f, 0.5f));
+
+        headerSmall.sprite = small;
+        headerLarge.sprite = large;
+        blurredBackground.sprite = blurBG;
+
+        stopwatch.Stop();
+        UnityEngine.Debug.Log(stopwatch.Elapsed);
     }
 
-    public void CreateObject(UnityAction clickAction, string message, Transform parent, Color setColor)
+    [ContextMenu("RESET sprites")]
+    public void resetSprites()
     {
-        GameObject g = Instantiate(itemPrefab, parent);
-        goList.Add(g);
-        g.GetComponent<TestObject>().Initialize(clickAction, message, setColor);
+        headerSmall.sprite = replaceSprite;
+        headerLarge.sprite = replaceSprite;
+        blurredBackground.sprite = replaceSprite;
     }
-
-    public void OpenModalConfig()
-    {
-        opt.AditionalCallback = !opt.AditionalCallback;
-        cd.Show(opt);
-    }
-
-    public void DestroyChildren()
-    {
-        foreach(GameObject go in goList)
-        {
-            Destroy(go);
-        }
-
-        goList.Clear();
-    }
-
-
-
 }
