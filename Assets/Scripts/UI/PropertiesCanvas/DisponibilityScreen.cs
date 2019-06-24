@@ -104,12 +104,12 @@ public class DisponibilityScreen : MonoBehaviour
         if (lastDropdownOption == 0)
         {
             selectedProperty = null;
+            shouldSelectRooms = false;
         }
         if (selectedProperty != null)
         {
             SelectDropdownProperty(selectedProperty);
         }
-        selectedProperty = null;
     }
 
     public void SelectProperty(int optionIndex)
