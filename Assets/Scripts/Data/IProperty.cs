@@ -15,5 +15,6 @@ public interface IProperty
     IRoom GetRoom(string ID);
     IRoom GetPropertyRoom();
     void SaveRoom(IRoom room);
+    void SaveMultipleRooms(List<IRoom> roomsList);
     void DeleteRoom(string ID);
 }

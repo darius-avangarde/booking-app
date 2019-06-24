@@ -254,6 +254,7 @@ public class RoomAdminScreen : MonoBehaviour
         int rooms = int.Parse(multipleNrRoomsField.text);
         ResetError();
         currentProperty.FloorRooms = rooms;
+        List<IRoom> roomsList = new List<IRoom>();
         if (floors > 0)
         {
             for (int j = 1; j <= rooms; j++)
@@ -262,7 +263,7 @@ public class RoomAdminScreen : MonoBehaviour
                 newRoom.Name = $"{multiplePrefixField.text} {j}";
                 newRoom.RoomNumber = j;
                 newRoom.Multiple = true;
-                currentProperty.SaveRoom(newRoom);
+                roomsList.Add(newRoom);
             }
             for (int i = 1; i < floors; i++)
             {
@@ -280,7 +281,7 @@ public class RoomAdminScreen : MonoBehaviour
                         newRoom.RoomNumber = int.Parse($"{i}{j}");
                     }
                     newRoom.Multiple = true;
-                    currentProperty.SaveRoom(newRoom);
+                    roomsList.Add(newRoom);
                 }
             }
         }
@@ -292,9 +293,10 @@ public class RoomAdminScreen : MonoBehaviour
                 newRoom.Name = $"{multiplePrefixField.text} {j}";
                 newRoom.RoomNumber = j;
                 newRoom.Multiple = true;
-                currentProperty.SaveRoom(newRoom);
+                roomsList.Add(newRoom);
             }
         }
+        currentProperty.SaveMultipleRooms(roomsList);
         navigator.GoBack();
     }
 
@@ -310,6 +312,7 @@ public class RoomAdminScreen : MonoBehaviour
         int rooms = int.Parse(multipleNrRoomsField.text);
         currentProperty.FloorRooms = previousRooms + rooms;
         ResetError();
+        List<IRoom> roomsList = new List<IRoom>();
         if (floors > 0)
         {
             for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
@@ -318,7 +321,7 @@ public class RoomAdminScreen : MonoBehaviour
                 newRoom.Name = $"{multiplePrefixField.text} {j}";
                 newRoom.RoomNumber = j;
                 newRoom.Multiple = true;
-                currentProperty.SaveRoom(newRoom);
+                roomsList.Add(newRoom);
             }
             for (int i = 1; i < floors; i++)
             {
@@ -338,7 +341,7 @@ public class RoomAdminScreen : MonoBehaviour
                             newRoom.RoomNumber = int.Parse($"{i}{j}");
                         }
                         newRoom.Multiple = true;
-                        currentProperty.SaveRoom(newRoom);
+                        roomsList.Add(newRoom);
                     }
                 }
                 else
@@ -357,7 +360,7 @@ public class RoomAdminScreen : MonoBehaviour
                             newRoom.RoomNumber = int.Parse($"{i}{j}");
                         }
                         newRoom.Multiple = true;
-                        currentProperty.SaveRoom(newRoom);
+                        roomsList.Add(newRoom);
                     }
                 }
             }
@@ -370,9 +373,10 @@ public class RoomAdminScreen : MonoBehaviour
                 newRoom.Name = $"{multiplePrefixField.text} {j}";
                 newRoom.RoomNumber = j;
                 newRoom.Multiple = true;
-                currentProperty.SaveRoom(newRoom);
+                roomsList.Add(newRoom);
             }
         }
+        currentProperty.SaveMultipleRooms(roomsList);
         navigator.GoBack();
     }
 

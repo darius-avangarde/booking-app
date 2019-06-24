@@ -21,6 +21,8 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private PropertyAdminScreen propertyAdminScreenTransform = null;
     [SerializeField]
+    private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
     private Transform reservationsContent = null;
     [SerializeField]
     private Text roomScreenTitle = null;
@@ -126,12 +128,13 @@ public class RoomScreen : MonoBehaviour
 
     public void InstantiateReservations()
     {
+        scrollRectComponent.ResetAll();
         List<IReservation> orderedRoomReservationList = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
                                                     .OrderBy(res => res.Period.Start).ToList();
 
         foreach (var reservationButton in reservationButtonList)
         {
-            Destroy(reservationButton);
+            DestroyImmediate(reservationButton);
         }
 
         foreach (var reservation in orderedRoomReservationList)
@@ -140,6 +143,7 @@ public class RoomScreen : MonoBehaviour
             reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))));
             reservationButtonList.Add(reservationButton);
         }
+        scrollRectComponent.Init();
     }
 
     public void OnHidingSetProperty()
@@ -150,7 +154,7 @@ public class RoomScreen : MonoBehaviour
     private void DeleteReservation(GameObject reservationButton)
     {
         reservationButtonList.Remove(reservationButton);
-        Destroy(reservationButton);
+        DestroyImmediate(reservationButton);
     }
 
     private void OpenPropertyAdminScreen()

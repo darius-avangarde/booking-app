@@ -16,6 +16,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private RoomScreen roomScreen = null;
     [SerializeField]
+    private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
     private Transform roomsContentScrollView = null;
     [SerializeField]
     private Text propertyRoomScreenTitle = null;
@@ -47,6 +49,7 @@ public class PropertyRoomScreen : MonoBehaviour
 
     public void Initialize()
     {
+        scrollRectComponent.ResetAll();
         propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
         if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
         {
@@ -62,7 +65,7 @@ public class PropertyRoomScreen : MonoBehaviour
         propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
         foreach (var roomButton in roomButtons)
         {
-            Destroy(roomButton);
+            DestroyImmediate(roomButton);
         }
         if (currentProperty != null)
         {
@@ -75,6 +78,7 @@ public class PropertyRoomScreen : MonoBehaviour
                 roomButtons.Add(roomButton);
             }
         }
+        scrollRectComponent.Init();
     }
 
     public void AddRoomItem()

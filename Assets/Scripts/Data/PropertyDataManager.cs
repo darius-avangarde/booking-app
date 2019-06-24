@@ -195,6 +195,17 @@ public static class PropertyDataManager
             WritePropertyData();
         }
 
+        public void SaveMultipleRooms(List<IRoom> roomsList)
+        {
+            List<Room> multipleRooms = new List<Room>();
+            foreach (var room in roomsList)
+            {
+                multipleRooms.Add((Room)room);
+            }
+            rooms.AddRange(multipleRooms);
+            WritePropertyData();
+        }
+
         public void DeleteRoom(string ID)
         {
             Room room = rooms.Find(r => r.ID.Equals(ID));
