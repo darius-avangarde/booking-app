@@ -58,7 +58,6 @@ public class PropertyAdminScreen : MonoBehaviour
             RoomsToggleField.SetActive(true);
             deleteButton.gameObject.SetActive(false);
         }
-        //SetPropertyFieldsText();
     }
 
     private void SetPropertyFieldsText()

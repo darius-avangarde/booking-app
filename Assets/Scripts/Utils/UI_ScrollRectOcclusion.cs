@@ -33,10 +33,6 @@ public class UI_ScrollRectOcclusion : MonoBehaviour
 	private bool hasDisabledGridComponents = false;
 	private List<RectTransform> items = new List<RectTransform>();
 
-	private float lowerMargin = 0;
-	private float higherMergin = 0;
-
-
 	void Awake()
 	{
 		if (InitByUser)
@@ -126,9 +122,6 @@ public class UI_ScrollRectOcclusion : MonoBehaviour
 	{
 		if (_isVertical)
 		{
-			higherMergin = _scrollRect.GetComponent<RectTransform>().rect.height * (1 - _scrollRect.GetComponent<RectTransform>().pivot.y) + items[0].sizeDelta.y;
-			lowerMargin = -items[0].sizeDelta.y - _scrollRect.GetComponent<RectTransform>().rect.height * (1 - _scrollRect.GetComponent<RectTransform>().pivot.y);
-
 			_disableMarginY = _scrollRect.GetComponent<RectTransform>().rect.height * (1 - _scrollRect.GetComponent<RectTransform>().pivot.y) + items[0].sizeDelta.y;
 		}
 
@@ -177,10 +170,9 @@ public class UI_ScrollRectOcclusion : MonoBehaviour
 			{
 				if (_isVertical)
 				{
-					//HERE MUST BE MODIFIED
-					if (_scrollRect.transform.InverseTransformPoint(items[i].position).y < lowerMargin || _scrollRect.transform.InverseTransformPoint(items[i].position).y > higherMergin)
-					{
-						items[i].gameObject.SetActive(false);
+                    if (_scrollRect.transform.InverseTransformPoint(items[i].position).y < -_disableMarginY || _scrollRect.transform.InverseTransformPoint(items[i].position).y > _disableMarginY)
+                    {
+                        items[i].gameObject.SetActive(false);
 					}
 					else
 					{
