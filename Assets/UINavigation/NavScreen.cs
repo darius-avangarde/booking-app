@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -22,23 +22,25 @@ namespace UINavigation
             }
         }
 
-        private CanvasGroup canvasGroup;
+        private List<CanvasGroup> canvasGroups;
         /// <summary>
         /// The GameObject's CanvasGroup. Adds a new one if missing.
         /// </summary>
-        public CanvasGroup CanvasGroup
+        public List<CanvasGroup> CanvasGroups
         {
             get
             {
-                if (canvasGroup == null)
+                if(canvasGroups == null)
                 {
-                    canvasGroup = GetComponent<CanvasGroup>();
-                    if (canvasGroup == null)
+                    canvasGroups = new List<CanvasGroup>();
+                    canvasGroups.Add(gameObject.AddComponent<CanvasGroup>());
+                    foreach (Canvas c in gameObject.GetComponentsInChildren<Canvas>())
                     {
-                        canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                        canvasGroups.Add(c.gameObject.AddComponent<CanvasGroup>());
                     }
                 }
-                return canvasGroup;
+
+                return canvasGroups;
             }
         }
 
