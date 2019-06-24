@@ -28,6 +28,8 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
+    private ScrollRect disponibilityScrollRect = null;
+    [SerializeField]
     private RectTransform filteredPropertiesContent = null;
     [SerializeField]
     private RectTransform disponibilityScrollView = null;
@@ -255,7 +257,10 @@ public class DisponibilityScreen : MonoBehaviour
         propertyDropdownList.RefreshShownValue();
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
         Canvas.ForceUpdateCanvases();
-        scrollRectComponent.Init();
+        if (disponibilityScrollRect.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
     private void InstantiateRooms(IProperty property)
@@ -355,7 +360,10 @@ public class DisponibilityScreen : MonoBehaviour
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
         Canvas.ForceUpdateCanvases();
-        scrollRectComponent.Init();
+        if (disponibilityScrollRect.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
     public void CheckRoomsSelection()

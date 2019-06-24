@@ -18,6 +18,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
     [SerializeField]
+    private ScrollRect propertyRoomScrollRect = null;
+    [SerializeField]
     private Transform roomsContentScrollView = null;
     [SerializeField]
     private Text propertyRoomScreenTitle = null;
@@ -78,7 +80,10 @@ public class PropertyRoomScreen : MonoBehaviour
                 roomButtons.Add(roomButton);
             }
         }
-        scrollRectComponent.Init();
+        if (propertyRoomScrollRect.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
     public void AddRoomItem()

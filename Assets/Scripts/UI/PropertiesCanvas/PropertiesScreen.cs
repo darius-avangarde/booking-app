@@ -153,6 +153,9 @@ public class PropertiesScreen : MonoBehaviour
         {
             yield return null;
         }
-        scrollRectComponent.Init();
+        if (propertiesScrollView.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 }

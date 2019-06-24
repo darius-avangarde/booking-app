@@ -23,6 +23,8 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
     [SerializeField]
+    private ScrollRect roomScreenScrollRect = null;
+    [SerializeField]
     private Transform reservationsContent = null;
     [SerializeField]
     private Text roomScreenTitle = null;
@@ -143,7 +145,10 @@ public class RoomScreen : MonoBehaviour
             reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))));
             reservationButtonList.Add(reservationButton);
         }
-        scrollRectComponent.Init();
+        if (roomScreenScrollRect.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
     public void OnHidingSetProperty()
