@@ -6,18 +6,23 @@ public class InfoBox : MonoBehaviour, IClosable
     [SerializeField]
     private Text messageText = null;
     [SerializeField]
-    private EasyTween easyTween = null;
+    private ModalFadeObject modalFadeObject = null;
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
 
     public void Show(string text)
     {
         messageText.text = text;
-        easyTween.OpenCloseObjectAnimation();
+        modalFadeObject.FadeIn();
         InputManager.CurrentlyOpenClosable = this;
     }
 
     public void Close()
     {
-        easyTween.OpenCloseObjectAnimation();
+        modalFadeObject.FadeOut();
         InputManager.CurrentlyOpenClosable = null;
     }
 }
