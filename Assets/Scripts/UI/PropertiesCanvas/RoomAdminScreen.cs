@@ -21,6 +21,10 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private InputField roomNameInputField = null;
     [SerializeField]
+    private GameObject roomsCreationText = null;
+    [SerializeField]
+    private Text nrRoomsText = null;
+    [SerializeField]
     private RectTransform roomNameInputFieldTransform = null;
     [SerializeField]
     private RectTransform multipleRoomsOptionsPanel = null;
@@ -45,9 +49,11 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private Toggle singleRoomToggle = null;
-    [SerializeField]
-    private Toggle multipleRoomsToggle = null;
+    private Toggle floorsToggle = null;
+    //[SerializeField]
+    //private Toggle singleRoomToggle = null;
+    //[SerializeField]
+    //private Toggle multipleRoomsToggle = null;
     [SerializeField]
     private Button deleteButton = null;
     [SerializeField]
@@ -111,10 +117,6 @@ public class RoomAdminScreen : MonoBehaviour
         if (currentRoom != null)
         {
             propertyRoomTitle.text = currentProperty.Name;
-            roomNameCache = currentRoom.Name ?? string.Empty;
-            roomNameInputField.text = roomNameCache;
-            singleRoomToggle.isOn = true;
-            multipleRoomsOptionsPanel.sizeDelta = new Vector2(multipleRoomsOptionsPanel.sizeDelta.x, 0);
             if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
             {
                 propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
@@ -129,12 +131,18 @@ public class RoomAdminScreen : MonoBehaviour
             propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
             if (string.IsNullOrEmpty(currentRoom.Name))
             {
+                roomNameInputField.gameObject.SetActive(false);
+                roomsCreationText.SetActive(true);
                 roomInfoInputPanel.SetActive(true);
                 propertyRoomTitle.gameObject.SetActive(true);
                 deleteButton.gameObject.SetActive(false);
+                multipleFloorsField.text = "1";
             }
             else
             {
+                roomNameInputField.gameObject.SetActive(true);
+                roomsCreationText.SetActive(false);
+                roomNameInputField.text = currentRoom.Name;
                 roomInfoInputPanel.SetActive(false);
                 propertyRoomTitle.gameObject.SetActive(false);
                 deleteButton.gameObject.SetActive(true);
@@ -150,15 +158,28 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void SaveChanges()
     {
-        if (singleRoomToggle.isOn)
+        if (!string.IsNullOrEmpty(multipleNrRoomsField.text) && int.Parse(multipleNrRoomsField.text) > 0)
         {
-            if (!string.IsNullOrEmpty(roomNameInputField.text))
+            if (currentProperty.MultipleRooms.Count() > 0)
             {
+                OpenToggleDialog();
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(multipleNrRoomsField.text))
+                {
+                    errorMessage.text = Constants.ERR_ROOM_NUMBER;
+                    canSave = false;
+                }
+                else
+                {
+                    ResetError();
+                }
                 foreach (var room in currentProperty.Rooms)
                 {
-                    if (roomNameInputField.text.Trim().ToLower() == room.Name.Trim().ToLower())
+                    if ($"{multiplePrefixField.text} {1}".Trim().ToLower() == room.Name.Trim().ToLower())
                     {
-                        errorMessage.text = Constants.ERR_ROOM_TAKEN;
+                        errorMessage.text = Constants.ERR_MULTIPLE_ROOMS_NAME;
                         canSave = false;
                         break;
                     }
@@ -169,70 +190,14 @@ public class RoomAdminScreen : MonoBehaviour
                 }
                 if (canSave)
                 {
-                    SaveRoom();
+                    SaveMultipleRooms();
                 }
             }
-            else
-            {
-                errorMessage.text = Constants.ERR_ROOM_NAME;
-            }
         }
-        else if (multipleRoomsToggle.isOn)
+        else
         {
-            if (!string.IsNullOrEmpty(multipleNrRoomsField.text) && int.Parse(multipleNrRoomsField.text) > 0)
-            {
-                if (currentProperty.MultipleRooms.Count() > 0)
-                {
-                    OpenToggleDialog();
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(multipleNrRoomsField.text))
-                    {
-                        errorMessage.text = Constants.ERR_ROOM_NUMBER;
-                        canSave = false;
-                    }
-                    else
-                    {
-                        ResetError();
-                    }
-                    foreach (var room in currentProperty.Rooms)
-                    {
-                        if ($"{multiplePrefixField.text} {1}".Trim().ToLower() == room.Name.Trim().ToLower())
-                        {
-                            errorMessage.text = Constants.ERR_MULTIPLE_ROOMS_NAME;
-                            canSave = false;
-                            break;
-                        }
-                        else
-                        {
-                            ResetError();
-                        }
-                    }
-                    if (canSave)
-                    {
-                        SaveMultipleRooms();
-                    }
-                }
-            }
-            else
-            {
-                errorMessage.text = Constants.ERR_ROOM_NULL_NUMBER;
-            }
+            errorMessage.text = Constants.ERR_ROOM_NULL_NUMBER;
         }
-    }
-
-    private void SaveRoom()
-    {
-        OnRoomNameValueChanged(roomNameInputField.text);
-        OnRoomPriceValueChanged(roomPriceInputField.text);
-        OnSingleBedsChanged(roomSingleBedQuantityInputField.text);
-        OnDoubleBedsChanged(roomDoubleBedQuantityInputField.text);
-        if (currentProperty.GetRoom(currentRoom.ID) == null)
-        {
-            currentProperty.SaveRoom(currentRoom);
-        }
-        navigator.GoBack();
     }
 
     private void SaveMultipleRooms()
@@ -245,7 +210,7 @@ public class RoomAdminScreen : MonoBehaviour
             }
         }
         int floors = 0;
-        if (!string.IsNullOrEmpty(multipleFloorsField.text))
+        if (!string.IsNullOrEmpty(multipleFloorsField.text) && floorsToggle.isOn)
         {
             floors = int.Parse(multipleFloorsField.text);
         }
@@ -303,7 +268,7 @@ public class RoomAdminScreen : MonoBehaviour
         int previousFloors = currentProperty.MultipleRooms.Count() / currentProperty.FloorRooms;
         int previousRooms = currentProperty.FloorRooms;
         int floors = 0;
-        if (!string.IsNullOrEmpty(multipleFloorsField.text))
+        if (!string.IsNullOrEmpty(multipleFloorsField.text) && floorsToggle.isOn)
         {
             floors = int.Parse(multipleFloorsField.text);
         }
@@ -311,7 +276,7 @@ public class RoomAdminScreen : MonoBehaviour
         currentProperty.FloorRooms = previousRooms + rooms;
         ResetError();
         List<IRoom> roomsList = new List<IRoom>();
-        if (floors > 0)
+        if (floors > 1)
         {
             for (int j = previousRooms + 1; j <= previousRooms + rooms; j++)
             {
@@ -378,32 +343,17 @@ public class RoomAdminScreen : MonoBehaviour
         navigator.GoBack();
     }
 
-    public void SelectSingleRoom()
+    public void SetFloors()
     {
-        if (singleRoomToggle.isOn)
+        if (floorsToggle.isOn)
         {
-            ResetError();
-            StopAllCoroutines();
-            infoButton.gameObject.SetActive(false);
-            roomNameInputField.interactable = true;
-            roomNameInputField.text = roomNameCache;
-            StartCoroutine(HideNameInput(defaultRoomName));
-            StartCoroutine(ExpandMultipleOptions(false, multipleRoomsOptionsPanel.offsetMax));
+            nrRoomsText.text = "Camere/Etaj*";
+            multipleFloorsField.interactable = true;
         }
-    }
-
-    public void SelectMultipleRooms()
-    {
-        if (multipleRoomsToggle.isOn)
+        else
         {
-            ResetError();
-            StopAllCoroutines();
-            infoButton.gameObject.SetActive(true);
-            roomNameCache = roomNameInputField.text;
-            roomNameInputField.text = Constants.MULTIPLE_ROOMS;
-            roomNameInputField.interactable = false;
-            StartCoroutine(HideNameInput(new Vector2(defaultRoomName.x + 150f, defaultRoomName.y)));
-            StartCoroutine(ExpandMultipleOptions(true, new Vector2(multipleRoomsOptionsPanel.sizeDelta.x, 532)));
+            nrRoomsText.text = "Camere*";
+            multipleFloorsField.interactable = false;
         }
     }
 
@@ -508,37 +458,5 @@ public class RoomAdminScreen : MonoBehaviour
         {
             roomDoubleBedQuantityInputField.text = (--DoubleBedsNr).ToString();
         }
-    }
-
-    private IEnumerator ExpandMultipleOptions(bool active, Vector2 endSize)
-    {
-        if (active)
-        {
-            multipleRoomsOptionsPanel.gameObject.SetActive(true);
-        }
-        float currentTime = 0;
-        while (currentTime < 0.6f)
-        {
-            currentTime += Time.deltaTime;
-            multipleRoomsOptionsPanel.sizeDelta = Vector2.Lerp(multipleRoomsOptionsPanel.sizeDelta, endSize, currentTime / 0.6f);
-            yield return null;
-        }
-        multipleRoomsOptionsPanel.sizeDelta = endSize;
-        if (!active)
-        {
-            multipleRoomsOptionsPanel.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator HideNameInput(Vector2 endSize)
-    {
-        float currentTime = 0;
-        while (currentTime < 0.4f)
-        {
-            currentTime += Time.deltaTime;
-            roomNameInputFieldTransform.offsetMax = Vector2.Lerp(roomNameInputFieldTransform.offsetMax, endSize, currentTime / 0.4f);
-            yield return null;
-        }
-        roomNameInputFieldTransform.offsetMax = endSize;
     }
 }
