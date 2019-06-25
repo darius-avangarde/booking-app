@@ -29,8 +29,6 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Button OpenModalClendarButton = null;
     [SerializeField]
-    private Button addPropertyButton = null;
-    [SerializeField]
     private Button backButton = null;
     private Canvas canvasComponent;
 
@@ -42,7 +40,7 @@ public class PropertiesScreen : MonoBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
-        addPropertyButton.onClick.AddListener(() => AddPropertyItem());
+        //addPropertyButton.onClick.AddListener(() => AddPropertyItem());
         OpenModalClendarButton.onClick.AddListener(() => ShowModalCalendar());
     }
 
@@ -99,7 +97,7 @@ public class PropertiesScreen : MonoBehaviour
         tempPosition = propertiesScrollView.verticalNormalizedPosition;
     }
 
-    private void AddPropertyItem()
+    public void AddPropertyItem()
     {
         IProperty property = PropertyDataManager.AddProperty();
         OpenPropertyAdminScreen(property);
