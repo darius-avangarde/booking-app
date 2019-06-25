@@ -45,6 +45,11 @@ public class PropertiesScreen : MonoBehaviour
         addPropertyButton.onClick.AddListener(() => AddPropertyItem());
     }
 
+    public void SetScrollTop()
+    {
+        tempPosition = 1;
+    }
+
     public void Initialize()
     {
         expanding = false;
@@ -97,12 +102,14 @@ public class PropertiesScreen : MonoBehaviour
     private void OpenPropertyRoomScreen(IProperty property)
     {
         propertyRoomScreen.SetCurrentProperty(property);
+        propertyRoomScreen.SetScrollTop();
         navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
 
     private void OpenRoomScreen(IRoom room)
     {
         roomScreen.UpdateRoomDetailsFields(room);
+        roomScreen.SetScrollTop();
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 
