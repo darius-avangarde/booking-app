@@ -2,80 +2,159 @@
 
 public static class TextureUtils
 {
-    //TODO: REMOVE THIS
-    public static Texture2D ResizeAndBlur(Texture2D remove)
+    public enum ImageFilterMode : int
     {
-        return null;
+        Nearest = 0,
+        Biliner = 1,
+        Average = 2
     }
-
 
     ///<summary>
-    ///Outputs two cropped copies of the given texture sizing it to the given rects, blurredBackground texture is also blurred.
+    ///Optional: ImageFilterMode (nearest ,bilinear, average), max image width for downsizing, blur iterations.
+    ///<para></para>
+    ///<returns> downsized and blurred copy of the given Texture2D</returns>
     ///</summary>
-    public static void GeneratePropertyTextures(Texture2D texture, Rect headerSize, Rect fullRect, out Texture2D headerImage, out Texture2D blurredBackground)
+    public static Texture2D ResizeAndBlur(Texture2D pSource, ImageFilterMode pFilterMode = ImageFilterMode.Average, int maxWidth = 256, int iterations = 10)
     {
-        Color[] pixels = texture.GetPixels();
+        //*** Variables
+        int i;
 
-        headerImage = CropTexture(pixels, texture, (int)fullRect.width, (int)(headerSize.height));
-        blurredBackground = CropTexture(pixels, texture, 256, (int)(256 * AspectHW(fullRect.height,fullRect.width)), true);
-    }
+        //*** Get All the source pixels
+        Color[] aSourceColor = pSource.GetPixels(0);
+        Vector2 vSourceSize = new Vector2(pSource.width, pSource.height);
 
-    public static Texture2D CropTexture(Color[] colors, Texture2D source, int targetWidth = 1080, int targetHeight = 1080, bool doBlur = false)
-    {
-        int sourceWidth = source.width;
-        int sourceHeight = source.height;
-        float sourceAspect = (float)sourceWidth / sourceHeight;
-        float targetAspect = (float)targetWidth / targetHeight;
-        int xOffset = 0;
-        int yOffset = 0;
-        float factor = 1;
+        //*** Calculate New Size
+        float xWidth  = 0;
+        float xHeight = 0;
 
-        if (sourceAspect > targetAspect)
-        { // crop width
-            factor = (float)targetHeight / sourceHeight;
-            xOffset = (int)((sourceWidth - sourceHeight * targetAspect) * 0.5f);
+        if(Mathf.Max(pSource.height, pSource.width) > maxWidth)
+        {
+            float ratio = 0;
+
+            ratio = (float)pSource.height/pSource.width;
+            xHeight = maxWidth * ratio;
+            xWidth = maxWidth;
         }
         else
-        { // crop height
-            factor = (float)targetWidth / sourceWidth;
-            yOffset = (int)((sourceHeight - sourceWidth / targetAspect) * 0.5f);
+        {
+            xWidth  = pSource.width;
+            xHeight = pSource.height;
         }
 
-        Color[] data = colors;
-        Color[] data2 = new Color[targetWidth * targetHeight];
-        for (int y = 0; y < targetHeight; y++)
+        //*** Make New
+        Texture2D oNewTex = new Texture2D((int)xWidth, (int)xHeight, TextureFormat.RGBA32, false);
+
+        //*** Make destination array
+        int xLength = (int)xWidth * (int)xHeight;
+        Color[] aColor = new Color[xLength];
+
+        Vector2 vPixelSize = new Vector2(vSourceSize.x / xWidth, vSourceSize.y / xHeight);
+
+        //*** Loop through destination pixels and process
+        Vector2 vCenter = new Vector2();
+        for(i=0; i<xLength; i++)
         {
-            for (int x = 0; x < targetWidth; x++)
+
+            //*** Figure out x&y
+            float xX = (float)i % xWidth;
+            float xY = Mathf.Floor((float)i / xWidth);
+
+            //*** Calculate Center
+            vCenter.x = (xX / xWidth) * vSourceSize.x;
+            vCenter.y = (xY / xHeight) * vSourceSize.y;
+
+            //*** Do Based on mode
+            //*** Nearest neighbour (testing)
+            if (pFilterMode == ImageFilterMode.Nearest)
             {
-                Vector2 p = new Vector2(Mathf.Clamp(xOffset + x / factor, 0, sourceWidth - 1), Mathf.Clamp(yOffset + y / factor, 0, sourceHeight - 1));
-                // bilinear filtering
-                Color c11 = data[Mathf.FloorToInt(p.x) + sourceWidth * (Mathf.FloorToInt(p.y))];
-                Color c12 = data[Mathf.FloorToInt(p.x) + sourceWidth * (Mathf.CeilToInt(p.y))];
-                Color c21 = data[Mathf.CeilToInt(p.x) + sourceWidth * (Mathf.FloorToInt(p.y))];
-                Color c22 = data[Mathf.CeilToInt(p.x) + sourceWidth * (Mathf.CeilToInt(p.y))];
-                Vector2 f = new Vector2(Mathf.Repeat(p.x, 1f), Mathf.Repeat(p.y, 1f));
-                data2[x + y * targetWidth] = Color.Lerp(Color.Lerp(c11, c12, p.y), Color.Lerp(c21, c22, p.y), p.x);
+
+                //*** Nearest neighbour (testing)
+                vCenter.x = Mathf.Round(vCenter.x);
+                vCenter.y = Mathf.Round(vCenter.y);
+
+                //*** Calculate source index
+                int xSourceIndex = (int)((vCenter.y * vSourceSize.x) + vCenter.x);
+
+                //*** Copy Pixel
+                aColor[i] = aSourceColor[xSourceIndex];
+            }
+
+            //*** Bilinear
+            else if (pFilterMode == ImageFilterMode.Biliner)
+            {
+
+                //*** Get Ratios
+                float xRatioX = vCenter.x - Mathf.Floor(vCenter.x);
+                float xRatioY = vCenter.y - Mathf.Floor(vCenter.y);
+
+                //*** Get Pixel index's
+                int xIndexTL = (int)((Mathf.Floor(vCenter.y) * vSourceSize.x) + Mathf.Floor(vCenter.x));
+                int xIndexTR = (int)((Mathf.Floor(vCenter.y) * vSourceSize.x) + Mathf.Ceil(vCenter.x));
+                int xIndexBL = (int)((Mathf.Ceil(vCenter.y) * vSourceSize.x) + Mathf.Floor(vCenter.x));
+                int xIndexBR = (int)((Mathf.Ceil(vCenter.y) * vSourceSize.x) + Mathf.Ceil(vCenter.x));
+
+                //*** Calculate Color
+                aColor[i] = Color.Lerp(
+                    Color.Lerp(aSourceColor[xIndexTL], aSourceColor[xIndexTR], xRatioX),
+                    Color.Lerp(aSourceColor[xIndexBL], aSourceColor[xIndexBR], xRatioX),
+                    xRatioY
+                );
+            }
+
+            //*** Average
+            //*** Average
+            else if (pFilterMode == ImageFilterMode.Average)
+            {
+
+                //*** Calculate grid around point
+                int xXFrom = (int)Mathf.Max(Mathf.Floor(vCenter.x - (vPixelSize.x * 0.5f)), 0);
+                int xXTo = (int)Mathf.Min(Mathf.Ceil(vCenter.x + (vPixelSize.x * 0.5f)), vSourceSize.x);
+                int xYFrom = (int)Mathf.Max(Mathf.Floor(vCenter.y - (vPixelSize.y * 0.5f)), 0);
+                int xYTo = (int)Mathf.Min(Mathf.Ceil(vCenter.y + (vPixelSize.y * 0.5f)), vSourceSize.y);
+
+                //*** Loop and accumulate
+                Color oColorTemp = new Color();
+                float xGridCount = 0;
+                for (int iy = xYFrom; iy < xYTo; iy++)
+                {
+                    for (int ix = xXFrom; ix < xXTo; ix++)
+                    {
+
+                        //*** Get Color
+                        oColorTemp += aSourceColor[(int)(((float)iy * vSourceSize.x) + ix)];
+
+                        //*** Sum
+                        xGridCount++;
+                    }
+                }
+
+                //*** Average Color
+                aColor[i] = oColorTemp / (float)xGridCount;
             }
         }
 
-        Texture2D tex = new Texture2D(targetWidth, targetHeight);
+        aColor = BlurColors(oNewTex, aColor, iterations);
 
-        if(doBlur)
-        {
-            tex.SetPixels(BlurColors(tex, data2, 10));
-        }
-        else
-        {
-            tex.SetPixels(data2);
-        }
+        //*** Set Pixels
+        oNewTex.SetPixels(aColor);
+        oNewTex.Apply();
 
-        tex.Apply(true);
-        return tex;
+        //*** Return
+        return oNewTex;
     }
 
     private static Color[] BlurColors(Texture2D pSource, Color[] colorsToBlur, int iterations)
     {
+            Color startcol = Color.green;
+            Color endcol = Color.red;
+            Color sidecol = Color.yellow;
+
+
+        bool isTall = pSource.height > pSource.width;
+
         Color[] aSourceColor = colorsToBlur;
+
+
         Color[,] colors = new Color[pSource.width, pSource.height];
         Color[,] passColors = new Color[pSource.width, pSource.height];
         Color[] newColors = new Color[pSource.width * pSource.height];
@@ -127,10 +206,5 @@ public static class TextureUtils
         }
 
         return newColors;
-    }
-
-    private static float AspectHW(float height, float width)
-    {
-        return height/width;
     }
 }

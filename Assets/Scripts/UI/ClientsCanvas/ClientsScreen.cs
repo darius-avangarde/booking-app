@@ -329,7 +329,6 @@ public class ClientsScreen : MonoBehaviour
             }
             Search.sizeDelta = new Vector2(Search.sizeDelta.x, initialSizeSearch);
             ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 280);
-            //ClientContainer.anchoredPosition.y = new Vector2(ClientContainer.anchoredPosition.x, -180);
         }
         else
         {

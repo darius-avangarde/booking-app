@@ -27,17 +27,17 @@ public class CropTest : MonoBehaviour
     [ContextMenu("CROP AND BLUR")]
     private void CropNblur()
     {
-        ResetSprites();
+        // ResetSprites();
 
-        Texture2D h;
-        Texture2D b;
+        // Texture2D h;
+        // Texture2D b;
 
-        TextureUtils.GeneratePropertyTextures(defaultSprite.texture, headerImageRect.rect, blurredImageRect.rect, out h, out b);
+        // TextureUtils.GeneratePropertyTextures(defaultSprite.texture, headerImageRect.rect, blurredImageRect.rect, out h, out b);
 
-        Sprite H = Sprite.Create(h, new Rect(0, 0, h.width, h.height), new Vector2(0.5f, 0.5f));
-        Sprite B = Sprite.Create(b, new Rect(0, 0, b.width, b.height), new Vector2(0.5f, 0.5f));
+        // Sprite H = Sprite.Create(h, new Rect(0, 0, h.width, h.height), new Vector2(0.5f, 0.5f));
+        // Sprite B = Sprite.Create(b, new Rect(0, 0, b.width, b.height), new Vector2(0.5f, 0.5f));
 
-        headerImage.sprite = H;
-        blurredImage.sprite = B;
+        // headerImage.sprite = H;
+        // blurredImage.sprite = B;
     }
 }
