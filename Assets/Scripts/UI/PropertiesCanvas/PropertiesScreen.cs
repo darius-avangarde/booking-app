@@ -11,6 +11,8 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private ModalCalendarNew calendarScreen = null;
+    [SerializeField]
     private PropertyAdminScreen propertyAdminScreen = null;
     [SerializeField]
     private PropertyRoomScreen propertyRoomScreen = null;
@@ -25,9 +27,7 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private GameObject propertyItemPrefab = null;
     [SerializeField]
-    private Button thumbnailsViewButton = null;
-    [SerializeField]
-    private Button listViewButton = null;
+    private Button OpenModalClendarButton = null;
     [SerializeField]
     private Button addPropertyButton = null;
     [SerializeField]
@@ -35,19 +35,25 @@ public class PropertiesScreen : MonoBehaviour
     private Canvas canvasComponent;
 
     private List<GameObject> propertyButtonList = new List<GameObject>();
+    private DateTime startDate = DateTime.Today.Date;
+    private DateTime endDate = DateTime.Today.AddDays(1).Date;
     private float tempPosition = 1;
-    private bool thumbnails = false;
-    private bool expanding = false;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
         addPropertyButton.onClick.AddListener(() => AddPropertyItem());
+        OpenModalClendarButton.onClick.AddListener(() => ShowModalCalendar());
+    }
+
+    public void ScrollToTop()
+    {
+        tempPosition = 1;
     }
 
     public void Initialize()
     {
-        expanding = false;
+        scrollRectComponent.ResetAll();
         foreach (var propertyButton in propertyButtonList)
         {
             DestroyImmediate(propertyButton);
@@ -57,24 +63,29 @@ public class PropertiesScreen : MonoBehaviour
         {
             GameObject propertyButton;
             propertyButton = Instantiate(propertyItemPrefab, propertyInfoContent);
+            propertyButton.GetComponent<PropertyButton>().InitializeDateTime(startDate, endDate);
             propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenRoomScreen, OpenPropertyRoomScreen, null);
+            RectTransform propertyTransform = propertyButton.GetComponent<RectTransform>();
+            propertyTransform.sizeDelta = new Vector2(propertyTransform.sizeDelta.x, 750f);
             propertyButtonList.Add(propertyButton);
         }
         propertiesScrollView.verticalNormalizedPosition = tempPosition;
-        ExpandThumbnails(thumbnails);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+        Canvas.ForceUpdateCanvases();
+        scrollRectComponent.Init();
     }
 
-    public void ExpandThumbnails(bool expand)
+    private void ShowModalCalendar()
     {
-        StopAllCoroutines();
-        scrollRectComponent.ResetAll();
-        tempPosition = propertiesScrollView.verticalNormalizedPosition;
-        foreach (GameObject property in propertyButtonList)
-        {
-            property.SetActive(true);
-            StartCoroutine(ExpandView(expand, property.GetComponent<RectTransform>()));
-        }
-        StartCoroutine(WaitForInit());
+        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
+    }
+
+    private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
+    {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        ScrollToTop();
+        Initialize();
     }
 
     public void LastPosition()
@@ -96,66 +107,15 @@ public class PropertiesScreen : MonoBehaviour
 
     private void OpenPropertyRoomScreen(IProperty property)
     {
+        propertyRoomScreen.ScrollToTop();
         propertyRoomScreen.SetCurrentProperty(property);
         navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
 
     private void OpenRoomScreen(IRoom room)
     {
+        LastPosition();
         roomScreen.UpdateRoomDetailsFields(room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
-    }
-
-    public IEnumerator ExpandView(bool expand, RectTransform property)
-    {
-        expanding = true;
-        thumbnails = expand;
-        if (expand)
-        {
-            thumbnailsViewButton.gameObject.SetActive(false);
-            listViewButton.gameObject.SetActive(true);
-            Vector2 endSize = new Vector2(property.sizeDelta.x, 750f);
-            float currentTime = 0;
-            while (currentTime < 0.5f)
-            {
-                currentTime += Time.deltaTime;
-                property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
-                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
-                Canvas.ForceUpdateCanvases();
-                propertiesScrollView.verticalNormalizedPosition = tempPosition;
-                yield return null;
-            }
-            property.sizeDelta = endSize;
-        }
-        else
-        {
-            listViewButton.gameObject.SetActive(false);
-            thumbnailsViewButton.gameObject.SetActive(true);
-            Vector2 endSize = new Vector2(property.sizeDelta.x, 285f);
-            float currentTime = 0;
-            while (currentTime < 0.5f)
-            {
-                currentTime += Time.deltaTime;
-                property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
-                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
-                Canvas.ForceUpdateCanvases();
-                propertiesScrollView.verticalNormalizedPosition = tempPosition;
-                yield return null;
-            }
-            property.sizeDelta = endSize;
-        }
-        expanding = false;
-    }
-
-    public IEnumerator WaitForInit()
-    {
-        while (expanding)
-        {
-            yield return null;
-        }
-        if (propertiesScrollView.content.childCount > 0)
-        {
-            scrollRectComponent.Init();
-        }
     }
 }

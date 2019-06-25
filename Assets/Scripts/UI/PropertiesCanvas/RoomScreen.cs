@@ -52,11 +52,17 @@ public class RoomScreen : MonoBehaviour
     private IProperty currentProperty;
     private IRoom currentRoom;
     private IReservation currentReservation;
+    private float tempPosition = 1;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
         editButton.onClick.AddListener(() => EditButton());
+    }
+
+    public void ScrollToTop()
+    {
+        tempPosition = 1;
     }
 
     public void UpdateDateTime(DateTime start, DateTime end)
@@ -71,6 +77,7 @@ public class RoomScreen : MonoBehaviour
         currentRoom = room;
         //dayDateTime = date;
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
+        ScrollToTop();
         UpdateCurrentRoomDetailsFields();
     }
 
@@ -145,6 +152,7 @@ public class RoomScreen : MonoBehaviour
             reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), false);
             reservationButtonList.Add(reservationButton);
         }
+        roomScreenScrollRect.verticalNormalizedPosition = tempPosition;
         if (roomScreenScrollRect.content.childCount > 0)
         {
             scrollRectComponent.Init();
