@@ -67,7 +67,7 @@ public class ClientsScreen : MonoBehaviour
         initialClientContainer = ClientContainer.sizeDelta.y;
 
         Search.gameObject.SetActive(false);
-        ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -130 - initialSizeSearch);
+        ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -30 - initialSizeSearch);
         initialClientContainer = ClientContainer.sizeDelta.y;
     }
 
@@ -324,11 +324,12 @@ public class ClientsScreen : MonoBehaviour
             {
                 LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
                 Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(0, initialSizeSearch, i / timer));
-                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer, initialClientContainer - 218, i / timer));
+                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer, initialClientContainer - 280, i / timer));
                 yield return null;
             }
             Search.sizeDelta = new Vector2(Search.sizeDelta.x, initialSizeSearch);
-            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 218);
+            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 280);
+            //ClientContainer.anchoredPosition.y = new Vector2(ClientContainer.anchoredPosition.x, -180);
         }
         else
         {
@@ -337,7 +338,7 @@ public class ClientsScreen : MonoBehaviour
             {
                 LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
                 Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(initialSizeSearch, 0, i / timer));
-                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer - 218, initialClientContainer, i / timer));
+                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer - 280, initialClientContainer, i / timer));
                 yield return null;
             }
             Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
