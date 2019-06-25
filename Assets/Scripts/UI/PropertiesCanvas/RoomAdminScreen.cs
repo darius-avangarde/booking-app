@@ -136,6 +136,7 @@ public class RoomAdminScreen : MonoBehaviour
                 roomInfoInputPanel.SetActive(true);
                 propertyRoomTitle.gameObject.SetActive(true);
                 deleteButton.gameObject.SetActive(false);
+                floorsToggle.isOn = true;
                 multipleFloorsField.text = "1";
             }
             else
