@@ -11,6 +11,8 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Text propertyName = null;
     [SerializeField]
+    private Text availableRooms = null;
+    [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
     private AspectRatioFitter propertyImageAspectFitter = null;
@@ -37,25 +39,31 @@ public class PropertyButton : MonoBehaviour
         this.dateTimeEnd = dateTimeEnd;
     }
 
-    public void Initialize(IProperty property, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
+    public void Initialize(IProperty property, bool disponibility, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
     {
         currentProperty = property;
-        propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : property.Name;
         if (ImageDataManager.PropertyPhotos.ContainsKey(property.ID))
         {
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
         }
-        //else
-        //{
-        //    propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
-        //}
         
         //set the aspect ratio of the
         propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
 
+        if (disponibility)
+        {
+            propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"Proprietatea {property.Name}";
+            propertyItemTransform.sizeDelta = new Vector2(propertyItemTransform.sizeDelta.x, 285f);
+        }
+        else
+        {
+            propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"Proprietatea{Environment.NewLine}{property.Name}";
+            propertyItemTransform.sizeDelta = new Vector2(propertyItemTransform.sizeDelta.x, 750f);
+        }
 
         if (!property.HasRooms)
         {
+            availableRooms.gameObject.SetActive(false);
             if (reservationCallback != null)
             {
                 propertyButtonItem.onClick.AddListener(() => reservationCallback(dateTimeStart, dateTimeEnd, SendCurrentRoom()));
@@ -78,6 +86,24 @@ public class PropertyButton : MonoBehaviour
         }
         else
         {
+            if (disponibility)
+            {
+                int roomsNumber = 0;
+                foreach (var room in currentProperty.Rooms)
+                {
+                    bool isReserved = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd).Any(r => r.ID == room.ID);
+                    if (!isReserved)
+                    {
+                        roomsNumber++;
+                    }
+                }
+                availableRooms.gameObject.SetActive(true);
+                availableRooms.text = $"{Constants.AVAILABLE_ROOMS} {roomsNumber}";
+            }
+            else
+            {
+                availableRooms.gameObject.SetActive(false);
+            }
             propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
             disponibilityMarker.gameObject.SetActive(false);
         }

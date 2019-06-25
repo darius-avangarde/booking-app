@@ -42,8 +42,6 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private AspectRatioFitter backgroundImageAspectFitter = null;
-    [SerializeField]
     private Text disponibilityDatePeriod = null;
     [SerializeField]
     private Text availableNumber = null;
@@ -189,8 +187,6 @@ public class DisponibilityScreen : MonoBehaviour
         {
             GameObject propertyButton = Instantiate(propertyItemPrefab, filteredPropertiesContent);
             PropertyButton buttonObject = propertyButton.GetComponent<PropertyButton>();
-            RectTransform propertyTransform = propertyButton.GetComponent<RectTransform>();
-            propertyTransform.sizeDelta = new Vector2(propertyTransform.sizeDelta.x, 285f);
             if (property.HasRooms)
             {
                 int index = 0;
@@ -206,7 +202,7 @@ public class DisponibilityScreen : MonoBehaviour
                 {
                     if (selectedProperty != null && selectedProperty.ID == property.ID)
                     {
-                        buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
+                        buttonObject.Initialize(property, true,  SelectDropdownProperty, SelectDropdownProperty, null);
                         propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                         propertyDropdownOptions.Add(property.ID, propertyIndex);
                         propertyItemList.Add(propertyButton);
@@ -219,7 +215,7 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 else
                 {
-                    buttonObject.Initialize(property, SelectDropdownProperty, SelectDropdownProperty, null);
+                    buttonObject.Initialize(property, true, SelectDropdownProperty, SelectDropdownProperty, null);
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
                     propertyItemList.Add(propertyButton);
@@ -248,11 +244,11 @@ public class DisponibilityScreen : MonoBehaviour
                     buttonObject.InitializeDateTime(startDate, endDate);
                     if (fromReservation)
                     {
-                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
+                        buttonObject.Initialize(property, true, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
                     }
                     else
                     {
-                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, null);
+                        buttonObject.Initialize(property, true, OpenRoomScreen, SelectDropdownProperty, null);
                     }
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
@@ -292,7 +288,6 @@ public class DisponibilityScreen : MonoBehaviour
         {
             backgroundImage.sprite = (Sprite)ImageDataManager.BlurPropertyPhotos[property.ID];
             backgroundImage.gameObject.SetActive(true);
-            backgroundImageAspectFitter.aspectRatio = (float)backgroundImage.sprite.texture.width/backgroundImage.sprite.texture.height;
         }
         else
         {
@@ -354,11 +349,11 @@ public class DisponibilityScreen : MonoBehaviour
                     buttonObject.InitializeDateTime(startDate, endDate);
                     if (fromReservation)
                     {
-                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
+                        buttonObject.Initialize(property, true, OpenRoomScreen, SelectDropdownProperty, selectionCallback);
                     }
                     else
                     {
-                        buttonObject.Initialize(property, OpenRoomScreen, SelectDropdownProperty, null);
+                        buttonObject.Initialize(property, true, OpenRoomScreen, SelectDropdownProperty, null);
                     }
                     propertyItemList.Add(propertyButton);
                 }

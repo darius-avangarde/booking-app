@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
@@ -10,9 +11,13 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private ModalCalendarNew calendarScreen = null;
+    [SerializeField]
     private PropertyAdminScreen propertyAdminScreen = null;
     [SerializeField]
     private RoomAdminScreen roomAdminScreen = null;
+    [SerializeField]
+    private PropertiesScreen propertiesScreen = null;
     [SerializeField]
     private RoomScreen roomScreen = null;
     [SerializeField]
@@ -30,24 +35,33 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private AspectRatioFitter backgroundImageAspectFitter = null;
-    [SerializeField]
     private GameObject roomItemPrefab = null;
+    [SerializeField]
+    private Button openCalendarButton = null;
     [SerializeField]
     private Button backButton = null;
 
     private List<GameObject> roomButtons = new List<GameObject>();
+    private DateTime startDate = DateTime.Today.Date;
+    private DateTime endDate = DateTime.Today.AddDays(1).Date;
     private IProperty currentProperty;
     private float tempPosition = 1;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        openCalendarButton.onClick.AddListener(() => ShowModalCalendar());
     }
 
     public void ScrollToTop()
     {
         tempPosition = 1;
+    }
+
+    public void UpdateDateTime(DateTime start, DateTime end)
+    {
+        startDate = start;
+        endDate = end;
     }
 
     public void SetCurrentProperty(IProperty property)
@@ -70,7 +84,7 @@ public class PropertyRoomScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
-        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
+        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
         foreach (var roomButton in roomButtons)
         {
             DestroyImmediate(roomButton);
@@ -93,6 +107,19 @@ public class PropertyRoomScreen : MonoBehaviour
         }
     }
 
+    private void ShowModalCalendar()
+    {
+        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
+    }
+
+    private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
+    {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        tempPosition = 1;
+        Initialize();
+    }
+
     public void AddRoomItem()
     {
         IRoom room = currentProperty.AddRoom();
@@ -104,9 +131,15 @@ public class PropertyRoomScreen : MonoBehaviour
         OpenPropertyAdminScreen(currentProperty);
     }
 
+    public void SetPropertyDate()
+    {
+        propertiesScreen.UpdateDateTime(startDate, endDate);
+    }
+
     private void OpenRoomScreen(IRoom room)
     {
         tempPosition = propertyRoomScrollRect.verticalNormalizedPosition;
+        roomScreen.UpdateDateTime(startDate, endDate);
         roomScreen.UpdateRoomDetailsFields(room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }

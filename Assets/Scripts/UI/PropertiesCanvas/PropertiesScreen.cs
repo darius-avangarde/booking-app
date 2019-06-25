@@ -46,9 +46,17 @@ public class PropertiesScreen : MonoBehaviour
         OpenModalClendarButton.onClick.AddListener(() => ShowModalCalendar());
     }
 
-    public void ScrollToTop()
+    public void SetDefaultDate()
     {
+        startDate = DateTime.Today.Date;
+        endDate = DateTime.Today.AddDays(1).Date;
         tempPosition = 1;
+    }
+
+    public void UpdateDateTime(DateTime start, DateTime end)
+    {
+        startDate = start;
+        endDate = end;
     }
 
     public void Initialize()
@@ -64,9 +72,7 @@ public class PropertiesScreen : MonoBehaviour
             GameObject propertyButton;
             propertyButton = Instantiate(propertyItemPrefab, propertyInfoContent);
             propertyButton.GetComponent<PropertyButton>().InitializeDateTime(startDate, endDate);
-            propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenRoomScreen, OpenPropertyRoomScreen, null);
-            RectTransform propertyTransform = propertyButton.GetComponent<RectTransform>();
-            propertyTransform.sizeDelta = new Vector2(propertyTransform.sizeDelta.x, 750f);
+            propertyButton.GetComponent<PropertyButton>().Initialize(property, false, OpenRoomScreen, OpenPropertyRoomScreen, null);
             propertyButtonList.Add(propertyButton);
         }
         propertiesScrollView.verticalNormalizedPosition = tempPosition;
@@ -84,7 +90,7 @@ public class PropertiesScreen : MonoBehaviour
     {
         this.startDate = startDate;
         this.endDate = endDate;
-        ScrollToTop();
+        tempPosition = 1;
         Initialize();
     }
 
@@ -108,6 +114,7 @@ public class PropertiesScreen : MonoBehaviour
     private void OpenPropertyRoomScreen(IProperty property)
     {
         propertyRoomScreen.ScrollToTop();
+        propertyRoomScreen.UpdateDateTime(startDate, endDate);
         propertyRoomScreen.SetCurrentProperty(property);
         navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
@@ -115,6 +122,7 @@ public class PropertiesScreen : MonoBehaviour
     private void OpenRoomScreen(IRoom room)
     {
         LastPosition();
+        roomScreen.UpdateDateTime(startDate, endDate);
         roomScreen.UpdateRoomDetailsFields(room);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }

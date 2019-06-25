@@ -47,7 +47,7 @@ public class RoomButton : MonoBehaviour
     public void Initialize(IRoom room, DisponibilityScreen disponibilityScript, Action<IRoom> roomCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
     {
         selectMarker.gameObject.SetActive(false);
-        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
+        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : $"Camera {room.Name}";
         DisponibilityScreenComponent = disponibilityScript;
         //roomPrice.text = string.IsNullOrEmpty(room.Price) ? Constants.PRICE : ("Pret: " + room.Price + " ron");
         //roomBeds.text = null;

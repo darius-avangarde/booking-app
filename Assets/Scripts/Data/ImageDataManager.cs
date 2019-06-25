@@ -14,7 +14,7 @@ public class ImageDataManager
     public static Hashtable BlurPropertyPhotos = new Hashtable();
     private static string PropertyPhotosFolder = Path.Combine(Application.persistentDataPath, "PropertyPhotos");
 
-    public static void PickImage(string propertyID, Image propertyImage, Image backgroundImage, AspectRatioFitter imageAspectRatio, AspectRatioFitter backgroundAspectRatio)
+    public static void PickImage(string propertyID, Image propertyImage, Image backgroundImage, AspectRatioFitter imageAspectRatio)
     {
         NativeGallery.Permission permission = NativeGallery.GetImageFromGallery((path) =>
         {
@@ -37,7 +37,7 @@ public class ImageDataManager
                 Texture2D blurredImage = TextureUtils.ResizeAndBlur(texture);
                 Sprite downloadedBlurredImage = Sprite.Create(blurredImage, new Rect(0, 0, blurredImage.width, blurredImage.height), new Vector2(0.5f, 0.5f));
                 backgroundImage.sprite = downloadedBlurredImage;
-                backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
+                //backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
             }
             else
             {
@@ -47,7 +47,7 @@ public class ImageDataManager
         //Debug.Log("Permission result: " + permission);
     }
 
-    public static void TakePhoto(string propertyID, Image propertyImage, Image backgroundImage, AspectRatioFitter imageAspectRatio, AspectRatioFitter backgroundAspectRatio)
+    public static void TakePhoto(string propertyID, Image propertyImage, Image backgroundImage, AspectRatioFitter imageAspectRatio)
     {
         AddedPhoto = false;
         NativeCamera.Permission permission = NativeCamera.TakePicture((path) =>
@@ -70,7 +70,7 @@ public class ImageDataManager
                 Texture2D blurredImage = TextureUtils.ResizeAndBlur(texture);
                 Sprite downloadedBlurredImage = Sprite.Create(blurredImage, new Rect(0, 0, blurredImage.width, blurredImage.height), new Vector2(0.5f, 0.5f));
                 backgroundImage.sprite = downloadedBlurredImage;
-                backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
+                //backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
             }
             else
             {

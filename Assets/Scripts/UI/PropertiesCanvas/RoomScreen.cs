@@ -31,8 +31,6 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private AspectRatioFitter backgroundImageAspectFitter = null;
-    [SerializeField]
     private Image propertyImage = null;
     [SerializeField]
     private AspectRatioFitter propertyImageAspectFitter = null;
@@ -112,7 +110,7 @@ public class RoomScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
-        backgroundImageAspectFitter.aspectRatio = propertyImageAspectFitter.aspectRatio = (float)backgroundImage.sprite.texture.width/backgroundImage.sprite.texture.height;
+        propertyImageAspectFitter.aspectRatio = (float)backgroundImage.sprite.texture.width/backgroundImage.sprite.texture.height;
 
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();
         InstantiateReservations();
@@ -161,6 +159,7 @@ public class RoomScreen : MonoBehaviour
 
     public void OnHidingSetProperty()
     {
+        propertyRoomScreen.UpdateDateTime(dateTimeStart, dateTimeEnd);
         propertyRoomScreen.SetCurrentProperty(currentProperty);
     }
 

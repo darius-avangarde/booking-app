@@ -18,8 +18,6 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
-    private AspectRatioFitter backgroundImageAspectFitter = null;
-    [SerializeField]
     private GameObject RoomsToggleField = null;
     [SerializeField]
     private Toggle HasRoomsToggle = null;
@@ -75,7 +73,7 @@ public class PropertyAdminScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
-        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
+        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
         if (currentProperty.HasRooms)
         {
             HasRoomsToggle.isOn = true;
@@ -100,11 +98,11 @@ public class PropertyAdminScreen : MonoBehaviour
             CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
-                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage, backgroundImage, propertyImageAspectFitter, backgroundImageAspectFitter);
+                ImageDataManager.TakePhoto(currentProperty.ID, propertyImage, backgroundImage, propertyImageAspectFitter);
             },
             ConfirmCallbackSecond = () =>
             {
-                ImageDataManager.PickImage(currentProperty.ID, propertyImage, backgroundImage, propertyImageAspectFitter, backgroundImageAspectFitter);
+                ImageDataManager.PickImage(currentProperty.ID, propertyImage, backgroundImage, propertyImageAspectFitter);
             },
             CancelCallback = null
         });
