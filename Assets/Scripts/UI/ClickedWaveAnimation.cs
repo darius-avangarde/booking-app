@@ -13,7 +13,7 @@ public class ClickedWaveAnimation : MonoBehaviour {
 	private int poolSize = 5;
 
 	[SerializeField]
-	private float waveTime = 0.15f;
+	private float waveTime = 0.25f;
 
 	[Space]
 	[SerializeField]
@@ -21,11 +21,11 @@ public class ClickedWaveAnimation : MonoBehaviour {
 
 	[Space]
 	[SerializeField]
-	private float endScaleFactor = 10.0f;
+	private float endScaleFactor = 7.5f;
 
 	private Vector3 startScale;
 	private Vector3 endScale;
-	private List<WaveObject> pool = new List<WaveObject>();
+	public List<WaveObject> pool = new List<WaveObject>();
 
 
 	void Start()
@@ -36,33 +36,50 @@ public class ClickedWaveAnimation : MonoBehaviour {
 
 	private void AddToPool(int size)
 	{
+		for (int i = 0; i < size; i++)
+		{
+			pool.Add(NewWaveObject());
+		}
+	}
+
+	private WaveObject NewWaveObject()
+	{
 		Color endColor = waveMaxColor;
 		endColor.a = 0;
 
-		for (int i = 0; i < size; i++)
-		{
-			WaveObject wave = Instantiate(waveObjectPrefab).GetComponent<WaveObject>();
-			pool.Add(wave);
-			wave.StartColor = endColor;
-			wave.gameObject.SetActive(false);
-		}
+		WaveObject wave = Instantiate(waveObjectPrefab).GetComponent<WaveObject>();
+		wave.StartColor = endColor;
+		wave.gameObject.SetActive(false);
+		return wave;
 	}
 
 	private WaveObject GetFreeObject()
 	{
+		WaveObject returnObject = null;
+
 		for (int i = 0; i < pool.Count; i++)
 		{
-			if(!pool[i].gameObject.activeInHierarchy)
+			//look for the first active non null wave object in the pool
+			if(pool[i] != null)
 			{
-				return pool[i];
+				if(returnObject == null && !pool[i].gameObject.activeInHierarchy)
+				{
+					returnObject = pool[i];
+				}
+			}
+			//readd deleted items and return deleted items
+			else
+			{
+				pool[i] = NewWaveObject();
 			}
 		}
-		return null;
+
+		return returnObject;
 	}
 
 	void Update ()
 	{
-		if (Input.GetMouseButtonDown(0)
+		if (Input.GetMouseButtonDown(0) || Input.touchCount > 0
 #if UNITY_EDITOR
 		    || Input.GetMouseButtonDown(1)
 #endif

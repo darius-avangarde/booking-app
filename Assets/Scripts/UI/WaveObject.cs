@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
 public class WaveObject : MonoBehaviour
 {
 
@@ -11,15 +12,9 @@ public class WaveObject : MonoBehaviour
     private Image waveImage;
 
     public Color StartColor{set => startColor = value;}
-
     private Color startColor;
 
 
-    public void StartWaveAnimation(float waveTime, Vector3 endScale, Color waveEndColor)
-    {
-        gameObject.SetActive(true);
-        StartCoroutine(WaveAnimation(waveTime, endScale, waveEndColor));
-    }
 
     private void OnEnable()
     {
@@ -31,6 +26,12 @@ public class WaveObject : MonoBehaviour
     {
         StopAllCoroutines();
         ResetObject();
+    }
+
+    public void StartWaveAnimation(float waveTime, Vector3 endScale, Color waveEndColor)
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(WaveAnimation(waveTime, endScale, waveEndColor));
     }
 
 	private IEnumerator WaveAnimation(float waveTime, Vector3 endScale, Color waveEndColor)
