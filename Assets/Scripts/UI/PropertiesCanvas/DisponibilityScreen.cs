@@ -61,7 +61,6 @@ public class DisponibilityScreen : MonoBehaviour
     private DateTime startDate = DateTime.Today.Date;
     private DateTime endDate = DateTime.Today.AddDays(1).Date;
     private float disponibilityHeight;
-    private float tempPosition = 1;
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
     private bool fromReservation = false;
@@ -75,17 +74,11 @@ public class DisponibilityScreen : MonoBehaviour
         propertyDropdownList.onValueChanged.AddListener(SelectProperty);
     }
 
-    public void SetScrollTop()
-    {
-        tempPosition = 1;
-    }
-
     public void SetDefaultDate()
     {
         startDate = DateTime.Today.Date;
         endDate = DateTime.Today.AddDays(1).Date;
         lastDropdownOption = 0;
-        SetScrollTop();
     }
 
     public void Initialize()
@@ -147,7 +140,6 @@ public class DisponibilityScreen : MonoBehaviour
             InstantiateRooms(selectedProperty);
         }
         shouldSelectRooms = false;
-        SetScrollTop();
     }
 
     private void InstantiateProperties()
@@ -265,7 +257,6 @@ public class DisponibilityScreen : MonoBehaviour
         propertyDropdownList.RefreshShownValue();
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
         Canvas.ForceUpdateCanvases();
-        disponibilityScrollRect.verticalNormalizedPosition = tempPosition;
         if (disponibilityScrollRect.content.childCount > 0)
         {
             scrollRectComponent.Init();
@@ -369,7 +360,6 @@ public class DisponibilityScreen : MonoBehaviour
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
         Canvas.ForceUpdateCanvases();
-        disponibilityScrollRect.verticalNormalizedPosition = tempPosition;
         if (disponibilityScrollRect.content.childCount > 0)
         {
             scrollRectComponent.Init();
@@ -497,10 +487,8 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void OpenRoomScreen(IRoom room)
     {
-        tempPosition = disponibilityScrollRect.verticalNormalizedPosition;
         roomScreen.UpdateRoomDetailsFields(room);
         roomScreen.UpdateDateTime(startDate, endDate);
-        roomScreen.SetScrollTop();
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 

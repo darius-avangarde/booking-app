@@ -26,8 +26,6 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private Toggle NoRoomsToggle = null;
     [SerializeField]
-    private Button saveButton = null;
-    [SerializeField]
     private Button addPhotoButton = null;
     [SerializeField]
     private Button deleteButton = null;
@@ -78,20 +76,15 @@ public class PropertyAdminScreen : MonoBehaviour
             backgroundImage.gameObject.SetActive(false);
         }
         propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
-
-        if (!string.IsNullOrEmpty(currentProperty.Name))
+        if (currentProperty.HasRooms)
         {
-            if (currentProperty.HasRooms)
-            {
-                HasRoomsToggle.isOn = true;
-                NoRoomsToggle.isOn = false;
-            }
-            else
-            {
-                NoRoomsToggle.isOn = true;
-                HasRoomsToggle.isOn = false;
-            }
-            saveButton.interactable = true;
+            HasRoomsToggle.isOn = true;
+            NoRoomsToggle.isOn = false;
+        }
+        else
+        {
+            NoRoomsToggle.isOn = true;
+            HasRoomsToggle.isOn = false;
         }
         ImageDataManager.AddedPhoto = false;
     }

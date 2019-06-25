@@ -118,7 +118,7 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
-        private bool hasRooms = false;
+        private bool hasRooms = true;
         public bool HasRooms
         {
             get => hasRooms;

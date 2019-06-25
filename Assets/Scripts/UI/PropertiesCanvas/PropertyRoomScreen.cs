@@ -38,7 +38,6 @@ public class PropertyRoomScreen : MonoBehaviour
 
     private List<GameObject> roomButtons = new List<GameObject>();
     private IProperty currentProperty;
-    private float tempPosition = 1;
 
     private void Awake()
     {
@@ -48,11 +47,6 @@ public class PropertyRoomScreen : MonoBehaviour
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-    }
-
-    public void SetScrollTop()
-    {
-        tempPosition = 1;
     }
 
     public void Initialize()
@@ -86,7 +80,6 @@ public class PropertyRoomScreen : MonoBehaviour
                 roomButtons.Add(roomButton);
             }
         }
-        propertyRoomScrollRect.verticalNormalizedPosition = tempPosition;
         if (propertyRoomScrollRect.content.childCount > 0)
         {
             scrollRectComponent.Init();
@@ -106,9 +99,7 @@ public class PropertyRoomScreen : MonoBehaviour
 
     private void OpenRoomScreen(IRoom room)
     {
-        tempPosition = propertyRoomScrollRect.verticalNormalizedPosition;
         roomScreen.UpdateRoomDetailsFields(room);
-        roomScreen.SetScrollTop();
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 
