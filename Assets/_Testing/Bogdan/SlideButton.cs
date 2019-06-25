@@ -28,7 +28,6 @@ public class SlideButton : MonoBehaviour
 
     private void OnEnable()
     {
-        ButtonText = "Yo buttonama";
         fillRect.gameObject.SetActive(true);
         SizeRect(fillRect, fillRect.rect.width);
         StartCoroutine(WaitForClose());
