@@ -34,6 +34,23 @@ public class ClickedWaveAnimation : MonoBehaviour {
 		AddToPool(poolSize);
 	}
 
+	private void Update ()
+	{
+		if (Input.GetMouseButtonDown(0)
+#if UNITY_EDITOR
+		    || Input.GetMouseButtonDown(1)
+#endif
+		    )
+		{
+			GameObject hitUIButton = UiHit();
+
+			if (hitUIButton)
+			{
+				CreateWave(hitUIButton.transform);
+			}
+		}
+	}
+
 	private void AddToPool(int size)
 	{
 		for (int i = 0; i < size; i++)
@@ -75,23 +92,6 @@ public class ClickedWaveAnimation : MonoBehaviour {
 		}
 
 		return returnObject;
-	}
-
-	void Update ()
-	{
-		if (Input.GetMouseButtonDown(0) || Input.touchCount > 0
-#if UNITY_EDITOR
-		    || Input.GetMouseButtonDown(1)
-#endif
-		    )
-		{
-			GameObject hitUIButton = UiHit();
-
-			if (hitUIButton)
-			{
-				CreateWave(hitUIButton.transform);
-			}
-		}
 	}
 
 	private void CreateWave(Transform Parent)

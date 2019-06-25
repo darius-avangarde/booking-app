@@ -11,7 +11,6 @@ public interface IReservation
     List<string> RoomIDs { get; }
     IDateTimePeriod Period { get; }
 
-    void EditReservation(IRoom room, IClient client, DateTime start, DateTime end);
     void EditReservation(List<IRoom> rooms, IClient client, DateTime start, DateTime end);
     bool ContainsRoom(string roomID);
 }
