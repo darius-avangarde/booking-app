@@ -30,14 +30,16 @@ public class ImageDataManager
                     return;
                 }
 
-                Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                Texture2D headerTexture;
+                Texture2D blurTexture;
+                TextureUtils.GeneratePropertyTextures(texture, propertyImage.rectTransform.rect, backgroundImage.rectTransform.rect, out headerTexture, out blurTexture);
+
+                Sprite downloadedImage = Sprite.Create(headerTexture, new Rect(0, 0, headerTexture.width, headerTexture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
                 imageAspectRatio.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
 
-                Texture2D blurredImage = TextureUtils.ResizeAndBlur(texture);
-                Sprite downloadedBlurredImage = Sprite.Create(blurredImage, new Rect(0, 0, blurredImage.width, blurredImage.height), new Vector2(0.5f, 0.5f));
+                Sprite downloadedBlurredImage = Sprite.Create(blurTexture, new Rect(0, 0, blurTexture.width, blurTexture.height), new Vector2(0.5f, 0.5f));
                 backgroundImage.sprite = downloadedBlurredImage;
-                //backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
             }
             else
             {
@@ -63,14 +65,17 @@ public class ImageDataManager
                     Debug.Log("Couldn't load texture from " + path);
                     return;
                 }
-                Sprite downloadedImage = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+
+                Texture2D headerTexture;
+                Texture2D blurTexture;
+                TextureUtils.GeneratePropertyTextures(texture, propertyImage.rectTransform.rect, backgroundImage.rectTransform.rect, out headerTexture, out blurTexture);
+
+                Sprite downloadedImage = Sprite.Create(headerTexture, new Rect(0, 0, headerTexture.width, headerTexture.height), new Vector2(0.5f, 0.5f));
                 propertyImage.sprite = downloadedImage;
                 imageAspectRatio.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
 
-                Texture2D blurredImage = TextureUtils.ResizeAndBlur(texture);
-                Sprite downloadedBlurredImage = Sprite.Create(blurredImage, new Rect(0, 0, blurredImage.width, blurredImage.height), new Vector2(0.5f, 0.5f));
+                Sprite downloadedBlurredImage = Sprite.Create(blurTexture, new Rect(0, 0, blurTexture.width, blurTexture.height), new Vector2(0.5f, 0.5f));
                 backgroundImage.sprite = downloadedBlurredImage;
-                //backgroundAspectRatio.aspectRatio = (float)backgroundImage.sprite.texture.width / backgroundImage.sprite.texture.height;
             }
             else
             {
