@@ -46,14 +46,6 @@ public static class ReservationDataManager
     }
 
     ///<summary>
-    ///Gets all reservations (including deleted that match the given predicate)
-    ///</summary>
-    public static IEnumerable<IReservation> GetReservations(Predicate<IReservation> match)
-    {
-        return Data.reservations.FindAll(match);
-    }
-
-    ///<summary>
     ///Returns all reservations with the start or end date between(non-equal to) the given from and to DateTimes.
     ///</summary>
     public static IEnumerable<IReservation> GetReservationsBetween(DateTime from, DateTime to)
@@ -97,32 +89,6 @@ public static class ReservationDataManager
         return Data.reservations.FindAll(r => !r.Deleted && r.Period.End.Date > DateTime.Today.Date && r.CustomerID == clientID);
     }
 
-    // TODO: Remove unused AddReservation
-    ///<summary>
-    ///Do not use this method (both client and reservation objects are required with the new system).
-    /// Use the ".AddReservation(IRoom room, IClient client, DateTime start, DateTime end)" overload instead.
-    ///</summary>
-    public static IReservation AddReservation(IRoom room)
-    {
-        Reservation newReservation = new Reservation(room);
-        Data.reservations.Add(newReservation);
-        WriteReservationData();
-
-        return newReservation;
-    }
-
-    ///<summary>
-    ///Creates a new reservation with the given room, client and period data and returns it, this also saves the new reservation to file
-    ///</summary>
-    public static IReservation AddReservation(IRoom room, IClient client, DateTime start, DateTime end)
-    {
-        Reservation newReservation = new Reservation(room, client.ID, start,end);
-        Data.reservations.Add(newReservation);
-        WriteReservationData();
-
-        return newReservation;
-    }
-
     ///<summary>
     ///Creates a new reservation with the given room, client and period data and returns it, this also saves the new reservation to file
     ///</summary>
@@ -135,25 +101,6 @@ public static class ReservationDataManager
         return newReservation;
     }
 
-    ///<summary>
-    ///Updates the selected reservation's room, client, and period and returns it, this also updates the saved reservation data on file
-    ///</summary>
-    public static IReservation EditReservation(IReservation reservation, IRoom room, IClient client, DateTime start, DateTime end)
-    {
-        reservation.EditReservation(room, client, start, end);
-        WriteReservationData();
-        return reservation;
-    }
-
-    ///<summary>
-    ///Updates the selected reservation's rooms, client, and period and returns it, this also updates the saved reservation data on file
-    ///</summary>
-    public static IReservation EditReservation(IReservation reservation, List<IRoom> rooms, IClient client, DateTime start, DateTime end)
-    {
-        reservation.EditReservation(rooms, client, start, end);
-        WriteReservationData();
-        return reservation;
-    }
 
     public static void DeleteReservation(string ID)
     {
@@ -234,11 +181,6 @@ public static class ReservationDataManager
         WriteReservationData();
     }
 
-    public static IDateTimePeriod DefaultPeriod()
-    {
-        return new DateTimePeriod(DateTime.Today, DateTime.Today);
-    }
-
     [Serializable]
     private class ReservationData
     {
@@ -308,27 +250,6 @@ public static class ReservationDataManager
             get => period;
         }
 
-        public Reservation(IRoom room)
-        {
-            this.id = Guid.NewGuid().ToString();
-            this.propertyID = room.PropertyID;
-            this.roomIDs = new List<string>();
-            this.roomIDs.Add(room.ID);
-            this.period = new DateTimePeriod(DateTime.Today, DateTime.Today.AddDays(1f));
-            WriteReservationData();
-        }
-
-        public Reservation(IRoom room, string customerID, DateTime start, DateTime end)
-        {
-            this.id = Guid.NewGuid().ToString();
-            this.propertyID = room.PropertyID;
-            this.roomIDs = new List<string>();
-            this.roomIDs.Add(room.ID);
-            this.customerID = customerID;
-            this.period = new DateTimePeriod(start, end);
-            WriteReservationData();
-        }
-
         public Reservation(List<IRoom> rooms, string customerID, DateTime start, DateTime end)
         {
             this.id = Guid.NewGuid().ToString();
@@ -339,16 +260,6 @@ public static class ReservationDataManager
                 this.roomIDs.Add(rooms[r].ID);
             }
             this.customerID = customerID;
-            this.period = new DateTimePeriod(start, end);
-            WriteReservationData();
-        }
-
-        public void EditReservation(IRoom room, IClient client, DateTime start, DateTime end)
-        {
-            this.propertyID = room.PropertyID;
-            this.roomIDs = new List<string>();
-            this.roomIDs.Add(room.ID);
-            this.customerID = client.ID;
             this.period = new DateTimePeriod(start, end);
             WriteReservationData();
         }
@@ -431,19 +342,6 @@ public static class ReservationDataManager
             long overlapStartTicks = start.ToUniversalTime().Ticks;
             long overlapEndTicks = end.ToUniversalTime().Ticks;
             return startTicks <= overlapEndTicks || endTicks >= overlapStartTicks;
-        }
-
-        ///<summary>
-        ///Do not use
-        ///</summary>
-        public bool Overlaps(IDateTimePeriod period)
-        {
-            long checkStart = period.Start.ToUniversalTime().Ticks;
-            long checkEnd = period.End.ToUniversalTime().Ticks;
-
-            return
-            (checkStart < endTicks && checkStart > startTicks) ||   //returns true if start is between start and end
-            (checkEnd > startTicks && checkEnd < endTicks);         //returns ture if end is between start and end
         }
     }
 }
