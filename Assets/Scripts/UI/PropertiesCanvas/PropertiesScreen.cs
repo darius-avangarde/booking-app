@@ -17,6 +17,8 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private RoomScreen roomScreen = null;
     [SerializeField]
+    private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
     private RectTransform propertyInfoContent = null;
     [SerializeField]
     private ScrollRect propertiesScrollView = null;
@@ -35,6 +37,7 @@ public class PropertiesScreen : MonoBehaviour
     private List<GameObject> propertyButtonList = new List<GameObject>();
     private float tempPosition = 1;
     private bool thumbnails = false;
+    private bool expanding = false;
 
     private void Awake()
     {
@@ -44,6 +47,7 @@ public class PropertiesScreen : MonoBehaviour
 
     public void Initialize()
     {
+        expanding = false;
         foreach (var propertyButton in propertyButtonList)
         {
             DestroyImmediate(propertyButton);
@@ -63,11 +67,14 @@ public class PropertiesScreen : MonoBehaviour
     public void ExpandThumbnails(bool expand)
     {
         StopAllCoroutines();
+        scrollRectComponent.ResetAll();
         tempPosition = propertiesScrollView.verticalNormalizedPosition;
         foreach (GameObject property in propertyButtonList)
         {
+            property.SetActive(true);
             StartCoroutine(ExpandView(expand, property.GetComponent<RectTransform>()));
         }
+        StartCoroutine(WaitForInit());
     }
 
     public void LastPosition()
@@ -101,6 +108,7 @@ public class PropertiesScreen : MonoBehaviour
 
     public IEnumerator ExpandView(bool expand, RectTransform property)
     {
+        expanding = true;
         thumbnails = expand;
         if (expand)
         {
@@ -112,8 +120,8 @@ public class PropertiesScreen : MonoBehaviour
             {
                 currentTime += Time.deltaTime;
                 property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
-                //LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
-                //Canvas.ForceUpdateCanvases();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+                Canvas.ForceUpdateCanvases();
                 propertiesScrollView.verticalNormalizedPosition = tempPosition;
                 yield return null;
             }
@@ -129,12 +137,25 @@ public class PropertiesScreen : MonoBehaviour
             {
                 currentTime += Time.deltaTime;
                 property.sizeDelta = Vector2.Lerp(property.sizeDelta, endSize, currentTime / 0.5f);
-                //LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
-                //Canvas.ForceUpdateCanvases();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
+                Canvas.ForceUpdateCanvases();
                 propertiesScrollView.verticalNormalizedPosition = tempPosition;
                 yield return null;
             }
             property.sizeDelta = endSize;
+        }
+        expanding = false;
+    }
+
+    public IEnumerator WaitForInit()
+    {
+        while (expanding)
+        {
+            yield return null;
+        }
+        if (propertiesScrollView.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
         }
     }
 }

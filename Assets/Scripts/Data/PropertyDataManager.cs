@@ -118,7 +118,7 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
-        private bool hasRooms = false;
+        private bool hasRooms = true;
         public bool HasRooms
         {
             get => hasRooms;
@@ -192,6 +192,17 @@ public static class PropertyDataManager
         public void SaveRoom(IRoom room)
         {
             rooms.Add((Room)room);
+            WritePropertyData();
+        }
+
+        public void SaveMultipleRooms(List<IRoom> roomsList)
+        {
+            List<Room> multipleRooms = new List<Room>();
+            foreach (var room in roomsList)
+            {
+                multipleRooms.Add((Room)room);
+            }
+            rooms.AddRange(multipleRooms);
             WritePropertyData();
         }
 

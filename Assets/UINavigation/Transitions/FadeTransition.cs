@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
 
@@ -18,8 +19,7 @@ public class FadeTransition : TransitionBase
         if (currentScreen != null)
         {
             currentScreen.OnHiding();
-            currentScreen.CanvasGroup.interactable = false;
-            currentScreen.CanvasGroup.blocksRaycasts = false;
+            SetCanvasGroups(currentScreen.CanvasGroups, false, false);
         }
 
         float progress = 0f;
@@ -28,27 +28,26 @@ public class FadeTransition : TransitionBase
             progress += speed;
             progress = Mathf.Clamp01(progress);
 
-            UpdateScreenFade(nextScreen.CanvasGroup, 0f, 1f, progress);
+            UpdateScreenFade(nextScreen.CanvasGroups, 0f, 1f, progress);
 
             yield return null;
         } while (progress < 1f);
 
         nextScreen.OnShown();
-        nextScreen.CanvasGroup.interactable = true;
-        nextScreen.CanvasGroup.blocksRaycasts = true;
+        SetCanvasGroups(nextScreen.CanvasGroups, true, true);
+
         if (currentScreen != null)
         {
             currentScreen.OnHidden();
             currentScreen.gameObject.SetActive(false);
-            currentScreen.CanvasGroup.alpha = 0f;
+            SetCanvasAlpha(currentScreen.CanvasGroups, 0);
         }
     }
 
     public override IEnumerator PlayReverse(NavScreen currentScreen, NavScreen previousScreen)
     {
         currentScreen.OnHiding();
-        currentScreen.CanvasGroup.interactable = false;
-        currentScreen.CanvasGroup.blocksRaycasts = false;
+        SetCanvasGroups(currentScreen.CanvasGroups, false, false);
 
         if (previousScreen != null)
         {
@@ -56,7 +55,7 @@ public class FadeTransition : TransitionBase
             previousScreen.RectTransform.SetSiblingIndex(currentScreenIndex);
             previousScreen.gameObject.SetActive(true);
             previousScreen.OnShowing();
-            previousScreen.CanvasGroup.alpha = 1f;
+            SetCanvasAlpha(previousScreen.CanvasGroups, 1f);
         }
 
         float progress = 0f;
@@ -65,7 +64,7 @@ public class FadeTransition : TransitionBase
             progress += speed;
             progress = Mathf.Clamp01(progress);
 
-            UpdateScreenFade(previousScreen.CanvasGroup, 0f, 1f, progress);
+            UpdateScreenFade(previousScreen.CanvasGroups, 0f, 1f, progress);
 
             yield return null;
         } while (progress < 1f);
@@ -75,14 +74,33 @@ public class FadeTransition : TransitionBase
         if (previousScreen != null)
         {
             previousScreen.OnShown();
-            previousScreen.CanvasGroup.interactable = true;
-            previousScreen.CanvasGroup.blocksRaycasts = true;
+            SetCanvasGroups(previousScreen.CanvasGroups, true,true);
         }
     }
 
-    private void UpdateScreenFade(CanvasGroup canvasGroup, float from, float to, float progress)
+    private void UpdateScreenFade(List<CanvasGroup> canvasGroups, float from, float to, float progress)
     {
         float easedProgress = Mathf.SmoothStep(from, to, progress);
-        canvasGroup.alpha = easedProgress;
+        foreach(CanvasGroup c in canvasGroups)
+        {
+            c.alpha = easedProgress;
+        }
+    }
+
+    private void SetCanvasGroups(List<CanvasGroup> canvasGroups, bool interactable, bool blocksRaycasts)
+    {
+        foreach(CanvasGroup c in canvasGroups)
+        {
+            c.interactable = true;
+            c.blocksRaycasts = true;
+        }
+    }
+
+    private void SetCanvasAlpha(List<CanvasGroup> canvasGroups, float alpha)
+    {
+        foreach(CanvasGroup c in canvasGroups)
+        {
+            c.alpha = alpha;
+        }
     }
 }

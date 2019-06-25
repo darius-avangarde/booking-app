@@ -613,7 +613,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f7d8c4cdafabd924093fba5fb428968f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f9b21030e1cb2144b99b75b25e7a4679, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1395,10 +1395,13 @@ MonoBehaviour:
   propertyAdminScreen: {fileID: 0}
   propertyRoomScreen: {fileID: 0}
   roomScreen: {fileID: 0}
+  scrollRectComponent: {fileID: 7124335560658892795}
   propertyInfoContent: {fileID: 7868911076942911958}
   propertiesScrollView: {fileID: 7868911076738144278}
   propertyItemPrefab: {fileID: 2420487253307564896, guid: 17b82d1cf4acb0446943d7a4eee49e01,
     type: 3}
+  contentSizeFitter: {fileID: 7868911076942911952}
+  verticalLayoutGroup: {fileID: 7868911076942911953}
   thumbnailsViewButton: {fileID: 7835406259211450375}
   listViewButton: {fileID: 2740992042853713484}
   addPropertyButton: {fileID: 6186498255347178896}
@@ -1469,6 +1472,7 @@ GameObject:
   - component: {fileID: 7868911076738144278}
   - component: {fileID: 6028563767912533968}
   - component: {fileID: 6375914563979097827}
+  - component: {fileID: 7124335560658892795}
   m_Layer: 5
   m_Name: PropertiesContainerScroll View
   m_TagString: Untagged
@@ -1566,6 +1570,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &7124335560658892795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7868911076738144282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e3bc82144bb3345a6b3354905fe118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitByUser: 1
 --- !u!1 &7868911076942911959
 GameObject:
   m_ObjectHideFlags: 0

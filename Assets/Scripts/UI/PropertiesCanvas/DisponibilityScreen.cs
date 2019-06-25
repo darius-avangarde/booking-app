@@ -22,9 +22,13 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private RoomScreen roomScreen = null;
     [SerializeField]
+    private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
     private GameObject propertyItemPrefab = null;
     [SerializeField]
     private GameObject roomItemPrefab = null;
+    [SerializeField]
+    private ScrollRect disponibilityScrollRect = null;
     [SerializeField]
     private RectTransform filteredPropertiesContent = null;
     [SerializeField]
@@ -100,12 +104,12 @@ public class DisponibilityScreen : MonoBehaviour
         if (lastDropdownOption == 0)
         {
             selectedProperty = null;
+            shouldSelectRooms = false;
         }
         if (selectedProperty != null)
         {
             SelectDropdownProperty(selectedProperty);
         }
-        selectedProperty = null;
     }
 
     public void SelectProperty(int optionIndex)
@@ -140,6 +144,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void InstantiateProperties()
     {
+        scrollRectComponent.ResetAll();
         if (!shouldSelectRooms)
         {
             CancelSelection();
@@ -250,10 +255,17 @@ public class DisponibilityScreen : MonoBehaviour
         availableNumber.color = Constants.defaultTextColor;
         propertyDropdownList.options = propertyOptions.Values.ToList();
         propertyDropdownList.RefreshShownValue();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
+        Canvas.ForceUpdateCanvases();
+        if (disponibilityScrollRect.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
     private void InstantiateRooms(IProperty property)
     {
+        scrollRectComponent.ResetAll();
         foreach (var propertyItem in propertyItemList)
         {
             DestroyImmediate(propertyItem);
@@ -345,6 +357,12 @@ public class DisponibilityScreen : MonoBehaviour
                     availableNumber.color = Constants.reservedUnavailableItemColor;
                 }
             }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
+        Canvas.ForceUpdateCanvases();
+        if (disponibilityScrollRect.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
         }
     }
 

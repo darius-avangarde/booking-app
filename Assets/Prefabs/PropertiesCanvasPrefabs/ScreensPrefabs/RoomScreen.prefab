@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1600590805194553549}
   - component: {fileID: 5189893016031874047}
   - component: {fileID: 8678827038242909138}
+  - component: {fileID: 787562401621880169}
   m_Layer: 5
   m_Name: RoomScreenScroll View
   m_TagString: Untagged
@@ -109,6 +110,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &787562401621880169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284054735533841580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e3bc82144bb3345a6b3354905fe118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitByUser: 0
 --- !u!1 &1449943372135449306
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,6 +836,8 @@ MonoBehaviour:
   propertyRoomScreen: {fileID: 0}
   roomAdminScreen: {fileID: 0}
   propertyAdminScreenTransform: {fileID: 0}
+  scrollRectComponent: {fileID: 787562401621880169}
+  roomScreenScrollRect: {fileID: 1600590805194553549}
   reservationsContent: {fileID: 7673541479442759499}
   roomScreenTitle: {fileID: 8738330385811640659}
   backgroundImage: {fileID: 6949046932610308213}

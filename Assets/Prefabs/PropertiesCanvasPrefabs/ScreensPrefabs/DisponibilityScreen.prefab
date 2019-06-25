@@ -1227,6 +1227,7 @@ GameObject:
   - component: {fileID: 3268317772382651159}
   - component: {fileID: 4294257375288778031}
   - component: {fileID: 5765525797253216212}
+  - component: {fileID: 5536151805323128637}
   m_Layer: 5
   m_Name: DisponibilityScroll View
   m_TagString: Untagged
@@ -1251,9 +1252,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -280}
   m_SizeDelta: {x: 0, y: -560}
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3268317772382651156
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1332,6 +1333,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5536151805323128637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3268317772382651115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e3bc82144bb3345a6b3354905fe118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitByUser: 1
 --- !u!1 &3268317773138484121
 GameObject:
   m_ObjectHideFlags: 0
@@ -1503,9 +1517,11 @@ MonoBehaviour:
   reservationScreenComponent: {fileID: 0}
   calendarScreen: {fileID: 0}
   roomScreen: {fileID: 0}
+  scrollRectComponent: {fileID: 5536151805323128637}
   propertyItemPrefab: {fileID: 2420487253307564896, guid: 17b82d1cf4acb0446943d7a4eee49e01,
     type: 3}
   roomItemPrefab: {fileID: 863656070, guid: c4bfd08dd39708842ad4523d6d77c65c, type: 3}
+  disponibilityScrollRect: {fileID: 3268317772382651159}
   filteredPropertiesContent: {fileID: 3268317773138484120}
   disponibilityScrollView: {fileID: 3268317772382651114}
   headerBar: {fileID: 2368435275840029522}
@@ -2925,7 +2941,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 840, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3221564864120545285
 CanvasRenderer:
