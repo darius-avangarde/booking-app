@@ -83,7 +83,7 @@ public class RoomScreen : MonoBehaviour
     {
         if (currentProperty.HasRooms)
         {
-            roomScreenTitle.text = currentRoom.Name ?? Constants.NEW_ROOM;
+            roomScreenTitle.text = $"Camera {currentRoom.Name}" ?? Constants.NEW_ROOM;
         }
         else
         {
