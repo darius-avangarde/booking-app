@@ -142,7 +142,7 @@ public class RoomScreen : MonoBehaviour
         foreach (var reservation in orderedRoomReservationList)
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-            reservationButton.GetComponent<ReservationItem>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))));
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), false);
             reservationButtonList.Add(reservationButton);
         }
         if (roomScreenScrollRect.content.childCount > 0)

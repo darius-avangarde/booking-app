@@ -91,7 +91,7 @@ public class ClientsAdminScreen : MonoBehaviour
         foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID).OrderBy(r => r.Period.Start))
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationInfoContent);
-            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack));
+            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack), true);
             reservationButtons.Add(reservationButton);
         }
     }
