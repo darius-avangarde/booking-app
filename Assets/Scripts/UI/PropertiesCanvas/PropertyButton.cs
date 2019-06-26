@@ -91,8 +91,9 @@ public class PropertyButton : MonoBehaviour
                 int roomsNumber = 0;
                 foreach (var room in currentProperty.Rooms)
                 {
-                    bool isReserved = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd).Any(r => r.ContainsRoom(room.ID));
-                    if (!isReserved)
+                    bool reservations = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd)
+                        .Any(r => r.ContainsRoom(room.ID));
+                    if (!reservations)
                     {
                         roomsNumber++;
                     }

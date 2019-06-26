@@ -201,6 +201,7 @@ public class DisponibilityScreen : MonoBehaviour
                 {
                     if (selectedProperty != null && selectedProperty.ID == property.ID)
                     {
+                        buttonObject.InitializeDateTime(startDate, endDate);
                         buttonObject.Initialize(property, true,  SelectDropdownProperty, SelectDropdownProperty, null);
                         propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                         propertyDropdownOptions.Add(property.ID, propertyIndex);
@@ -214,6 +215,7 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 else
                 {
+                    buttonObject.InitializeDateTime(startDate, endDate);
                     buttonObject.Initialize(property, true, SelectDropdownProperty, SelectDropdownProperty, null);
                     propertyOptions.Add(property.ID, new Dropdown.OptionData(property.Name));
                     propertyDropdownOptions.Add(property.ID, propertyIndex);
