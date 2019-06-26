@@ -25,9 +25,10 @@ public class ModalSplashScreen : MonoBehaviour, IClosable
     {
         if(canDismiss)
         {
+            canDismiss = false;
+            StopAllCoroutines();
             StartCoroutine(ClearSplash());
             InputManager.CurrentlyOpenClosable = null;
-            canDismiss = false;
         }
     }
 
@@ -42,6 +43,14 @@ public class ModalSplashScreen : MonoBehaviour, IClosable
         blackFadeCanvasGroup.alpha = 0;
         splashScreenCanvasGroup.interactable = true;
         canDismiss = true;
+
+        StartCoroutine(WaitOne());
+    }
+
+    private IEnumerator WaitOne()
+    {
+        yield return new WaitForSeconds(1);
+        Close();
     }
 
     private IEnumerator ClearSplash()
