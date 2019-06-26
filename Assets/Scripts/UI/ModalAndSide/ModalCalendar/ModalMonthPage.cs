@@ -230,18 +230,18 @@ public class ModalMonthPage : MonoBehaviour
             {
                 if(dayObjects[d].ObjDate.Date == calendar.SelectedStart.Date)
                 {
-                    dayObjects[d].UpdateDayColors(null, (dayObjects[d].IsStart || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor, null);
+                    dayObjects[d].UpdateDayColors(null, (dayObjects[d].IsStart || dayObjects[d].IsReserved) ? calendar.UnavailableColor : calendar.PreviousColor, null);
                 }
                 if(dayObjects[d].ObjDate > calendar.SelectedStart.Date && dayObjects[d].ObjDate < calendar.SelectedEnd.Date)
                 {
                     dayObjects[d].UpdateDayColors(
-                        (dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor,
-                        (dayObjects[d].IsStart || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor,
-                        (dayObjects[d].IsEnd || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor);
+                        (dayObjects[d].IsReserved) ? calendar.UnavailableColor : calendar.PreviousColor,
+                        (dayObjects[d].IsStart || dayObjects[d].IsReserved) ? calendar.UnavailableColor : calendar.PreviousColor,
+                        (dayObjects[d].IsEnd || dayObjects[d].IsReserved) ? calendar.UnavailableColor : calendar.PreviousColor);
                 }
                 if (dayObjects[d].ObjDate.Date == calendar.SelectedEnd.Date)
                 {
-                    dayObjects[d].UpdateDayColors(null, null, (dayObjects[d].IsEnd || dayObjects[d].IsReserved) ? calendar.OverlapColor : calendar.PreviousColor);
+                    dayObjects[d].UpdateDayColors(null, null, (dayObjects[d].IsEnd || dayObjects[d].IsReserved) ? calendar.UnavailableColor : calendar.PreviousColor);
                 }
             }
         }
@@ -249,6 +249,6 @@ public class ModalMonthPage : MonoBehaviour
 
     private Color OverlapCol(bool isOverlap)
     {
-        return isOverlap ? calendar.OverlapColor : calendar.CurrentColor;
+        return isOverlap ? calendar.UnavailableColor : calendar.CurrentColor;
     }
 }
