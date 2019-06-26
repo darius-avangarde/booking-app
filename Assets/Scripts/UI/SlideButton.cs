@@ -13,7 +13,7 @@ public class SlideButton : MonoBehaviour
     private RectTransform fillRect;
 
     [SerializeField]
-    private float closeDelay = 3.0f;
+    private float closeDelay = 1.5f;
     [SerializeField]
     private float slideTime = 0.15f;
     [SerializeField]
