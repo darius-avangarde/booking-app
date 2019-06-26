@@ -52,10 +52,6 @@ public class RoomAdminScreen : MonoBehaviour
     private AspectRatioFitter backgroundImageAspectFitter = null;
     [SerializeField]
     private Toggle floorsToggle = null;
-    //[SerializeField]
-    //private Toggle singleRoomToggle = null;
-    //[SerializeField]
-    //private Toggle multipleRoomsToggle = null;
     [SerializeField]
     private Button deleteButton = null;
     [SerializeField]
@@ -138,6 +134,7 @@ public class RoomAdminScreen : MonoBehaviour
                 roomInfoInputPanel.SetActive(true);
                 propertyRoomTitle.gameObject.SetActive(true);
                 deleteButton.gameObject.SetActive(false);
+                infoButton.gameObject.SetActive(true);
                 floorsToggle.isOn = true;
                 multipleFloorsField.text = "1";
             }
@@ -149,8 +146,8 @@ public class RoomAdminScreen : MonoBehaviour
                 roomInfoInputPanel.SetActive(false);
                 propertyRoomTitle.gameObject.SetActive(false);
                 deleteButton.gameObject.SetActive(true);
+                infoButton.gameObject.SetActive(false);
             }
-            infoButton.gameObject.SetActive(false);
             roomPriceInputField.text = currentRoom.Price ?? Constants.PRICE;
             roomSingleBedQuantityInputField.text = currentRoom.SingleBeds.ToString();
             roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();

@@ -40,7 +40,6 @@ public class PropertiesScreen : MonoBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
-        //addPropertyButton.onClick.AddListener(() => AddPropertyItem());
         OpenModalClendarButton.onClick.AddListener(() => ShowModalCalendar());
     }
 
