@@ -49,6 +49,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
+    private AspectRatioFitter backgroundImageAspectFitter = null;
+    [SerializeField]
     private Toggle floorsToggle = null;
     //[SerializeField]
     //private Toggle singleRoomToggle = null;
@@ -128,7 +130,7 @@ public class RoomAdminScreen : MonoBehaviour
                 propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
                 backgroundImage.gameObject.SetActive(false);
             }
-            propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
+            propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
             if (string.IsNullOrEmpty(currentRoom.Name))
             {
                 roomNameInputField.gameObject.SetActive(false);

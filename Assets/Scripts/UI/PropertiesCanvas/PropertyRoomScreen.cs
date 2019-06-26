@@ -35,6 +35,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Image backgroundImage = null;
     [SerializeField]
+    private AspectRatioFitter backgroundImageAspectFitter = null;
+    [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
     private Button openCalendarButton = null;
@@ -84,7 +86,7 @@ public class PropertyRoomScreen : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
             backgroundImage.gameObject.SetActive(false);
         }
-        propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
+        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
         foreach (var roomButton in roomButtons)
         {
             DestroyImmediate(roomButton);
