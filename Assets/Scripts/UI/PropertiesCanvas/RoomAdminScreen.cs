@@ -104,6 +104,11 @@ public class RoomAdminScreen : MonoBehaviour
             );
     }
 
+    /// <summary>
+    /// set the current property
+    /// this function is called from property screen only
+    /// </summary>
+    /// <param name="property">selected property</param>
     public void SetCurrentProperty(IProperty property)
     {
         fromProperty = true;
@@ -112,6 +117,10 @@ public class RoomAdminScreen : MonoBehaviour
         Initialize();
     }
 
+    /// <summary>
+    /// set the current property and room
+    /// </summary>
+    /// <param name="property">selected property</param>
     public void SetCurrentPropertyRoom(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
@@ -119,6 +128,11 @@ public class RoomAdminScreen : MonoBehaviour
         Initialize();
     }
 
+    /// <summary>
+    /// initialize current property photo
+    /// initialize input fields
+    /// initialize beds information
+    /// </summary>
     public void Initialize()
     {
         if (currentRoom != null)

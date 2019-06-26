@@ -33,12 +33,29 @@ public class PropertyButton : MonoBehaviour
         propertyItemTransform = GetComponent<RectTransform>();
     }
 
+    /// <summary>
+    /// set new date period
+    /// </summary>
+    /// <param name="dateTimeStart">start of date period</param>
+    /// <param name="dateTimeEnd">end of date period</param>
     public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
     {
         this.dateTimeStart = dateTimeStart;
         this.dateTimeEnd = dateTimeEnd;
     }
 
+    /// <summary>
+    /// set the current property
+    /// load property images
+    /// set property name
+    /// set property size
+    /// set button callback according to different situations
+    /// </summary>
+    /// <param name="property">selected property</param>
+    /// <param name="disponibility">if the item is instantiated on disponibility screen mark as true</param>
+    /// <param name="PropertyRoomCallback">click callback for properties without rooms</param>
+    /// <param name="PropertyCallback">callback for properties with rooms</param>
+    /// <param name="reservationCallback">callback to open reservation screen</param>
     public void Initialize(IProperty property, bool disponibility, Action<IRoom> PropertyRoomCallback, Action<IProperty> PropertyCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
     {
         currentProperty = property;
@@ -47,7 +64,7 @@ public class PropertyButton : MonoBehaviour
             propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[property.ID];
         }
         
-        //set the aspect ratio of the
+        //set the aspect ratio of the property image
         propertyImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
 
         if (disponibility)
@@ -118,6 +135,10 @@ public class PropertyButton : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// convert the room of the property to a list of rooms
+    /// </summary>
+    /// <returns>a list of rooms, only current property room is included in list</returns>
     private List<IRoom> SendCurrentRoom()
     {
         List<IRoom> currentRoomList = new List<IRoom>();

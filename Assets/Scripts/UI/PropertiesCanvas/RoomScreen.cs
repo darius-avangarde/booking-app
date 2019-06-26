@@ -58,17 +58,30 @@ public class RoomScreen : MonoBehaviour
         editButton.onClick.AddListener(() => EditButton());
     }
 
+    /// <summary>
+    /// set the position of the scroll rect to the top of the screen
+    /// </summary>
     public void ScrollToTop()
     {
         tempPosition = 1;
     }
 
+    /// <summary>
+    /// set new date period
+    /// </summary>
+    /// <param name="start">start of date period</param>
+    /// <param name="end">end of date period</param>
     public void UpdateDateTime(DateTime start, DateTime end)
     {
         dateTimeStart = start;
         dateTimeEnd = end;
     }
 
+    /// <summary>
+    /// set the current room and property
+    /// call the function to update details
+    /// </summary>
+    /// <param name="room">current rooms</param>
     public void UpdateRoomDetailsFields(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
@@ -79,6 +92,10 @@ public class RoomScreen : MonoBehaviour
         UpdateCurrentRoomDetailsFields();
     }
 
+    /// <summary>
+    /// update room details
+    /// call function ro instantiate reservations
+    /// </summary>
     public void UpdateCurrentRoomDetailsFields()
     {
         if (currentProperty.HasRooms)
@@ -116,6 +133,10 @@ public class RoomScreen : MonoBehaviour
         InstantiateReservations();
     }
 
+    /// <summary>
+    /// on edit button
+    /// edit selected room, or property
+    /// </summary>
     public void EditButton()
     {
         if (currentProperty.HasRooms)
@@ -128,11 +149,17 @@ public class RoomScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// open reservation edit screen
+    /// </summary>
     public void CreateNewReservation()
     {
         reservationScreen.OpenAddReservation(dateTimeStart, dateTimeEnd, currentRoom, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID)));
     }
 
+    /// <summary>
+    /// instantiate current room reservations
+    /// </summary>
     public void InstantiateReservations()
     {
         scrollRectComponent.ResetAll();
@@ -159,24 +186,41 @@ public class RoomScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// on Hiding screen
+    /// reset screen details
+    /// </summary>
     public void OnHidingSetProperty()
     {
         propertyRoomScreen.UpdateDateTime(dateTimeStart, dateTimeEnd);
         propertyRoomScreen.SetCurrentProperty(currentProperty);
     }
 
+    /// <summary>
+    /// obsolete
+    /// delete selected reservation
+    /// </summary>
+    /// <param name="reservationButton"></param>
     private void DeleteReservation(GameObject reservationButton)
     {
         reservationButtonList.Remove(reservationButton);
         DestroyImmediate(reservationButton);
     }
 
+    /// <summary>
+    /// open edit property screen
+    /// </summary>
+    /// <param name="property">current property</param>
     private void OpenPropertyAdminScreen()
     {
         propertyAdminScreenTransform.SetCurrentProperty(currentProperty);
         navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
     }
 
+    /// <summary>
+    /// open edit room screen
+    /// </summary>
+    /// <param name="room"> selected room</param>
     private void OpenRoomAdminScreen()
     {
         navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());

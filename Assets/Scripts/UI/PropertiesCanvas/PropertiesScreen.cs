@@ -93,7 +93,7 @@ public class PropertiesScreen : MonoBehaviour
 
     /// <summary>
     /// open modal calendar with the current date set
-    ///  cakkback returns the new date
+    /// cakkback returns the new date
     /// </summary>
     private void ShowModalCalendar()
     {

@@ -38,12 +38,26 @@ public class RoomButton : MonoBehaviour
     private bool reservations = false;
     private bool firstSelection = false;
 
+    /// <summary>
+    /// set new date period
+    /// </summary>
+    /// <param name="dateTimeStart">start of date period</param>
+    /// <param name="dateTimeEnd">end of date period</param>
     public void InitializeDateTime(DateTime dateTimeStart, DateTime dateTimeEnd)
     {
         this.dateTimeStart = dateTimeStart;
         this.dateTimeEnd = dateTimeEnd;
     }
 
+    /// <summary>
+    /// set current room name
+    /// set disponibility marker color
+    /// set callbacks according to different situations
+    /// </summary>
+    /// <param name="room">current room</param>
+    /// <param name="disponibilityScript">refference to disponibility screen</param>
+    /// <param name="roomCallback">callback to open room screen</param>
+    /// <param name="reservationCallback">calback to open reservation screen</param>
     public void Initialize(IRoom room, DisponibilityScreen disponibilityScript, Action<IRoom> roomCallback, Action<DateTime, DateTime, List<IRoom>> reservationCallback)
     {
         selectMarker.gameObject.SetActive(false);
@@ -102,6 +116,10 @@ public class RoomButton : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// convert the current room to a list of rooms
+    /// </summary>
+    /// <returns>a list of rooms, only current room is included in list</returns>
     private List<IRoom> SendCurrentRoom()
     {
         List<IRoom> currentRoomList = new List<IRoom>();
@@ -109,6 +127,9 @@ public class RoomButton : MonoBehaviour
         return currentRoomList;
     }
 
+    /// <summary>
+    /// if in selection mode, select or deselect current room item
+    /// </summary>
     public void SelectToggleMark()
     {
         if (Selected)
@@ -132,6 +153,9 @@ public class RoomButton : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// check if the button should act as select or invoke a different callback
+    /// </summary>
     private void ClickOrSelect()
     {
         StopAllCoroutines();
@@ -157,6 +181,10 @@ public class RoomButton : MonoBehaviour
         DisponibilityScreenComponent.CheckRoomsSelection();
     }
 
+    /// <summary>
+    /// check if the user is holding on the current room item
+    /// </summary>
+    /// <returns>selection mode after a period of time</returns>
     private IEnumerator SelectionMode()
     {
         pressAndHold = false;
@@ -174,6 +202,10 @@ public class RoomButton : MonoBehaviour
         pressAndHold = true;
     }
 
+    /// <summary>
+    /// delay to stop all coroutines, to avoid selecting items by mistake
+    /// </summary>
+    /// <returns>wait for 0.2 seconds</returns>
     private IEnumerator StopCoroutineDelay()
     {
         yield return new WaitForSeconds(0.2f);
