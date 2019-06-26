@@ -25,7 +25,7 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private ScrollRect propertyRoomScrollRect = null;
     [SerializeField]
-    private Transform roomsContentScrollView = null;
+    private RectTransform roomsContentScrollView = null;
     [SerializeField]
     private Text propertyRoomScreenTitle = null;
     [SerializeField]
@@ -98,10 +98,14 @@ public class PropertyRoomScreen : MonoBehaviour
             foreach (var room in currentRooms)
             {
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);
-                roomButton.GetComponent<RoomButton>().Initialize(room, null, OpenRoomScreen, null);
+                RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
+                currentRoom.InitializeDateTime(startDate, endDate);
+                currentRoom.Initialize(room, null, OpenRoomScreen, null);
                 roomButtons.Add(roomButton);
             }
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(roomsContentScrollView);
+        Canvas.ForceUpdateCanvases();
         propertyRoomScrollRect.verticalNormalizedPosition = tempPosition;
         if (propertyRoomScrollRect.content.childCount > 0)
         {

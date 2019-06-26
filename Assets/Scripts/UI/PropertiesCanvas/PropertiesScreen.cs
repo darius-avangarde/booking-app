@@ -72,10 +72,13 @@ public class PropertiesScreen : MonoBehaviour
             propertyButton.GetComponent<PropertyButton>().Initialize(property, false, OpenRoomScreen, OpenPropertyRoomScreen, null);
             propertyButtonList.Add(propertyButton);
         }
-        propertiesScrollView.verticalNormalizedPosition = tempPosition;
         LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
         Canvas.ForceUpdateCanvases();
-        scrollRectComponent.Init();
+        propertiesScrollView.verticalNormalizedPosition = tempPosition;
+        if (propertiesScrollView.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
     private void ShowModalCalendar()
