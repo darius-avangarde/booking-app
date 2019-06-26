@@ -11,11 +11,11 @@ public class InputManager : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private GameObject QuitOverlayCanvas;
+    private GameObject QuitOverlayCanvas = null;
     [SerializeField]
-    private Image quitObjectImage;
+    private Image quitObjectImage = null;
     [SerializeField]
-    private Text quitObjectText;
+    private Text quitObjectText = null;
 
     private bool clickedBefore = false;
     private Color imageDefaultColor;

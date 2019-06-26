@@ -14,8 +14,6 @@ public class DisponibilityScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ConfirmationDialog confirmationDialog = null;
-    [SerializeField]
     private ReservationEditScreen reservationScreenComponent = null;
     [SerializeField]
     private ModalCalendarNew calendarScreen = null;
@@ -60,8 +58,8 @@ public class DisponibilityScreen : MonoBehaviour
     private IProperty selectedProperty;
     private DateTime startDate = DateTime.Today.Date;
     private DateTime endDate = DateTime.Today.AddDays(1).Date;
-    private float disponibilityHeight;
-    private float tempPosition = 1;
+    private float disponibilityScrollHeight;
+    private float scrollPosition = 1;
     private int lastDropdownOption = 0;
     private int nrRooms = 0;
     private bool fromReservation = false;
@@ -71,14 +69,13 @@ public class DisponibilityScreen : MonoBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => BackButtonFunction());
-        disponibilityHeight = disponibilityScrollView.offsetMin.y;
+        disponibilityScrollHeight = disponibilityScrollView.offsetMin.y;
         propertyDropdownList.onValueChanged.AddListener(SelectProperty);
     }
     public void ScrollToTop()
     {
-        tempPosition = 1;
+        scrollPosition = 1;
     }
-
 
     public void SetDefaultDate()
     {
@@ -266,7 +263,7 @@ public class DisponibilityScreen : MonoBehaviour
         propertyDropdownList.RefreshShownValue();
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
         Canvas.ForceUpdateCanvases();
-        disponibilityScrollRect.verticalNormalizedPosition = tempPosition;
+        disponibilityScrollRect.verticalNormalizedPosition = scrollPosition;
         if (disponibilityScrollRect.content.childCount > 0)
         {
             scrollRectComponent.Init();
@@ -370,7 +367,7 @@ public class DisponibilityScreen : MonoBehaviour
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
         Canvas.ForceUpdateCanvases();
-        disponibilityScrollRect.verticalNormalizedPosition = tempPosition;
+        disponibilityScrollRect.verticalNormalizedPosition = scrollPosition;
         if (disponibilityScrollRect.content.childCount > 0)
         {
             scrollRectComponent.Init();
@@ -383,7 +380,7 @@ public class DisponibilityScreen : MonoBehaviour
         {
             vibrate = true;
             roomSelection = false;
-            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight), new Vector2(footerBar.anchoredPosition.x, -160)));
+            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityScrollHeight), new Vector2(footerBar.anchoredPosition.x, -160)));
             foreach (var room in roomItemList)
             {
                 RoomButton roomObject = room.GetComponent<RoomButton>();
@@ -408,7 +405,7 @@ public class DisponibilityScreen : MonoBehaviour
                 vibrate = false;
             }
             roomSelection = true;
-            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityHeight + 160), new Vector2(footerBar.anchoredPosition.x, 0)));
+            StartCoroutine(ExpandFooterBar(new Vector2(disponibilityScrollView.offsetMin.x, disponibilityScrollHeight + 160), new Vector2(footerBar.anchoredPosition.x, 0)));
             foreach (var room in roomItemList)
             {
                 room.GetComponent<RoomButton>().DisponibilityMarker.color = Color.white;
@@ -498,7 +495,7 @@ public class DisponibilityScreen : MonoBehaviour
 
     private void OpenRoomScreen(IRoom room)
     {
-        tempPosition = disponibilityScrollRect.verticalNormalizedPosition;
+        scrollPosition = disponibilityScrollRect.verticalNormalizedPosition;
         roomScreen.UpdateRoomDetailsFields(room);
         roomScreen.UpdateDateTime(startDate, endDate);
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
