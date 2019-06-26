@@ -11,8 +11,6 @@ public class RoomScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ConfirmationDialog confirmationDialog = null;
-    [SerializeField]
     private ReservationEditScreen reservationScreen = null;
     [SerializeField]
     private PropertyRoomScreen propertyRoomScreen = null;

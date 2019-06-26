@@ -30,12 +30,11 @@ public class PropertiesScreen : MonoBehaviour
     private Button OpenModalClendarButton = null;
     [SerializeField]
     private Button backButton = null;
-    private Canvas canvasComponent;
 
     private List<GameObject> propertyButtonList = new List<GameObject>();
     private DateTime startDate = DateTime.Today.Date;
     private DateTime endDate = DateTime.Today.AddDays(1).Date;
-    private float tempPosition = 1;
+    private float scrollPosition = 1;
 
     private void Awake()
     {
@@ -43,19 +42,30 @@ public class PropertiesScreen : MonoBehaviour
         OpenModalClendarButton.onClick.AddListener(() => ShowModalCalendar());
     }
 
+    /// <summary>
+    /// resets the date to the current date when the user opens the screen from main menu
+    /// </summary>
     public void SetDefaultDate()
     {
         startDate = DateTime.Today.Date;
         endDate = DateTime.Today.AddDays(1).Date;
-        tempPosition = 1;
+        scrollPosition = 1;
     }
 
+    /// <summary>
+    /// filter the date period for the items from the list
+    /// </summary>
+    /// <param name="start">start of the date period</param>
+    /// <param name="end">end of the date period</param>
     public void UpdateDateTime(DateTime start, DateTime end)
     {
         startDate = start;
         endDate = end;
     }
 
+    /// <summary>
+    /// instantiate the properties items
+    /// </summary>
     public void Initialize()
     {
         scrollRectComponent.ResetAll();
@@ -74,43 +84,66 @@ public class PropertiesScreen : MonoBehaviour
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(propertyInfoContent);
         Canvas.ForceUpdateCanvases();
-        propertiesScrollView.verticalNormalizedPosition = tempPosition;
+        propertiesScrollView.verticalNormalizedPosition = scrollPosition;
         if (propertiesScrollView.content.childCount > 0)
         {
             scrollRectComponent.Init();
         }
     }
 
+    /// <summary>
+    /// open modal calendar with the current date set
+    ///  cakkback returns the new date
+    /// </summary>
     private void ShowModalCalendar()
     {
         calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
     }
 
+    /// <summary>
+    /// modal calendar callback to set the new date period
+    /// </summary>
+    /// <param name="startDate">start of the date period</param>
+    /// <param name="endDate">end of the date period</param>
     private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
     {
         this.startDate = startDate;
         this.endDate = endDate;
-        tempPosition = 1;
+        scrollPosition = 1;
         Initialize();
     }
 
+    /// <summary>
+    /// set the scroll position to last one before moving to another screen
+    /// </summary>
     public void LastPosition()
     {
-        tempPosition = propertiesScrollView.verticalNormalizedPosition;
+        scrollPosition = propertiesScrollView.verticalNormalizedPosition;
     }
 
+    /// <summary>
+    /// function to the add button, to open the add new property screen
+    /// </summary>
     public void AddPropertyItem()
     {
         IProperty property = PropertyDataManager.AddProperty();
         OpenPropertyAdminScreen(property);
     }
 
+    /// <summary>
+    /// open the add or edit property screen
+    /// </summary>
+    /// <param name="property">the property to edit or the new property to create</param>
     private void OpenPropertyAdminScreen(IProperty property)
     {
         propertyAdminScreen.SetCurrentProperty(property);
         navigator.GoTo(propertyAdminScreen.GetComponent<NavScreen>());
     }
 
+    /// <summary>
+    /// open the screen with the rooms of the current property
+    /// </summary>
+    /// <param name="property">current property</param>
     private void OpenPropertyRoomScreen(IProperty property)
     {
         propertyRoomScreen.ScrollToTop();
@@ -119,6 +152,11 @@ public class PropertiesScreen : MonoBehaviour
         navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
 
+    /// <summary>
+    /// opens the reservations for a property without rooms
+    /// a property without rooms has a room created by script, the user will not interact with that room directly
+    /// </summary>
+    /// <param name="room"> the room from the property without rooms</param>
     private void OpenRoomScreen(IRoom room)
     {
         LastPosition();

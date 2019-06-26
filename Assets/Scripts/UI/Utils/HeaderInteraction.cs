@@ -37,7 +37,7 @@ public class HeaderInteraction : MonoBehaviour, IBeginDragHandler, IEndDragHandl
 		initialHeight = transform.parent.GetComponent<RectTransform>().rect.height;
 		contentTrans = scroll.content.GetComponent<RectTransform>();
 		headerHeight = Header.rect.height; //750
-		minHeightFactor = 286 / headerHeight; 
+		minHeightFactor = 180 / headerHeight; 
 		heightFactor = minHeightFactor;
 		Header.sizeDelta = new Vector2(Header.sizeDelta.x, headerHeight * heightFactor);
 	}

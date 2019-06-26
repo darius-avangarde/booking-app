@@ -10,6 +10,8 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
+    private RoomAdminScreen roomAdminScreen = null;
+    [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
     private Image propertyImage = null;
@@ -26,6 +28,8 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private Toggle NoRoomsToggle = null;
     [SerializeField]
+    private Button saveButton = null;
+    [SerializeField]
     private Button addPhotoButton = null;
     [SerializeField]
     private Button deleteButton = null;
@@ -35,6 +39,8 @@ public class PropertyAdminScreen : MonoBehaviour
     private Button calcelButton = null;
     [SerializeField]
     private Text errorMessage = null;
+    [SerializeField]
+    private Text saveButtonText = null;
 
     private IProperty currentProperty;
     private bool canSave = true;
@@ -42,6 +48,8 @@ public class PropertyAdminScreen : MonoBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        addPhotoButton.onClick.AddListener(() => AddPhoto());
+        deleteButton.onClick.AddListener(() => DeleteProperty());
         calcelButton.onClick.AddListener(() => navigator.GoBack());
     }
 
@@ -76,20 +84,31 @@ public class PropertyAdminScreen : MonoBehaviour
             backgroundImage.gameObject.SetActive(false);
         }
         propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width / propertyImage.sprite.texture.height;
-        if (currentProperty.HasRooms)
+
+        if (string.IsNullOrEmpty(currentProperty.Name))
         {
-            HasRoomsToggle.isOn = true;
+            HasRoomsToggle.isOn = false;
             NoRoomsToggle.isOn = false;
+            saveButton.interactable = false;
+            saveButtonText.color = Constants.lightTextColor;
         }
         else
         {
-            NoRoomsToggle.isOn = true;
-            HasRoomsToggle.isOn = false;
+            if (currentProperty.HasRooms)
+            {
+                HasRoomsToggle.isOn = true;
+                NoRoomsToggle.isOn = false;
+            }
+            else
+            {
+                NoRoomsToggle.isOn = true;
+                HasRoomsToggle.isOn = false;
+            }
         }
         ImageDataManager.AddedPhoto = false;
     }
 
-    public void AddPhoto()
+    private void AddPhoto()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
@@ -133,11 +152,18 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 PropertyDataManager.SaveProperty(currentProperty);
             }
-            navigator.GoBack();
+            if (currentProperty.HasRooms)
+            {
+                OpenRoomAdminScreen(currentProperty);
+            }
+            else
+            {
+                navigator.GoBack();
+            }
         }
     }
 
-    public void DeleteProperty()
+    private void DeleteProperty()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
@@ -154,6 +180,20 @@ public class PropertyAdminScreen : MonoBehaviour
             },
             CancelCallback = null
         });
+    }
+
+    public void SaveInteractable()
+    {
+        if(HasRoomsToggle.isOn || NoRoomsToggle.isOn)
+        {
+            saveButton.interactable = true;
+            saveButtonText.color = Color.white;
+        }
+        else
+        {
+            saveButton.interactable = false;
+            saveButtonText.color = Constants.lightTextColor;
+        }
     }
 
     public void ResetError()
@@ -174,5 +214,11 @@ public class PropertyAdminScreen : MonoBehaviour
             currentProperty.Name = value;
             ResetError();
         }
+    }
+
+    private void OpenRoomAdminScreen(IProperty property)
+    {
+        navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());
+        roomAdminScreen.SetCurrentProperty(property);
     }
 }

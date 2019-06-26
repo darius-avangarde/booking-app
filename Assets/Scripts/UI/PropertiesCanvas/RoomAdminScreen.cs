@@ -13,6 +13,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
+    private PropertyRoomScreen propertyRoomScreen = null;
+    [SerializeField]
     private ToggleDialog toggleDialog = null;
     [SerializeField]
     private InfoBox infoDialog = null;
@@ -26,8 +28,6 @@ public class RoomAdminScreen : MonoBehaviour
     private Text nrRoomsText = null;
     [SerializeField]
     private RectTransform roomNameInputFieldTransform = null;
-    [SerializeField]
-    private RectTransform multipleRoomsOptionsPanel = null;
     [SerializeField]
     private InputField multiplePrefixField = null;
     [SerializeField]
@@ -73,6 +73,7 @@ public class RoomAdminScreen : MonoBehaviour
     private int SingleBedsNr;
     private int DoubleBedsNr;
     private bool canSave = true;
+    private bool fromProperty = false;
 
     private void Awake()
     {
@@ -101,6 +102,14 @@ public class RoomAdminScreen : MonoBehaviour
             new ToggleOption(Constants.REPLACE_ROOMS, SaveMultipleRooms),
             new ToggleOption(Constants.ADD_OVER_ROOMS, SaveOverCurrentRooms)
             );
+    }
+
+    public void SetCurrentProperty(IProperty property)
+    {
+        fromProperty = true;
+        currentProperty = property;
+        currentRoom = currentProperty.AddRoom();
+        Initialize();
     }
 
     public void SetCurrentPropertyRoom(IRoom room)
@@ -261,6 +270,11 @@ public class RoomAdminScreen : MonoBehaviour
         }
         currentProperty.SaveMultipleRooms(roomsList);
         navigator.GoBack();
+        if (fromProperty)
+        {
+            navigator.GoBack();
+            OpenPropertyRoomScreen();
+        }
     }
 
     public void SaveOverCurrentRooms()
@@ -341,6 +355,11 @@ public class RoomAdminScreen : MonoBehaviour
         }
         currentProperty.SaveMultipleRooms(roomsList);
         navigator.GoBack();
+        if (fromProperty)
+        {
+            navigator.GoBack();
+            OpenPropertyRoomScreen();
+        }
     }
 
     public void SetFloors()
@@ -386,6 +405,7 @@ public class RoomAdminScreen : MonoBehaviour
         currentProperty = null;
         currentRoom = null;
         canSave = true;
+        fromProperty = false;
     }
 
     public void ResetError()
@@ -458,5 +478,12 @@ public class RoomAdminScreen : MonoBehaviour
         {
             roomDoubleBedQuantityInputField.text = (--DoubleBedsNr).ToString();
         }
+    }
+
+    private void OpenPropertyRoomScreen()
+    {
+        propertyRoomScreen.ScrollToTop();
+        propertyRoomScreen.SetCurrentProperty(currentProperty);
+        navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
 }
