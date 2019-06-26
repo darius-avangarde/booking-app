@@ -29,7 +29,7 @@ public class SlideButton : MonoBehaviour
     private void OnEnable()
     {
         fillRect.gameObject.SetActive(true);
-        SizeRect(fillRect, fillRect.rect.width);
+        SizeRect(fillRect, referenceOpenRect.rect.width);
         StartCoroutine(WaitForClose());
     }
 
