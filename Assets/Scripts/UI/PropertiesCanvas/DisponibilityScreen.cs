@@ -258,7 +258,7 @@ public class DisponibilityScreen : MonoBehaviour
         }
         StartCoroutine(ExpandHeaderBar(new Vector2(headerBar.sizeDelta.x, 560), new Vector2(disponibilityScrollView.offsetMax.x, -560)));
         availableNumber.text = $"{Constants.AVAILABLE_PROPERTIES} {propertyItemList.Count()}";
-        availableNumber.color = Constants.defaultTextColor;
+        availableNumber.color = Color.white;
         propertyDropdownList.options = propertyOptions.Values.ToList();
         propertyDropdownList.RefreshShownValue();
         LayoutRebuilder.ForceRebuildLayoutImmediate(filteredPropertiesContent);
@@ -335,7 +335,7 @@ public class DisponibilityScreen : MonoBehaviour
                 }
                 else
                 {
-                    availableNumber.color = Constants.defaultTextColor;
+                    availableNumber.color = Color.white;
                 }
                 CheckRoomsSelection();
             }

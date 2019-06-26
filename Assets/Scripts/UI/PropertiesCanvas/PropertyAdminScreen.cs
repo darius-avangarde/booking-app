@@ -39,6 +39,8 @@ public class PropertyAdminScreen : MonoBehaviour
     private Button calcelButton = null;
     [SerializeField]
     private Text errorMessage = null;
+    [SerializeField]
+    private Text saveButtonText = null;
 
     private IProperty currentProperty;
     private bool canSave = true;
@@ -88,6 +90,7 @@ public class PropertyAdminScreen : MonoBehaviour
             HasRoomsToggle.isOn = false;
             NoRoomsToggle.isOn = false;
             saveButton.interactable = false;
+            saveButtonText.color = Constants.lightTextColor;
         }
         else
         {
@@ -184,10 +187,12 @@ public class PropertyAdminScreen : MonoBehaviour
         if(HasRoomsToggle.isOn || NoRoomsToggle.isOn)
         {
             saveButton.interactable = true;
+            saveButtonText.color = Color.white;
         }
         else
         {
             saveButton.interactable = false;
+            saveButtonText.color = Constants.lightTextColor;
         }
     }
 
