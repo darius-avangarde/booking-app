@@ -91,7 +91,7 @@ public class PropertyButton : MonoBehaviour
                 int roomsNumber = 0;
                 foreach (var room in currentProperty.Rooms)
                 {
-                    bool isReserved = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd).Any(r => r.ID == room.ID);
+                    bool isReserved = ReservationDataManager.GetReservationsBetween(dateTimeStart, dateTimeEnd).Any(r => r.ContainsRoom(room.ID));
                     if (!isReserved)
                     {
                         roomsNumber++;
@@ -99,6 +99,14 @@ public class PropertyButton : MonoBehaviour
                 }
                 availableRooms.gameObject.SetActive(true);
                 availableRooms.text = $"{Constants.AVAILABLE_ROOMS} {roomsNumber}";
+                if(roomsNumber == 0)
+                {
+                    availableRooms.color = Constants.reservedUnavailableItemColor;
+                }
+                else
+                {
+                    availableRooms.color = Color.white;
+                }
             }
             else
             {
