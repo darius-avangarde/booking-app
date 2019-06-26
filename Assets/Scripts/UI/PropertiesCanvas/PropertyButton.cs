@@ -53,7 +53,7 @@ public class PropertyButton : MonoBehaviour
         if (disponibility)
         {
             propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"Proprietatea {property.Name}";
-            propertyItemTransform.sizeDelta = new Vector2(propertyItemTransform.sizeDelta.x, 285f);
+            propertyItemTransform.sizeDelta = new Vector2(propertyItemTransform.sizeDelta.x, 360f);
         }
         else
         {
