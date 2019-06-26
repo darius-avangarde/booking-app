@@ -44,6 +44,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private IProperty currentProperty;
     private bool canSave = true;
+    private bool editProperty = false;
 
     private void Awake()
     {
@@ -87,6 +88,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
         if (string.IsNullOrEmpty(currentProperty.Name))
         {
+            editProperty = false;
             HasRoomsToggle.isOn = false;
             NoRoomsToggle.isOn = false;
             saveButton.interactable = false;
@@ -94,6 +96,7 @@ public class PropertyAdminScreen : MonoBehaviour
         }
         else
         {
+            editProperty = true;
             if (currentProperty.HasRooms)
             {
                 HasRoomsToggle.isOn = true;
@@ -152,7 +155,7 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 PropertyDataManager.SaveProperty(currentProperty);
             }
-            if (currentProperty.HasRooms)
+            if (currentProperty.HasRooms && !editProperty)
             {
                 OpenRoomAdminScreen(currentProperty);
             }
