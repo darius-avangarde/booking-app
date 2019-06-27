@@ -23,7 +23,7 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private GameObject clientprefabLetter = null;
     [SerializeField]
-    private Transform clientInfoContent = null;
+    private RectTransform clientInfoContent = null;
     [SerializeField]
     private InputField searchField = null;
     [SerializeField]
@@ -42,6 +42,10 @@ public class ClientsScreen : MonoBehaviour
     private GameObject editButton;
     [SerializeField]
     private InputManager inputManager;
+    [SerializeField]
+    private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
+    private ScrollRect clientsScrollView = null;
     #endregion
     #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
@@ -51,6 +55,7 @@ public class ClientsScreen : MonoBehaviour
     private UnityAction<IClient> selectClientCallback;
     private UnityAction<bool> cancelCallback;
     private bool fromReservation = false;
+    private float scrollPosition = 1;
     #endregion
     #region AnimationVariables
     public RectTransform Search;
@@ -74,17 +79,18 @@ public class ClientsScreen : MonoBehaviour
     public void InstantiateClients(bool fromReservation = false)
     {
         this.fromReservation = fromReservation;
+        scrollRectComponent.ResetAll();
         foreach (var clientButton in clientButtons)
         {
-            Destroy(clientButton);
+            DestroyImmediate(clientButton);
         }
 
         foreach (var letterButton in letterButtons)
         {
-            Destroy(letterButton);
+            DestroyImmediate(letterButton);
         }
-        clientButtons.Clear();
-        letterButtons.Clear();
+        //clientButtons.Clear();
+        //letterButtons.Clear();
         foreach (var item in ClientDataManager.GetClientsToDictionary())
         {
             clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
@@ -100,8 +106,19 @@ public class ClientsScreen : MonoBehaviour
                 clientButtons.Add(clientButton);
             }
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(clientInfoContent);
+        Canvas.ForceUpdateCanvases();
+        clientsScrollView.verticalNormalizedPosition = scrollPosition;
+        if (clientsScrollView.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
+    public void LastPosition()
+    {
+        scrollPosition = clientsScrollView.verticalNormalizedPosition;
+    }
     public void OpenClientReservation(UnityAction<IClient> callback)
     {
         InstantiateClients(true);
@@ -188,6 +205,7 @@ public class ClientsScreen : MonoBehaviour
 
     private void OpenClientAdminScreen(IClient client)
     {
+        LastPosition();
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
         navigator.GoTo(clientAdminScreenTransform.GetComponent<NavScreen>());

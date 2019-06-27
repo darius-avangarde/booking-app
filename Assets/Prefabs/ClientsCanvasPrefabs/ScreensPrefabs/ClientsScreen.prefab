@@ -207,17 +207,6 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 93002619299065393}
-        m_MethodName: SetAsFirstSibling
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 0}
         m_MethodName: SetActive
         m_Mode: 0
@@ -2055,6 +2044,7 @@ GameObject:
   - component: {fileID: 6621684967295827610}
   - component: {fileID: 7165938144506304696}
   - component: {fileID: 5306063041959549327}
+  - component: {fileID: 4026028410351859427}
   m_Layer: 5
   m_Name: ClientsContainerScroll View
   m_TagString: Untagged
@@ -2153,6 +2143,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &4026028410351859427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6621684967295827606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e3bc82144bb3345a6b3354905fe118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitByUser: 1
 --- !u!1 &6621684967305403085
 GameObject:
   m_ObjectHideFlags: 0
@@ -2738,6 +2741,8 @@ MonoBehaviour:
   saveButton: {fileID: 0}
   editButton: {fileID: 0}
   inputManager: {fileID: 0}
+  scrollRectComponent: {fileID: 4026028410351859427}
+  clientsScrollView: {fileID: 6621684967295827610}
   Search: {fileID: 93002619299065393}
   LayoutContent: {fileID: 6956511797969296101}
   ClientContainer: {fileID: 6621684967295827609}
