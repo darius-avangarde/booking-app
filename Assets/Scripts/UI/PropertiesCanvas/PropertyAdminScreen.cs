@@ -54,6 +54,10 @@ public class PropertyAdminScreen : MonoBehaviour
         calcelButton.onClick.AddListener(() => navigator.GoBack());
     }
 
+    /// <summary>
+    /// set the current property
+    /// </summary>
+    /// <param name="property">selected property</param>
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
@@ -69,6 +73,10 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// update screen details with the current property
+    /// update name, property photo and rooms toggle
+    /// </summary>
     private void SetPropertyFieldsText()
     {
         ResetError();
@@ -111,6 +119,10 @@ public class PropertyAdminScreen : MonoBehaviour
         ImageDataManager.AddedPhoto = false;
     }
 
+    /// <summary>
+    /// on add photo button
+    /// open modal toggle dialog to select camera output or gallery
+    /// </summary>
     private void AddPhoto()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -132,6 +144,9 @@ public class PropertyAdminScreen : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// save information for current property
+    /// </summary>
     public void SaveProperty()
     {
         NameChanged(propertyNameInputField.text);
@@ -166,6 +181,10 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// delete current property
+    /// open modal dialog canvas
+    /// </summary>
     private void DeleteProperty()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -185,6 +204,9 @@ public class PropertyAdminScreen : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// make save button interactable or not if any toggle is selected
+    /// </summary>
     public void SaveInteractable()
     {
         if(HasRoomsToggle.isOn || NoRoomsToggle.isOn)
@@ -199,12 +221,19 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// reset error message and bool to default
+    /// </summary>
     public void ResetError()
     {
         canSave = true;
         errorMessage.text = string.Empty;
     }
 
+    /// <summary>
+    /// change current property name
+    /// </summary>
+    /// <param name="value">string with the new name</param>
     private void NameChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -219,6 +248,10 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// open add room screen after you create a new property with rooms
+    /// </summary>
+    /// <param name="property"> selected property</param>
     private void OpenRoomAdminScreen(IProperty property)
     {
         navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());

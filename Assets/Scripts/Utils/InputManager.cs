@@ -68,6 +68,11 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// public function to show a message on the screen
+    /// the message will be shown for 1 second and fade
+    /// </summary>
+    /// <param name="currentText">message text to show</param>
     public void Message(string currentText)
     {
         QuitOverlayCanvas.SetActive(true);
@@ -77,13 +82,19 @@ public class InputManager : MonoBehaviour
         StartCoroutine(ShowMessage(currentText));
     }
 
+    /// <summary>
+    /// coroutine for the current message
+    /// after 1 second the fade coroutine will be called
+    /// </summary>
+    /// <param name="currentText">message text to show</param>
+    /// <returns>wait for 1 second</returns>
     private IEnumerator ShowMessage(string currentText)
     {
         quitObjectText.text = currentText;
         //Wait for a frame so that Input.GetKeyDown is no longer true
         yield return null;
 
-        //3 seconds timer
+        //1 second timer
         const float timerTime = 1f;
         float counter = 0;
 
@@ -98,13 +109,18 @@ public class InputManager : MonoBehaviour
         clickedBefore = false;
     }
 
+    /// <summary>
+    /// coroutine for quit message timer
+    /// after 1 second, if the user does not pres escape key, the fade coroutine will start
+    /// </summary>
+    /// <returns>wait for second press to quit</returns>
     private IEnumerator QuitingTimer()
     {
         quitObjectText.text = "Apăsați încă o dată pentru a închide!";
         //Wait for a frame so that Input.GetKeyDown is no longer true
         yield return null;
 
-        //3 seconds timer
+        //1 second timer
         const float timerTime = 1f;
         float counter = 0;
 
@@ -130,6 +146,10 @@ public class InputManager : MonoBehaviour
         clickedBefore = false;
     }
 
+    /// <summary>
+    /// coroutine to fade the current message from the screen
+    /// </summary>
+    /// <returns>wait for end of frame</returns>
     private IEnumerator MessageFader()
     {
         currentImageCollor = quitObjectImage.color;
@@ -151,6 +171,9 @@ public class InputManager : MonoBehaviour
         QuitOverlayCanvas.SetActive(false);
     }
 
+    /// <summary>
+    /// close the app function
+    /// </summary>
     void Quit()
     {
 #if UNITY_EDITOR

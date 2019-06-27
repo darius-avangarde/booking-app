@@ -72,11 +72,18 @@ public class DisponibilityScreen : MonoBehaviour
         disponibilityScrollHeight = disponibilityScrollView.offsetMin.y;
         propertyDropdownList.onValueChanged.AddListener(SelectProperty);
     }
+
+    /// <summary>
+    /// set the position of the scroll rect to the top of the screen
+    /// </summary>
     public void ScrollToTop()
     {
         scrollPosition = 1;
     }
 
+    /// <summary>
+    /// resets the date to the current date when the user opens the screen from main menu
+    /// </summary>
     public void SetDefaultDate()
     {
         startDate = DateTime.Today.Date;
@@ -85,17 +92,30 @@ public class DisponibilityScreen : MonoBehaviour
         ScrollToTop();
     }
 
+    /// <summary>
+    /// set dropdown value
+    /// select the dropdown property
+    /// </summary>
     public void Initialize()
     {
         propertyDropdownList.value = lastDropdownOption;
         SelectProperty(lastDropdownOption);
     }
 
+    /// <summary>
+    /// open modal calendar
+    /// at close the callback sets the new date period
+    /// </summary>
     public void ShowModalCalendar()
     {
         calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
     }
 
+    /// <summary>
+    /// callback for modal calendar to refresh with selected date period
+    /// </summary>
+    /// <param name="startDate">start of seleced period</param>
+    /// <param name="endDate">end of seleced period</param>
     private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
     {
         this.startDate = startDate;
@@ -117,6 +137,10 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// select one of the properties form the dropdown menu
+    /// </summary>
+    /// <param name="optionIndex"></param>
     public void SelectProperty(int optionIndex)
     {
         if (!shouldSelectRooms)
@@ -148,6 +172,11 @@ public class DisponibilityScreen : MonoBehaviour
         ScrollToTop();
     }
 
+    /// <summary>
+    /// instantiate all available properties for current period
+    /// exclude current reservations and last selected room
+    /// update available rooms text
+    /// </summary>
     private void InstantiateProperties()
     {
         scrollRectComponent.ResetAll();
@@ -272,6 +301,12 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// instantiate all rooms of a certain property
+    /// exclude rooms from current reservation
+    /// set background picture of selected property
+    /// </summary>
+    /// <param name="property">selected property</param>
     private void InstantiateRooms(IProperty property)
     {
         scrollRectComponent.ResetAll();
@@ -376,6 +411,11 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// check if room selection mode is on
+    /// update rooms to room selection mode
+    /// or refresh rooms to normal mode
+    /// </summary>
     public void CheckRoomsSelection()
     {
         if (selectedRooms.Count() == 0)
@@ -415,6 +455,9 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// send selected rooms list and selected date period to reservation screen
+    /// </summary>
     public void MakeReservation()
     {
         if (fromReservation)
@@ -427,12 +470,18 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// reset room selection
+    /// </summary>
     public void CancelSelection()
     {
         selectedRooms = new List<IRoom>();
         CheckRoomsSelection();
     }
 
+    /// <summary>
+    /// clear all changes to default value
+    /// </summary>
     public void ClearChanges()
     {
         selectionCallback = null;
@@ -441,6 +490,9 @@ public class DisponibilityScreen : MonoBehaviour
         fromReservation = false;
     }
 
+    /// <summary>
+    /// if a property is selected, on back button should revert to all properties before going to main screen
+    /// </summary>
     private void BackButtonFunction()
     {
         if (propertyDropdownList.value == 0 || fromReservation)
@@ -453,6 +505,10 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// select a property from the dropdown
+    /// </summary>
+    /// <param name="property">selected property</param>
     private void SelectDropdownProperty(IProperty property)
     {
         if (property.HasRooms)
@@ -481,6 +537,11 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// select a property from the dropdown
+    /// this is used for properties without rooms
+    /// </summary>
+    /// <param name="propertyRoom">room of selected property</param>
     private void SelectDropdownProperty(IRoom propertyRoom)
     {
         selectedProperty = PropertyDataManager.GetProperty(propertyRoom.PropertyID);
@@ -495,6 +556,11 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// default action for room objects
+    /// open room screen with the selected room
+    /// </summary>
+    /// <param name="room"></param>
     private void OpenRoomScreen(IRoom room)
     {
         scrollPosition = disponibilityScrollRect.verticalNormalizedPosition;
@@ -503,6 +569,14 @@ public class DisponibilityScreen : MonoBehaviour
         navigator.GoTo(roomScreen.GetComponent<NavScreen>());
     }
 
+    /// <summary>
+    /// function callback to open disponibility screen
+    /// </summary>
+    /// <param name="current">current reservation</param>
+    /// <param name="start">start of date period</param>
+    /// <param name="end">end of date period</param>
+    /// <param name="selectedRooms">selected rooms list</param>
+    /// <param name="confirmSelection">callback for reservation screen</param>
     public void OpenDisponibility(IReservation current, DateTime start, DateTime end, List<IRoom> selectedRooms, Action<DateTime, DateTime, List<IRoom>> confirmSelection)
     {
         fromReservation = true;
@@ -523,6 +597,12 @@ public class DisponibilityScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// animation to expand the footer bar when a room is selected
+    /// </summary>
+    /// <param name="scrollEndSize">scroll view final size</param>
+    /// <param name="buttonsEndSize">footer bar final size</param>
+    /// <returns></returns>
     private IEnumerator ExpandFooterBar(Vector2 scrollEndSize, Vector2 buttonsEndSize)
     {
         float currentTime = 0;
@@ -537,6 +617,13 @@ public class DisponibilityScreen : MonoBehaviour
         footerBar.anchoredPosition = buttonsEndSize;
     }
 
+    /// <summary>
+    /// animation to expand header bar
+    /// the field with the available rooms
+    /// </summary>
+    /// <param name="headerEndSize">header bar final size</param>
+    /// <param name="scrollEndSize">scroll rect component final size</param>
+    /// <returns></returns>
     private IEnumerator ExpandHeaderBar(Vector2 headerEndSize, Vector2 scrollEndSize)
     {
         float currentTime = 0;

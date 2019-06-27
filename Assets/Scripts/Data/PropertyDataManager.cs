@@ -32,6 +32,9 @@ public static class PropertyDataManager
         }
     }
 
+    /// <summary>
+    /// save property data to json file
+    /// </summary>
     private static void WritePropertyData()
     {
         string dataAsJson = JsonUtility.ToJson(Data, true);
@@ -47,22 +50,40 @@ public static class PropertyDataManager
         return Data.properties.FindAll(p => !p.Deleted);
     }
 
+    /// <summary>
+    /// get all deleted properties
+    /// </summary>
+    /// <returns>list of deleted properties</returns>
     public static IEnumerable<IProperty> GetDeletedProperties()
     {
         return Data.properties.FindAll(p => p.Deleted);
     }
 
+    /// <summary>
+    /// get property with the given property id
+    /// </summary>
+    /// <param name="ID">property id</param>
+    /// <returns>Property object</returns>
     public static IProperty GetProperty(string ID)
     {
         return Data.properties.Find(p => p.ID.Equals(ID));
     }
 
+    /// <summary>
+    /// add a new property
+    /// this function does not save the new property to json
+    /// </summary>
+    /// <returns>Property object</returns>
     public static IProperty AddProperty()
     {
         Property newProperty = new Property();
         return newProperty;
     }
 
+    /// <summary>
+    /// create a default room for a property without rooms
+    /// </summary>
+    /// <param name="property">current property</param>
     public static void CreatePropertyRoom(IProperty property)
     {
         IRoom newRoom = property.AddRoom();
@@ -71,12 +92,20 @@ public static class PropertyDataManager
         property.GetPropertyRoomID = newRoom.ID;
     }
 
+    /// <summary>
+    /// save the current property to json file
+    /// </summary>
+    /// <param name="property">selected property</param>
     public static void SaveProperty(IProperty property)
     { 
         Data.properties.Add((Property)property);
         WritePropertyData();
     }
 
+    /// <summary>
+    /// delete selected property
+    /// </summary>
+    /// <param name="ID">selected property id</param>
     public static void DeleteProperty(string ID)
     {
         Property property = Data.properties.Find(p => p.ID.Equals(ID));
@@ -178,23 +207,40 @@ public static class PropertyDataManager
 
         public IRoom GetRoom(string ID) => rooms.Find(r => r.ID.Equals(ID));
 
+        /// <summary>
+        /// return default room for a property without rooms
+        /// </summary>
+        /// <returns>room object</returns>
         public IRoom GetPropertyRoom()
         {
             return GetRoom(getPropertyRoomID);
         }
 
+        /// <summary>
+        /// add a new room to current property
+        /// this function does not save the room to json
+        /// </summary>
+        /// <returns>Room object</returns>
         public IRoom AddRoom()
         {
             Room newRoom = new Room(id);
             return newRoom;
         }
 
+        /// <summary>
+        /// save current room to json file
+        /// </summary>
+        /// <param name="room">current room</param>
         public void SaveRoom(IRoom room)
         {
             rooms.Add((Room)room);
             WritePropertyData();
         }
 
+        /// <summary>
+        /// save a list of rooms to json
+        /// </summary>
+        /// <param name="roomsList">list of room objects</param>
         public void SaveMultipleRooms(List<IRoom> roomsList)
         {
             List<Room> multipleRooms = new List<Room>();
@@ -206,6 +252,10 @@ public static class PropertyDataManager
             WritePropertyData();
         }
 
+        /// <summary>
+        /// delete selected room from json
+        /// </summary>
+        /// <param name="ID">selected room id</param>
         public void DeleteRoom(string ID)
         {
             Room room = rooms.Find(r => r.ID.Equals(ID));
