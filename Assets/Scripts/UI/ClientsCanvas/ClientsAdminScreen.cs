@@ -21,7 +21,7 @@ public class ClientsAdminScreen : MonoBehaviour
     [SerializeField]
     private Text clientScreenEmail = null;
     [SerializeField]
-    private Transform reservationInfoContent = null;
+    private RectTransform reservationInfoContent = null;
     [SerializeField]
     private GameObject reservationPrefabButton = null;
     [SerializeField]
@@ -30,10 +30,14 @@ public class ClientsAdminScreen : MonoBehaviour
     private InputManager inputManager;
     [SerializeField]
     private ClientsScreen clientsScreen;
+    [SerializeField]
+    private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
+    private ScrollRect reservationsScrollView = null;
     #endregion
     private List<GameObject> reservationButtons = new List<GameObject>();
     private IClient currentClient;
-
+    private float scrollPosition = 1;
 
     public IClient GetCurrentClient()
     {
@@ -83,9 +87,10 @@ public class ClientsAdminScreen : MonoBehaviour
 
     public void InstantiateReservations()
     {
+        scrollRectComponent.ResetAll();
         foreach (var reservationButton in reservationButtons)
         {
-            Destroy(reservationButton);
+            DestroyImmediate(reservationButton);
         }
 
         foreach (var reservation in ReservationDataManager.GetActiveClientReservations(currentClient.ID).OrderBy(r => r.Period.Start))
@@ -94,8 +99,19 @@ public class ClientsAdminScreen : MonoBehaviour
             reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => rezerv.OpenEditReservation(reservation, UpdateCallBack), true);
             reservationButtons.Add(reservationButton);
         }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(reservationInfoContent);
+        Canvas.ForceUpdateCanvases();
+        reservationsScrollView.verticalNormalizedPosition = scrollPosition;
+        if (reservationsScrollView.content.childCount > 0)
+        {
+            scrollRectComponent.Init();
+        }
     }
 
+    public void LastPosition()
+    {
+        scrollPosition = reservationsScrollView.verticalNormalizedPosition;
+    }
     private void UpdateCallBack(IReservation reserv)
     {
         SetCurrentClients(ClientDataManager.GetClient(reserv.CustomerID));
@@ -103,6 +119,7 @@ public class ClientsAdminScreen : MonoBehaviour
 
     public void AddReservationForClient()
     {
+        LastPosition();
         rezerv.OpenAddReservation(currentClient, UpdateCallBack);
     }
 

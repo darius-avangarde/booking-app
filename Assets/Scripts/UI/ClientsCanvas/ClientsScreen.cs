@@ -347,6 +347,8 @@ public class ClientsScreen : MonoBehaviour
             }
             Search.sizeDelta = new Vector2(Search.sizeDelta.x, initialSizeSearch);
             ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 280);
+            //ClientContainer.offsetMax = new Vector3(0, -320,0);
+            //ClientContainer.offsetMin = new Vector2(0, 0);
         }
         else
         {
@@ -360,6 +362,8 @@ public class ClientsScreen : MonoBehaviour
             }
             Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
             ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer);
+           // ClientContainer.offsetMax = new Vector3(0, -180,0);
+           // ClientContainer.offsetMin = new Vector2(0, 0);
         }
 
 

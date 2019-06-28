@@ -1801,6 +1801,7 @@ GameObject:
   - component: {fileID: 4578671131168560526}
   - component: {fileID: 4074975993276732640}
   - component: {fileID: 3396859570000287605}
+  - component: {fileID: 8199552259828963608}
   m_Layer: 5
   m_Name: ReservationsContainerScroll View
   m_TagString: Untagged
@@ -1899,6 +1900,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8199552259828963608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578671131168560522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14e3bc82144bb3345a6b3354905fe118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InitByUser: 0
 --- !u!1 &4578671131369483353
 GameObject:
   m_ObjectHideFlags: 0
@@ -2214,6 +2228,8 @@ MonoBehaviour:
   rezerv: {fileID: 0}
   inputManager: {fileID: 0}
   clientsScreen: {fileID: 0}
+  scrollRectComponent: {fileID: 8199552259828963608}
+  reservationsScrollView: {fileID: 4578671131168560526}
 --- !u!114 &4578671132106327706
 MonoBehaviour:
   m_ObjectHideFlags: 0
