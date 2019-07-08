@@ -12,7 +12,9 @@ public class SideMenuFade : MonoBehaviour
     private Vector2 firstPosition;
     [SerializeField]
     private GameObject sideMenuPanel;
-
+    [SerializeField]
+    private Image img;
+    
     void Start()
     {
         firstPosition =  new Vector2(-431, 0);  //sideMenu.anchoredPosition; 
@@ -21,6 +23,7 @@ public class SideMenuFade : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(Move(sideMenu, new Vector2(0, 0)));
+        img.color = new Color(0, 0, 0, 0.5f);
     }
 
     public void FadeOut()
@@ -28,6 +31,7 @@ public class SideMenuFade : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(Move(sideMenu, firstPosition));
         StartCoroutine(Close());
+        StartCoroutine(CanvasFade(true));
     }
     IEnumerator Move(RectTransform rt, Vector2 targetPos)
     {
@@ -44,4 +48,26 @@ public class SideMenuFade : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         sideMenuPanel.SetActive(false);
     }
+
+    IEnumerator CanvasFade(bool fadeAway)
+    {
+        if (fadeAway)
+        {
+            for (float i = 0.5f; i >= 0; i -= Time.deltaTime)
+            {
+                img.color = new Color(0, 0, 0, i);
+                yield return null;
+            }
+        }
+        else
+        {
+            for (float i = 0.5f; i <= 1; i += 0.01f)//Time.deltaTime)
+            {
+                img.color = new Color(0, 0, 0, i);
+                yield return null;
+            }
+        }
+    }
+
+   
 }

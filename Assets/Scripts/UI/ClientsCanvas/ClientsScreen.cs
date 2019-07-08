@@ -69,11 +69,11 @@ public class ClientsScreen : MonoBehaviour
     {
         //initializations for different sizes
         initialSizeSearch = Search.rect.height;
-        initialClientContainer = ClientContainer.sizeDelta.y;
+       // initialClientContainer = ClientContainer.sizeDelta.y;
 
         Search.gameObject.SetActive(false);
-        ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -30 - initialSizeSearch);
-        initialClientContainer = ClientContainer.sizeDelta.y;
+       // ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -30 - initialSizeSearch);
+       // initialClientContainer = ClientContainer.sizeDelta.y;
     }
 
     public void InstantiateClients(bool fromReservation = false)

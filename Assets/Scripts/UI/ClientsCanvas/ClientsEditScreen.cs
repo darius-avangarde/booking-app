@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Linq;
+using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ClientsEditScreen : MonoBehaviour
 {
+    [SerializeField]
+    private ConfirmationDialog confirmationDialog = null;
+    [SerializeField]
+    private Navigator navigator = null;
     [SerializeField]
     private InputField clientName;
     [SerializeField]
@@ -20,7 +25,8 @@ public class ClientsEditScreen : MonoBehaviour
     private Text textNameRequired;
     [SerializeField]
     private InfoBox infoDialog = null;
-
+    [SerializeField]
+    private ClientsScreen clientsScreen;
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -87,5 +93,28 @@ public class ClientsEditScreen : MonoBehaviour
     public void ShowInfo()
     {
         infoDialog.Show(  $"{Environment.NewLine}*Câmpurile marcate cu steluță sunt obligatorii.");
+    }
+
+    private void DeleteClientButton(Action actionDelete = null)
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_CLIENT,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                ClientDataManager.DeleteClient(currentClient.ID);
+                ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
+                clientsScreen.InstantiateClients();
+                navigator.GoBack();
+                actionDelete?.Invoke();
+            },
+            CancelCallback = null
+        });
+    }
+    public void DeleteClientCurrent()
+    {
+        DeleteClientButton();
     }
 }

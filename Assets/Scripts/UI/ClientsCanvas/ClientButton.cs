@@ -34,7 +34,7 @@ public class ClientButton : MonoBehaviour
     {
         bool ok = false;
 
-        if (ClientName.text.ToLower().Trim().StartsWith(input.ToLower().Trim()))
+        if (ClientName.text.ToLower().Trim().StartsWith(input.ToLower().Trim()) || phoneNumber.text.ToLower().Trim().StartsWith(input.ToLower().Trim()))
         {
             ok = true;
         }
