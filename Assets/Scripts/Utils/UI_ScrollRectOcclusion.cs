@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 /// <summary>
-/// ScrollRectOcclusion - disables the objects outside of the scrollrect viewport. 
+/// ScrollRectOcclusion - disables the objects outside of the scrollrect viewport.
 /// Usefull for scrolls with lots of content, reduces geometry and drawcalls (if content is not batched)
-/// 
+///
 /// Fields
 /// - InitByUSer - in case your scrollrect is populated from code, you can explicitly Initialize the infinite scroll after your scroll is ready
 /// by callin Init() method
-/// 
+///
 /// Notes
-/// - In some cases it might create a bit of spikes, especially if you have lots of UI.Text objects in the childs. In that case consider to Add 
-/// CanvasGroup to your childs and instead of calling setActive on game object change CanvasGroup.alpha value. At 0 it is not being rendered hence will 
-/// also optimize the prformance. 
+/// - In some cases it might create a bit of spikes, especially if you have lots of UI.Text objects in the childs. In that case consider to Add
+/// CanvasGroup to your childs and instead of calling setActive on game object change CanvasGroup.alpha value. At 0 it is not being rendered hence will
+/// also optimize the prformance.
 /// - works for both vertical and horizontal scrolls, even at the same time (grid layout)
 /// - in order to work it disables layout components and size fitter if present (automatically)
 /// </summary>
@@ -77,7 +77,7 @@ public class UI_ScrollRectOcclusion : MonoBehaviour
 
     public void Init()
 	{
-
+		Debug.Log("is init");
 		if (GetComponent<ScrollRect>() != null)
 		{
 			hasDisabledGridComponents = false;

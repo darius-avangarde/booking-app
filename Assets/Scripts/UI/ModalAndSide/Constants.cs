@@ -145,6 +145,28 @@ public class Constants : MonoBehaviour
         "Dum"
     };
 
+    public static List<string> DayOfWeekNamesShort = new List<string>()
+    {
+        "Lu",
+        "Ma",
+        "Mi",
+        "Jo",
+        "Vi",
+        "Sâ",
+        "Du"
+    };
+
+    public static List<string> DayOfWeekNamesFull = new List<string>()
+    {
+        "Luni",
+        "Marți",
+        "Miercuri",
+        "Joi",
+        "Vineri",
+        "Sâmbătă",
+        "Duminică"
+    };
+
     public static Dictionary<int, string> XAxisDict = new Dictionary<int, string>()
     {
         {0, "Timp"},
