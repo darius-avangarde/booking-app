@@ -8,7 +8,6 @@ public interface IProperty
     bool HasRooms { get; set; }
     int FloorRooms { get; set; }
     IEnumerable<IRoom> Rooms { get; }
-    IEnumerable<IRoom> MultipleRooms { get; }
     IEnumerable<IRoom> DeletedRooms { get; }
 
     IRoom AddRoom();
