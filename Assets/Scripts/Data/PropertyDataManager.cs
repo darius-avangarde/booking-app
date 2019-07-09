@@ -302,6 +302,18 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
+        private string type = "Cameră";
+        public string Type
+        {
+            get => type;
+            set
+            {
+                type = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
         private bool deleted = false;
         public bool Deleted
         {

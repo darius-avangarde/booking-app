@@ -8,13 +8,15 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
+    public event Action<int, int> SetMultipleRoomsFields = delegate { };
     public event Action<bool> MultipleRooms = delegate { };
     public event Action<bool> SetRoomsToggle = delegate { };
+    public event Action GetRoomsToggle = delegate { };
     public event Action CheckSave = delegate { };
     public IProperty CurrentProperty { get; set; }
     public bool CanSave { get; set; } = true;
 
-    public Navigator navigator = null;
+    public Navigator navigator;
 
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
@@ -76,19 +78,16 @@ public class PropertyAdminScreen : MonoBehaviour
 
     /// <summary>
     /// update screen details with the current property
-    /// update name, property photo and rooms toggle
+    /// update name, multiple rooms field and rooms toggle
     /// </summary>
     private void SetPropertyFieldsText()
     {
         propertyNameInputField.text = CurrentProperty.Name ?? "";
-        if (string.IsNullOrEmpty(CurrentProperty.Name))
-        {
-        }
-        else
+        if (!string.IsNullOrEmpty(CurrentProperty.Name))
         {
             SetRoomsToggle(CurrentProperty.HasRooms);
+            SetMultipleRoomsFields(CurrentProperty.Rooms.Count() / CurrentProperty.FloorRooms, CurrentProperty.FloorRooms);
         }
-        ImageDataManager.AddedPhoto = false;
     }
 
     /// <summary>
@@ -100,11 +99,12 @@ public class PropertyAdminScreen : MonoBehaviour
         if (CanSave)
         {
             CurrentProperty.Name = propertyNameInputField.text;
+            GetRoomsToggle();
             if (CurrentProperty.HasRooms)
             {
+                shouldGoBack = false;
                 if (CurrentProperty.Rooms.Count() > 0)
                 {
-                    shouldGoBack = false;
                     toggleDialog.Show(toggleDialogOptions);
                 }
                 else

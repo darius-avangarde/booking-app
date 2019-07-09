@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class RoomFieldsHandler : MonoBehaviour
 {
     [SerializeField]
+    private PropertyAdminScreen propertyAdminScreen = null;
+    [SerializeField]
     private CreateMultipleRooms multipleRoomsScript = null;
     [SerializeField]
     private InputField multipleFloorsField = null;
@@ -20,7 +22,12 @@ public class RoomFieldsHandler : MonoBehaviour
     private int currentFloorValue = 0;
     private int currenRoomValue = 0;
 
-    private void Awake()
+    private void Start()
+    {
+        propertyAdminScreen.SetMultipleRoomsFields += SetFields;
+    }
+
+    private void OnEnable()
     {
         multipleFloorDropdown.value = 1;
         multipleRoomsDropdown.value = 1;
@@ -33,14 +40,20 @@ public class RoomFieldsHandler : MonoBehaviour
         multipleFloorsField.characterValidation = InputField.CharacterValidation.Integer;
     }
 
-    public void SetFloorInputField()
+    private void SetFields(int floors, int rooms)
     {
-        currentFloorValue = int.Parse(multipleFloorsField.text);
+        SetFloorInputField((floors - 1).ToString());
+        SetRoomInputField(rooms.ToString());
+    }
+
+    public void SetFloorInputField(string value)
+    {
+        currentFloorValue = int.Parse(value) + 1;
         multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
         multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
         if (currentFloorValue > 0)
         {
-            multipleFloorsField.text = $"P+{currentFloorValue}";
+            multipleFloorsField.text = $"P+{currentFloorValue - 1}";
         }
         else
         {
@@ -48,15 +61,16 @@ public class RoomFieldsHandler : MonoBehaviour
         }
     }
 
-    public void SetRoomInputField()
+    public void SetRoomInputField(string value)
     {
-        currenRoomValue = int.Parse(multipleRoomsField.text);
+        currenRoomValue = int.Parse(value);
         multipleRoomsScript.multipleRoomsNumber = currenRoomValue;
+        multipleRoomsField.text = value;
     }
 
     public void SetFloorDropdownOption()
     {
-        currentFloorValue = multipleFloorDropdown.value;
+        currentFloorValue = multipleFloorDropdown.value + 1;
         multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
         multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
         multipleFloorsField.text = multipleFloorDropdown.options[multipleFloorDropdown.value].text;

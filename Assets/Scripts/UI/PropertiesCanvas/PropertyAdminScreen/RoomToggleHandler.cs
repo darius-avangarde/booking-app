@@ -20,12 +20,21 @@ public class RoomToggleHandler : MonoBehaviour
     [SerializeField]
     private GameObject AddRoomsField = null;
 
+    private bool currentHasRooms = true;
+
     private void Start()
+    {
+        propertyAdminScreenComponent.SetRoomsToggle += SetToggle;
+        propertyAdminScreenComponent.GetRoomsToggle += GetCurrentToggles;
+    }
+
+    private void OnEnable()
     {
         HasRoomsToggle.isOn = false;
         NoRoomsToggle.isOn = false;
         AddRoomsField.SetActive(false);
-        propertyAdminScreenComponent.SetRoomsToggle += SetToggle;
+        HasRoomsToggleBackground.color = Color.grey;
+        NoRoomsToggleBackground.color = Color.grey;
     }
 
     private void SetToggle(bool hasRooms)
@@ -34,31 +43,38 @@ public class RoomToggleHandler : MonoBehaviour
         {
             HasRoomsToggle.isOn = true;
             NoRoomsToggle.isOn = false;
-            HasRoomsToggleBackground.color = Color.green;
-            NoRoomsToggleBackground.color = Color.grey;
+            currentHasRooms = true;
             AddRoomsField.SetActive(true);
         }
         else
         {
             NoRoomsToggle.isOn = true;
             HasRoomsToggle.isOn = false;
-            HasRoomsToggleBackground.color = Color.grey;
-            NoRoomsToggleBackground.color = Color.green;
+            currentHasRooms = false;
             AddRoomsField.SetActive(false);
         }
+    }
+
+    private void GetCurrentToggles()
+    {
+        propertyAdminScreenComponent.CurrentProperty.HasRooms = currentHasRooms;
     }
 
     public void SetPropertyRooms()
     {
         if (HasRoomsToggle.isOn)
         {
-            propertyAdminScreenComponent.CurrentProperty.HasRooms = true;
+            currentHasRooms = true;
             saveButton.interactable = true;
+            HasRoomsToggleBackground.color = Color.green;
+            NoRoomsToggleBackground.color = Color.grey;
         }
         else if(NoRoomsToggle.isOn)
         {
-            propertyAdminScreenComponent.CurrentProperty.HasRooms = false;
+            currentHasRooms = false;
             saveButton.interactable = true;
+            HasRoomsToggleBackground.color = Color.grey;
+            NoRoomsToggleBackground.color = Color.green;
         }
         else
         {

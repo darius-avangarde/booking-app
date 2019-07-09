@@ -8,26 +8,20 @@ using UnityEngine.UI;
 
 public class RoomAdminScreen : MonoBehaviour
 {
+    public Action GetRoomName = delegate { };
+    public Action GetRoomType = delegate { };
+    public Action GetBedsNumber = delegate { };
+    public Action<string> SetRoomName = delegate { };
+    public Action<string> SetRoomType = delegate { };
+    public Action<int, int> SetBedsNumber = delegate { };
+    public IRoom CurrentRoom { get; set; }
+
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
-    private PropertyRoomScreen propertyRoomScreen = null;
-    [SerializeField]
     private Text propertyRoomTitle = null;
-    [SerializeField]
-    private InputField roomNameInputField = null;
-    [SerializeField]
-    private GameObject roomsCreationText = null;
-    [SerializeField]
-    private GameObject roomInfoInputPanel = null;
-    [SerializeField]
-    private InputField roomPriceInputField = null;
-    [SerializeField]
-    private InputField roomSingleBedQuantityInputField = null;
-    [SerializeField]
-    private InputField roomDoubleBedQuantityInputField = null;
     [SerializeField]
     private Button deleteButton = null;
     [SerializeField]
@@ -39,9 +33,6 @@ public class RoomAdminScreen : MonoBehaviour
 
     private ConfirmationDialogOptions modalDialogOptions = new ConfirmationDialogOptions();
     private IProperty currentProperty;
-    private IRoom currentRoom;
-    private int SingleBedsNr;
-    private int DoubleBedsNr;
     private bool canSave = true;
 
     private void Awake()
@@ -55,8 +46,8 @@ public class RoomAdminScreen : MonoBehaviour
         modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
         modalDialogOptions.ConfirmCallback = () =>
         {
-            currentProperty.DeleteRoom(currentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            currentProperty.DeleteRoom(CurrentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(CurrentRoom.ID);
             navigator.GoBack();
             navigator.GoBack();
         };
@@ -70,59 +61,43 @@ public class RoomAdminScreen : MonoBehaviour
     public void SetCurrentPropertyRoom(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
-        currentRoom = room;
+        CurrentRoom = room;
         Initialize();
     }
 
     /// <summary>
-    /// initialize current property photo
     /// initialize input fields
-    /// initialize beds information
+    /// initialize room type dropdown
+    /// initialize bed information
     /// </summary>
     public void Initialize()
     {
-        if (currentRoom != null)
+        if (CurrentRoom != null)
         {
-            propertyRoomTitle.text = currentProperty.Name;
-            if (string.IsNullOrEmpty(currentRoom.Name))
-            {
-                roomNameInputField.gameObject.SetActive(false);
-                roomsCreationText.SetActive(true);
-                roomInfoInputPanel.SetActive(true);
-                propertyRoomTitle.gameObject.SetActive(true);
-                deleteButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                roomNameInputField.gameObject.SetActive(true);
-                roomsCreationText.SetActive(false);
-                roomNameInputField.text = currentRoom.Name;
-                roomInfoInputPanel.SetActive(false);
-                propertyRoomTitle.gameObject.SetActive(false);
-                deleteButton.gameObject.SetActive(true);
-            }
-            roomPriceInputField.text = currentRoom.Price ?? Constants.PRICE;
-            roomSingleBedQuantityInputField.text = currentRoom.SingleBeds.ToString();
-            roomDoubleBedQuantityInputField.text = currentRoom.DoubleBeds.ToString();
-            SingleBedsNr = currentRoom.SingleBeds;
-            DoubleBedsNr = currentRoom.DoubleBeds;
+            propertyRoomTitle.text = Constants.EDIT_ROOM;
+            SetRoomName(CurrentRoom.Name);
+            SetRoomType(CurrentRoom.Type);
+            SetBedsNumber(CurrentRoom.SingleBeds, CurrentRoom.DoubleBeds);
         }
     }
 
     public void SaveChanges()
     {
-        
+        GetRoomName();
+        GetRoomType();
+        GetBedsNumber();
+        navigator.GoBack();
     }
 
     public void DeleteRoom()
     {
-        modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+        modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(CurrentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
         modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
         modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
         modalDialogOptions.ConfirmCallback = () =>
         {
-            currentProperty.DeleteRoom(currentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            currentProperty.DeleteRoom(CurrentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(CurrentRoom.ID);
             navigator.GoBack();
             navigator.GoBack();
         };
@@ -132,13 +107,9 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void DefaultValues()
     {
-        roomNameInputField.text = string.Empty;
-        roomPriceInputField.text = string.Empty;
-        roomSingleBedQuantityInputField.text = string.Empty;
-        roomDoubleBedQuantityInputField.text = string.Empty;
         errorMessage.text = string.Empty;
         currentProperty = null;
-        currentRoom = null;
+        CurrentRoom = null;
         canSave = true;
     }
 
@@ -146,61 +117,5 @@ public class RoomAdminScreen : MonoBehaviour
     {
         errorMessage.text = string.Empty;
         canSave = true;
-    }
-
-    public void OnRoomNameValueChanged(string value)
-    {
-        currentRoom.Name = string.IsNullOrEmpty(value) ? Constants.NEW_ROOM : value;
-    }
-
-    public void OnRoomPriceValueChanged(string value)
-    {
-        currentRoom.Price = string.IsNullOrEmpty(value) ? "" : value;
-    }
-
-    public void OnSingleBedsChanged(string value)
-    {
-        if (value == "-")
-        {
-            roomSingleBedQuantityInputField.text = "";
-            return;
-        }
-        currentRoom.SingleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
-    }
-
-    public void OnDoubleBedsChanged(string value)
-    {
-        if (value == "-")
-        {
-            roomDoubleBedQuantityInputField.text = "";
-            return;
-        }
-        currentRoom.DoubleBeds = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
-    }
-
-    public void IncrementSingleBedQuantity()
-    {
-        roomSingleBedQuantityInputField.text = (++SingleBedsNr).ToString();
-    }
-
-    public void DecrementSingleBedQuantity()
-    {
-        if (roomSingleBedQuantityInputField.text != "0")
-        {
-            roomSingleBedQuantityInputField.text = (--SingleBedsNr).ToString();
-        }
-    }
-
-    public void IncrementDoubleBedQuantity()
-    {
-        roomDoubleBedQuantityInputField.text = (++DoubleBedsNr).ToString();
-    }
-
-    public void DecrementDoubleBedQuantity()
-    {
-        if (roomDoubleBedQuantityInputField.text != "0")
-        {
-            roomDoubleBedQuantityInputField.text = (--DoubleBedsNr).ToString();
-        }
     }
 }
