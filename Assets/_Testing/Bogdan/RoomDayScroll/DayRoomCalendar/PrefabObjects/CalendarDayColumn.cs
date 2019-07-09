@@ -13,13 +13,22 @@ public class CalendarDayColumn : MonoBehaviour
     private List<CalendarDayColumnObject> dayPool = new List<CalendarDayColumnObject>();
     private DateTime objectDate;
 
-    public void UpdateDays(DateTime date, List<IRoom> rooms, UnityAction<DateTime> action)
+
+    public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime> action)
     {
         objectDate = new DateTime(date.Date.Ticks);
-        if(rooms.Count != dayPool.Count)
+
+        ManagePool(rooms);
+
+        for (int r = 0; r < rooms.Count; r++)
         {
-            ManagePool(rooms.Count);
+            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], null);
         }
+    }
+
+    public void UpdateRooms(List<IRoom> rooms)
+    {
+        ManagePool(rooms);
 
         for (int r = 0; r < rooms.Count; r++)
         {
@@ -37,18 +46,21 @@ public class CalendarDayColumn : MonoBehaviour
         }
     }
 
-    private void ManagePool(int roomCount)
+    private void ManagePool(List<IRoom> rooms)
     {
-        //CreateNewObjects as needed
-        while(dayPool.Count < roomCount)
+        if(rooms.Count != dayPool.Count)
         {
-            CreateDayColumnObject();
-        }
+            //CreateNewObjects as needed
+            while(dayPool.Count < rooms.Count)
+            {
+                CreateDayColumnObject();
+            }
 
-        //Disable unused objects
-        for (int i = dayPool.Count - 1; i > roomCount; i--)
-        {
-            dayPool[i].gameObject.SetActive(false);
+            //Disable unused objects
+            for (int i = dayPool.Count - 1; i > rooms.Count; i--)
+            {
+                dayPool[i].gameObject.SetActive(false);
+            }
         }
     }
 

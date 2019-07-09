@@ -11,10 +11,7 @@ public class CalendarRoomColumn : MonoBehaviour
 
     public void UpdateRooms(List<IRoom> rooms, UnityAction<IRoom> tapAction)
     {
-        if(rooms.Count != roomPool.Count)
-        {
-            ManagePool(rooms.Count);
-        }
+        ManagePool(rooms);
 
         for (int r = 0; r < rooms.Count; r++)
         {
@@ -22,18 +19,21 @@ public class CalendarRoomColumn : MonoBehaviour
         }
     }
 
-    private void ManagePool(int roomCount)
+    private void ManagePool(List<IRoom> rooms)
     {
-        //Create New Objects as needed
-        while(roomPool.Count < roomCount)
+        if(rooms.Count != roomPool.Count)
         {
-            CreateRoomColumnObject();
-        }
+            //Create New Objects as needed
+            while(roomPool.Count < rooms.Count)
+            {
+                CreateRoomColumnObject();
+            }
 
-        //Disable unused objects
-        for (int i = roomPool.Count - 1; i > roomCount; i--)
-        {
-            roomPool[i].gameObject.SetActive(false);
+            //Disable unused objects
+            for (int i = roomPool.Count - 1; i > rooms.Count; i--)
+            {
+                roomPool[i].gameObject.SetActive(false);
+            }
         }
     }
 

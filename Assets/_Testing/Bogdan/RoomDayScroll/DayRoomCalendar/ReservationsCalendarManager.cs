@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,6 +11,9 @@ public class ReservationsCalendarManager : MonoBehaviour
     private GameObject dayHeaderPrefab;
     [SerializeField]
     private GameObject dayColumnPrefab;
+
+    [SerializeField]
+    private RectTransform dayColumnObjectTransform;
 
     [Space]
     [SerializeField]
@@ -29,7 +33,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private IProperty currentProperty;
     private List<IRoom> currentRooms;
 
-    private List<CalendarDayColumn> columnObjects = new List<CalendarDayColumn>();
+    private List<CalendarDayColumn> dayColumns = new List<CalendarDayColumn>();
+    private List<CalendarDayHeaderObject> dayHeaders = new List<CalendarDayHeaderObject>();
     private int totalItemCount = 0;
 
 
@@ -41,19 +46,42 @@ public class ReservationsCalendarManager : MonoBehaviour
         CreateDayItems();
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
+
+        StartCoroutine(DelayStartTest(2, 2));
+        StartCoroutine(DelayStartTest(4, 0));
     }
 
+    private IEnumerator DelayStartTest(float delay, int properyIndex)
+    {
+        yield return new WaitForSeconds(delay);
+        SelectProperty(PropertyDataManager.GetProperties().ToList()[properyIndex]);
+    }
 
     public void SelectProperty(IProperty property)
     {
-        UpdateRoomColumn(property);
-    }
-
-    private void UpdateRoomColumn(IProperty property)
-    {
         currentProperty = property;
         currentRooms = property.Rooms.ToList();
+        UpdateRoomColumn();
+        UpdateDayColumns();
+
+        //Resize the day column content rect size to fit the number of rooms
+        dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
+    }
+
+    private void UpdateRoomColumn()
+    {
         roomColumn.UpdateRooms(currentRooms, null);
+    }
+
+    private void UpdateDayColumns()
+    {
+        for (int i = 0; i < currentRooms.Count; i++)
+        {
+            foreach(CalendarDayColumn dayColumn in dayColumns)
+            {
+                dayColumn.UpdateRooms(currentRooms);
+            }
+        }
     }
 
     private void MoveDayRoom(Transform dayColumnTransform, bool isForward)
@@ -77,27 +105,12 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day header
             CalendarDayHeaderObject header = Instantiate(dayHeaderPrefab, dayHeaderContent).GetComponent<CalendarDayHeaderObject>();
             header.UpdateDayObject(DateTime.Today.AddDays(d), null, null);
-
-            List<IRoom> rl = PropertyDataManager.GetProperties().ToList()[1].Rooms.ToList();
+            dayHeaders.Add(header);
 
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
-            dayColumn.UpdateDays(DateTime.Today.AddDays(d), rl, null);
-
+            dayColumn.Initialize(DateTime.Today.AddDays(d), new List<IRoom>(), null);
+            dayColumns.Add(dayColumn);
         }
     }
-
-    private void SetProperty(IProperty prop)
-    {
-        currentProperty = prop;
-        currentRooms = prop.Rooms.ToList();
-
-        UpdateRoomItems();
-    }
-
-    private void UpdateRoomItems()
-    {
-
-    }
-
 }

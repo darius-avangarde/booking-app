@@ -15,8 +15,15 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     [SerializeField]
     private ScrollRect DayColumnScrollrect;
 
+    [Space]
+    [SerializeField]
+    private RectTransform DayColumnPrefabRectTransform;
+
+    [Space]
     [SerializeField]
     private float snapTime = 0.2f;
+    [SerializeField]
+    private AnimationCurve snapCurve;
 
     private Vector2 startPos;
     private bool isSnaping = false;
@@ -26,6 +33,15 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     {
         DayColumnScrollrect.onValueChanged.AddListener((v) => RoomsColumnScrollrect.normalizedPosition = v);
         DayColumnScrollrect.onValueChanged.AddListener((v) => DayHeaderScrollrect.normalizedPosition = v);
+
+        //Set listeners for changing the content rect sizes (layout groups and content size fitters are disables for infinite scroll)
+        ResolutionChangeManager.AddListener(
+            () =>
+                {
+                    DayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal ,DayColumnScrollrect.content.childCount * DayColumnPrefabRectTransform.rect.width);
+                    DayHeaderScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal ,DayColumnScrollrect.content.childCount * DayColumnPrefabRectTransform.rect.width);
+                }
+            );
     }
 
     private void Update()
@@ -77,6 +93,8 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         isSnaping = false;
     }
 
+
+
     private IEnumerator Snap()
     {
         isSnaping = true;
@@ -86,11 +104,9 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         Vector2 current = DayColumnScrollrect.normalizedPosition;
         Vector2 target = NearestSnapPoint();
 
-        Debug.Log("snapping from: " + current.x);
-        // Debug.Log("snappin from " + ReservationsScrollrect.normalizedPosition.y + "  to " + target.y);
-
-        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/snapTime){
-            DayColumnScrollrect.normalizedPosition = Vector2.Lerp(current, target, t);
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/snapTime)
+        {
+            DayColumnScrollrect.normalizedPosition = Vector2.Lerp(current, target, snapCurve.Evaluate(t));
             yield return null;
         }
         DayColumnScrollrect.normalizedPosition = target;
@@ -102,17 +118,10 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         Vector2 snapPos = Vector2.zero;
         snapPos.y = DayColumnScrollrect.normalizedPosition.y;
 
+        float normalizedWidth = DayColumnScrollrect.viewport.rect.width / (DayColumnScrollrect.content.rect.width - DayColumnScrollrect.viewport.rect.width) + 1;
+        float snapSize = normalizedWidth/DayColumnScrollrect.content.childCount;
+        snapPos.x = Mathf.RoundToInt(DayColumnScrollrect.horizontalNormalizedPosition/snapSize) * snapSize;
 
-        //TODO: Extract normal pos from rects snap to nearest increment
-        float xOffset = DayColumnScrollrect.content.anchoredPosition.x;
-        float xSize = DayColumnScrollrect.content.GetChild(0).GetComponent<RectTransform>().rect.width;
-
-        float normalSizeX = 1.0f/(DayColumnScrollrect.content.childCount);
-
-
-
-        Debug.Log("xOffset  " + xOffset + "   width " + xSize);
-        snapPos.x = Mathf.RoundToInt(DayColumnScrollrect.horizontalNormalizedPosition/normalSizeX) * normalSizeX;
         return snapPos;
     }
 }

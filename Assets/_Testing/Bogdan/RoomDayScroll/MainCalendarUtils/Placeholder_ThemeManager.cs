@@ -10,10 +10,11 @@ public class Placeholder_ThemeManager : MonoBehaviour
     public Color CalendarWeekendColor;
     public Color CalendarNormalColor;
 
-    public static Placeholder_ThemeManager Instance;
+    public static Placeholder_ThemeManager Instance => instance;
+    private static Placeholder_ThemeManager instance;
 
-    private void Start()
+    private void Awake()
     {
-        Instance = this;
+        instance = this;
     }
 }
