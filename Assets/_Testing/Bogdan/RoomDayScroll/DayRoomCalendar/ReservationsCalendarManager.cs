@@ -61,6 +61,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         //StartCoroutine(DelayStartTest(4, 0));
     }
 
+    //TODO: Remove test routine
     private IEnumerator DelayStartTest(float delay, int properyIndex)
     {
         yield return new WaitForSeconds(delay);
@@ -83,31 +84,24 @@ public class ReservationsCalendarManager : MonoBehaviour
         }
     }
 
+    //TODO: Replace debug logs with fuctions from reservation edit/new screen
     public void SelectProperty(IProperty property)
     {
         currentProperty = property;
         currentRooms = property.Rooms.ToList();
-        UpdateRoomColumn();
-        UpdateDayColumns();
+        roomColumn.UpdateRooms(currentRooms, (r) => Debug.Log($"Making reservation for room {r.Name}"));
 
-        //Resize the day column content rect size to fit the number of rooms
-        dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
-    }
-
-    private void UpdateRoomColumn()
-    {
-        roomColumn.UpdateRooms(currentRooms, null);
-    }
-
-    private void UpdateDayColumns()
-    {
         for (int i = 0; i < currentRooms.Count; i++)
         {
             foreach(CalendarDayColumn dayColumn in dayColumns)
             {
-                dayColumn.UpdateRooms(currentRooms);
+                dayColumn.UpdateRooms(currentRooms, (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"));
+                dayColumn.LinkedHeader.UpdateProperty(currentProperty);
             }
         }
+
+        //Resize the day column content rect size to fit the number of rooms
+        dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
     }
 
     private void UpdateDayColumnDate(Transform dayColumnTransform, bool isForward)
@@ -117,6 +111,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         d.LinkedHeader.OnScrollReposition((isForward) ? totalItemCount : - totalItemCount);
     }
 
+    //TODO: Replace debug logs with fuctions from reservation edit/new screen
     //Create enough day headers and day columns to cover the screen in landscape mode
     private void CreateDayItems()
     {
@@ -128,13 +123,13 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day header
             CalendarDayHeaderObject header = Instantiate(dayHeaderPrefab, dayHeaderContent).GetComponent<CalendarDayHeaderObject>();
             header.name = $"Day header {d}";
-            header.UpdateDayObject(DateTime.Today.Date.AddDays(d), null, (a,l) => Debug.Log(a.Day));
+            header.UpdateDayObject(DateTime.Today.Date.AddDays(d), currentProperty, (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"));
             dayHeaders.Add(header);
 
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
             dayColumn.name = $"Day column {d}";
-            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), null, UpdateTopCalendarDate, header);
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"), UpdateTopCalendarDate, header);
             dayColumns.Add(dayColumn);
         }
 

@@ -65,6 +65,11 @@ public class CalendarDayHeaderObject : MonoBehaviour
         }
     }
 
+    public void UpdateProperty(IProperty property)
+    {
+        objProperty = property;
+    }
+
     private int GetDayOfWeekIndex(DayOfWeek day, out bool isWeekend)
     {
         isWeekend = false;

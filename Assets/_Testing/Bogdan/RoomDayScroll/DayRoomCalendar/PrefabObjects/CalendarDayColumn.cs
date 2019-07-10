@@ -38,7 +38,7 @@ public class CalendarDayColumn : MonoBehaviour
         onMonthChange = null;
     }
 
-    public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime> action, UnityAction<DateTime,CalendarDayColumn> setMonth, CalendarDayHeaderObject linkedHeader)
+    public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction, UnityAction<DateTime,CalendarDayColumn> setMonth, CalendarDayHeaderObject linkedHeader)
     {
         objectDate = new DateTime(date.Date.Ticks);
 
@@ -46,7 +46,7 @@ public class CalendarDayColumn : MonoBehaviour
 
         for (int r = 0; r < rooms.Count; r++)
         {
-            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], (d,l) => Debug.Log(d.Day));
+            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
         }
 
         onMonthChange = null;
@@ -54,13 +54,13 @@ public class CalendarDayColumn : MonoBehaviour
         header = linkedHeader;
     }
 
-    public void UpdateRooms(List<IRoom> rooms)
+    public void UpdateRooms(List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction)
     {
         ManagePool(rooms);
 
         for (int r = 0; r < rooms.Count; r++)
         {
-            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], (d,l) => Debug.Log(d.Day));
+            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
         }
     }
 

@@ -27,6 +27,7 @@ public class CalendarRoomColumnObject : MonoBehaviour
         singleBeds.text = $"{room.SingleBeds}";
         doubleBeds.text = $"{room.DoubleBeds}";
 
+        roomButton.onClick.RemoveAllListeners();
         roomButton.onClick.AddListener(() => tapAction(room));
     }
 }
