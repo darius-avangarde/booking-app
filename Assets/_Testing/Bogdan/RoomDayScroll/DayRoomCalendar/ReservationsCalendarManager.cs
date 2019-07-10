@@ -8,6 +8,10 @@ using UnityEngine.UI;
 public class ReservationsCalendarManager : MonoBehaviour
 {
     [SerializeField]
+    private TopCalendar topCalendar;
+
+    [Space]
+    [SerializeField]
     private GameObject dayHeaderPrefab;
     [SerializeField]
     private GameObject dayColumnPrefab;
@@ -18,6 +22,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     [Space]
     [SerializeField]
     private ScrollRect dayColumnScrollrect;
+    [SerializeField]
+    private ScrollviewHandler scrollviewHandler;
     [SerializeField]
     private RectTransform dayHeaderContent;
 
@@ -37,24 +43,44 @@ public class ReservationsCalendarManager : MonoBehaviour
     private List<CalendarDayHeaderObject> dayHeaders = new List<CalendarDayHeaderObject>();
     private int totalItemCount = 0;
 
+    public static DateTime FocalDate => focalDate;
+    private static DateTime focalDate;
+
+    private CalendarDayColumn focalDayColumn;
+
 
 
     private void Start()
     {
-        dayHeaderInfScroll.onMoveItem = MoveDayHeader;
-        dayColumnInfScroll.onMoveItem = MoveDayRoom;
+        dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
         CreateDayItems();
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
 
         StartCoroutine(DelayStartTest(2, 2));
-        StartCoroutine(DelayStartTest(4, 0));
+        //StartCoroutine(DelayStartTest(4, 0));
     }
 
     private IEnumerator DelayStartTest(float delay, int properyIndex)
     {
         yield return new WaitForSeconds(delay);
         SelectProperty(PropertyDataManager.GetProperties().ToList()[properyIndex]);
+    }
+
+    public void JumpToDate(DateTime date)
+    {
+        int focalIndex = focalDayColumn.transform.GetSiblingIndex();
+
+        DateTime offsetDate = date.AddDays(-focalIndex + 3);
+
+        dayColumns = dayColumns.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
+        dayHeaders = dayHeaders.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
+
+        for (int i = 0; i < dayColumns.Count; i++)
+        {
+            dayColumns[i].SetDate(offsetDate.AddDays(i));
+            dayColumns[i].LinkedHeader.UpdateUI(offsetDate.AddDays(i));
+        }
     }
 
     public void SelectProperty(IProperty property)
@@ -84,17 +110,14 @@ public class ReservationsCalendarManager : MonoBehaviour
         }
     }
 
-    private void MoveDayRoom(Transform dayColumnTransform, bool isForward)
+    private void UpdateDayColumnDate(Transform dayColumnTransform, bool isForward)
     {
-        dayColumnTransform.GetComponent<CalendarDayColumn>().OnScrollReposition((isForward) ? totalItemCount : - totalItemCount);
+        CalendarDayColumn d = dayColumnTransform.GetComponent<CalendarDayColumn>();
+        d.OnScrollReposition((isForward) ? totalItemCount : - totalItemCount);
+        d.LinkedHeader.OnScrollReposition((isForward) ? totalItemCount : - totalItemCount);
     }
 
-    private void MoveDayHeader(Transform dayHeaderTransform, bool isForward)
-    {
-        dayHeaderTransform.GetComponent<CalendarDayHeaderObject>().OnScrollReposition((isForward) ? totalItemCount : - totalItemCount);
-    }
-
-    //Create wnough day headers and day columns to cover the screen in landscape mode
+    //Create enough day headers and day columns to cover the screen in landscape mode
     private void CreateDayItems()
     {
         float maxScreen = Mathf.Max(Screen.width, Screen.height);
@@ -104,13 +127,25 @@ public class ReservationsCalendarManager : MonoBehaviour
         {
             //Create day header
             CalendarDayHeaderObject header = Instantiate(dayHeaderPrefab, dayHeaderContent).GetComponent<CalendarDayHeaderObject>();
-            header.UpdateDayObject(DateTime.Today.AddDays(d), null, null);
+            header.name = $"Day header {d}";
+            header.UpdateDayObject(DateTime.Today.Date.AddDays(d), null, (a,l) => Debug.Log(a.Day));
             dayHeaders.Add(header);
 
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
-            dayColumn.Initialize(DateTime.Today.AddDays(d), new List<IRoom>(), null);
+            dayColumn.name = $"Day column {d}";
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), null, UpdateTopCalendarDate, header);
             dayColumns.Add(dayColumn);
         }
+
+        focalDate = dayColumns[0].ObjectDate;
+        focalDayColumn = dayColumns[0];
+    }
+
+    private void UpdateTopCalendarDate(DateTime date, CalendarDayColumn dayColumn)
+    {
+        focalDate = date;
+        topCalendar.SetMonth(date);
+        focalDayColumn = dayColumn;
     }
 }

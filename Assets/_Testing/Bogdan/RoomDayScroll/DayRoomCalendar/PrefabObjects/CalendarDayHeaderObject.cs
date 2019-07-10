@@ -40,9 +40,11 @@ public class CalendarDayHeaderObject : MonoBehaviour
         UpdateUI(objectDate.AddDays(dayOffset));
     }
 
-    private void UpdateUI(DateTime date)
+    public void UpdateUI(DateTime date)
     {
-        objectDate = date;
+        if(objectDate.Date != date.Date)
+            objectDate = new DateTime(date.Date.Ticks);
+
         dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
         dateText.text = date.Day.ToString();
 

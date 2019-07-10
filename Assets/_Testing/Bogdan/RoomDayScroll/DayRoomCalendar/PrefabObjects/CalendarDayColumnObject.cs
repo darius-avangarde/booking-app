@@ -13,6 +13,10 @@ public class CalendarDayColumnObject : MonoBehaviour
     private RectTransform dayRectTransform;
     [SerializeField]
     private Image backgorundImage;
+    [SerializeField]
+    private GameObject monthLineImage;
+
+    private DateTime objDate;
 
     private void OnDestroy()
     {
@@ -21,9 +25,12 @@ public class CalendarDayColumnObject : MonoBehaviour
 
     public void UpdateEnableDayObject(DateTime date, IRoom room, UnityAction<DateTime,IRoom> tapAction)
     {
+        objDate = new DateTime(date.Date.Ticks);
+
         gameObject.SetActive(true);
         dayButton.onClick.RemoveAllListeners();
-        dayButton.onClick.AddListener(() => tapAction(date, room));
+        dayButton.onClick.AddListener(() => tapAction(objDate, room));
+
 
         if(date.Date == DateTime.Today.Date)
         {
@@ -42,6 +49,8 @@ public class CalendarDayColumnObject : MonoBehaviour
 
     public void UpdateDayObjectDate(DateTime date)
     {
+        objDate = new DateTime(date.Date.Ticks);
+
         if(date.Date == DateTime.Today.Date)
         {
             backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarCurrentColor;
@@ -53,6 +62,15 @@ public class CalendarDayColumnObject : MonoBehaviour
         else
         {
             backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarNormalColor;
+        }
+
+        if(date.Day == 1)
+        {
+            monthLineImage.SetActive(true);
+        }
+        else
+        {
+            monthLineImage.SetActive(false);
         }
     }
 }

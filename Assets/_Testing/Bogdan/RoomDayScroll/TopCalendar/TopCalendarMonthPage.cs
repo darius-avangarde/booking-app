@@ -7,6 +7,9 @@ public class TopCalendarMonthPage : MonoBehaviour
     public RectTransform Rect => thisRect;
 
     [SerializeField]
+    private ReservationsCalendarManager calendarManager;
+
+    [SerializeField]
     private RectTransform thisRect;
 
     [SerializeField]
@@ -66,7 +69,7 @@ public class TopCalendarMonthPage : MonoBehaviour
         for (int d = daysVisibleFromPreviousMonth; d < daysVisibleInCurrentMonth; d++)
         {
             selectedDateTime = new DateTime(selectedDateTime.Year, selectedDateTime.Month, dayVisibleFromSelectedMonth, 0, 0, 0, DateTimeKind.Local);
-            dayObjects[d].UpdateDayObject($"{selectedDateTime.Day}", selectedDateTime.Date == DateTime.Today);
+            dayObjects[d].UpdateDayObject(selectedDateTime.Date, calendarManager.JumpToDate);
             dayVisibleFromSelectedMonth++;
         }
     }

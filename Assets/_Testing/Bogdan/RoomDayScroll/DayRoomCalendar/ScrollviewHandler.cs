@@ -72,10 +72,9 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
 
     public void BeginSnap(ScrollRect scrollRect)
     {
-        StopAllCoroutines();
         if(!isSnaping)
         {
-            Debug.Log("doingSnap");
+            StopAllCoroutines();
             StartCoroutine(Snap(scrollRect));
         }
     }
@@ -87,6 +86,11 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
 
         if(cancelIsScrolling)
             isScrolling = false;
+    }
+
+    public void ForceMatchVerticalPosition()
+    {
+        DayColumnScrollrect.verticalNormalizedPosition = RoomsColumnScrollrect.verticalNormalizedPosition;
     }
 
     private void MatchPositionMain(Vector2 position)

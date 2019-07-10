@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class TopCalendar : MonoBehaviour
 {
     [SerializeField]
+    private ScrollviewHandler scrollviewHandler;
+
+    [SerializeField]
     private Text monthText;
 
     [Header("Animation")]
@@ -99,6 +102,14 @@ public class TopCalendar : MonoBehaviour
         StartCoroutine(Swipe(monthOffset < 0));
     }
 
+    public void SetMonth(DateTime date)
+    {
+        focusDateTime = date.Date;
+        isSliding = false;
+        currentPage.UpdatePage(focusDateTime);
+        monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
+    }
+
     private void Show(DateTime focus)
     {
         focusDateTime = focus;
@@ -122,6 +133,7 @@ public class TopCalendar : MonoBehaviour
 
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/slideTime)
         {
+            scrollviewHandler.ForceMatchVerticalPosition();
             cachePage.Rect.position = Vector3.Lerp(startCache, endCache, slideCurve.Evaluate(t));
             currentPage.Rect.position = Vector3.Lerp(startCurrent, endCurrent, slideCurve.Evaluate(t));
             yield return null;
