@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,13 +27,27 @@ public class ClientButton : MonoBehaviour
     private RectTransform clientBtn;
     [SerializeField]
     private Toggle clientToggle;
-    public void Initialize(IClient client, /*Action<IClient> callback, */Action<IClient> phoneCallBack, Action<IClient> smsCallback, Action<IClient> mailCallback, Action<IClient> editCallback)
+    [SerializeField]
+    private RectTransform textSize;
+    [SerializeField]
+    private RectTransform triangleImage;
+    [SerializeField]
+    private GameObject footer;
+    private float containerSize;
+    private float initialContainerSize;
+   
+    public void Start()
+    {
+        containerSize = textSize.sizeDelta.y;
+        initialContainerSize = textSize.sizeDelta.y;
+
+    }
+    public void Initialize(IClient client,Action<IClient> phoneCallBack, Action<IClient> smsCallback, Action<IClient> mailCallback, Action<IClient> editCallback)
     {
         ClientName.text = client.Name;
-        phoneNumber.text = client.Number; //$"{ client.Number} { client.Email}";
+        phoneNumber.text = client.Number; 
         clientEmail.text = client.Email;
         clientAdress.text = client.Adress;
-        //clientButton.onClick.AddListener(() => callback(client));
         phoneButton.onClick.AddListener(() => phoneCallBack(client));
         smsButton.onClick.AddListener(() => smsCallback(client));
         mailButton.onClick.AddListener(() => mailCallback(client));
@@ -43,27 +58,67 @@ public class ClientButton : MonoBehaviour
     {
         if (clientToggle.isOn)
         {
-            if (string.IsNullOrEmpty(phoneNumber.text) == false )
+            if (string.IsNullOrEmpty(phoneNumber.text) == false)
             {
                 phoneNumber.gameObject.SetActive(true);
+                containerSize += initialContainerSize;
             }
             if (string.IsNullOrEmpty(clientEmail.text) == false)
             {
                 clientEmail.gameObject.SetActive(true);
+                containerSize += initialContainerSize;
             }
-           
-            //clientAdress.gameObject.SetActive(true);
-            clientBtn.sizeDelta = new Vector2(900, 425);
+            if (string.IsNullOrEmpty(clientAdress.text) == false)
+            {
+                clientAdress.gameObject.SetActive(true);
+                containerSize += initialContainerSize;
+            }
+
+            footer.SetActive(true);
+            containerSize += initialContainerSize + 20;
+            AnimateTriangle(0, 180);
+            FadeIn();
         }
         else
         {
+            containerSize =textSize.sizeDelta.y + 40;
             phoneNumber.gameObject.SetActive(false);
             clientEmail.gameObject.SetActive(false);
             clientAdress.gameObject.SetActive(false);
-            clientBtn.sizeDelta = new Vector2(900, 189);
-            Debug.Log("stop anim");
+            footer.SetActive(false);
+            AnimateTriangle(180,0);
+            FadeOut();
         }
     }
+    
+    public void AnimateTriangle(float from, float to)
+    {
+        float angle = Mathf.LerpAngle(from, to, Time.time/0.4f);
+        triangleImage.transform.eulerAngles = new Vector3(0, 0, angle);
+    }
+    IEnumerator Move(RectTransform rt, Vector2 targetPos)
+    {
+        float step = 0;
+        while (step < 1)
+        {
+            rt.sizeDelta = Vector2.Lerp(rt.sizeDelta, targetPos, step += Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    public void FadeIn()
+    {
+        StopAllCoroutines();
+        StartCoroutine(Move(clientBtn, new Vector2(1080, containerSize)));
+
+    }
+
+    public void FadeOut()
+    {
+        StopAllCoroutines();
+        StartCoroutine(Move(clientBtn, new Vector2(900, containerSize)));
+    }
+
     public bool SearchClients(string input)
     {
         bool ok = false;

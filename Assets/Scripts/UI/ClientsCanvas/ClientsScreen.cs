@@ -89,7 +89,7 @@ public class ClientsScreen : MonoBehaviour
     {
         Search.gameObject.SetActive(true);
         StopAllCoroutines();
-        StartCoroutine(Move(Search, ClientContainer, new Vector2(0, -100), new Vector2(0, -240)));
+        StartCoroutine(Move(Search, ClientContainer, new Vector2(0, -120), new Vector2(0, -260)));
     }
     public void FadeOut()
     {
@@ -237,10 +237,8 @@ public class ClientsScreen : MonoBehaviour
     }
 
     private void OpenClientAdminScreen(IClient client)
-    {
-        //clientPrefabButton.GetComponent<RectTransform>().sizeDelta = new Vector2(900, 425);
+    { 
        // Debug.Log("ClientAnimation");
-       // clientPrefab.sizeDelta = new Vector2(900, 425.1f);
     }
     private void OpenEditAdminScreen(IClient client)
     {
@@ -325,6 +323,7 @@ public class ClientsScreen : MonoBehaviour
         saveButton.gameObject.SetActive(true);
         editButton.gameObject.SetActive(false);
         ClearSearchField();
+        navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
     }
 
     public void SetTextOnAddPanel()

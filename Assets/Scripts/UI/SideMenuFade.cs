@@ -61,7 +61,7 @@ public class SideMenuFade : MonoBehaviour
         }
         else
         {
-            for (float i = 0.5f; i <= 1; i += 0.01f)//Time.deltaTime)
+            for (float i = 0.5f; i <= 1; i +=Time.deltaTime)
             {
                 img.color = new Color(0, 0, 0, i);
                 yield return null;
