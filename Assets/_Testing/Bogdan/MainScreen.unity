@@ -225,6 +225,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1863580368}
+  - {fileID: 1143717744}
   m_Father: {fileID: 1445520574}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -466,7 +467,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -1474,6 +1475,7 @@ GameObject:
   - component: {fileID: 675563120}
   - component: {fileID: 675563118}
   - component: {fileID: 675563121}
+  - component: {fileID: 675563122}
   m_Layer: 5
   m_Name: RoomViewParrent
   m_TagString: Untagged
@@ -1543,6 +1545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topCalendar: {fileID: 279634787}
+  reservationManager: {fileID: 675563122}
   dayHeaderPrefab: {fileID: 4094510954264353775, guid: 334cf69bcb472114782e01e8c01969f7,
     type: 3}
   dayColumnPrefab: {fileID: 96487640810483042, guid: 0863eb5e76da62a448514c5ff923635e,
@@ -1584,6 +1587,24 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &675563122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675563116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7a71cc0d65bd914ea4c42d2ad50b25e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reservationsCalendarManager: {fileID: 675563120}
+  reservationObjectPrefab: {fileID: 4052625348343817597, guid: 7cf41c366f14ebd42b718aafdb20a8bd,
+    type: 3}
+  reservationObjectParent: {fileID: 1143717744}
+  dayColumnObjectPrefabRect: {fileID: 7589547537048920526, guid: 7cf41c366f14ebd42b718aafdb20a8bd,
+    type: 3}
 --- !u!1 &689035994
 GameObject:
   m_ObjectHideFlags: 0
@@ -2616,6 +2637,50 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1143717743
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1143717744}
+  - component: {fileID: 1143717747}
+  m_Layer: 5
+  m_Name: ReservationsContent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1143717744
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143717743}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8814773}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 952}
+  m_Pivot: {x: 0, y: 1}
+--- !u!222 &1143717747
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143717743}
+  m_CullTransparentMesh: 0
 --- !u!1 &1201022985
 GameObject:
   m_ObjectHideFlags: 0
@@ -3500,6 +3565,7 @@ MonoBehaviour:
   RoomsColumnScrollrect: {fileID: 56514854}
   DayHeaderScrollrect: {fileID: 75988935}
   DayColumnScrollrect: {fileID: 1445520577}
+  ReservationsColumnRect: {fileID: 1143717744}
   DayColumnPrefabRectTransform: {fileID: 96487640810483043, guid: 0863eb5e76da62a448514c5ff923635e,
     type: 3}
   snapTime: 0.2

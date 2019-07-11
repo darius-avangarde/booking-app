@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CalendarDayColumnObject : MonoBehaviour
 {
     public RectTransform DayRectTransform => dayRectTransform;
+    public IRoom ObjectRoom => objRoom;
 
     [SerializeField]
     private Button dayButton;
@@ -17,6 +18,7 @@ public class CalendarDayColumnObject : MonoBehaviour
     private GameObject monthLineImage;
 
     private DateTime objDate;
+    private IRoom objRoom;
 
     private void OnDestroy()
     {
@@ -26,6 +28,7 @@ public class CalendarDayColumnObject : MonoBehaviour
     public void UpdateEnableDayObject(DateTime date, IRoom room, UnityAction<DateTime,IRoom> tapAction)
     {
         objDate = new DateTime(date.Date.Ticks);
+        objRoom = room;
 
         gameObject.SetActive(true);
         dayButton.onClick.RemoveAllListeners();

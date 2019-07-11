@@ -9,6 +9,8 @@ public class ReservationsCalendarManager : MonoBehaviour
 {
     [SerializeField]
     private TopCalendar topCalendar;
+    [SerializeField]
+    private ReservationObjectManager reservationManager;
 
     [Space]
     [SerializeField]
@@ -102,6 +104,13 @@ public class ReservationsCalendarManager : MonoBehaviour
 
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
+
+        reservationManager.SweepUpdateReservations(currentProperty, (r) => Debug.Log($"Edit res for: {r.CustomerName}"));
+    }
+
+    public List<CalendarDayColumn> GetHierarchyOrderedDayColumns()
+    {
+        return dayColumns.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
     }
 
     private void UpdateDayColumnDate(Transform dayColumnTransform, bool isForward)

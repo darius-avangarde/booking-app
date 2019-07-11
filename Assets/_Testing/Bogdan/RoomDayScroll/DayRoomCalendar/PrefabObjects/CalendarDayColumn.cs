@@ -84,6 +84,17 @@ public class CalendarDayColumn : MonoBehaviour
         }
     }
 
+    public List<CalendarDayColumnObject> GetActiveColumnObjects()
+    {
+        List<CalendarDayColumnObject> activeItems = new List<CalendarDayColumnObject>();
+        for (int i = 0; i < dayPool.Count; i++)
+        {
+            if(dayPool[i].gameObject.activeSelf)
+                activeItems.Add(dayPool[i]);
+        }
+        return activeItems;
+    }
+
     private void ManagePool(List<IRoom> rooms)
     {
         if(rooms.Count != dayPool.Count)

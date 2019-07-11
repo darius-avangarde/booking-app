@@ -81,6 +81,14 @@ public static class ReservationDataManager
 
 
     ///<summary>
+    ///Returns all undeleted reservations for the given propertyID
+    ///</summary>
+    public static IEnumerable<IReservation> GetActivePropertyReservations(string propertyID)
+    {
+        return Data.reservations.FindAll(r => !r.Deleted && r.PropertyID == propertyID);
+    }
+
+    ///<summary>
     ///Returns all active* and undeleted reservations for the given clientID
     ///<para>*with the end date equal to the current day or in the future</para>
     ///</summary>
@@ -333,8 +341,8 @@ public static class ReservationDataManager
 
         public bool Includes(DateTime dateTime)
         {
-            long ticks = dateTime.ToUniversalTime().Ticks;
-            return (startTicks <= ticks) && (ticks <= endTicks);
+            long ticks = dateTime.Date.Ticks;
+            return (ticks >= Start.Date.Ticks) && (ticks <= End.Date.Ticks);
         }
 
         public bool Overlaps(DateTime start, DateTime end)

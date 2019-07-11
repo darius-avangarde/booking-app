@@ -14,6 +14,8 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     private ScrollRect DayHeaderScrollrect;
     [SerializeField]
     private ScrollRect DayColumnScrollrect;
+    [SerializeField]
+    private RectTransform ReservationsColumnRect;
 
     [Space]
     [SerializeField]
@@ -100,6 +102,8 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
             RoomsColumnScrollrect.verticalNormalizedPosition = position.y;
             DayHeaderScrollrect.horizontalNormalizedPosition = position.x;
         }
+
+        ReservationsColumnRect.position = DayColumnScrollrect.content.position;
     }
 
     private void MatchPositionDayHeader(Vector2 position)
