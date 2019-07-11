@@ -1391,7 +1391,7 @@ RectTransform:
   m_Children:
   - {fileID: 8705148758017420595}
   m_Father: {fileID: 1252871757882821975}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -2150,8 +2150,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 708, y: -40}
-  m_SizeDelta: {x: 1336, y: 0}
+  m_AnchoredPosition: {x: 540, y: -40}
+  m_SizeDelta: {x: 940, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8685596867521666555
 MonoBehaviour:
@@ -2179,7 +2179,7 @@ GameObject:
   - component: {fileID: 762344460634999459}
   - component: {fileID: 5663681089004680343}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2197,7 +2197,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1252871757882821975}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2447,18 +2447,7 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7949518980504145577}
-        m_MethodName: ValidateClientPhone
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
@@ -4160,7 +4149,7 @@ GameObject:
   - component: {fileID: 9024151316969900514}
   - component: {fileID: 4008752956850213581}
   m_Layer: 5
-  m_Name: Scroll View
+  m_Name: ScrollViewElements
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4181,7 +4170,7 @@ RectTransform:
   - {fileID: 3682257287011798516}
   - {fileID: 1831381755713935284}
   m_Father: {fileID: 1252871757882821975}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4437,7 +4426,7 @@ RectTransform:
   - {fileID: 4698067495466702878}
   - {fileID: 4778427967018407480}
   m_Father: {fileID: 1252871757882821975}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -4802,19 +4791,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7949518980504145577}
         m_MethodName: EditClient
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: GoBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4958,7 +4936,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 7949518980504145577}
         m_MethodName: SaveAddedClient
         m_Mode: 1
         m_Arguments:
@@ -5091,10 +5069,10 @@ RectTransform:
   m_Children:
   - {fileID: 1690249827306597672}
   - {fileID: 3794040977549273406}
+  - {fileID: 7532961620968131830}
   - {fileID: 5107572308251401985}
   - {fileID: 7147427867299490178}
   - {fileID: 636778776681460351}
-  - {fileID: 7532961620968131830}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

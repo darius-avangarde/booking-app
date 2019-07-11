@@ -72,7 +72,6 @@ public class ClientsScreen : MonoBehaviour
     {
         firstPosition = new Vector2(0, 0);
         firstPositionContainer = ClientContainer.offsetMax;
-        Debug.Log(ClientContainer.offsetMax);
     }
     public void SearchAnimation()
     {
@@ -158,35 +157,6 @@ public class ClientsScreen : MonoBehaviour
         selectClientCallback = callback;
     }
 
-
-    public void SaveAddedClient()
-    {
-        if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace) || String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
-        {
-            clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetTextRequired();
-            return;
-        }
-        else
-        {
-            Client client = new Client();
-            SetClient(client);
-            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
-            {
-                ClientDataManager.AddClient(client);
-                navigator.GoBack();
-            }
-
-            if (hasCallBack)
-            {
-                saveCallBack.Invoke(client);
-                cancelCallback.Invoke(true);
-            }
-            hasCallBack = false;
-        }
-
-        InstantiateClients(fromReservation);
-    }
-
     private void SetClient(Client client)
     {
         client.Name = clientName.text;
@@ -212,34 +182,12 @@ public class ClientsScreen : MonoBehaviour
         cancelCallback = clientCancel;
     }
 
-    public void EditClient()
-    {
-        var currentClient = clientEditScreenTransform.GetComponent<ClientsEditScreen>().GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text) || String.IsNullOrEmpty(clientPhone.text))
-        {
-            return;
-        }
-        else
-        {
-            Client client = new Client();
-            SetClient(client);
-            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
-                ClientDataManager.EditClient(currentClient.ID, client);
-        }
-
-        InstantiateClients(fromReservation);
-    }
-
     private void OpenClientScreen(IClient client)
     {
         selectClientCallback(client);
         navigator.GoBack();
     }
 
-    private void OpenClientAdminScreen(IClient client)
-    { 
-       // Debug.Log("ClientAnimation");
-    }
     private void OpenEditAdminScreen(IClient client)
     {
         SetTextOnEditPanel();

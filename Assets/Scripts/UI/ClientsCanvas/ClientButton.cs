@@ -30,6 +30,8 @@ public class ClientButton : MonoBehaviour
     [SerializeField]
     private RectTransform textSize;
     [SerializeField]
+    private RectTransform detailSize;
+    [SerializeField]
     private RectTransform triangleImage;
     [SerializeField]
     private GameObject footer;
@@ -38,8 +40,10 @@ public class ClientButton : MonoBehaviour
    
     public void Start()
     {
-        containerSize = textSize.sizeDelta.y;
-        initialContainerSize = textSize.sizeDelta.y;
+
+        //containerSize = textSize.sizeDelta.y;
+        containerSize = textSize.rect.height;
+        initialContainerSize = detailSize.sizeDelta.y;
 
     }
     public void Initialize(IClient client,Action<IClient> phoneCallBack, Action<IClient> smsCallback, Action<IClient> mailCallback, Action<IClient> editCallback)
@@ -61,27 +65,36 @@ public class ClientButton : MonoBehaviour
             if (string.IsNullOrEmpty(phoneNumber.text) == false)
             {
                 phoneNumber.gameObject.SetActive(true);
+                RebuildUI();
                 containerSize += initialContainerSize;
+                
             }
             if (string.IsNullOrEmpty(clientEmail.text) == false)
             {
                 clientEmail.gameObject.SetActive(true);
-                containerSize += initialContainerSize;
+                RebuildUI();
+                containerSize +=initialContainerSize;
+               
             }
             if (string.IsNullOrEmpty(clientAdress.text) == false)
             {
                 clientAdress.gameObject.SetActive(true);
+                RebuildUI();
                 containerSize += initialContainerSize;
+                
             }
 
             footer.SetActive(true);
+            RebuildUI();
             containerSize += initialContainerSize + 20;
+           
             AnimateTriangle(0, 180);
             FadeIn();
         }
         else
         {
-            containerSize =textSize.sizeDelta.y + 40;
+            containerSize =textSize.sizeDelta.y;
+            Debug.Log(containerSize);
             phoneNumber.gameObject.SetActive(false);
             clientEmail.gameObject.SetActive(false);
             clientAdress.gameObject.SetActive(false);
@@ -123,11 +136,16 @@ public class ClientButton : MonoBehaviour
     {
         bool ok = false;
 
-        if (ClientName.text.ToLower().Trim().StartsWith(input.ToLower().Trim()) || phoneNumber.text.ToLower().Trim().StartsWith(input.ToLower().Trim()) || clientEmail.text.ToLower().Trim().StartsWith(input.ToLower().Trim()) || clientAdress.text.ToLower().Trim().StartsWith(input.ToLower().Trim()))
+        if (ClientName.text.ToLower().Trim().StartsWith(input.ToLower().Trim()) || phoneNumber.text.ToLower().Trim().Contains(input.ToLower().Trim()) || clientEmail.text.ToLower().Trim().StartsWith(input.ToLower().Trim()) || clientAdress.text.ToLower().Trim().StartsWith(input.ToLower().Trim()))
         {
             ok = true;
         }
         return ok;
     }
 
+    private void RebuildUI()
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(textSize);
+        Canvas.ForceUpdateCanvases();
+    }
 }
