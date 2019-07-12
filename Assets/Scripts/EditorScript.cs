@@ -7,9 +7,9 @@ using System.Collections.Generic;
 public class EditorScript : EditorWindow
 {
     string myString = "Hey";
-    string recordButton = "MyButton";
+    string recordButton = "Button";
     public List<GameObject> textList = new List<GameObject>();
-    private ThemeManager manager;
+   
 
     [MenuItem("Window/My Editor")]
     static void Init()
@@ -20,24 +20,19 @@ public class EditorScript : EditorWindow
 
     public void FindTexts()
     {
-      
+        textList.Clear();
         Debug.Log("Clicked Button");
-        foreach (GameObject myText in GameObject.FindGameObjectsWithTag("tagtext"))
+        foreach (var myText in GameObject.FindGameObjectsWithTag("text"))
         {
 
             textList.Add(myText);
-        }
-        foreach (var item in textList)
-        {
-            var ex = item.GetComponent<Text>();
-            ex.color =  Color.red;
         }
     }
     void OnGUI()
     {
         GUILayout.Label("Base Settings", EditorStyles.boldLabel);
         myString = EditorGUILayout.TextField("Text Field", myString);
-        if (GUILayout.Button("MyButton"))
+        if (GUILayout.Button("Button"))
         {
             FindTexts();
         }
