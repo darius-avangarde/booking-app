@@ -22,17 +22,17 @@ public class RoomFieldsHandler : MonoBehaviour
     private int currentFloorValue = 0;
     private int currenRoomValue = 0;
 
-    private void Start()
+    private void Awake()
     {
         propertyAdminScreen.SetMultipleRoomsFields += SetFields;
     }
 
     private void OnEnable()
     {
-        multipleFloorDropdown.value = 1;
-        multipleRoomsDropdown.value = 1;
         multipleFloorDropdown.value = 0;
         multipleRoomsDropdown.value = 0;
+        SetFloorInputField("0");
+        SetRoomInputField("1");
     }
 
     public void StartInput()
@@ -48,12 +48,12 @@ public class RoomFieldsHandler : MonoBehaviour
 
     public void SetFloorInputField(string value)
     {
-        currentFloorValue = int.Parse(value) + 1;
+        currentFloorValue = int.Parse(value);
         multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
         multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
         if (currentFloorValue > 0)
         {
-            multipleFloorsField.text = $"P+{currentFloorValue - 1}";
+            multipleFloorsField.text = $"P+{currentFloorValue}";
         }
         else
         {
@@ -70,7 +70,7 @@ public class RoomFieldsHandler : MonoBehaviour
 
     public void SetFloorDropdownOption()
     {
-        currentFloorValue = multipleFloorDropdown.value + 1;
+        currentFloorValue = multipleFloorDropdown.value;
         multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
         multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
         multipleFloorsField.text = multipleFloorDropdown.options[multipleFloorDropdown.value].text;
@@ -78,7 +78,7 @@ public class RoomFieldsHandler : MonoBehaviour
 
     public void SetRoomDropdownOption()
     {
-        currenRoomValue = multipleRoomsDropdown.value;
+        currenRoomValue = multipleRoomsDropdown.value + 1;
         multipleRoomsScript.multipleRoomsNumber = currenRoomValue;
         multipleRoomsField.text = multipleRoomsDropdown.options[multipleRoomsDropdown.value].text;
     }

@@ -55,7 +55,7 @@ public class RoomScreen : MonoBehaviour
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
-        editButton.onClick.AddListener(() => EditButton());
+        //editButton.onClick.AddListener(() => EditButton());
     }
 
     /// <summary>
@@ -192,7 +192,6 @@ public class RoomScreen : MonoBehaviour
     /// </summary>
     public void OnHidingSetProperty()
     {
-        propertyRoomScreen.UpdateDateTime(dateTimeStart, dateTimeEnd);
         propertyRoomScreen.SetCurrentProperty(currentProperty);
     }
 

@@ -54,6 +54,16 @@ public class RoomAdminScreen : MonoBehaviour
         modalDialogOptions.CancelCallback = null;
     }
 
+    private void OnEnable()
+    {
+        Initialize();
+    }
+
+    private void OnDisable()
+    {
+        DefaultValues();
+    }
+
     /// <summary>
     /// set the current property and room
     /// </summary>

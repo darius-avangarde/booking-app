@@ -17,7 +17,7 @@ public class CreateMultipleRooms : MonoBehaviour
         propertyAdminScreen.MultipleRooms += SaveMultipleRooms;
     }
 
-    private void SaveMultipleRooms(bool overridePrevious)
+    private void SaveMultipleRooms(bool overridePrevious, bool shouldGoBack)
     {
         int previousFloors = 0;
         int previousRooms = 0;
@@ -99,6 +99,9 @@ public class CreateMultipleRooms : MonoBehaviour
             }
         }
         propertyAdminScreen.CurrentProperty.SaveMultipleRooms(roomsList);
-        propertyAdminScreen.navigator.GoBack();
+        if (shouldGoBack)
+        {
+            propertyAdminScreen.navigator.GoBack();
+        }
     }
 }
