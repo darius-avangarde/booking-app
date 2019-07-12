@@ -6,10 +6,11 @@ using System.Collections.Generic;
 
 public class EditorScript : EditorWindow
 {
-    string myString = "Hey";
     string recordButton = "Button";
-    public List<GameObject> textList = new List<GameObject>();
-   
+    public List<GameObject> TextList = new List<GameObject>();
+    public List<GameObject> BackgroundList = new List<GameObject>();
+    public List<GameObject> SeparatorList = new List<GameObject>();
+    public List<GameObject> ItemList = new List<GameObject>();
 
     [MenuItem("Window/My Editor")]
     static void Init()
@@ -20,18 +21,34 @@ public class EditorScript : EditorWindow
 
     public void FindTexts()
     {
-        textList.Clear();
+        TextList.Clear();
+        BackgroundList.Clear();
+        SeparatorList.Clear();
+        ItemList.Clear();
         Debug.Log("Clicked Button");
-        foreach (var myText in GameObject.FindGameObjectsWithTag("text"))
+        foreach (var myText in GameObject.FindGameObjectsWithTag("TextIcons"))
         {
 
-            textList.Add(myText);
+            TextList.Add(myText);
+        }
+        foreach (var myBg in GameObject.FindGameObjectsWithTag("Background"))
+        {
+
+            BackgroundList.Add(myBg);
+        }
+        foreach (var separator in GameObject.FindGameObjectsWithTag("Separator"))
+        {
+            SeparatorList.Add(separator);
+        }
+        foreach (var item in GameObject.FindGameObjectsWithTag("ItemBackground"))
+        {
+            ItemList.Add(item);
+            Debug.Log(item.name);
         }
     }
     void OnGUI()
     {
         GUILayout.Label("Base Settings", EditorStyles.boldLabel);
-        myString = EditorGUILayout.TextField("Text Field", myString);
         if (GUILayout.Button("Button"))
         {
             FindTexts();
