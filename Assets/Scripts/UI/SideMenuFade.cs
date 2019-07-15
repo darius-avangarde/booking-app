@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class SideMenuFade : MonoBehaviour
 {
     [SerializeField]
+    private ThemeManager theme;
+    [SerializeField]
+    private List<GameObject> items = new List<GameObject>();
+    [SerializeField]
     private float fadeTime = 0.35f;
     [SerializeField]
     private RectTransform sideMenu;
@@ -14,6 +18,7 @@ public class SideMenuFade : MonoBehaviour
     private GameObject sideMenuPanel;
     [SerializeField]
     private Image img;
+    
     
     void Start()
     {
@@ -69,5 +74,13 @@ public class SideMenuFade : MonoBehaviour
         }
     }
 
-   
+   public void ShowMenu()
+    {
+        sideMenuPanel.SetActive(true);
+        FadeIn();
+        foreach (var item in items)
+        {
+            theme.SetColor(item);
+        }
+    }
 }

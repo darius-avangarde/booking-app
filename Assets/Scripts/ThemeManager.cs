@@ -102,7 +102,7 @@ public class ThemeManager : MonoBehaviour
 
     public void SetColor(GameObject items)
     {
-     
+
         if (items.tag == "ItemBackground" && items != null)
         {
             var colorBG = items.GetComponent<Graphic>();
@@ -139,8 +139,19 @@ public class ThemeManager : MonoBehaviour
                 colorSeparator.color = separatorLight;
             }
         }
+        if (items.tag == "Background" && items != null)
+        {
+            var colorBG = items.GetComponent<Graphic>();
+            if (!ok)
+            {
+                colorBG.color = ItemDark;
+            }
+            else
+            {
+                colorBG.color = ItemLight;
+            }
+        }
     }
-
     public void Verify()
     {
         if (themeToggle.isOn)
