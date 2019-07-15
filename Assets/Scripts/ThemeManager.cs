@@ -8,8 +8,6 @@ public class ThemeManager : MonoBehaviour
 {
     [SerializeField]
     private Toggle themeToggle;
-    [SerializeField]
-    private GameObject myItem;
     private bool ok;
     public List<GameObject> MyText { get; set; }
     public List<GameObject> MyBackground { get; set; }
