@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using System.Linq;
 using static ClientDataManager;
 using System.Collections;
 
 public class ClientsScreen : MonoBehaviour
 {
     #region SerializeFieldVariables
+    [SerializeField]
+    private ThemeManager theme;
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
@@ -128,13 +128,16 @@ public class ClientsScreen : MonoBehaviour
             clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
             GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
             letterButtons.Add(clientLetters);
+            theme.SetColor(clientLetters);
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefab.gameObject, clientInfoContent);
+              //theme.SetColor(clientButton);
+
                 if (fromReservation)
-                    clientButton.GetComponent<ClientButton>().Initialize(client, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
+                    clientButton.GetComponent<ClientButton>().Initialize(client,SetTheme , phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
-                    clientButton.GetComponent<ClientButton>().Initialize(client, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
+                    clientButton.GetComponent<ClientButton>().Initialize(client, SetTheme, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 clientButtons.Add(clientButton);
             }
         }
@@ -146,7 +149,10 @@ public class ClientsScreen : MonoBehaviour
              scrollRectComponent.Init();
          }*/
     }
-
+    public void SetTheme(GameObject myObj)
+    {
+       theme.SetColor(myObj);
+    }
     public void LastPosition()
     {
         scrollPosition = clientsScrollView.verticalNormalizedPosition;
@@ -193,6 +199,8 @@ public class ClientsScreen : MonoBehaviour
         SetTextOnEditPanel();
         saveButton.gameObject.SetActive(false);
         editButton.gameObject.SetActive(true);
+        theme.SetColor(editButton);
+        theme.SetColor(editButton.GetComponentInChildren<Text>().gameObject);
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
         ClearSearchField();
@@ -269,6 +277,8 @@ public class ClientsScreen : MonoBehaviour
     {
         SetTextOnAddPanel();
         saveButton.gameObject.SetActive(true);
+        theme.SetColor(saveButton);
+        theme.SetColor(saveButton.GetComponentInChildren<Text>().gameObject);
         editButton.gameObject.SetActive(false);
         ClearSearchField();
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -35,18 +36,19 @@ public class ClientButton : MonoBehaviour
     private RectTransform triangleImage;
     [SerializeField]
     private GameObject footer;
+    [SerializeField]
+    private List<GameObject> separatorsList = new List<GameObject>();
     private float containerSize;
     private float initialContainerSize;
    
     public void Start()
     {
-
         //containerSize = textSize.sizeDelta.y;
         containerSize = textSize.rect.height;
         initialContainerSize = detailSize.sizeDelta.y;
 
     }
-    public void Initialize(IClient client,Action<IClient> phoneCallBack, Action<IClient> smsCallback, Action<IClient> mailCallback, Action<IClient> editCallback)
+    public void Initialize(IClient client,Action<GameObject> Theme,Action<IClient> phoneCallBack, Action<IClient> smsCallback, Action<IClient> mailCallback, Action<IClient> editCallback)
     {
         ClientName.text = client.Name;
         phoneNumber.text = client.Number; 
@@ -56,6 +58,20 @@ public class ClientButton : MonoBehaviour
         smsButton.onClick.AddListener(() => smsCallback(client));
         mailButton.onClick.AddListener(() => mailCallback(client));
         editButton.onClick.AddListener(() => editCallback(client));
+        Theme(this.gameObject);
+        Theme(ClientName.gameObject);
+        Theme(phoneNumber.gameObject);
+        Theme(clientEmail.gameObject);
+        Theme(clientAdress.gameObject);
+        Theme(triangleImage.gameObject);
+        Theme(editButton.transform.GetChild(0).gameObject);
+        Theme(phoneButton.transform.GetChild(0).gameObject);
+        Theme(smsButton.transform.GetChild(0).gameObject);
+        Theme(mailButton.transform.GetChild(0).gameObject);
+        foreach (var item in separatorsList)
+        {
+            Theme(item.gameObject);
+        }
     }
 
     public void AnimationPrefab()

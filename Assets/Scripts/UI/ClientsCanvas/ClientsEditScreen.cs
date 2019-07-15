@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UINavigation;
 using UnityEngine;
@@ -7,6 +8,8 @@ using static ClientDataManager;
 
 public class ClientsEditScreen : MonoBehaviour
 {
+    [SerializeField]
+    private ThemeManager theme;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
@@ -28,6 +31,8 @@ public class ClientsEditScreen : MonoBehaviour
     private InfoBox infoDialog = null;
     [SerializeField]
     private ClientsScreen clientsScreen;
+    [SerializeField]
+    private List<GameObject> textList = new List<GameObject>();
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -44,6 +49,10 @@ public class ClientsEditScreen : MonoBehaviour
         clientPhone.text = currentClient.Number;
         clientAdress.text = currentClient.Adress;
         clientEmail.text = currentClient.Email;
+        foreach (var item in textList)
+        {
+            theme.SetColor(item);
+        }
     }
     private void SetClient(Client client)
     {

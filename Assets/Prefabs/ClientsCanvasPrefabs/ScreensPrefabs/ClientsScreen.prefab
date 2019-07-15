@@ -1934,7 +1934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5058824, g: 0.5058824, b: 0.5058824, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3149,14 +3149,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f1f499658d1ab96499bf89534ece4210, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3258,6 +3258,7 @@ MonoBehaviour:
   clientEditScreenTransform: {fileID: 0}
   clientPrefabButton: {fileID: 757576647253738153, guid: 81484baecde2662439695c423daef7fa,
     type: 3}
+  clientPrefab: {fileID: 0}
   clientprefabLetter: {fileID: 5130581558843561453, guid: 794534dac267dff4d9e3eaeabac71fb1,
     type: 3}
   clientInfoContent: {fileID: 6621684968306949978}
@@ -3272,8 +3273,8 @@ MonoBehaviour:
   inputManager: {fileID: 0}
   scrollRectComponent: {fileID: 4026028410351859427}
   clientsScrollView: {fileID: 6621684967295827610}
+  clientToggle: {fileID: 0}
   Search: {fileID: 93002619299065393}
-  LayoutContent: {fileID: 6956511797969296101}
   ClientContainer: {fileID: 6621684967295827609}
 --- !u!1 &7372817817963230260
 GameObject:
@@ -3905,6 +3906,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 7900443171941489474, guid: cf9af73e4e1899941a2b4a3b3940c49a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7517375868834840199, guid: cf9af73e4e1899941a2b4a3b3940c49a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4009,6 +4015,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4832885025978059524, guid: cf9af73e4e1899941a2b4a3b3940c49a,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf9af73e4e1899941a2b4a3b3940c49a, type: 3}
