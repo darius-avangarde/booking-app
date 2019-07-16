@@ -86,13 +86,7 @@ public class CalendarDayColumn : MonoBehaviour
 
     public List<CalendarDayColumnObject> GetActiveColumnObjects()
     {
-        List<CalendarDayColumnObject> activeItems = new List<CalendarDayColumnObject>();
-        for (int i = 0; i < dayPool.Count; i++)
-        {
-            if(dayPool[i].gameObject.activeSelf)
-                activeItems.Add(dayPool[i]);
-        }
-        return activeItems;
+        return dayPool.FindAll(a => a.gameObject.activeSelf);
     }
 
     private void ManagePool(List<IRoom> rooms)
@@ -106,7 +100,7 @@ public class CalendarDayColumn : MonoBehaviour
             }
 
             //Disable unused objects
-            for (int i = dayPool.Count - 1; i > rooms.Count; i--)
+            for (int i = dayPool.Count - 1; i > rooms.Count - 1; i--)
             {
                 dayPool[i].gameObject.SetActive(false);
             }

@@ -23,6 +23,8 @@ public class CalendarRoomColumnObject : MonoBehaviour
 
     public void UpdateRoomObject(IRoom room, UnityAction<IRoom> tapAction)
     {
+        gameObject.SetActive(true);
+
         roomName.text = room.Name;
         singleBeds.text = $"{room.SingleBeds}";
         doubleBeds.text = $"{room.DoubleBeds}";

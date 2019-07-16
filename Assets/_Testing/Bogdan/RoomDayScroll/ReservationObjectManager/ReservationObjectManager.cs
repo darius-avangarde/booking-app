@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,99 +20,143 @@ public class ReservationObjectManager : MonoBehaviour
     [SerializeField]
     private RectTransform dayColumnObjectPrefabRect;
 
+
     private List<ReservationObject> pool = new List<ReservationObject>();
+    private List<IReservation> reservations = new List<IReservation>();
+    private List<IReservation> placedReservations = new List<IReservation>();
+
+
+    public void DisableUnseenReservations()
+    {
+        foreach (ReservationObject resObj in pool)
+        {
+
+            if(Mathf.Abs(resObj.transform.position.x) > Screen.width * 3)
+            {
+                placedReservations.Remove(resObj.ObjReservation);
+                resObj.Disable();
+            }
+        }
+    }
 
     public void SweepUpdateReservations(IProperty property, UnityAction<IReservation> tapAction)
     {
         DisableAllReservationObjects();
         //get ordered by hierarchy day columns
+        StartCoroutine(DelayDraw(property, tapAction));
+    }
+
+    public void CreateReservationsForColumn(CalendarDayColumn dayColumn, IProperty property, bool isStart)
+    {
+        if(reservations.Exists(r => (isStart ? r.Period.Start.Date : r.Period.End.Date) == dayColumn.ObjectDate.Date))
+        {
+            foreach(IReservation res in reservations.FindAll(r => (isStart ? r.Period.Start.Date : r.Period.End.Date) == dayColumn.ObjectDate.Date))
+            {
+                if(!placedReservations.Exists(r => r.ID == res.ID))
+                {
+                    placedReservations.Add(res);
+                    StartCoroutine(DrawReservation(res, dayColumn, isStart));
+
+                    Debug.Log(res.CustomerName + " - "
+                    + res.Period.Start.ToString(Constants.DateTimePrintFormat)
+                    + " - " + res.Period.End.ToString(Constants.DateTimePrintFormat)
+                    + " - " + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomIDs[0]).Name
+                    );
+                }
+            }
+        }
+    }
+
+    private IEnumerator DelayDraw(IProperty property, UnityAction<IReservation> tapAction)
+    {
+        yield return null;
+
         List<CalendarDayColumn> columns = reservationsCalendarManager.GetHierarchyOrderedDayColumns();
 
         DateTime minDate = columns[0].ObjectDate.Date;
         DateTime maxDate = columns[columns.Count - 1].ObjectDate.Date;
 
-        List<IReservation> reservations = ReservationDataManager.GetActivePropertyReservations(property.ID).ToList();
+        reservations = ReservationDataManager.GetActivePropertyReservations(property.ID).ToList();
         //ManagePool(reservations);
 
-        List<IReservation> placedReservations = new List<IReservation>();
+        placedReservations = new List<IReservation>();
 
         foreach (IReservation r in reservations)
         {
             if((r.Period.Start.Date >= minDate && r.Period.Start.Date <= maxDate) || (r.Period.End.Date >= minDate && r.Period.End.Date <= maxDate))
             {
-                Debug.Log(r.CustomerName + " - "
-                    + r.Period.Start.ToString(Constants.DateTimePrintFormat)
-                    + " - " + r.Period.End.ToString(Constants.DateTimePrintFormat)
-                    + " - " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomIDs[0]).Name
-                    );
+                // Debug.Log(r.CustomerName + " - "
+                //     + r.Period.Start.ToString(Constants.DateTimePrintFormat)
+                //     + " - " + r.Period.End.ToString(Constants.DateTimePrintFormat)
+                //     + " - " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomIDs[0]).Name
+                //     );
                 DrawReservation(r, columns);
+
+                placedReservations.Add(r);
             }
         }
     }
 
     private void DrawReservation(IReservation r, List<CalendarDayColumn> columns)
     {
-        ;
-        ;
-
-
-        List<CalendarDayColumnObject> activeObjects = GetDateColumn(r,columns, out bool isStart).GetActiveColumnObjects();
-
-        foreach (CalendarDayColumnObject cdco in activeObjects)
+        foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).GetActiveColumnObjects())
         {
             if(r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
                 //TODO: Set callback to open reservation edit panel with reservation
-                GetFreeReservationObject().PlaceUpdateObject(p.minPos, p.size, r, (res) => Debug.Log($"Edit reservation for {res.CustomerName} with {r.RoomIDs.Count} rooms"));
+                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, (res) => Debug.Log($"Edit reservation for {res.CustomerName} with {r.RoomIDs.Count} rooms"));
             }
+        }
+    }
+
+    private IEnumerator DrawReservation(IReservation r, CalendarDayColumn column, bool isStart)
+    {
+        yield return null;
+        foreach (CalendarDayColumnObject cdco in column.GetActiveColumnObjects())
+        {
+            if(r.ContainsRoom(cdco.ObjectRoom.ID))
+            {
+                PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
+                //TODO: Set callback to open reservation edit panel with reservation
+                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, (res) => Debug.Log($"Edit reservation for {res.CustomerName} with {r.RoomIDs.Count} rooms"), true);
+            }
+
         }
     }
 
     private CalendarDayColumn GetDateColumn(IReservation r, List<CalendarDayColumn> columns, out bool isStart)
     {
-        if(columns.Exists(d => d.ObjectDate == r.Period.Start))
+        if(columns.Exists(d => d.ObjectDate.Date == r.Period.Start.Date))
         {
             isStart = true;
-            return columns.Find(c => c.ObjectDate == r.Period.Start.Date);
+            return columns.Find(c => c.ObjectDate.Date == r.Period.Start.Date);
         }
         else
         {
-            isStart = true;
-            return columns.Find(c => c.ObjectDate == r.Period.End.Date);
+            isStart = false;
+            return columns.Find(c => c.ObjectDate.Date == r.Period.End.Date);
         }
     }
 
     //TODO: position is taken from the first rect only (probably instantiated too soon)
     private PointSize CalculatePositionSpan(bool isStart, int daySpan, RectTransform dayRect)
     {
-        dayRect.GetComponentInChildren<UnityEngine.UI.Image>().color = Color.yellow;
-
         PointSize output = new PointSize();
+        output.size.x = (daySpan) * dayRect.rect.width;
+        output.size.y = dayColumnObjectPrefabRect.rect.height;
+        output.minPos = (Vector2)dayRect.position;
 
-        if(!isStart)
-        {
-            output.size.x = daySpan * dayRect.rect.width;
-            output.size.y = dayColumnObjectPrefabRect.rect.height;
+        output.pivot = isStart ? Vector2.zero : Vector2.right;
 
-            output.minPos = dayRect.TransformPoint(dayRect.rect.min);
-        }
-        else
-        {
-            output.size.x = daySpan * dayRect.rect.width;
-            output.size.y = dayColumnObjectPrefabRect.rect.height;
-
-            Vector2 maxPos = dayRect.TransformPoint(dayRect.rect.max);
-            output.minPos.x = maxPos.x - output.size.x;
-            output.minPos.y = maxPos.y - output.size.y;
-        }
         return output;
     }
 
-    struct PointSize
+    public struct PointSize
     {
         public Vector2 minPos;
         public Vector2 size;
+        public Vector2 pivot;
     }
 
     private void ManagePool(List<IReservation> reservations)

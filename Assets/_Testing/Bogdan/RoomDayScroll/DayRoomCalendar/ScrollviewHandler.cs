@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -35,7 +36,7 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     private void Start()
     {
         DayColumnScrollrect.onValueChanged.AddListener(MatchPositionMain);
-        DayHeaderScrollrect.onValueChanged.AddListener(MatchPositionRooms);
+        RoomsColumnScrollrect.onValueChanged.AddListener(MatchPositionRooms);
         DayHeaderScrollrect.onValueChanged.AddListener(MatchPositionDayHeader);
 
         //Set listeners for changing the content rect sizes (layout groups and content size fitters are disables for infinite scroll)
@@ -99,10 +100,10 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     {
         if(isScrolling)
         {
-            RoomsColumnScrollrect.verticalNormalizedPosition = position.y;
             DayHeaderScrollrect.horizontalNormalizedPosition = position.x;
         }
 
+        RoomsColumnScrollrect.verticalNormalizedPosition = position.y;
         ReservationsColumnRect.position = DayColumnScrollrect.content.position;
     }
 
@@ -140,27 +141,26 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         //presnap delay
         yield return new WaitForSeconds(0.5f);
 
-        Vector2 current = scrollRect.normalizedPosition;
-        Vector2 target = NearestSnapPoint(scrollRect);
+        float current = scrollRect.horizontalNormalizedPosition;
+        float target = NearestSnapPointX(scrollRect);
 
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/snapTime)
         {
-            scrollRect.normalizedPosition = Vector2.Lerp(current, target, snapCurve.Evaluate(t));
+            scrollRect.horizontalNormalizedPosition = Mathf.Lerp(current, target, snapCurve.Evaluate(t));
             yield return null;
         }
-        scrollRect.normalizedPosition = target;
+        scrollRect.horizontalNormalizedPosition = target;
         isSnaping = false;
         isScrolling = false;
     }
 
-    private Vector2 NearestSnapPoint(ScrollRect scrollRect)
+    private float NearestSnapPointX(ScrollRect scrollRect)
     {
-        Vector2 snapPos = Vector2.zero;
-        snapPos.y = scrollRect.normalizedPosition.y;
+        float snapPos = scrollRect.normalizedPosition.y;
 
         float normalizedWidth = scrollRect.viewport.rect.width / (scrollRect.content.rect.width - scrollRect.viewport.rect.width) + 1;
         float snapSize = normalizedWidth/scrollRect.content.childCount;
-        snapPos.x = Mathf.RoundToInt(scrollRect.horizontalNormalizedPosition/snapSize) * snapSize;
+        snapPos = Mathf.RoundToInt(scrollRect.horizontalNormalizedPosition/snapSize) * snapSize;
 
         return snapPos;
     }
