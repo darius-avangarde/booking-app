@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,7 +7,7 @@ public class ThemeManager : MonoBehaviour
 {
     [SerializeField]
     private Toggle themeToggle;
-    private bool ok;
+    public bool togggleInteraction;
     public List<GameObject> MyText { get; set; }
     public List<GameObject> MyBackground { get; set; }
     public List<GameObject> MySeparator { get; set; }
@@ -39,61 +38,45 @@ public class ThemeManager : MonoBehaviour
     {
         foreach (var item in MyText)
         {
-            var colorText = item.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorText.color = textDark;
-            }
-            else
-            {
-                colorText.color = textLight;
-            }
-
+            SetItemColor(item, textDark, textLight);
         }
         foreach (var item in MyBackground)
         {
-            Debug.Log(item.name + "---- bgd");
-            var colorBG = item.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorBG.color = darkBackground;
-            }
-            else
-            {
-                colorBG.color = lightBackground;
-            }
-
+            SetItemColor(item, darkBackground, lightBackground);
         }
         foreach (var item in MySeparator)
         {
-            var colorSeparator = item.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorSeparator.color = separatorDark;
-            }
-            else
-            {
-                colorSeparator.color = separatorLight;
-            }
+            SetItemColor(item, separatorDark, separatorLight);
         }
         foreach (var item in MyItem)
         {
-            var colorItem = item.GetComponent<Graphic>();
-            if (!ok && item != null)
-            {
-                colorItem.color = ItemDark;
-            }
-            else
-            {
-                colorItem.color = ItemLight;
-            }
+            SetItemColor(item, ItemDark, ItemLight);
         }
     }
 
     public void AddItems(GameObject myObject)
     {
+        MyItem.Clear();
+        MyText.Clear();
+        MySeparator.Clear();
+        MyBackground.Clear();
 
         if (myObject.tag == "ItemBackground" && myObject != null)
+        {
+            MyItem.Add(myObject);
+            SelectTheme();
+        }
+        if (myObject.tag == "TextIcons" && myObject != null)
+        {
+            MyText.Add(myObject);
+            SelectTheme();
+        }
+        if (myObject.tag == "Separator" && myObject != null)
+        {
+            MySeparator.Add(myObject);
+            SelectTheme();
+        }
+        if (myObject.tag == "Background" && myObject != null)
         {
             MyBackground.Add(myObject);
             SelectTheme();
@@ -105,65 +88,49 @@ public class ThemeManager : MonoBehaviour
 
         if (items.tag == "ItemBackground" && items != null)
         {
-            var colorBG = items.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorBG.color = ItemDark;
-            }
-            else
-            {
-                colorBG.color = ItemLight;
-            }
+            SetItemColor(items, ItemDark, ItemLight);
+
         }
         if (items.tag == "TextIcons" && items != null)
         {
-            var colorText = items.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorText.color = textDark;
-            }
-            else
-            {
-                colorText.color = textLight;
-            }
+            SetItemColor(items, textDark, textLight);
+
         }
         if (items.tag == "Separator" && items != null)
         {
-            var colorSeparator = items.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorSeparator.color = separatorDark;
-            }
-            else
-            {
-                colorSeparator.color = separatorLight;
-            }
+            SetItemColor(items, separatorDark, separatorLight);
+
         }
         if (items.tag == "Background" && items != null)
         {
-            var colorBG = items.GetComponent<Graphic>();
-            if (!ok)
-            {
-                colorBG.color = ItemDark;
-            }
-            else
-            {
-                colorBG.color = ItemLight;
-            }
+            SetItemColor(items, darkBackground, lightBackground);
+
         }
     }
     public void Verify()
     {
         if (themeToggle.isOn)
         {
-            ok = true;
+            togggleInteraction = true;
         }
         else
         {
-            ok = false;
+            togggleInteraction = false;
         }
         SelectTheme();
     }
 
-   
+    private void SetItemColor(GameObject items, Color dark, Color light)
+    {
+        var colorBG = items.GetComponent<Graphic>();
+
+        if (togggleInteraction)
+        {
+            colorBG.color = dark;
+        }
+        else
+        {
+            colorBG.color = light;
+        }
+    }
 }

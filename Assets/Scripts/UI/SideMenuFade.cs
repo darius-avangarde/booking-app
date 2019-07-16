@@ -78,9 +78,5 @@ public class SideMenuFade : MonoBehaviour
     {
         sideMenuPanel.SetActive(true);
         FadeIn();
-        foreach (var item in items)
-        {
-            theme.SetColor(item);
-        }
     }
 }

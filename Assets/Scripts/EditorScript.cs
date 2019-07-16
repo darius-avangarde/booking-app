@@ -28,12 +28,10 @@ public class EditorScript : EditorWindow
         Debug.Log("Clicked Button");
         foreach (var myText in GameObject.FindGameObjectsWithTag("TextIcons"))
         {
-
             TextList.Add(myText);
         }
         foreach (var myBg in GameObject.FindGameObjectsWithTag("Background"))
         {
-
             BackgroundList.Add(myBg);
         }
         foreach (var separator in GameObject.FindGameObjectsWithTag("Separator"))
@@ -43,7 +41,7 @@ public class EditorScript : EditorWindow
         foreach (var item in GameObject.FindGameObjectsWithTag("ItemBackground"))
         {
             ItemList.Add(item);
-            Debug.Log(item.name);
+           
         }
     }
     void OnGUI()

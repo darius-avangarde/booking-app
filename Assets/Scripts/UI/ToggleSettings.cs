@@ -4,8 +4,6 @@ using UnityEngine.UI;
 public class ToggleSettings : MonoBehaviour
 {
     [SerializeField]
-    private ThemeManager theme;
-    [SerializeField]
     private Image imageRound;
     [SerializeField]
     private Toggle toggle;

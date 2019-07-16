@@ -15,8 +15,6 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private Transform clientAdminScreenTransform = null;
-    [SerializeField]
     private Transform clientEditScreenTransform = null;
     [SerializeField]
     private GameObject clientPrefabButton = null;
@@ -73,6 +71,7 @@ public class ClientsScreen : MonoBehaviour
         firstPosition = new Vector2(0, 0);
         firstPositionContainer = ClientContainer.offsetMax;
     }
+    #region AnimationSearch
     public void SearchAnimation()
     {
         if (clientToggle.isOn)
@@ -107,7 +106,7 @@ public class ClientsScreen : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-  
+    #endregion
     public void InstantiateClients(bool fromReservation = false)
     {
         this.fromReservation = fromReservation;
@@ -132,8 +131,6 @@ public class ClientsScreen : MonoBehaviour
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefab.gameObject, clientInfoContent);
-              //theme.SetColor(clientButton);
-
                 if (fromReservation)
                     clientButton.GetComponent<ClientButton>().Initialize(client,SetTheme , phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
@@ -199,8 +196,8 @@ public class ClientsScreen : MonoBehaviour
         SetTextOnEditPanel();
         saveButton.gameObject.SetActive(false);
         editButton.gameObject.SetActive(true);
-        theme.SetColor(editButton);
-        theme.SetColor(editButton.GetComponentInChildren<Text>().gameObject);
+        //theme.SetColor(editButton);
+        //theme.SetColor(editButton.GetComponentInChildren<Text>().gameObject);
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
         ClearSearchField();
@@ -277,8 +274,6 @@ public class ClientsScreen : MonoBehaviour
     {
         SetTextOnAddPanel();
         saveButton.gameObject.SetActive(true);
-        theme.SetColor(saveButton);
-        theme.SetColor(saveButton.GetComponentInChildren<Text>().gameObject);
         editButton.gameObject.SetActive(false);
         ClearSearchField();
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
