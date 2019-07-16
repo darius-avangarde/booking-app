@@ -49,11 +49,15 @@ public class ClientsEditScreen : MonoBehaviour
         clientPhone.text = currentClient.Number;
         clientAdress.text = currentClient.Adress;
         clientEmail.text = currentClient.Email;
+        
+    }
+    /*public void SetInpufieldsColor()
+    {
         foreach (var item in textList)
         {
             theme.SetColor(item);
         }
-    }
+    }*/
     private void SetClient(Client client)
     {
         client.Name = clientName.text;
