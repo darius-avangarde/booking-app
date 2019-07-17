@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class ThemeManager : MonoBehaviour
 {
@@ -9,68 +11,81 @@ public class ThemeManager : MonoBehaviour
     private ColorsData dataColor;
     [SerializeField]
     private Toggle themeToggle;
-    public bool togggleInteraction;
-    public List<GameObject> MyText { get; set; }
-    public List<GameObject> MyBackground { get; set; }
-    public List<GameObject> MySeparator { get; set; }
-    public List<GameObject> MyItem { get; set; }
+    public List<Graphic> TextList = new List<Graphic>();
+    public List<Graphic> BackgroundList = new List<Graphic>();
+    public List<Graphic> SeparatorList = new List<Graphic>();
+    public List<Graphic> ItemList = new List<Graphic>();
+    //public List<GameObject> MyText { get; set; }
+    //singleton
+    private static ThemeManager instance;
+    public static ThemeManager Instance { get { return instance; } }
 
     void Start()
     {
-        //#if UNITY_EDITOR
-        MyText = EditorWindow.GetWindow<EditorScript>().TextList;
-        MyBackground = EditorWindow.GetWindow<EditorScript>().BackgroundList;
-        MySeparator = EditorWindow.GetWindow<EditorScript>().SeparatorList;
-        MyItem = EditorWindow.GetWindow<EditorScript>().ItemList;
-
-        //#endif
+        Debug.Log("Hi, from theme manager, i have: " + TextList.Count + "text objects");
+        foreach (var item in TextList)
+        {
+            Debug.Log(item.name + "from theme manager");
+        }
     }
+    //private void Awake()
+    //{
+    //    if (instance != null && instance != this)
+    //    {
+    //        Destroy(this.gameObject);
+    //    }
+    //    else
+    //    {
+    //        instance = this;
+    //    }
+    //}
 
     public void SelectTheme()
     {
-        foreach (var item in MyText)
+        foreach (var item in TextList)
         {
+            Debug.Log(item.name);
             SetItemColor(item, dataColor.textDark, dataColor.textLight);
         }
-        foreach (var item in MyBackground)
+        foreach (var item in BackgroundList)
         {
             SetItemColor(item, dataColor.darkBackground, dataColor.lightBackground);
         }
-        foreach (var item in MySeparator)
+        foreach (var item in SeparatorList)
         {
             SetItemColor(item, dataColor.separatorDark, dataColor.separatorLight);
         }
-        foreach (var item in MyItem)
+        foreach (var item in ItemList)
         {
             SetItemColor(item, dataColor.ItemDark, dataColor.ItemLight);
         }
     }
 
-    public void AddItems(GameObject myObject)
+    public void AddItems(Graphic myObject)
     {
         if (myObject.tag == "ItemBackground" && myObject != null)
         {
-            MyItem.Add(myObject);
+            ItemList.Add(myObject);
             SelectTheme();
         }
         if (myObject.tag == "TextIcons" && myObject != null)
         {
-            MyText.Add(myObject);
+            TextList.Add(myObject);
             SelectTheme();
         }
         if (myObject.tag == "Separator" && myObject != null)
         {
-            MySeparator.Add(myObject);
+            SeparatorList.Add(myObject);
             SelectTheme();
         }
         if (myObject.tag == "Background" && myObject != null)
         {
-            MyBackground.Add(myObject);
+            BackgroundList.Add(myObject);
             SelectTheme();
         }
     }
 
-    public void SetColor(GameObject items)
+    public void SetColor(Graphic items)
     {
 
         if (items.tag == "ItemBackground" && items != null)
@@ -94,30 +109,60 @@ public class ThemeManager : MonoBehaviour
 
         }
     }
-    public void Verify()
+
+    private void SetItemColor(Graphic items, Color dark, Color light)
     {
         if (themeToggle.isOn)
         {
-            togggleInteraction = true;
+            items.color = dark;
         }
         else
         {
-            togggleInteraction = false;
+            items.color = light;
         }
-        SelectTheme();
     }
 
-    private void SetItemColor(GameObject items, Color dark, Color light)
+    public void SetShadow(GameObject item)
     {
-        var colorBG = items.GetComponent<Graphic>();
-
+        var shadow = item.GetComponent<Shadow>();
         if (themeToggle.isOn)
         {
-            colorBG.color = dark;
+            shadow.effectColor = dataColor.separatorDark;
         }
         else
         {
-            colorBG.color = light;
+            shadow.effectColor = dataColor.separatorLight;
+        }
+    }
+
+    public void FindTexts()
+    {
+        TextList.Clear();
+        BackgroundList.Clear();
+        SeparatorList.Clear();
+        ItemList.Clear();
+        Debug.Log("Clicked Button");
+        foreach (var myText in GameObject.FindGameObjectsWithTag("TextIcons"))
+        {
+            var graphicItem = myText.GetComponent<Graphic>();
+            TextList.Add(graphicItem);
+        }
+        //TextList = GameObject.FindGameObjectsWithTag("TextIcons").ToList();
+        foreach (var myBg in GameObject.FindGameObjectsWithTag("Background"))
+        {
+            var graphicItem = myBg.GetComponent<Graphic>();
+            BackgroundList.Add(graphicItem);
+        }
+        foreach (var separator in GameObject.FindGameObjectsWithTag("Separator"))
+        {
+            var graphicItem = separator.GetComponent<Graphic>();
+            SeparatorList.Add(graphicItem);
+        }
+        foreach (var item in GameObject.FindGameObjectsWithTag("ItemBackground"))
+        {
+            var graphicItem = item.GetComponent<Graphic>();
+            ItemList.Add(graphicItem);
+
         }
     }
 }

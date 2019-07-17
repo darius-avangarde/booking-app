@@ -127,10 +127,11 @@ public class ClientsScreen : MonoBehaviour
             clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
             GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
             letterButtons.Add(clientLetters);
-            theme.SetColor(clientLetters);
+            SetTheme(clientLetters);
             foreach (var client in item.Value)
             {
                 GameObject clientButton = Instantiate(clientPrefab.gameObject, clientInfoContent);
+                theme.SetShadow(clientButton);
                 if (fromReservation)
                     clientButton.GetComponent<ClientButton>().Initialize(client,SetTheme , phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
@@ -148,7 +149,8 @@ public class ClientsScreen : MonoBehaviour
     }
     public void SetTheme(GameObject myObj)
     {
-       theme.SetColor(myObj);
+        var item = myObj.GetComponent<Graphic>();
+       theme.SetColor(item);
     }
     public void LastPosition()
     {
