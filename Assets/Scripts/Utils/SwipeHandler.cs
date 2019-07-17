@@ -3,10 +3,15 @@ using UnityEngine.Events;
 
 public class SwipeHandler : MonoBehaviour
 {
+    public bool Enabled
+    {
+        get => TargetGameObject.activeSelf;
+        set => TargetGameObject.SetActive(value);
+    }
 
-    [Header("Registers swipes when this gameobject is active in hierarchy")]
+    [Header("Registers swipes over this gameobject when active")]
     [SerializeField]
-    private GameObject targetUiObject;
+    private RectTransform targetRectTransform;
     [Space]
     [SerializeField]
     private UnityEvent onSwipeLeft;
@@ -14,22 +19,36 @@ public class SwipeHandler : MonoBehaviour
     private UnityEvent onSwipeRight;
 
 
+    private GameObject TargetGameObject
+    {
+        get
+        {
+            if(targetGameObject == null)
+            {
+                targetGameObject = gameObject;
+            }
+            return targetGameObject;
+        }
+    }
+
+    private GameObject targetGameObject;
     private float dragDistance;
     private Vector2 firstPos;
     private Vector2 lastPos;
 
+
     private void Start()
     {
-        dragDistance = Screen.height * 0.15f;
+        dragDistance = Mathf.Max(Screen.height, Screen.width) * 0.15f;
     }
 
     private void Update()
     {
-        if(targetUiObject.activeInHierarchy == true)
+        if(Input.touchCount == 1)
         {
-            if(Input.touchCount == 1)
+            Touch touch = Input.GetTouch(0);
+            if(TargetGameObject.activeInHierarchy && RectTransformUtility.RectangleContainsScreenPoint(targetRectTransform, touch.position))
             {
-                Touch touch = Input.GetTouch(0);
 
                 if(touch.phase == TouchPhase.Began)
                 {
@@ -50,18 +69,28 @@ public class SwipeHandler : MonoBehaviour
                         if(lastPos.x > firstPos.x)
                         {
                             if(onSwipeRight != null)
-                                onSwipeRight.Invoke();
+                                onSwipeRight?.Invoke();
                         }
                         // swiped left
                         else
                         {
                             if(onSwipeLeft != null)
-                                onSwipeLeft.Invoke();
+                                onSwipeLeft?.Invoke();
                         }
                     }
                 }
             }
         }
-    }
 
+#if UNITY_EDITOR
+        if(TargetGameObject.activeInHierarchy)
+        {
+            if(Input.GetKeyDown(KeyCode.LeftArrow))
+                onSwipeLeft?.Invoke();
+
+            if(Input.GetKeyDown(KeyCode.RightArrow))
+                onSwipeRight?.Invoke();
+        }
+#endif
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,6 +6,30 @@ using UnityEngine.UI;
 
 public class ReservationsCalendarManager : MonoBehaviour
 {
+    [SerializeField]
+    ModalCalendar m;
+
+    public void TestOpenModalCalNULL()
+    {
+        m.OpenCallendar((d) => Debug.Log("callback " + d.ToString(Constants.DateTimePrintFormat)));
+    }
+
+    public void TestOpenModalCalTODAY()
+    {
+        m.OpenCallendar((d) => Debug.Log("callback " + d.ToString(Constants.DateTimePrintFormat)), DateTime.Today.Date);
+    }
+
+
+    public void TestOpenModalCal31Days()
+    {
+        m.OpenCallendar((d) => Debug.Log("callback " + d.ToString(Constants.DateTimePrintFormat)), DateTime.Today.AddDays(45).Date);
+    }
+
+    ///<summary>
+    ///Returns a list of all calendar day columns ordered by heirarchy
+    ///</summary>
+    public List<CalendarDayColumn> OrderedDayColumns => dayColumns.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
+
     [SerializeField]
     private TopCalendar topCalendar;
     [SerializeField]
@@ -53,6 +76,7 @@ public class ReservationsCalendarManager : MonoBehaviour
     private CalendarDayColumn focalDayColumn;
     private bool infiniteScrollsInitialized = false;
 
+    public int FocalDayColumnIndex => dayColumns.Count(d => d.transform.position.x < dayColumnScrollrect.viewport.position.x);
 
 
     private void Start()
@@ -62,35 +86,30 @@ public class ReservationsCalendarManager : MonoBehaviour
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
         CreateDayItems();
 
-        StartCoroutine(DelayStartTest(2, 2));
+        //Load first property to initialize day columns/items;
+        SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
 
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
     }
 
-    //TODO: Remove test routine
-    private IEnumerator DelayStartTest(float delay, int properyIndex)
-    {
-        yield return new WaitForSeconds(delay);
-        SelectProperty(PropertyDataManager.GetProperties().ToList()[properyIndex]);
-    }
-
+    ///<summary>
+    ///Updates the room/day calendar items such that the first visible date is set to the given datetime
+    ///</summary>
     public void JumpToDate(DateTime date)
     {
-        int focalIndex = focalDayColumn.transform.GetSiblingIndex();
-
-        DateTime offsetDate = date.AddDays(-focalIndex + 3);
-
-        dayColumns = dayColumns.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
-        dayHeaders = dayHeaders.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
+        DateTime offsetDate = date.AddDays(-FocalDayColumnIndex).Date;
+        dayColumns = OrderedDayColumns;
 
         for (int i = 0; i < dayColumns.Count; i++)
         {
             dayColumns[i].SetDate(offsetDate.AddDays(i));
-            dayColumns[i].LinkedHeader.UpdateUI(offsetDate.AddDays(i));
         }
 
+        //TODO: Replace debug with open reservation edit with prop and client
         reservationManager.SweepUpdateReservations(currentProperty, (r) => Debug.Log($"Edit res for: {r.CustomerName}"));
+
+        topCalendar.OpenCloseDropdownCalendar();
     }
 
     //TODO: Replace debug logs with fuctions from reservation edit/new screen
@@ -116,11 +135,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
     }
 
-    public List<CalendarDayColumn> GetHierarchyOrderedDayColumns()
-    {
-        return dayColumns.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
-    }
-
+    //Triggered on infinite scroll moving a calendar day column.
     private void UpdateDayColumnDate(Transform dayColumnTransform, bool isForward)
     {
         CalendarDayColumn d = dayColumnTransform.GetComponent<CalendarDayColumn>();
@@ -129,6 +144,9 @@ public class ReservationsCalendarManager : MonoBehaviour
 
         reservationManager.CreateReservationsForColumn(d, currentProperty, isForward);
         reservationManager.DisableUnseenReservations();
+
+        //Update the top calndar FocalDate
+        topCalendar.UpdateMonth(dayColumns.Find(c => c.transform.GetSiblingIndex() == FocalDayColumnIndex).ObjectDate);
     }
 
     //TODO: Replace debug logs with fuctions from reservation edit/new screen
@@ -149,7 +167,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
             dayColumn.name = $"Day column {d}";
-            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"), UpdateTopCalendarDate, header);
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"), header);
             dayColumns.Add(dayColumn);
         }
 
@@ -157,19 +175,5 @@ public class ReservationsCalendarManager : MonoBehaviour
         focalDayColumn = dayColumns[0];
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
-    }
-
-    private void UpdateTopCalendarDate(DateTime date, CalendarDayColumn dayColumn)
-    {
-        focalDate = date;
-        topCalendar.SetMonth(date);
-        focalDayColumn = dayColumn;
-    }
-
-    private IEnumerator DelayedInit()
-    {
-        yield return new WaitForEndOfFrame();
-        dayHeaderInfScroll.Init();
-        dayColumnInfScroll.Init();
     }
 }

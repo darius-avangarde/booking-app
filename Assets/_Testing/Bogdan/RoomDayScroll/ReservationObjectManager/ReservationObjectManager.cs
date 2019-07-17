@@ -71,7 +71,7 @@ public class ReservationObjectManager : MonoBehaviour
     {
         yield return null;
 
-        List<CalendarDayColumn> columns = reservationsCalendarManager.GetHierarchyOrderedDayColumns();
+        List<CalendarDayColumn> columns = reservationsCalendarManager.OrderedDayColumns;
 
         DateTime minDate = columns[0].ObjectDate.Date;
         DateTime maxDate = columns[columns.Count - 1].ObjectDate.Date;
@@ -85,13 +85,7 @@ public class ReservationObjectManager : MonoBehaviour
         {
             if((r.Period.Start.Date >= minDate && r.Period.Start.Date <= maxDate) || (r.Period.End.Date >= minDate && r.Period.End.Date <= maxDate))
             {
-                // Debug.Log(r.CustomerName + " - "
-                //     + r.Period.Start.ToString(Constants.DateTimePrintFormat)
-                //     + " - " + r.Period.End.ToString(Constants.DateTimePrintFormat)
-                //     + " - " + PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomIDs[0]).Name
-                //     );
                 DrawReservation(r, columns);
-
                 placedReservations.Add(r);
             }
         }
@@ -99,7 +93,7 @@ public class ReservationObjectManager : MonoBehaviour
 
     private void DrawReservation(IReservation r, List<CalendarDayColumn> columns)
     {
-        foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).GetActiveColumnObjects())
+        foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).ActiveDayColumnsObjects)
         {
             if(r.ContainsRoom(cdco.ObjectRoom.ID))
             {
@@ -113,7 +107,7 @@ public class ReservationObjectManager : MonoBehaviour
     private IEnumerator DrawReservation(IReservation r, CalendarDayColumn column, bool isStart)
     {
         yield return null;
-        foreach (CalendarDayColumnObject cdco in column.GetActiveColumnObjects())
+        foreach (CalendarDayColumnObject cdco in column.ActiveDayColumnsObjects)
         {
             if(r.ContainsRoom(cdco.ObjectRoom.ID))
             {

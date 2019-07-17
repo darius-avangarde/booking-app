@@ -11,8 +11,6 @@ public class CalendarRoomColumn : MonoBehaviour
 
     public void UpdateRooms(List<IRoom> rooms, UnityAction<IRoom> tapAction)
     {
-        Debug.Log(rooms.Count + " < prop rooms");
-
         ManagePool(rooms);
 
         for (int r = 0; r < rooms.Count; r++)

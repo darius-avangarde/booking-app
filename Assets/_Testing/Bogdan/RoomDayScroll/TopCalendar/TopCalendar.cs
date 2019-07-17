@@ -8,6 +8,8 @@ public class TopCalendar : MonoBehaviour
 {
     [SerializeField]
     private ScrollviewHandler scrollviewHandler;
+    [SerializeField]
+    private SwipeHandler swipeHandler;
 
     [SerializeField]
     private Text monthText;
@@ -17,7 +19,6 @@ public class TopCalendar : MonoBehaviour
     private float slideTime = 0.35f;
     [SerializeField]
     private AnimationCurve slideCurve;
-
 
     #region Slide Refrence Rects
         [Space]
@@ -29,6 +30,7 @@ public class TopCalendar : MonoBehaviour
         private RectTransform slideRight;
     #endregion
 
+    [Space]
     [SerializeField]
     private TopCalendarMonthPage currentPage;
     [SerializeField]
@@ -40,12 +42,14 @@ public class TopCalendar : MonoBehaviour
     [SerializeField]
     private RectTransform lowerCalendarRectTransform;
 
-    private List<TopCalendarDayObject> dayItems = new List<TopCalendarDayObject>();
-    private DateTime focusDateTime = DateTime.Today.Date;
+    #region Private variables
+        private List<TopCalendarDayObject> dayItems = new List<TopCalendarDayObject>();
+        private DateTime focusDateTime = DateTime.Today.Date;
 
-    bool isSliding = false;
-    bool isOpening = false;
-    bool isOpen = false;
+        bool isSliding = false;
+        bool isOpening = false;
+        bool isOpen = false;
+    #endregion
 
 
     private void Start()
@@ -56,14 +60,7 @@ public class TopCalendar : MonoBehaviour
         currentPage.UpdatePage(DateTime.Today.Date);
         cachePage.CreateDayItems();
         cachePage.UpdatePage(DateTime.Today.Date);
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
-            ChangeMonth(-1);
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-            ChangeMonth(+1);
+        swipeHandler.Enabled = false;
     }
 
     public void OpenCloseDropdownCalendar()
@@ -72,6 +69,30 @@ public class TopCalendar : MonoBehaviour
         {
             StartCoroutine(Slide());
         }
+    }
+
+    public void UpdateMonth(DateTime date)
+    {
+        //only update if the year or motnth is different
+        if(focusDateTime.Year != date.Year || focusDateTime.Month != date.Month)
+        {
+            //check if the span is greater than one day (avoid flicker when focal day column changes rapidly)
+            if(Mathf.Abs((int)date.Date.Subtract(focusDateTime.Date).TotalDays) > 1)
+            {
+                focusDateTime = date.Date;
+                isSliding = false;
+                currentPage.UpdatePage(focusDateTime);
+                monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
+            }
+        }
+    }
+
+    public void ChangeMonth(int monthOffset)
+    {
+        focusDateTime = focusDateTime.AddMonths(monthOffset).Date;
+        StopAllCoroutines();
+        isSliding = false;
+        StartCoroutine(Swipe(monthOffset < 0));
     }
 
     private IEnumerator Slide()
@@ -92,29 +113,7 @@ public class TopCalendar : MonoBehaviour
 
         isOpening = false;
         isOpen = !isOpen;
-    }
-
-    public void ChangeMonth(int monthOffset)
-    {
-        focusDateTime = focusDateTime.AddMonths(monthOffset).Date;
-        StopAllCoroutines();
-        isSliding = false;
-        StartCoroutine(Swipe(monthOffset < 0));
-    }
-
-    public void SetMonth(DateTime date)
-    {
-        focusDateTime = date.Date;
-        isSliding = false;
-        currentPage.UpdatePage(focusDateTime);
-        monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
-    }
-
-    private void Show(DateTime focus)
-    {
-        focusDateTime = focus;
-        monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
-        currentPage.UpdatePage(focusDateTime);
+        swipeHandler.Enabled = isOpen;
     }
 
     private IEnumerator Swipe(bool isLeft)
@@ -147,15 +146,4 @@ public class TopCalendar : MonoBehaviour
         cachePage = cache;
         isSliding = false;
     }
-
-
-    // create day items
-
-    //use logic from old new calendar
-
-    //implement slide mechanic
-
-    //change month void +/-
-
-    //tap action updates room calendar
 }

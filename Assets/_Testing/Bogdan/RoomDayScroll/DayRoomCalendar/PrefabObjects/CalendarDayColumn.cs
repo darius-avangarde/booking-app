@@ -7,38 +7,18 @@ public class CalendarDayColumn : MonoBehaviour
 {
     public DateTime ObjectDate => objectDate;
     public CalendarDayHeaderObject LinkedHeader => header;
+    public List<CalendarDayColumnObject> ActiveDayColumnsObjects => dayPool.FindAll(a => a.gameObject.activeSelf);
 
     [SerializeField]
     private GameObject dayColumnObjectPrefab;
-    [SerializeField]
-    private RectTransform thisRectTransform;
 
     private List<CalendarDayColumnObject> dayPool = new List<CalendarDayColumnObject>();
     private DateTime objectDate;
-
     private Vector3 lastPosition;
-    private UnityAction<DateTime,CalendarDayColumn> onMonthChange;
     private CalendarDayHeaderObject header;
 
-    //TODO: Find better way to determine focal month and trigger month change
-    private void Update()
-    {
-        if(ReservationsCalendarManager.FocalDate.Date != objectDate.Date && transform.position != lastPosition)
-        {
-            lastPosition = transform.position;
-            if(transform.position.x - transform.parent.parent.position.x > 0 && transform.position.x - transform.parent.parent.position.x < thisRectTransform.rect.width * 4)
-            {
-                onMonthChange?.Invoke(objectDate, this);
-            }
-        }
-    }
 
-    private void OnDestroy()
-    {
-        onMonthChange = null;
-    }
-
-    public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction, UnityAction<DateTime,CalendarDayColumn> setMonth, CalendarDayHeaderObject linkedHeader)
+    public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction, CalendarDayHeaderObject linkedHeader)
     {
         objectDate = new DateTime(date.Date.Ticks);
 
@@ -49,8 +29,6 @@ public class CalendarDayColumn : MonoBehaviour
             dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
         }
 
-        onMonthChange = null;
-        onMonthChange = setMonth;
         header = linkedHeader;
     }
 
@@ -82,11 +60,8 @@ public class CalendarDayColumn : MonoBehaviour
         {
             dayPool[r].UpdateDayObjectDate(objectDate);
         }
-    }
 
-    public List<CalendarDayColumnObject> GetActiveColumnObjects()
-    {
-        return dayPool.FindAll(a => a.gameObject.activeSelf);
+        LinkedHeader.UpdateUI(date);
     }
 
     private void ManagePool(List<IRoom> rooms)

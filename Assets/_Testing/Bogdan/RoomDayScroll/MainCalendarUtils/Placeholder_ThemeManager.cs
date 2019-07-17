@@ -15,12 +15,18 @@ public class Placeholder_ThemeManager : MonoBehaviour
     public Color currentReservationColor;
     public Color pastReservationColor;
 
-    public static Placeholder_ThemeManager Instance => instance;
+    public static Placeholder_ThemeManager Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = GameObject.FindObjectOfType<Placeholder_ThemeManager>();
+            }
+            return instance;
+        }
+    }
+
     private static Placeholder_ThemeManager instance;
 
-
-    private void Awake()
-    {
-        instance = this;
-    }
 }

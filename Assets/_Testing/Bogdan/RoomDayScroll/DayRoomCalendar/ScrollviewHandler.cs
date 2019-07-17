@@ -152,6 +152,8 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         scrollRect.horizontalNormalizedPosition = target;
         isSnaping = false;
         isScrolling = false;
+
+        System.GC.Collect();
     }
 
     private float NearestSnapPointX(ScrollRect scrollRect)
