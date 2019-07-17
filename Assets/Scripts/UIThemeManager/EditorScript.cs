@@ -22,6 +22,7 @@ public class EditorScript : Editor
         DrawDefaultInspector();
     }
 
+
     void OnEnable()
     {
        // myManager = (ThemeManager)target;
