@@ -25,8 +25,11 @@ public class ReservationFilterScreen : MonoBehaviour
 
     private UnityAction<ReservationFilter> callback;
 
-    private ReservationFilter activeFilter = null;
+    private ReservationFilter activeFilter = new ReservationFilter();
 
+
+    //toggle functions for each group
+        //on toggle off remove active filter options
 
     public void OpenFilterScreen(UnityAction<ReservationFilter> filterCallback = null)
     {

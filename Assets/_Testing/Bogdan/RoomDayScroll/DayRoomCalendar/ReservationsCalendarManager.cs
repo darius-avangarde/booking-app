@@ -6,25 +6,6 @@ using UnityEngine.UI;
 
 public class ReservationsCalendarManager : MonoBehaviour
 {
-    [SerializeField]
-    ModalCalendar m;
-
-    public void TestOpenModalCalNULL()
-    {
-        m.OpenCallendar((d) => Debug.Log("callback " + d.ToString(Constants.DateTimePrintFormat)));
-    }
-
-    public void TestOpenModalCalTODAY()
-    {
-        m.OpenCallendar((d) => Debug.Log("callback " + d.ToString(Constants.DateTimePrintFormat)), DateTime.Today.Date);
-    }
-
-
-    public void TestOpenModalCal31Days()
-    {
-        m.OpenCallendar((d) => Debug.Log("callback " + d.ToString(Constants.DateTimePrintFormat)), DateTime.Today.AddDays(45).Date);
-    }
-
     ///<summary>
     ///Returns a list of all calendar day columns ordered by heirarchy
     ///</summary>
@@ -36,6 +17,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationObjectManager reservationManager;
     [SerializeField]
     private PropertyDropdownHandler propertyDropdown;
+    [SerializeField]
+    private ReservationFilterScreen filterScreen;
 
     [Space]
     [SerializeField]
@@ -92,6 +75,18 @@ public class ReservationsCalendarManager : MonoBehaviour
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
     }
+
+    public void OpenFilterScreen()
+    {
+        filterScreen.OpenFilterScreen();
+    }
+
+    private void ApplyFilters(ReservationFilter filter)
+    {
+
+    }
+
+
 
     ///<summary>
     ///Updates the room/day calendar items such that the first visible date is set to the given datetime

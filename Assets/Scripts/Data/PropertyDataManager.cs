@@ -9,6 +9,7 @@ public static class PropertyDataManager
     public const string DATA_FILE_NAME = "propertyData.json";
 
     private static PropertyData cache;
+    public enum RoomType { room, apartment, villa, cabin, bed, Any}
 
     private static PropertyData Data
     {
@@ -190,7 +191,6 @@ public static class PropertyDataManager
         [SerializeField]
         private List<Room> rooms = new List<Room>();
         public IEnumerable<IRoom> Rooms => rooms.FindAll(r => !r.Deleted);
-        public IEnumerable<IRoom> MultipleRooms => rooms.FindAll(r => !r.Deleted && r.Multiple);
         public IEnumerable<IRoom> DeletedRooms => rooms.FindAll(r => r.Deleted);
 
         [SerializeField]
@@ -298,6 +298,18 @@ public static class PropertyDataManager
             set
             {
                 price = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
+        private int roomType = (int)RoomType.room;
+        public RoomType RoomType
+        {
+            get => (RoomType)roomType;
+            set
+            {
+                roomType = (int)value;
                 WritePropertyData();
             }
         }

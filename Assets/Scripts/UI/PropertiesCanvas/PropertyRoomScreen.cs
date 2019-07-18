@@ -11,48 +11,39 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ModalCalendarNew calendarScreen = null;
-    [SerializeField]
     private PropertyAdminScreen propertyAdminScreen = null;
     [SerializeField]
     private RoomAdminScreen roomAdminScreen = null;
     [SerializeField]
-    private PropertiesScreen propertiesScreen = null;
-    [SerializeField]
-    private RoomScreen roomScreen = null;
-    [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
+    [SerializeField]
+    private Text propertyRoomScreenTitle = null;
     [SerializeField]
     private ScrollRect propertyRoomScrollRect = null;
     [SerializeField]
     private RectTransform roomsContentScrollView = null;
     [SerializeField]
-    private Text propertyRoomScreenTitle = null;
-    [SerializeField]
-    private Image propertyImage = null;
-    [SerializeField]
-    private AspectRatioFitter propertyImageAspectFitter = null;
-    [SerializeField]
-    private Image backgroundImage = null;
-    [SerializeField]
-    private AspectRatioFitter backgroundImageAspectFitter = null;
-    [SerializeField]
     private GameObject roomItemPrefab = null;
     [SerializeField]
-    private Button openCalendarButton = null;
+    private GameObject roomFloorNumberPrefab = null;
+    [SerializeField]
+    private Button editButton = null;
     [SerializeField]
     private Button backButton = null;
 
     private List<GameObject> roomButtons = new List<GameObject>();
-    private DateTime startDate = DateTime.Today.Date;
-    private DateTime endDate = DateTime.Today.AddDays(1).Date;
     private IProperty currentProperty;
     private float scrollPosition = 1;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
-        openCalendarButton.onClick.AddListener(() => ShowModalCalendar());
+        editButton.onClick.AddListener(() => EditProperty());
+    }
+
+    private void OnEnable()
+    {
+        Initialize();
     }
 
     /// <summary>
@@ -64,23 +55,13 @@ public class PropertyRoomScreen : MonoBehaviour
     }
 
     /// <summary>
-    /// set new date period
-    /// </summary>
-    /// <param name="start">start of date period</param>
-    /// <param name="end">end of date period</param>
-    public void UpdateDateTime(DateTime start, DateTime end)
-    {
-        startDate = start;
-        endDate = end;
-    }
-
-    /// <summary>
     /// set the property that will be opened
     /// </summary>
     /// <param name="property">selected property</param>
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
+        Initialize();
     }
 
     /// <summary>
@@ -89,35 +70,46 @@ public class PropertyRoomScreen : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        scrollRectComponent.ResetAll();
-        propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
-        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
-            backgroundImage.sprite = (Sprite)ImageDataManager.BlurPropertyPhotos[currentProperty.ID];
-            backgroundImage.gameObject.SetActive(true);
-        }
-        else
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
-            backgroundImage.gameObject.SetActive(false);
-        }
-        propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)propertyImage.sprite.texture.width/propertyImage.sprite.texture.height;
+        //scrollRectComponent.ResetAll();
         foreach (var roomButton in roomButtons)
         {
             DestroyImmediate(roomButton);
         }
+        roomButtons = new List<GameObject>();
         if (currentProperty != null)
         {
             propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
             List<IRoom> currentRooms = currentProperty.Rooms.OrderBy(r => r.RoomNumber).ThenBy(r => r.Name).ToList();
+            int currentFloor = 0;
+            int lastFloor = -1;
+            int maxFloors = currentProperty.FloorRooms;
+            int roomCounter = 0;
             foreach (var room in currentRooms)
             {
+                if (lastFloor != currentFloor )
+                {
+                    GameObject floorNumber = Instantiate(roomFloorNumberPrefab, roomsContentScrollView);
+                    if (currentFloor != 0)
+                    {
+                        floorNumber.GetComponent<Text>().text = $"Etaj {currentFloor}";
+                    }
+                    else
+                    {
+                        floorNumber.GetComponent<Text>().text = $"Etaj P";
+                    }
+                    lastFloor = currentFloor;
+                    roomButtons.Add(floorNumber);
+                }
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);
                 RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
-                currentRoom.InitializeDateTime(startDate, endDate);
-                currentRoom.Initialize(room, null, OpenRoomScreen, null);
+                currentRoom.Initialize(room, OpenRoomAdminScreen);
                 roomButtons.Add(roomButton);
+                roomCounter++;
+                if(roomCounter >= maxFloors)
+                {
+                    roomCounter = 0;
+                    currentFloor++;
+                }
             }
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(roomsContentScrollView);
@@ -125,39 +117,8 @@ public class PropertyRoomScreen : MonoBehaviour
         propertyRoomScrollRect.verticalNormalizedPosition = scrollPosition;
         if (propertyRoomScrollRect.content.childCount > 0)
         {
-            scrollRectComponent.Init();
+            //scrollRectComponent.Init();
         }
-    }
-
-    /// <summary>
-    /// open modal calendar canvas with current date set
-    /// callback returns selected date
-    /// </summary>
-    private void ShowModalCalendar()
-    {
-        calendarScreen.OpenCallendar(startDate, endDate, SetNewDatePeriod, true);
-    }
-
-    /// <summary>
-    /// callback for the modal calendar to refresh screen with the selected date
-    /// </summary>
-    /// <param name="startDate">start of date period</param>
-    /// <param name="endDate">end of date period</param>
-    private void SetNewDatePeriod(DateTime startDate, DateTime endDate)
-    {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        scrollPosition = 1;
-        Initialize();
-    }
-
-    /// <summary>
-    /// set to add new room button
-    /// </summary>
-    public void AddRoomItem()
-    {
-        IRoom room = currentProperty.AddRoom();
-        OpenRoomAdminScreen(room);
     }
 
     /// <summary>
@@ -169,27 +130,7 @@ public class PropertyRoomScreen : MonoBehaviour
     }
 
     /// <summary>
-    /// OnHiding function - sets the selected period to properties screen on pressing back
-    /// </summary>
-    public void SetPropertyDate()
-    {
-        propertiesScreen.UpdateDateTime(startDate, endDate);
-    }
-
-    /// <summary>
-    /// open the room screen with the reservations
-    /// </summary>
-    /// <param name="room">selected room</param>
-    private void OpenRoomScreen(IRoom room)
-    {
-        scrollPosition = propertyRoomScrollRect.verticalNormalizedPosition;
-        roomScreen.UpdateDateTime(startDate, endDate);
-        roomScreen.UpdateRoomDetailsFields(room);
-        navigator.GoTo(roomScreen.GetComponent<NavScreen>());
-    }
-
-    /// <summary>
-    /// open add or edit room screen
+    /// open edit room screen
     /// </summary>
     /// <param name="room"> selected room</param>
     private void OpenRoomAdminScreen(IRoom room)
@@ -204,7 +145,7 @@ public class PropertyRoomScreen : MonoBehaviour
     /// <param name="property">current property</param>
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        propertyAdminScreen.SetCurrentProperty(property);
         navigator.GoTo(propertyAdminScreen.GetComponent<NavScreen>());
+        propertyAdminScreen.SetCurrentProperty(property);
     }
 }
