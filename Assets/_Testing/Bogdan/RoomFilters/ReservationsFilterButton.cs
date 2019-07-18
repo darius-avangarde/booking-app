@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class CalendarFilterManager : MonoBehaviour
+public class ReservationsFilterButton : MonoBehaviour
 {
     [SerializeField]
     private RectTransform filtersRect;
