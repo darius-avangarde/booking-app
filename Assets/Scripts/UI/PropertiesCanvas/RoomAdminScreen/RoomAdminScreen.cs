@@ -86,8 +86,8 @@ public class RoomAdminScreen : MonoBehaviour
             propertyRoomTitle.text = Constants.EDIT_ROOM;
             setRoomName.SetCurrentName(currentRoom.Name);
             setRoomTypeDropdown.CurrentRoomType = currentRoom.RoomType;
-            //setRoomTypeDropdown.SetRoomType(currentRoom.RoomType);
-            setBedsNumber.SetCurrentBeds(currentRoom.SingleBeds, currentRoom.DoubleBeds);
+            Vector2Int bedInfo = new Vector2Int(currentRoom.SingleBeds, currentRoom.DoubleBeds);
+            setBedsNumber.SetCurrentBeds(bedInfo);
         }
     }
 
@@ -95,9 +95,9 @@ public class RoomAdminScreen : MonoBehaviour
     {
         currentRoom.Name = setRoomName.GetCurrentName();
         currentRoom.RoomType = setRoomTypeDropdown.CurrentRoomType;
-        Vector2 bedsInfo = setBedsNumber.GetCurrentBeds();
-        currentRoom.SingleBeds = (int)bedsInfo.x;
-        currentRoom.DoubleBeds = (int)bedsInfo.y;
+        Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
+        currentRoom.SingleBeds = bedInfo.x;
+        currentRoom.DoubleBeds = bedInfo.y;
         navigator.GoBack();
     }
 

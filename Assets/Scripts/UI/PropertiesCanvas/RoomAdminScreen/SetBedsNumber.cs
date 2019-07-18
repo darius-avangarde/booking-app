@@ -13,10 +13,14 @@ public class SetBedsNumber : MonoBehaviour
     private int SingleBedsNr;
     private int DoubleBedsNr;
 
-    public void SetCurrentBeds(int singleBeds, int doubleBeds)
+    /// <summary>
+    /// returns single beds as X component
+    /// returns double beds as Y component
+    /// </summary>
+    public void SetCurrentBeds(Vector2Int bedInfo)
     {
-        SingleBedsNr = singleBeds;
-        DoubleBedsNr = doubleBeds;
+        SingleBedsNr = bedInfo.x;
+        DoubleBedsNr = bedInfo.y;
         roomSingleBedQuantityInputField.text = SingleBedsNr.ToString();
         roomDoubleBedQuantityInputField.text = DoubleBedsNr.ToString();
     }
@@ -25,10 +29,9 @@ public class SetBedsNumber : MonoBehaviour
     /// returns single beds as X component
     /// returns double beds as Y component
     /// </summary>
-    /// <returns></returns>
-    public Vector2 GetCurrentBeds()
+    public Vector2Int GetCurrentBeds()
     {
-        Vector2 bedsInfo = new Vector2(SingleBedsNr, DoubleBedsNr);
+        Vector2Int bedsInfo = new Vector2Int(SingleBedsNr, DoubleBedsNr);
         return bedsInfo;
     }
 

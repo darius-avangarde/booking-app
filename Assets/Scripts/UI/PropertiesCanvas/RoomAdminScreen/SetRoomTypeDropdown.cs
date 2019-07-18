@@ -29,6 +29,11 @@ public class SetRoomTypeDropdown : MonoBehaviour
         SetDropdownOptions();
     }
 
+    /// <summary>
+    /// set every icon to a dictionary
+    /// for loop goes from 0 to last element from RoomType enum wich is bed
+    /// RoomType enum is found in PropertyDataManager
+    /// </summary>
     private void SetDictionaries()
     {
         foreach (var icon in roomTypeIcons)
@@ -41,6 +46,10 @@ public class SetRoomTypeDropdown : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// set dropdown options with text and icons
+    /// for every item in the enum, find the coresponding icon and text using dictionaries
+    /// </summary>
     private void SetDropdownOptions()
     {
         roomTypeDropdown.options.Clear();
@@ -59,9 +68,4 @@ public class SetRoomTypeDropdown : MonoBehaviour
             roomTypeDropdown.options.Add(newOption);
         }
     }
-
-    //public void SelectRoomType(int value)
-    //{
-    //    CurrentRoomType = (PropertyDataManager.RoomType)value;
-    //}
 }
