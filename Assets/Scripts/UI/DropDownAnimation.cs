@@ -8,7 +8,7 @@ public class DropdownAnimation : MonoBehaviour
     [SerializeField]
     private RectTransform itemRectTransform;
     [SerializeField]
-    private int maxNumberOfItems = 7;
+    private float maxNumberOfItems = 7;
 
     private RectTransform rectTransformComponent;
     private Dropdown dropdownComponent;
@@ -28,13 +28,20 @@ public class DropdownAnimation : MonoBehaviour
     private IEnumerator WaitForInitialization()
     {
         yield return null;
-        dropdownComponent = GetComponentInParent<Dropdown>();
-        int numberOfItems = dropdownComponent.options.Count;
-        if (numberOfItems > maxNumberOfItems)
+        if (dropdownComponent != null)
         {
-            numberOfItems = maxNumberOfItems;
+            dropdownComponent = GetComponentInParent<Dropdown>();
+            int numberOfItems = dropdownComponent.options.Count;
+            if (numberOfItems > maxNumberOfItems)
+            {
+                numberOfItems = (int)maxNumberOfItems;
+            }
+            finalHeight = numberOfItems * itemRectTransform.rect.height;
         }
-        finalHeight = numberOfItems * itemRectTransform.rect.height;
+        else
+        {
+            finalHeight = maxNumberOfItems * itemRectTransform.rect.height;
+        }
         float pivotPos = rectTransformComponent.position.y / Screen.height;
         rectTransformComponent.pivot = new Vector2(rectTransformComponent.pivot.x, pivotPos);
         StartCoroutine(ExpandDropdown());

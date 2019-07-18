@@ -6,20 +6,12 @@ using UnityEngine.UI;
 public class SetRoomName : MonoBehaviour
 {
     [SerializeField]
-    private RoomAdminScreen roomAdminScreen = null;
-    [SerializeField]
     private InputField roomNameInputField = null;
     [SerializeField]
     private InputField roomPriceInputField = null;
 
     private string roomNameCache;
     private string roomPriceCache;
-
-    private void Awake()
-    {
-        roomAdminScreen.SetRoomName += SetCurrentName;
-        roomAdminScreen.GetRoomName += GetCurrentName;
-    }
 
     private void OnEnable()
     {
@@ -29,15 +21,15 @@ public class SetRoomName : MonoBehaviour
         roomPriceInputField.text = roomPriceCache;
     }
 
-    private void SetCurrentName(string value)
+    public void SetCurrentName(string value)
     {
         roomNameCache = value;
         roomNameInputField.text = roomNameCache;
     }
 
-    private void GetCurrentName()
+    public string GetCurrentName()
     {
-        roomAdminScreen.CurrentRoom.Name = roomNameCache;
+        return roomNameCache;
     }
 
     public void OnRoomNameValueChanged(string value)

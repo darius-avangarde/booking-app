@@ -9,6 +9,7 @@ public static class PropertyDataManager
     public const string DATA_FILE_NAME = "propertyData.json";
 
     private static PropertyData cache;
+    public enum RoomType { room, apartment, villa, cabin, bed, Any}
 
     private static PropertyData Data
     {
@@ -302,13 +303,13 @@ public static class PropertyDataManager
         }
 
         [SerializeField]
-        private string type = "Cameră";
-        public string Type
+        private int roomType = (int)RoomType.room;
+        public RoomType RoomType
         {
-            get => type;
+            get => (RoomType)roomType;
             set
             {
-                type = value;
+                roomType = (int)value;
                 WritePropertyData();
             }
         }

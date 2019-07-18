@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class SetBedsNumber : MonoBehaviour
 {
     [SerializeField]
-    private RoomAdminScreen roomAdminScreen = null;
-    [SerializeField]
     private InputField roomSingleBedQuantityInputField = null;
     [SerializeField]
     private InputField roomDoubleBedQuantityInputField = null;
@@ -15,13 +13,7 @@ public class SetBedsNumber : MonoBehaviour
     private int SingleBedsNr;
     private int DoubleBedsNr;
 
-    private void Awake()
-    {
-        roomAdminScreen.GetBedsNumber += GetCurrentBeds;
-        roomAdminScreen.SetBedsNumber += SetCurrentBeds;
-    }
-
-    private void SetCurrentBeds(int singleBeds, int doubleBeds)
+    public void SetCurrentBeds(int singleBeds, int doubleBeds)
     {
         SingleBedsNr = singleBeds;
         DoubleBedsNr = doubleBeds;
@@ -29,10 +21,15 @@ public class SetBedsNumber : MonoBehaviour
         roomDoubleBedQuantityInputField.text = DoubleBedsNr.ToString();
     }
 
-    private void GetCurrentBeds()
+    /// <summary>
+    /// returns single beds as X component
+    /// returns double beds as Y component
+    /// </summary>
+    /// <returns></returns>
+    public Vector2 GetCurrentBeds()
     {
-        roomAdminScreen.CurrentRoom.SingleBeds = SingleBedsNr;
-        roomAdminScreen.CurrentRoom.DoubleBeds = DoubleBedsNr;
+        Vector2 bedsInfo = new Vector2(SingleBedsNr, DoubleBedsNr);
+        return bedsInfo;
     }
 
     public void OnSingleBedsChanged(string value)

@@ -8,17 +8,17 @@ public class RoomToggleHandler : MonoBehaviour
     [SerializeField]
     private PropertyAdminScreen propertyAdminScreenComponent;
     [SerializeField]
-    private Toggle HasRoomsToggle = null;
+    private Toggle withRoomsToggle = null;
     [SerializeField]
-    private Toggle NoRoomsToggle = null;
+    private Toggle withoutRoomsToggle = null;
     [SerializeField]
-    private Image HasRoomsToggleBackground = null;
+    private Image withRoomsToggleBackground = null;
     [SerializeField]
-    private Image NoRoomsToggleBackground = null;
+    private Image ithoutRoomsToggleBackground = null;
     [SerializeField]
     private Button saveButton = null;
     [SerializeField]
-    private GameObject AddRoomsField = null;
+    private GameObject addRoomsField = null;
 
     private bool currentHasRooms = true;
 
@@ -30,28 +30,28 @@ public class RoomToggleHandler : MonoBehaviour
 
     private void OnEnable()
     {
-        HasRoomsToggle.isOn = false;
-        NoRoomsToggle.isOn = false;
-        AddRoomsField.SetActive(false);
-        HasRoomsToggleBackground.color = Color.grey;
-        NoRoomsToggleBackground.color = Color.grey;
+        withRoomsToggle.isOn = false;
+        withoutRoomsToggle.isOn = false;
+        addRoomsField.SetActive(false);
+        withRoomsToggleBackground.color = Color.grey;
+        ithoutRoomsToggleBackground.color = Color.grey;
     }
 
     private void SetToggle(bool hasRooms)
     {
         if (hasRooms)
         {
-            HasRoomsToggle.isOn = true;
-            NoRoomsToggle.isOn = false;
+            withRoomsToggle.isOn = true;
+            withoutRoomsToggle.isOn = false;
             currentHasRooms = true;
-            AddRoomsField.SetActive(true);
+            addRoomsField.SetActive(true);
         }
         else
         {
-            NoRoomsToggle.isOn = true;
-            HasRoomsToggle.isOn = false;
+            withoutRoomsToggle.isOn = true;
+            withRoomsToggle.isOn = false;
             currentHasRooms = false;
-            AddRoomsField.SetActive(false);
+            addRoomsField.SetActive(false);
         }
     }
 
@@ -62,19 +62,19 @@ public class RoomToggleHandler : MonoBehaviour
 
     public void SetPropertyRooms()
     {
-        if (HasRoomsToggle.isOn)
+        if (withRoomsToggle.isOn)
         {
             currentHasRooms = true;
             saveButton.interactable = true;
-            HasRoomsToggleBackground.color = Color.green;
-            NoRoomsToggleBackground.color = Color.grey;
+            withRoomsToggleBackground.color = Color.green;
+            ithoutRoomsToggleBackground.color = Color.grey;
         }
-        else if(NoRoomsToggle.isOn)
+        else if(withoutRoomsToggle.isOn)
         {
             currentHasRooms = false;
             saveButton.interactable = true;
-            HasRoomsToggleBackground.color = Color.grey;
-            NoRoomsToggleBackground.color = Color.green;
+            withRoomsToggleBackground.color = Color.grey;
+            ithoutRoomsToggleBackground.color = Color.green;
         }
         else
         {

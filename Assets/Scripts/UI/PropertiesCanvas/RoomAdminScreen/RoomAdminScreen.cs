@@ -8,18 +8,16 @@ using UnityEngine.UI;
 
 public class RoomAdminScreen : MonoBehaviour
 {
-    public Action GetRoomName = delegate { };
-    public Action GetRoomType = delegate { };
-    public Action GetBedsNumber = delegate { };
-    public Action<string> SetRoomName = delegate { };
-    public Action<string> SetRoomType = delegate { };
-    public Action<int, int> SetBedsNumber = delegate { };
-    public IRoom CurrentRoom { get; set; }
-
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
+    [SerializeField]
+    private SetRoomName setRoomName = null;
+    [SerializeField]
+    private SetRoomTypeDropdown setRoomTypeDropdown = null;
+    [SerializeField]
+    private SetBedsNumber setBedsNumber = null;
     [SerializeField]
     private Text propertyRoomTitle = null;
     [SerializeField]
@@ -33,6 +31,7 @@ public class RoomAdminScreen : MonoBehaviour
 
     private ConfirmationDialogOptions modalDialogOptions = new ConfirmationDialogOptions();
     private IProperty currentProperty;
+    private IRoom currentRoom;
     private bool canSave = true;
 
     private void Awake()
@@ -46,8 +45,8 @@ public class RoomAdminScreen : MonoBehaviour
         modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
         modalDialogOptions.ConfirmCallback = () =>
         {
-            currentProperty.DeleteRoom(CurrentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(CurrentRoom.ID);
+            currentProperty.DeleteRoom(currentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
             navigator.GoBack();
             navigator.GoBack();
         };
@@ -71,7 +70,7 @@ public class RoomAdminScreen : MonoBehaviour
     public void SetCurrentPropertyRoom(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
-        CurrentRoom = room;
+        currentRoom = room;
         Initialize();
     }
 
@@ -82,32 +81,35 @@ public class RoomAdminScreen : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        if (CurrentRoom != null)
+        if (currentRoom != null)
         {
             propertyRoomTitle.text = Constants.EDIT_ROOM;
-            SetRoomName(CurrentRoom.Name);
-            SetRoomType(CurrentRoom.Type);
-            SetBedsNumber(CurrentRoom.SingleBeds, CurrentRoom.DoubleBeds);
+            setRoomName.SetCurrentName(currentRoom.Name);
+            setRoomTypeDropdown.CurrentRoomType = currentRoom.RoomType;
+            //setRoomTypeDropdown.SetRoomType(currentRoom.RoomType);
+            setBedsNumber.SetCurrentBeds(currentRoom.SingleBeds, currentRoom.DoubleBeds);
         }
     }
 
     public void SaveChanges()
     {
-        GetRoomName();
-        GetRoomType();
-        GetBedsNumber();
+        currentRoom.Name = setRoomName.GetCurrentName();
+        currentRoom.RoomType = setRoomTypeDropdown.CurrentRoomType;
+        Vector2 bedsInfo = setBedsNumber.GetCurrentBeds();
+        currentRoom.SingleBeds = (int)bedsInfo.x;
+        currentRoom.DoubleBeds = (int)bedsInfo.y;
         navigator.GoBack();
     }
 
     public void DeleteRoom()
     {
-        modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(CurrentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+        modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
         modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
         modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
         modalDialogOptions.ConfirmCallback = () =>
         {
-            currentProperty.DeleteRoom(CurrentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(CurrentRoom.ID);
+            currentProperty.DeleteRoom(currentRoom.ID);
+            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
             navigator.GoBack();
             navigator.GoBack();
         };
@@ -119,7 +121,7 @@ public class RoomAdminScreen : MonoBehaviour
     {
         errorMessage.text = string.Empty;
         currentProperty = null;
-        CurrentRoom = null;
+        currentRoom = null;
         canSave = true;
     }
 

@@ -37,7 +37,12 @@ public class PropertyDropdownHandler : MonoBehaviour
         dropdownComponent.RefreshShownValue();
     }
 
-    private void SelectDropdown(int value, bool skipInvoke = true)
+    private void OnDestroy()
+    {
+        OnSelectProperty = null;
+    }
+
+    private void SelectDropdown(int value, bool skipInvoke = false)
     {
         if (!onValueChangeCall)
         {
