@@ -22,10 +22,10 @@ public class ThemeManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Hi, from theme manager, i have: " + TextList.Count + "text objects");
+        //Debug.Log("Hi, from theme manager, i have: " + TextList.Count + "text objects");
         foreach (var item in TextList)
         {
-            Debug.Log(item.name + "from theme manager");
+            //Debug.Log(item.name + "from theme manager");
         }
     }
     //private void Awake()
