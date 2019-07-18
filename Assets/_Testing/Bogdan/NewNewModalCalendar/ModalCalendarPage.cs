@@ -17,16 +17,40 @@ public class ModalCalendarPage : MonoBehaviour
 
     private List<ModalCalendarDayObject> dayObjects = new List<ModalCalendarDayObject>();
     private UnityAction<DateTime,bool> dateTapAction;
+    private DateTime? selectedDate;
 
-    public void UpdatePage(DateTime selectedDateTime)
+    public void UpdatePage(DateTime focalDateTime)
     {
-        DateTime firstDayOfMonthInSelectedDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
+        DateTime firstDayOfMonthInSelectedDate = new DateTime(focalDateTime.Year, focalDateTime.Month, 1, 0, 0, 0, DateTimeKind.Local);
 
-        SetDayItemsForPreviousMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
+        SetDayItemsForPreviousMonth(focalDateTime, firstDayOfMonthInSelectedDate);
 
-        SetDayItemsForCurrentMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
+        SetDayItemsForCurrentMonth(focalDateTime, firstDayOfMonthInSelectedDate);
 
-        SetDayItemsForNextMonth(selectedDateTime, firstDayOfMonthInSelectedDate);
+        SetDayItemsForNextMonth(focalDateTime, firstDayOfMonthInSelectedDate);
+
+        UpdateSelections(selectedDate);
+    }
+
+    public void UpdateSelections(DateTime? selectedDateTime)
+    {
+        selectedDate = selectedDateTime;
+
+        foreach (ModalCalendarDayObject day in dayObjects)
+        {
+            if(selectedDate != null && selectedDate.Value.Date == day.ObjDate.Date)
+            {
+                day.UpdateSpriteAndColor(Placeholder_ThemeManager.Instance.selectedDaySprite, Placeholder_ThemeManager.Instance.currentReservationColor);
+            }
+            else if(day.ObjDate.Date == DateTime.Today.Date)
+            {
+                day.UpdateSpriteAndColor(Placeholder_ThemeManager.Instance.currentDaySprite, Placeholder_ThemeManager.Instance.CalendarCurrentColor);
+            }
+            else
+            {
+                day.UpdateSpriteAndColor(Placeholder_ThemeManager.Instance.selectedDaySprite, Color.clear);
+            }
+        }
     }
 
     public void CreateDayItems(UnityAction<DateTime,bool> tapAction)

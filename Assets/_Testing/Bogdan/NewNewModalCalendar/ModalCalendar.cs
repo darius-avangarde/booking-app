@@ -9,6 +9,9 @@ using UnityEngine.UI;
 public class ModalCalendar : MonoBehaviour, IClosable
 {
 
+    [SerializeField]
+    private ModalFadeObject modalFade;
+
     #region OrientationReferences
         [SerializeField]
         private GameObject portraitHeader;
@@ -89,6 +92,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
     public void OpenCallendar(UnityAction<DateTime> doneCallback, DateTime? focusDate = null)
     {
         focusDateTime = focusDate == null ? DateTime.Today.Date : focusDate.Value.Date;
+        selectedDateTime = focusDate;
         callback = doneCallback;
         UpdateSelectedDate(focusDateTime, focusDate != null);
         modalFade.FadeIn();
@@ -100,6 +104,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
     {
         modalFade.FadeOut();
         InputManager.CurrentlyOpenClosable = null;
+        selectedDateTime = null;
     }
 
     public void ConfirmChanges()
@@ -155,6 +160,8 @@ public class ModalCalendar : MonoBehaviour, IClosable
         //move selection to date if not null
 
         //move visible day if month && year ==
+
+        currentPage.UpdateSelections(selectedDateTime);
     }
 
     private IEnumerator Swipe(bool isLeft)

@@ -5,10 +5,14 @@ using UnityEngine.UI;
 
 public class ModalCalendarDayObject : MonoBehaviour
 {
+    public DateTime ObjDate => objDate;
+
     [SerializeField]
     private Text dateText;
     [SerializeField]
     private Button dateButton;
+    [SerializeField]
+    private Image dateButtonImage;
 
     private DateTime objDate;
 
@@ -21,9 +25,14 @@ public class ModalCalendarDayObject : MonoBehaviour
     {
         objDate = date.Date;
         dateText.text = $"{date.Day}";
-        dateButton.targetGraphic.color =  (objDate == DateTime.Today.Date) ? Placeholder_ThemeManager.Instance.CalendarCurrentColor : Color.clear;
         dateButton.onClick.RemoveAllListeners();
         dateButton.onClick.AddListener(() => tapAction(objDate, true));
+    }
+
+    public void UpdateSpriteAndColor(Sprite sprite, Color color)
+    {
+        dateButtonImage.sprite = sprite;
+        dateButtonImage.color  = color;
     }
 
     public void UpdateDayObject()

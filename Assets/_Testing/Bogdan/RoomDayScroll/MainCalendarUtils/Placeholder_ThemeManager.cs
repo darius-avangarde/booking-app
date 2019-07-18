@@ -15,6 +15,10 @@ public class Placeholder_ThemeManager : MonoBehaviour
     public Color currentReservationColor;
     public Color pastReservationColor;
 
+    [Space]
+    public Sprite currentDaySprite;
+    public Sprite selectedDaySprite;
+
     public static Placeholder_ThemeManager Instance
     {
         get
