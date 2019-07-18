@@ -1,24 +1,20 @@
 ﻿using System;
+using UnityEngine;
 
 public class ReservationFilter
 {
     public DateTime? startDate;
     public DateTime? endDate;
-
-    //public ROOMTYPE?
-
-    public int? singleBeds;
-    public int? doubleBeds;
-
+    public PropertyDataManager.RoomType? roomType;
+    public Vector2Int? beds;
     public IClient client;
 
     public ReservationFilter()
     {
         startDate   = null;
         endDate     = null;
-        //ROOMTYPE  = null;
-        singleBeds  = null;
-        doubleBeds  = null;
+        roomType    = null;
+        beds        = null;
         client      = null;
     }
 }
