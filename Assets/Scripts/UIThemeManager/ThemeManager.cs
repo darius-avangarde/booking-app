@@ -15,8 +15,6 @@ public class ThemeManager : MonoBehaviour
     public List<Graphic> BackgroundList = new List<Graphic>();
     public List<Graphic> SeparatorList = new List<Graphic>();
     public List<Graphic> ItemList = new List<Graphic>();
-    //public List<GameObject> MyText { get; set; }
-    //singleton
     private static ThemeManager instance;
     public static ThemeManager Instance { get { return instance; } }
 
@@ -28,17 +26,17 @@ public class ThemeManager : MonoBehaviour
             //Debug.Log(item.name + "from theme manager");
         }
     }
-    //private void Awake()
-    //{
-    //    if (instance != null && instance != this)
-    //    {
-    //        Destroy(this.gameObject);
-    //    }
-    //    else
-    //    {
-    //        instance = this;
-    //    }
-    //}
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+       {
+            Destroy(this.gameObject);
+        }
+       else
+        {
+            instance = this;
+        }
+    }
 
     public void SelectTheme()
     {
