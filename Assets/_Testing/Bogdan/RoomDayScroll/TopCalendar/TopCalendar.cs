@@ -63,11 +63,19 @@ public class TopCalendar : MonoBehaviour
         swipeHandler.Enabled = false;
     }
 
-    public void OpenCloseDropdownCalendar()
+    public void ToggleDropdownCalendar()
     {
         if(!isOpening)
         {
-            StartCoroutine(Slide());
+            StartCoroutine(Slide(!isOpen));
+        }
+    }
+
+    public void CloseDropdownCalendar()
+    {
+        if(!isOpening && isOpen)
+        {
+            StartCoroutine(Slide(false));
         }
     }
 
@@ -95,13 +103,13 @@ public class TopCalendar : MonoBehaviour
         StartCoroutine(Swipe(monthOffset < 0));
     }
 
-    private IEnumerator Slide()
+    private IEnumerator Slide(bool open)
     {
         isOpening = true;
 
         Vector2 fromOffset = lowerCalendarRectTransform.offsetMax;
         Vector2 toOffset = fromOffset;
-        toOffset.y = (!isOpen) ? topcalendarRectTransform.rect.yMin + topcalendarRectTransform.offsetMax.y : topcalendarRectTransform.offsetMax.y;
+        toOffset.y = (open) ? topcalendarRectTransform.rect.yMin + topcalendarRectTransform.offsetMax.y : topcalendarRectTransform.offsetMax.y;
 
         for (float t = 0; t < 1.0f; t += Time.deltaTime/slideTime)
         {
@@ -112,7 +120,7 @@ public class TopCalendar : MonoBehaviour
         lowerCalendarRectTransform.offsetMax = toOffset;
 
         isOpening = false;
-        isOpen = !isOpen;
+        isOpen = open;
         swipeHandler.Enabled = isOpen;
     }
 

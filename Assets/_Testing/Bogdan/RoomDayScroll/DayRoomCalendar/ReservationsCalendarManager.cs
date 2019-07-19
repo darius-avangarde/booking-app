@@ -19,6 +19,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private PropertyDropdownHandler propertyDropdown;
     [SerializeField]
     private ReservationFilterScreen filterScreen;
+    [SerializeField]
+    private Text noFilterMatchText;
 
     [Space]
     [SerializeField]
@@ -54,12 +56,13 @@ public class ReservationsCalendarManager : MonoBehaviour
     private int totalItemCount = 0;
 
     public static DateTime FocalDate => focalDate;
+    public int FocalDayColumnIndex => dayColumns.Count(d => d.transform.position.x < dayColumnScrollrect.viewport.position.x);
+
     private static DateTime focalDate;
 
     private CalendarDayColumn focalDayColumn;
     private bool infiniteScrollsInitialized = false;
-
-    public int FocalDayColumnIndex => dayColumns.Count(d => d.transform.position.x < dayColumnScrollrect.viewport.position.x);
+    private ReservationFilter currentFilter = null;
 
 
     private void Start()
@@ -76,15 +79,19 @@ public class ReservationsCalendarManager : MonoBehaviour
         dayColumnInfScroll.Init();
     }
 
-    public void OpenFilterScreen()
-    {
-        filterScreen.OpenFilterScreen();
-    }
+    #region FilerActions
+        public void OpenFilterScreen()
+        {
+            filterScreen.OpenFilterScreen(ApplyFilers, currentFilter);
+        }
 
-    private void ApplyFilters(ReservationFilter filter)
-    {
+        public void ApplyFilers(ReservationFilter filter)
+        {
+            currentFilter = filter;
+            SelectProperty(currentProperty);
+        }
 
-    }
+    #endregion
 
 
 
@@ -104,23 +111,50 @@ public class ReservationsCalendarManager : MonoBehaviour
         //TODO: Replace debug with open reservation edit with prop and client
         reservationManager.SweepUpdateReservations(currentProperty, (r) => Debug.Log($"Edit res for: {r.CustomerName}"));
 
-        topCalendar.OpenCloseDropdownCalendar();
+        topCalendar.CloseDropdownCalendar();
+    }
+
+    private List<IRoom> FilteredRooms()
+    {
+        if(currentFilter != null)
+        {
+            IEnumerable<IRoom> filteredRooms = currentProperty.Rooms;
+            if(currentFilter.RoomBeds.HasValue)
+            {
+                filteredRooms = filteredRooms.Where(r => r.SingleBeds == currentFilter.RoomBeds.Value.x && r.DoubleBeds == currentFilter.RoomBeds.Value.y);
+            }
+            if(currentFilter.RoomType != null)
+            {
+                filteredRooms = filteredRooms.Where(r => r.RoomType == currentFilter.RoomType);
+            }
+            if(currentFilter.StartDate.HasValue)
+            {
+                filteredRooms = ReservationDataManager.GetFreeRoomsInInterval(filteredRooms, currentFilter.StartDate.Value, currentFilter.EndDate.Value);
+                JumpToDate(currentFilter.StartDate.Value);
+            }
+
+            currentRooms = filteredRooms.ToList();
+        }
+        else
+        {
+            currentRooms = currentProperty.Rooms.ToList();
+        }
+
+        ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
+        return currentRooms;
     }
 
     //TODO: Replace debug logs with fuctions from reservation edit/new screen
     public void SelectProperty(IProperty property)
     {
         currentProperty = property;
-        currentRooms = property.Rooms.ToList();
+        currentRooms = FilteredRooms();
         roomColumn.UpdateRooms(currentRooms, (r) => Debug.Log($"Making reservation for room {r.Name}"));
 
-        for (int i = 0; i < currentRooms.Count; i++)
+        foreach(CalendarDayColumn dayColumn in dayColumns)
         {
-            foreach(CalendarDayColumn dayColumn in dayColumns)
-            {
-                dayColumn.UpdateRooms(currentRooms, (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"));
-                dayColumn.LinkedHeader.UpdateProperty(currentProperty);
-            }
+            dayColumn.UpdateRooms(currentRooms, (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"));
+            dayColumn.LinkedHeader.UpdateProperty(currentProperty);
         }
 
         //Resize the day column content rect size to fit the number of rooms
@@ -170,5 +204,18 @@ public class ReservationsCalendarManager : MonoBehaviour
         focalDayColumn = dayColumns[0];
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+    }
+
+    private void ShowNoFilterMatchText(string message)
+    {
+        if(string.IsNullOrEmpty(message))
+        {
+            noFilterMatchText.gameObject.SetActive(false);
+        }
+        else
+        {
+            noFilterMatchText.text = message;
+            noFilterMatchText.gameObject.SetActive(true);
+        }
     }
 }

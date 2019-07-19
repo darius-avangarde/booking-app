@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public static class ReservationDataManager
@@ -58,6 +59,23 @@ public static class ReservationDataManager
                 (to.Date > r.Period.Start.Date && to.Date < r.Period.End.Date) ||       //check if to is in interval
                 (from.Date == r.Period.Start || to.Date == r.Period.End.Date)           //chek if either start or end matches any reservation's start or end resepectively
             ));
+    }
+
+    ///<summary>
+    ///Returns all free rooms from the given set withing the given interval
+    ///</summary>
+    public static IEnumerable<IRoom> GetFreeRoomsInInterval(IEnumerable<IRoom> rooms, DateTime from, DateTime to)
+    {
+        return rooms.Where(room =>
+            !GetReservations().Any(res => res.ContainsRoom(room.ID) &&                      //Are there any reservations matching the room ID that overlap or include the period
+            (
+                (res.Period.Start.Date >= from.Date && res.Period.Start.Date < to.Date) ||  //start is between from and to or is from (start is in period)
+                (res.Period.End.Date > from.Date && res.Period.End.Date <= to.Date)     ||  //end is between from and to or is to  (end is in period)
+                (res.Period.Start.Date < from.Date && res.Period.End.Date > to.Date)    ||  //start less and end greater (envelopes period)
+                (res.Period.Start.Date > from.Date && res.Period.End.Date < to.Date)        //start greater and end less (is inside period)
+            )
+            )
+        );
     }
 
     public static IEnumerable<IReservation> GetDeletedReservations()
@@ -217,6 +235,19 @@ public static class ReservationDataManager
         }
 
         [SerializeField]
+        private bool canceled = false;
+        public bool Canceled
+        {
+            get => canceled;
+            private set
+            {
+                canceled = value;
+                WriteReservationData();
+            }
+        }
+
+
+        [SerializeField]
         private string propertyID;
         public string PropertyID => propertyID;
 
@@ -258,7 +289,24 @@ public static class ReservationDataManager
             get => period;
         }
 
-        public Reservation(List<IRoom> rooms, string customerID, DateTime start, DateTime end)
+        [SerializeField]
+        private long createdTicks;
+        public DateTime CreatedDateTime => new DateTime(createdTicks);
+
+        private int notitficationID;
+        public int NotificationID
+        {
+            get => notitficationID;
+            set
+            {
+                notitficationID = value;
+                WriteReservationData();
+            }
+
+
+        }
+
+        public Reservation(List<IRoom> rooms, string customerID, DateTime start, DateTime end, int notitficationID = -1)
         {
             this.id = Guid.NewGuid().ToString();
             this.propertyID = rooms[0].PropertyID;
@@ -269,6 +317,9 @@ public static class ReservationDataManager
             }
             this.customerID = customerID;
             this.period = new DateTimePeriod(start, end);
+            this.notitficationID = notitficationID;
+            this.createdTicks = DateTime.Today.Ticks;
+            this.canceled = false;
             WriteReservationData();
         }
 
@@ -283,6 +334,17 @@ public static class ReservationDataManager
             this.customerID = client.ID;
             this.period = new DateTimePeriod(start, end);
             WriteReservationData();
+        }
+
+        public void UpdateReservationNotificationID(int notitficationID)
+        {
+            this.notitficationID = notitficationID;
+            WriteReservationData();
+        }
+
+        public void CancelReservation()
+        {
+            this.Canceled = true;
         }
 
         public void RemoveRoom(string roomID)

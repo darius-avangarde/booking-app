@@ -10,7 +10,12 @@ public interface IReservation
     string RoomID { get; }
     List<string> RoomIDs { get; }
     IDateTimePeriod Period { get; }
+    DateTime CreatedDateTime { get; }
+    int NotificationID { get; set;}
+    bool Canceled {get;}
 
     void EditReservation(List<IRoom> rooms, IClient client, DateTime start, DateTime end);
+    void UpdateReservationNotificationID(int notitficationID);
+    void CancelReservation();
     bool ContainsRoom(string roomID);
 }

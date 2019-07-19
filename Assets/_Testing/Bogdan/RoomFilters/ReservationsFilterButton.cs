@@ -26,7 +26,6 @@ public class ReservationsFilterButton : MonoBehaviour
 
     private IEnumerator Slide(bool open)
     {
-        Debug.Log("starting slide");
         float fromSize = filtersRect.rect.width;
         float toSize = (open) ? referenceRect.rect.width : referenceRect.rect.width * 2;
 

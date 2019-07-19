@@ -92,6 +92,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
     public void OpenCallendar(UnityAction<DateTime> doneCallback, DateTime? focusDate = null)
     {
         focusDateTime = focusDate == null ? DateTime.Today.Date : focusDate.Value.Date;
+        UpdateCurrentMonthText(focusDateTime);
         selectedDateTime = focusDate;
         callback = doneCallback;
         UpdateSelectedDate(focusDateTime, focusDate != null);

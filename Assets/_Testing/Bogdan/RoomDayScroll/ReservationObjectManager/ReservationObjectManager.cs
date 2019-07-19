@@ -57,11 +57,11 @@ public class ReservationObjectManager : MonoBehaviour
                     placedReservations.Add(res);
                     StartCoroutine(DrawReservation(res, dayColumn, isStart));
 
-                    Debug.Log(res.CustomerName + " - "
-                    + res.Period.Start.ToString(Constants.DateTimePrintFormat)
-                    + " - " + res.Period.End.ToString(Constants.DateTimePrintFormat)
-                    + " - " + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomIDs[0]).Name
-                    );
+                    // Debug.Log(res.CustomerName + " - "
+                    // + res.Period.Start.ToString(Constants.DateTimePrintFormat)
+                    // + " - " + res.Period.End.ToString(Constants.DateTimePrintFormat)
+                    // + " - " + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomIDs[0]).Name
+                    // );
                 }
             }
         }

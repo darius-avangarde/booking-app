@@ -1,9 +1,11 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ReservationFilterToggle : MonoBehaviour
 {
+
+    public bool IsOn => toggleObject.isOn;
+
     [SerializeField]
     private Toggle toggleObject;
     [SerializeField]
@@ -28,6 +30,7 @@ public class ReservationFilterToggle : MonoBehaviour
     public void Toggle(bool show)
     {
         toggleingPanel.SetActive(show);
+        toggleObject.isOn = show;
         LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
     }
 }
