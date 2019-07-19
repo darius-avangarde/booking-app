@@ -14,6 +14,8 @@ public class NotificationsScreen : MonoBehaviour
     [SerializeField]
     private GameObject notificationItemPrefab = null;
     [SerializeField]
+    private GameObject noReservationPrefab = null;
+    [SerializeField]
     private Transform scrollViewContent = null;
     [SerializeField]
     private Button backButton = null;
@@ -21,6 +23,7 @@ public class NotificationsScreen : MonoBehaviour
     private Queue<NotificationItem> notificationItemPool = new Queue<NotificationItem>();
     private List<NotificationItem> activeNotificationItems = new List<NotificationItem>();
     private List<IReservation> currentMonthReservations = new List<IReservation>();
+    private GameObject noActiveNotifications = null;
     private DateTime startDate = DateTime.Today.Date;
     private DateTime firstDay;
     private DateTime lastDay;
@@ -29,6 +32,8 @@ public class NotificationsScreen : MonoBehaviour
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
 
+        noActiveNotifications = Instantiate(noReservationPrefab, scrollViewContent);
+        noActiveNotifications.SetActive(false);
         for (int i = 0; i < 10; i++)
         {
             NotificationItem notificationItem = Instantiate(notificationItemPrefab, scrollViewContent).GetComponent<NotificationItem>();
@@ -50,6 +55,7 @@ public class NotificationsScreen : MonoBehaviour
             notificationItemPool.Enqueue(item);
         }
         activeNotificationItems.Clear();
+        noActiveNotifications.SetActive(false);
     }
 
     public void SetMonth(DateTime currentDate)
@@ -61,6 +67,7 @@ public class NotificationsScreen : MonoBehaviour
     public void Initialize()
     {
         SetMonth(startDate);
+        noActiveNotifications.SetActive(false);
         foreach (var reservation in ReservationDataManager.GetReservationsBetween(firstDay, lastDay))
         {
             try
@@ -77,6 +84,11 @@ public class NotificationsScreen : MonoBehaviour
                 notificationItem.Initialize(reservation);
                 activeNotificationItems.Add(notificationItem);
             }
+        }
+
+        if(activeNotificationItems.Count == 0)
+        {
+            noActiveNotifications.SetActive(true);
         }
     }
 }

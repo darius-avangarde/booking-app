@@ -47,58 +47,55 @@ public class NotificationDropdown : MonoBehaviour
         currentReservation = reservation;
         for (int i = 0; i < menuOptions.Length; i++)
         {
-            if ((DropdownOptions)i == DropdownOptions.edit)
-            {
-                notificationItemMenu.AddOption("", null, null, 10);
-            }
             foreach (var item in optionsPictures)
             {
                 if (optionsDictionary[menuOptions[i]].ToString() == item.Key)
                 {
-                    notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => MenuOptions((DropdownOptions)i));
+                    //notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => MenuOptions((DropdownOptions)i));
+                    switch ((DropdownOptions)i)
+                    {
+                        case DropdownOptions.call_icon:
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => Debug.Log("am apasat pe apel"));
+                            break;
+                        case DropdownOptions.msg:
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => Debug.Log("am apasat pe mesaj"));
+                            break;
+                        case DropdownOptions.email:
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => Debug.Log("am apasat pe e-mail"));
+                            break;
+                        case DropdownOptions.edit:
+                            notificationItemMenu.AddOption("", null, null, 10);
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => Debug.Log("am apasat pe edit"));
+                            //reservationScreenComponent.OpenEditReservation(currentReservation, Initialize);
+                            break;
+                        case DropdownOptions.cancel:
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => Debug.Log("am apasat pe cancel"));
+                            break;
+                        case DropdownOptions.delete:
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => DeleteProperty());
+                            break;
+                        default:
+                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], null);
+                            break;
+                    }
                 }
             }
         }
     }
 
-    private void MenuOptions(DropdownOptions value)
-    {
-        switch (value)
-        {
-            case DropdownOptions.call_icon:
-                Debug.Log("am apasat pe apel");
-                break;
-            case DropdownOptions.msg:
-                Debug.Log("am apasat pe mesaj");
-                break;
-            case DropdownOptions.email:
-                Debug.Log("am apasat pe e-mail");
-                break;
-            case DropdownOptions.edit:
-                Debug.Log("am apasat pe edit");
-                //reservationScreenComponent.OpenEditReservation(currentReservation, Initialize);
-                break;
-            case DropdownOptions.delete:
-                Debug.Log("am apasat pe delete");
-                //DeleteProperty();
-                break;
-            default:
-                break;
-        }
-    }
-
     private void DeleteProperty()
     {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_ROOM_RESERVATIONS,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                ReservationDataManager.DeleteReservation(currentReservation.ID);
-            },
-            CancelCallback = null
-        });
+        Debug.Log("am apasat pe delete");
+        //confirmationDialog.Show(new ConfirmationDialogOptions
+        //{
+        //    Message = Constants.DELETE_ROOM_RESERVATIONS,
+        //    ConfirmText = Constants.DELETE_CONFIRM,
+        //    CancelText = Constants.DELETE_CANCEL,
+        //    ConfirmCallback = () =>
+        //    {
+        //        ReservationDataManager.DeleteReservation(currentReservation.ID);
+        //    },
+        //    CancelCallback = null
+        //});
     }
 }
