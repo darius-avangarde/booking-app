@@ -2,15 +2,24 @@
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LocalizationManager : MonoBehaviour
 {
     public static LocalizationManager instance;
     //public static readonly string csvFile="Texts - Sheet1.csv";
     public IEnumerable<LanguageScript> Languages { get; set; }
-    private char fieldSeperator = '&';
- 
-    void Awake()
+    private static char fieldSeperator = '&';
+    public static LocalizationManager Instance { get
+        {
+            if (instance == null )
+            {
+                instance = FindObjectOfType<LocalizationManager>();
+            }
+            return instance;
+        }
+    }
+   /* void Awake()
     {
         if (instance == null)
         {
@@ -22,19 +31,17 @@ public class LocalizationManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-    }
+    }*/
     private void CheckSystemLanguage()
     {
-        if (Application.systemLanguage == SystemLanguage.French)
-        {
-            Debug.Log("This system is in French. ");
-        }
-        else if (Application.systemLanguage == SystemLanguage.English)
+        if (Application.systemLanguage == SystemLanguage.English)
         {
             Debug.Log("This system is in English. ");
         }
         else if (Application.systemLanguage == SystemLanguage.Romanian)
-        { Debug.Log("This system is in Romanian."); }
+        { 
+           Debug.Log("This system is in Romanian.");
+        }
     }
     private void Start()
     {
@@ -52,14 +59,14 @@ public class LocalizationManager : MonoBehaviour
         }
     }
 
-    public static IEnumerable<LanguageScript> ReadFromCSV(string csvFilePath)
+    public  IEnumerable<LanguageScript> ReadFromCSV(string csvFilePath)
     {
         //string filePath = Path.Combine(Application.persistentDataPath, csvFilePath);
         var result = new List<LanguageScript>();
         if (File.Exists(csvFilePath))
         {
             var fileContent = File.ReadAllLines(csvFilePath);
-            var tableHeader = fileContent.First().Split('&').Skip(1).ToList();
+            var tableHeader = fileContent.First().Split(fieldSeperator).Skip(1).ToList();
             var tableContent = fileContent.Skip(1).ToList();
             foreach (var language in tableHeader)
             {
@@ -69,7 +76,7 @@ public class LocalizationManager : MonoBehaviour
                 foreach (var line in tableContent)
                 {
                   
-                    var columns = line.Split('&').ToList();
+                    var columns = line.Split(fieldSeperator).ToList();
                     var key = columns.First();
                     columns = columns.Skip(1).ToList();
                     var value = columns.ElementAt(tableHeader.IndexOf(language));
@@ -79,17 +86,11 @@ public class LocalizationManager : MonoBehaviour
                 result.Add(tempLanguage);
             }
         }
+        Debug.Log(result.Count());
+        Languages = result;
         return result;
     }
-    public string GetLocalizedValue(string key)
-    {
-        string result = "missingTextString";
-        //if (Languages.ContainsKey(key))
-       // {
-            //result = Languages[key];
-       // }
 
-        return result;
 
-    }
+   
 }

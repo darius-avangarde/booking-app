@@ -7,51 +7,62 @@ public class LocalizedText : MonoBehaviour
 {
     public List<Text> texts;
     public List<Text> textList;
-    public LocalizationManager myManager;
+    public LocalizationManager myManager = new LocalizationManager();
     public Dropdown mydd;
-
+    //public List<LanguageScript> csvData;
     public void ChangeLanguage()
     {
+       // csvData = LocalizationManager.Instance.ReadFromCSV(@"Assets/Resources/TextsFileEx.csv").ToList();
         if (mydd.value == 0)
         {
-            Debug.Log("ro");
             SetLanguage("Ro");
         }
-        else if(mydd.value ==1)
+        else if (mydd.value == 1)
         {
-            Debug.Log("en");
             SetLanguage("En");
         }
     }
 
-   
+    private void Start()
+    {
+        //myManager = LocalizationManager.instance;
+       // GetTexts();
+    }
+
     public void GetTexts()
     {
-        foreach(var item in textList)
-            {
-
+        //  myManager = LocalizationManager.Instance;
+        textList = new List<Text>();
+       var language = myManager.Languages.Where(x => x.Name == "Ro").First().Texts;
+        
+        foreach (var item in textList)
+        {
             Debug.Log(item.text);
         }
         Debug.Log("clicked");
         texts = FindObjectsOfType<Text>().ToList();
         foreach (var item in texts)
         {
-            if (item.name == "TextNameq" || item.name == "TextEmailw")
+            /*if (item.name == "TextNameq" || item.name == "TextEmailw")
             {
                 textList.Add(item);
                 Debug.Log(item.name);
-            }
+            }*/
 
-            /* var lang = myManager.Languages.Where(x => x.Name == "Ro").First().Texts;
-             if (lang.ContainsKey(item.name))
+
+             if (language.ContainsKey(item.name))
              {
-                 Debug.Log(item.name);
-             }*/
+                textList.Add(item);
+                Debug.Log(item.name);
+             }
         }
 
     }
     private void SetLanguage(string language)
     {
+        //  myManager = LocalizationManager.Instance;
+        //var lang = csvData.Where(x => x.Name == language).First();
+
         var lang = myManager.Languages.Where(x => x.Name == language).First();
         foreach (var item in textList)
         {
