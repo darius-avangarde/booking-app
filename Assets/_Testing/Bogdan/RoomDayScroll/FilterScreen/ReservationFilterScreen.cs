@@ -38,8 +38,8 @@ public class ReservationFilterScreen : MonoBehaviour
         private SetRoomTypeDropdown roomTypeDropdown;
         [SerializeField]
         private SetBedsNumber roomBedsDropdown;
-        // [SerializeField]
-        // private ClientPicker object;
+        [SerializeField]
+        private ClientPicker clientPicker;
     #endregion
 
     private DateTime? startDate = null;
@@ -49,13 +49,18 @@ public class ReservationFilterScreen : MonoBehaviour
     private IClient client = null;
 
     private UnityAction<ReservationFilter> callback;
+    private ReservationFilter currentFilter = new ReservationFilter();
 
 
     #region ScreenFunctions
-        public void OpenFilterScreen(UnityAction<ReservationFilter> filtersCallback, ReservationFilter currentFilter = null)
+        public void OpenFilterScreen(UnityAction<ReservationFilter> filtersCallback, ReservationFilter filter = null)
         {
+            if(filter == null)
+                currentFilter = new ReservationFilter();
+
             callback = filtersCallback;
             UpdateFilerFields(true, currentFilter);
+            clientPicker.SetCallback(SetClientCallback, currentFilter.Client);
             navigator.GoTo(navScreen);
         }
 
@@ -77,24 +82,56 @@ public class ReservationFilterScreen : MonoBehaviour
 
         public void ApplyFilters()
         {
-            if((periodToggle.IsOn && startDate.HasValue)|| roomTypeToggle.IsOn || roomBedsToggle.IsOn || clientToggle.IsOn)
+            if(periodToggle.IsOn)
             {
-                ReservationFilter filter = new ReservationFilter(
-                    (periodToggle.IsOn) ? startDate : null, (periodToggle.IsOn) ? (endDate.HasValue ? endDate : startDate.Value.AddDays(1)) : null,
-                    (roomTypeToggle.IsOn) ? (PropertyDataManager.RoomType?)roomTypeDropdown.CurrentRoomType : null,
-                    (roomBedsToggle.IsOn) ? (Vector2Int?)roomBedsDropdown.GetCurrentBeds() : null
-                    //(clientToggle.IsOn) ? null : null
-                );
-
-                navigator.GoBack();
-                filterButton.Open();
-                callback?.Invoke(filter);
+                currentFilter.StartDate = (startDate != null && startDate.HasValue) ? startDate.Value.Date : DateTime.Today.Date;
+                currentFilter.EndDate = (endDate != null && endDate.HasValue) ? endDate.Value.Date : currentFilter.StartDate.Value.AddDays(1).Date;
             }
             else
             {
-                navigator.GoBack();
-                ClearFilters();
+                currentFilter.StartDate = null;
+                currentFilter.EndDate = null;
             }
+
+            if(roomTypeToggle.IsOn)
+            {
+                currentFilter.RoomType = (PropertyDataManager.RoomType?)roomTypeDropdown.CurrentRoomType;
+            }
+            else
+            {
+                currentFilter.RoomType = null;
+            }
+
+            if(roomBedsToggle.IsOn)
+            {
+                currentFilter.RoomBeds = (Vector2Int?)roomBedsDropdown.GetCurrentBeds();
+            }
+            else
+            {
+                currentFilter.RoomBeds = null;
+            }
+
+            if (clientToggle.IsOn && client != null)
+            {
+                currentFilter.Client = client;
+            }
+            else
+            {
+                currentFilter.Client = null;
+            }
+
+            if(currentFilter.Client == null && !periodToggle.IsOn && !roomTypeToggle.IsOn && !roomBedsToggle.IsOn)
+            {
+                currentFilter = null;
+                navigator.GoBack();
+                filterButton.Close();
+                callback?.Invoke(currentFilter);
+                return;
+            }
+
+            navigator.GoBack();
+            filterButton.Open();
+            callback?.Invoke(currentFilter);
         }
     #endregion
 
@@ -123,6 +160,11 @@ public class ReservationFilterScreen : MonoBehaviour
         endDateText.text = endDate.HasValue ? endDate.Value.ToString(Constants.DateTimePrintFormat) : "Până în";
     }
 
+    private void SetClientCallback(IClient selectedClient)
+    {
+        client = selectedClient;
+    }
+
     private void UpdateFilerFields(bool alsoToggle, ReservationFilter currentFilter)
     {
         if(currentFilter != null)
@@ -145,12 +187,14 @@ public class ReservationFilterScreen : MonoBehaviour
         if(startDate != null || endDate != null)
         {
             if(alsoToggle) periodToggle.Toggle(true);
-            startDateText.text = (startDate != null) ? startDate.Value.ToString(Constants.DateTimePrintFormat) : "Din";
-            endDateText.text = (endDate != null) ? endDate.Value.ToString(Constants.DateTimePrintFormat) : "Până în";
+            startDateText.text = startDate.Value.ToString(Constants.DateTimePrintFormat);
+            endDateText.text = endDate.Value.ToString(Constants.DateTimePrintFormat);
         }
         else
         {
             if(alsoToggle) periodToggle.Toggle(false);
+            startDateText.text = "Din";
+            endDateText.text = "Până în";
         }
 
         if (roomType != null)
@@ -194,13 +238,4 @@ public class ReservationFilter
     public PropertyDataManager.RoomType? RoomType = null;
     public Vector2Int? RoomBeds = null;
     public IClient Client = null;
-
-    public ReservationFilter(DateTime? startDate, DateTime? endDate = null, PropertyDataManager.RoomType? roomType = null, Vector2Int? roomBeds = null)//, IClient client = null)
-    {
-        StartDate = startDate;
-        EndDate = endDate;
-        RoomType = roomType;
-        RoomBeds = roomBeds;
-        //Client = client;
-    }
 }

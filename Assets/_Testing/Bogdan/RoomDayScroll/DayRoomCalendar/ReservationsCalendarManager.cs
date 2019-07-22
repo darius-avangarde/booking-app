@@ -21,6 +21,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationFilterScreen filterScreen;
     [SerializeField]
     private Text noFilterMatchText;
+    [SerializeField]
+    private GameObject noFilterMatchTextParent;
 
     [Space]
     [SerializeField]
@@ -118,29 +120,46 @@ public class ReservationsCalendarManager : MonoBehaviour
     {
         if(currentFilter != null)
         {
-            IEnumerable<IRoom> filteredRooms = currentProperty.Rooms;
-            if(currentFilter.RoomBeds.HasValue)
+            if(currentFilter.Client == null)
             {
-                filteredRooms = filteredRooms.Where(r => r.SingleBeds == currentFilter.RoomBeds.Value.x && r.DoubleBeds == currentFilter.RoomBeds.Value.y);
-            }
-            if(currentFilter.RoomType != null)
-            {
-                filteredRooms = filteredRooms.Where(r => r.RoomType == currentFilter.RoomType);
-            }
-            if(currentFilter.StartDate.HasValue)
-            {
-                filteredRooms = ReservationDataManager.GetFreeRoomsInInterval(filteredRooms, currentFilter.StartDate.Value, currentFilter.EndDate.Value);
-                JumpToDate(currentFilter.StartDate.Value);
-            }
+                IEnumerable<IRoom> filteredRooms = currentProperty.Rooms;
 
-            currentRooms = filteredRooms.ToList();
+                if(currentFilter.RoomBeds.HasValue)
+                {
+                    filteredRooms = filteredRooms.Where(r => r.SingleBeds == currentFilter.RoomBeds.Value.x && r.DoubleBeds == currentFilter.RoomBeds.Value.y);
+                }
+                if(currentFilter.RoomType != null)
+                {
+                    filteredRooms = filteredRooms.Where(r => r.RoomType == currentFilter.RoomType);
+                }
+                if(currentFilter.StartDate.HasValue)
+                {
+                    filteredRooms = ReservationDataManager.GetFreeRoomsInInterval(filteredRooms, currentFilter.StartDate.Value, currentFilter.EndDate.Value);
+                    JumpToDate(currentFilter.StartDate.Value);
+                }
+
+                ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
+                currentRooms = filteredRooms.ToList();
+            }
+            else
+            {
+                if(ReservationDataManager.GetActiveClientReservations(currentFilter.Client.ID).Where(r => r.PropertyID == currentProperty.ID).ToList().Count > 0)
+                {
+                    JumpToDate(ReservationDataManager.GetActiveClientReservations(currentFilter.Client.ID).Where(r => r.PropertyID == currentProperty.ID).ToList()[0].Period.Start.Date);
+                }
+                else
+                {
+                    ShowNoFilterMatchText("Clientul selectat nu are rezervari pe această proprietate");
+                }
+                currentRooms = currentProperty.Rooms.ToList();
+            }
         }
         else
         {
             currentRooms = currentProperty.Rooms.ToList();
+            ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
         }
 
-        ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
         return currentRooms;
     }
 
@@ -210,12 +229,12 @@ public class ReservationsCalendarManager : MonoBehaviour
     {
         if(string.IsNullOrEmpty(message))
         {
-            noFilterMatchText.gameObject.SetActive(false);
+            noFilterMatchTextParent.SetActive(false);
         }
         else
         {
             noFilterMatchText.text = message;
-            noFilterMatchText.gameObject.SetActive(true);
+            noFilterMatchTextParent.SetActive(true);
         }
     }
 }
