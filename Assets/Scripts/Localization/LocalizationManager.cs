@@ -2,12 +2,11 @@
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LocalizationManager : MonoBehaviour
 {
-    public static LocalizationManager instance;
-    //public static readonly string csvFile="Texts - Sheet1.csv";
+    private static LocalizationManager instance;
+    public static readonly string csvFile="Texts - Sheet1.csv";
     public IEnumerable<LanguageScript> Languages { get; set; }
     private static char fieldSeperator = '&';
     public static LocalizationManager Instance { get
@@ -19,19 +18,7 @@ public class LocalizationManager : MonoBehaviour
             return instance;
         }
     }
-   /* void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
 
-        DontDestroyOnLoad(gameObject);
-    }*/
     private void CheckSystemLanguage()
     {
         if (Application.systemLanguage == SystemLanguage.English)
@@ -47,21 +34,11 @@ public class LocalizationManager : MonoBehaviour
     {
         CheckSystemLanguage();
         Languages = ReadFromCSV(/*@"Texts - Sheet1.csv */"D:\\Booking\\Assets\\Resources\\TextsFileEx.csv"); 
-        foreach (var item in Languages)
-        {
-           // Debug.Log(item.Name);
-            foreach (var col in item.Texts)
-            {
-                //Debug.Log(col.Key + " ----- " + col.Value);
-            }
-
-          // Debug.Log("-----------------------------------");
-        }
+       
     }
 
     public  IEnumerable<LanguageScript> ReadFromCSV(string csvFilePath)
     {
-        //string filePath = Path.Combine(Application.persistentDataPath, csvFilePath);
         var result = new List<LanguageScript>();
         if (File.Exists(csvFilePath))
         {
