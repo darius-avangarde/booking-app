@@ -6,66 +6,72 @@ using UnityEngine.UI;
 
 public class LocalizedText : MonoBehaviour
 {
+    //public List<LanguageScript> csvData; 
     [SerializeField]
-    private SettingsManager languageSet;
-    private string[] dropOptions = { "Română", "Engleză" };
-    public List<Text> texts;
-    public List<Text> textList;
-    public LocalizationManager myManager = new LocalizationManager();
-    public Dropdown mydd;
+    private List<Text> texts;
+    [SerializeField]
+    private List<Text> textList;
+    [SerializeField]
+    private LocalizationManager myManager = new LocalizationManager();
+    [SerializeField]
+    private Dropdown languageDropdown;
     [SerializeField]
     private List<Sprite> spriteList;
-    private string romanian;
-    private string english;
-    private string currentLanguage;
-    //public List<LanguageScript> csvData;
-    public string option;
+    public  string option;
+    private SettingsManager languageSet;
+    private string[] dropOptions = { "Română", "Engleză" };
     UnityEvent m_MyEvent = new UnityEvent();
+
     private void Start()
     {
         languageSet = new SettingsManager();
-        var x = languageSet.ReadData().settings.language;
-        romanian = myManager.Languages.First().Name;
-        english = myManager.Languages.Last().Name;
-        Debug.Log(romanian + "first-----" + "Last:---" + english);
-        currentLanguage = (mydd.value == 0) ? romanian : english;
-       // Debug.Log(currentLanguage);
-        PopulateDropdown();
-        m_MyEvent.AddListener(ChangeLanguage);
-        //myManager = LocalizationManager.instance;
+        languageSet.ReadData();
+        option = languageSet.DataElements.settings.language;
+        SetLanguage(option);
+        Debug.Log(option + "----limba este");
+        ChangeOptionsDropdown();
+       // m_MyEvent.AddListener(ChangeLanguage);
+       //myManager = LocalizationManager.instance;
     }
-    public void SetCurrentLanguage()
-    {
-        romanian = myManager.Languages.First().Name;
-        english = myManager.Languages.Last().Name;
-        currentLanguage = (mydd.value == 0) ? romanian : english;
-        Debug.Log(currentLanguage+ "-----------");
-    }
+  
     public void ChangeLanguage()
     {
-        m_MyEvent.Invoke();
-        // csvData = LocalizationManager.Instance.ReadFromCSV(@"Assets/Resources/TextsFileEx.csv").ToList();
-        if (mydd.value == 0)
+       // m_MyEvent.Invoke();
+       //csvData = LocalizationManager.Instance.ReadFromCSV(@"Assets/Resources/TextsFileEx.csv").ToList();
+        if (languageDropdown.value == 0)
         {
-            SetLanguage(currentLanguage);
             option = "Ro";
-            PopulateDropdown();
+            SetLanguage(option);
+            languageSet.DataElements.settings.language = option;
+            languageSet.WriteData();
+            ChangeOptionsDropdown();
+
         }
-        else if (mydd.value == 1)
+        else if (languageDropdown.value == 1)
         {
-            SetLanguage(currentLanguage);
             option = "En";
-            PopulateDropdown();
+            languageSet.DataElements.settings.language = option;
+            SetLanguage(option);  
+            ChangeOptionsDropdown();  
+            languageSet.WriteData();
+          
+           
         }
     }
-
-    private void PopulateDropdown()
+    private void ChangeOptionsDropdown()
     {
-        dropOptions = SetLanguageValues(currentLanguage, "Language");
-        mydd.ClearOptions();
+        languageDropdown.options[0].text =Languages[0];
+        languageDropdown.options[1].text = Languages[1];
+
+    }
+    private void PopulateDropdown(string optionL)
+    {
+        Debug.Log(optionL + "----limba este");
+        dropOptions = SetOptionsValues(optionL, "Language");
+        languageDropdown.ClearOptions();
         for (int i = 0; i < spriteList.Count; i++)
         {
-            mydd.options.Add(new Dropdown.OptionData(dropOptions[i], spriteList[i]));
+            languageDropdown.options.Add(new Dropdown.OptionData(dropOptions[i], spriteList[i]));
         }
     }
 
@@ -82,7 +88,6 @@ public class LocalizedText : MonoBehaviour
             if (language.ContainsKey(item.name))
             {
                 textList.Add(item);
-                Debug.Log(item.name);
             }
         }
 
@@ -90,38 +95,53 @@ public class LocalizedText : MonoBehaviour
     public string[] DaysLong {
         get
         { 
-            return SetLanguageValues(currentLanguage, "Days");
+            return SetOptionsValues(option, "Days");
         }
     }
     public string[] DaysShort
     {
         get
         {
-            return SetLanguageValues(currentLanguage, "DaysShort");
+            return SetOptionsValues(option, "Days_Short");
         }
     }
     public string[] Months
     {
         get
         {
-            return SetLanguageValues(currentLanguage, "Months");
+            return SetOptionsValues(option, "Months");
         }
     }
     public string[] MonthsShort
     {
         get
         {
-            return SetLanguageValues(currentLanguage, "MonthsShort");
+            return SetOptionsValues(option, "Months_Short");
         }
     }
     public string[] DropdownProperty
     {
         get
         {
-            return SetLanguageValues(currentLanguage, "Rooms");
+            return SetOptionsValues(option, "property_dropdown");
         }
     }
-    public   string[] SetLanguageValues(string lang, string myKey)
+    public string[] Notifications
+    {
+        get
+        {
+            return SetOptionsValues(option, "Notifications");
+        }
+    }
+    public string[] Languages
+    {
+        get
+        {
+            return SetOptionsValues(option, "Language");
+        }
+    }
+
+    public   string[] SetOptionsValues(string lang, string myKey)
     {
         var language = myManager.Languages.Where(x => x.Name == lang).First().Texts;
         var result = new string[12];
@@ -134,16 +154,25 @@ public class LocalizedText : MonoBehaviour
         }
         return result;
     }
+
     private void SetLanguage(string language)
     {
-        //  myManager = LocalizationManager.Instance;
-        //var lang = csvData.Where(x => x.Name == language).First();
-
         var lang = myManager.Languages.Where(x => x.Name == language).First();
         foreach (var item in textList)
         {
             item.text = lang.Texts[item.name];
-            Debug.Log(item.text);
+        }
+    }
+
+    private void CheckSystemLanguage()
+    {
+        if (Application.systemLanguage == SystemLanguage.English)
+        {
+            SetLanguage(myManager.Languages.Last().Name);
+        }
+        else if (Application.systemLanguage == SystemLanguage.Romanian)
+        {
+            SetLanguage(myManager.Languages.First().Name);
         }
     }
 }

@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class ThemeManager : MonoBehaviour
 {
     [SerializeField]
+    private SettingsManager setMode;
+    [SerializeField]
     private ColorsData dataColor;
     [SerializeField]
     private Toggle themeToggle;
@@ -17,10 +19,22 @@ public class ThemeManager : MonoBehaviour
     public List<Graphic> ItemList = new List<Graphic>();
     private static ThemeManager instance;
     public static ThemeManager Instance { get { return instance; } }
-
+    private int statusColor;
     void Start()
     {
-        //Debug.Log("Hi, from theme manager, i have: " + TextList.Count + "text objects");
+        setMode = new SettingsManager();
+        setMode.ReadData();
+        statusColor = setMode.ReadData().settings.themeStatus;
+        if (statusColor == 0)
+        {
+            themeToggle.isOn = true;
+        }
+        else
+        {
+            themeToggle.isOn = false;
+        }
+        Debug.Log(statusColor+ "----theme sts");
+        
         foreach (var item in TextList)
         {
             //Debug.Log(item.name + "from theme manager");
@@ -113,10 +127,15 @@ public class ThemeManager : MonoBehaviour
         if (themeToggle.isOn)
         {
             items.color = dark;
+            setMode.DataElements.settings.themeStatus = 0;
+            setMode.WriteData();
         }
         else
         {
             items.color = light;
+          
+            setMode.DataElements.settings.themeStatus = 1;
+            setMode.WriteData();
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class SettingsManager : MonoBehaviour
 {
     public const string DATA_FILE_NAME = "settingsData.json";
-    public static SettingsData DataElements { get; set; }
+    public  SettingsData DataElements { get; set; }
 
     private void Start()
     {
@@ -27,7 +27,11 @@ public class SettingsManager : MonoBehaviour
             {
                 DataElements = new SettingsData();
                 Debug.Log("Unable to read default input file");
-                
+                DataElements.settings = new SettingsItem();
+                DataElements.settings.themeStatus = 0;
+                DataElements.settings.language = "Ro";
+                WriteData();
+
             }
         }
         return DataElements;

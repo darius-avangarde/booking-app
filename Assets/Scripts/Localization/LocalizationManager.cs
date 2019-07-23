@@ -19,21 +19,9 @@ public class LocalizationManager : MonoBehaviour
         }
     }
 
-    private void CheckSystemLanguage()
-    {
-        if (Application.systemLanguage == SystemLanguage.English)
-        {
-            Debug.Log("This system is in English. ");
-        }
-        else if (Application.systemLanguage == SystemLanguage.Romanian)
-        { 
-           Debug.Log("This system is in Romanian.");
-        }
-    }
     private void Start()
     {
-        CheckSystemLanguage();
-        Languages = ReadFromCSV(/*@"Texts - Sheet1.csv */"D:\\Booking\\Assets\\Resources\\TextsFileEx.csv"); 
+        Languages = ReadFromCSV("Assets\\Resources\\TextsFileEx.csv"); 
        
     }
 
