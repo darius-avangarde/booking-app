@@ -49,12 +49,12 @@ public class NotificationsScreen : MonoBehaviour
         msg += "\n .Body: " + data.Notification.Text;
         msg += "\n .Channel: " + data.Channel;
         Debug.Log(msg);
-        //List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == data.Id).ToList();
-        //foreach (IReservation reservation in newReservations)
-        //{
-        //    currentReservations.Add(reservation);
-        //}
-        navigator.GoTo(GetComponent<NavScreen>());
+        List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == data.Id).ToList();
+        foreach (IReservation reservation in newReservations)
+        {
+            currentReservations.Add(reservation);
+            navigator.GoTo(GetComponent<NavScreen>());
+        }
     };
         AndroidNotificationCenter.OnNotificationReceived += receivedNotificationHandler;
     }
@@ -78,7 +78,7 @@ public class NotificationsScreen : MonoBehaviour
     public void Initialize()
     {
         noNotificationsObject.SetActive(false);
-        currentReservations = ReservationDataManager.GetReservationsBetween(DateTime.Today.Date, DateTime.Today.Date.AddDays(3)).ToList();
+        //currentReservations = ReservationDataManager.GetReservationsBetween(DateTime.Today.Date, DateTime.Today.Date.AddDays(3)).ToList();
         foreach (var reservation in currentReservations)
         {
             try
