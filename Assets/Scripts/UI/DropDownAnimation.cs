@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DropdownAnimation : MonoBehaviour
+public class DropDownAnimation : MonoBehaviour
 {
     [SerializeField]
     private RectTransform itemRectTransform;

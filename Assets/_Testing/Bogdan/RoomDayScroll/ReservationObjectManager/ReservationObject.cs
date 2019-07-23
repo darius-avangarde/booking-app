@@ -31,6 +31,7 @@ public class ReservationObject : MonoBehaviour
 
     public void PlaceUpdateObject(ReservationObjectManager.PointSize pointSize, CalendarDayColumnObject c, IReservation reservation, UnityAction<IReservation> tapAction, bool forceReposition = false)
     {
+        reservationButton.onClick.RemoveAllListeners();
         reservationButton.targetGraphic.color = (reservation.Period.End.Date > DateTime.Today.Date) ? Placeholder_ThemeManager.Instance.currentReservationColor : Placeholder_ThemeManager.Instance.pastReservationColor;
 
         co = c;

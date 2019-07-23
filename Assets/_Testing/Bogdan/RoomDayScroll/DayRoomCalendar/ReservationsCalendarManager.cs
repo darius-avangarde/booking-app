@@ -19,6 +19,10 @@ public class ReservationsCalendarManager : MonoBehaviour
     private PropertyDropdownHandler propertyDropdown;
     [SerializeField]
     private ReservationFilterScreen filterScreen;
+
+    [SerializeField]
+    private ReservationEditScreen_New reservationEditScreen;
+
     [SerializeField]
     private Text noFilterMatchText;
     [SerializeField]
@@ -110,8 +114,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             dayColumns[i].SetDate(offsetDate.AddDays(i));
         }
 
-        //TODO: Replace debug with open reservation edit with prop and client
-        reservationManager.SweepUpdateReservations(currentProperty, (r) => Debug.Log($"Edit res for: {r.CustomerName}"));
+        reservationManager.SweepUpdateReservations(currentProperty, EditReservation);
 
         topCalendar.CloseDropdownCalendar();
     }
@@ -163,23 +166,22 @@ public class ReservationsCalendarManager : MonoBehaviour
         return currentRooms;
     }
 
-    //TODO: Replace debug logs with fuctions from reservation edit/new screen
     public void SelectProperty(IProperty property)
     {
         currentProperty = property;
         currentRooms = FilteredRooms();
-        roomColumn.UpdateRooms(currentRooms, (r) => Debug.Log($"Making reservation for room {r.Name}"));
+        roomColumn.UpdateRooms(currentRooms, NewReservationFromRoomColumn);
 
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {
-            dayColumn.UpdateRooms(currentRooms, (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"));
+            dayColumn.UpdateRooms(currentRooms, NewReservationFromUnreservedDay);
             dayColumn.LinkedHeader.UpdateProperty(currentProperty);
         }
 
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
 
-        reservationManager.SweepUpdateReservations(currentProperty, (r) => Debug.Log($"Edit res for: {r.CustomerName}"));
+        reservationManager.SweepUpdateReservations(currentProperty, EditReservation);
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
     }
 
@@ -197,7 +199,6 @@ public class ReservationsCalendarManager : MonoBehaviour
         topCalendar.UpdateMonth(dayColumns.Find(c => c.transform.GetSiblingIndex() == FocalDayColumnIndex).ObjectDate);
     }
 
-    //TODO: Replace debug logs with fuctions from reservation edit/new screen
     //Create enough day headers and day columns to cover the screen in landscape mode
     private void CreateDayItems()
     {
@@ -209,13 +210,13 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day header
             CalendarDayHeaderObject header = Instantiate(dayHeaderPrefab, dayHeaderContent).GetComponent<CalendarDayHeaderObject>();
             header.name = $"Day header {d}";
-            header.UpdateDayObject(DateTime.Today.Date.AddDays(d), currentProperty, (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"));
+            header.UpdateDayObject(DateTime.Today.Date.AddDays(d), currentProperty, NewReservationFromHeader);
             dayHeaders.Add(header);
 
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
             dayColumn.name = $"Day column {d}";
-            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), (a,l) => Debug.Log($"Making reservation for day {a.ToString(Constants.DateTimePrintFormat)} property {l.Name}"), header);
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), NewReservationFromUnreservedDay, header);
             dayColumns.Add(dayColumn);
         }
 
@@ -237,4 +238,27 @@ public class ReservationsCalendarManager : MonoBehaviour
             noFilterMatchTextParent.SetActive(true);
         }
     }
+
+
+    private void EditReservation(IReservation reservation)
+    {
+        if(reservation.Period.End > DateTime.Today.Date)
+            reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), reservation);
+    }
+
+    private void NewReservationFromHeader(DateTime date, IProperty property)
+    {
+        reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), property, date);
+    }
+
+    private void NewReservationFromRoomColumn(IRoom room)
+    {
+        reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room);
+    }
+
+    private void NewReservationFromUnreservedDay(DateTime date, IRoom room)
+    {
+        reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room, date);
+    }
+
 }

@@ -25,6 +25,7 @@ public class ReservationObjectManager : MonoBehaviour
     private List<IReservation> reservations = new List<IReservation>();
     private List<IReservation> placedReservations = new List<IReservation>();
 
+    private UnityAction<IReservation> reservationButtonAction;
 
     public void DisableUnseenReservations()
     {
@@ -41,9 +42,10 @@ public class ReservationObjectManager : MonoBehaviour
 
     public void SweepUpdateReservations(IProperty property, UnityAction<IReservation> tapAction)
     {
+        reservationButtonAction = tapAction;
         DisableAllReservationObjects();
         //get ordered by hierarchy day columns
-        StartCoroutine(DelayDraw(property, tapAction));
+        StartCoroutine(DelayDraw(property));
     }
 
     public void CreateReservationsForColumn(CalendarDayColumn dayColumn, IProperty property, bool isStart)
@@ -67,7 +69,7 @@ public class ReservationObjectManager : MonoBehaviour
         }
     }
 
-    private IEnumerator DelayDraw(IProperty property, UnityAction<IReservation> tapAction)
+    private IEnumerator DelayDraw(IProperty property)
     {
         yield return null;
 
@@ -98,8 +100,7 @@ public class ReservationObjectManager : MonoBehaviour
             if(r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
-                //TODO: Set callback to open reservation edit panel with reservation
-                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, (res) => Debug.Log($"Edit reservation for {res.CustomerName} with {r.RoomIDs.Count} rooms"));
+                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
             }
         }
     }
@@ -112,8 +113,7 @@ public class ReservationObjectManager : MonoBehaviour
             if(r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
-                //TODO: Set callback to open reservation edit panel with reservation
-                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, (res) => Debug.Log($"Edit reservation for {res.CustomerName} with {r.RoomIDs.Count} rooms"), true);
+                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction, true);
             }
 
         }
@@ -133,7 +133,6 @@ public class ReservationObjectManager : MonoBehaviour
         }
     }
 
-    //TODO: position is taken from the first rect only (probably instantiated too soon)
     private PointSize CalculatePositionSpan(bool isStart, int daySpan, RectTransform dayRect)
     {
         PointSize output = new PointSize();
