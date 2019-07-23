@@ -10,13 +10,35 @@ public class NotificationManager : MonoBehaviour
     private AndroidNotificationChannel androidNotificationChannel;
     private const string channelId = "Default";
 
+    private string reservationsGroup = "Rezevari apropiate:";
+    private string lastReservationsNotification;
+
+    private void Start()
+    {
+        AndroidNotificationCenter.GetLastNotificationIntent();
+        CreateNotificationChannel();
+        SendNotification();
+    }
+
+    private void SendNotification()
+    {
+        AndroidNotification notification = new AndroidNotification();
+        notification.Title = reservationsGroup;
+        notification.Text = $"Sergiu Test - Camera Test in {DateTime.Now.Date.AddSeconds(-20)}.\n";
+        notification.FireTime = DateTime.Now.Date.AddSeconds(-20);
+
+        AndroidNotificationCenter.SendNotification(notification, channelId);
+    }
+
     private void CreateNotificationChannel()
     {
         androidNotificationChannel = new AndroidNotificationChannel
         {
             Id = channelId,
             Name = "Default Channel",
-            Importance = Importance.High,
+            Importance = Importance.Default,
+            CanShowBadge = true,
+            EnableLights = true,
             EnableVibration = true,
             LockScreenVisibility = LockScreenVisibility.Public,
             Description = "Reservation notifications",
@@ -24,53 +46,86 @@ public class NotificationManager : MonoBehaviour
         AndroidNotificationCenter.RegisterNotificationChannel(androidNotificationChannel);
     }
 
-    private void OnEnable()
+    /// <summary>
+    /// call this when you create or edit a reservation to update the current set notifications
+    /// </summary>
+    /// <param name="reservation">the new reservation after add or edit</param>
+    /// <param name="enumValue">value for period before a notification fires</param>
+    public void RegisterNotification(IReservation reservation, int enumValue = 3)
     {
-        CreateNotificationChannel();
-        SendNotification();
-        NotificationReceived();
+        int notificationID = reservation.NotificationID;
+        if (notificationID != -1)
+        {
+            //check for reservation with current notification ID
+            //update current notification or delete it
+            List<IReservation> previousReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notificationID && r.ID != reservation.ID).ToList();
+            if (previousReservations.Count() > 0)
+            {
+                AndroidNotification newNotification = new AndroidNotification();
+                newNotification.Title = reservationsGroup;
+                foreach (IReservation res in previousReservations)
+                {
+                    newNotification.Text = $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start}.\n";
+                    newNotification.IntentData = $"{res.ID}\n";
+                }
+                newNotification.FireTime = reservation.Period.Start.AddDays(-enumValue);
+
+
+                AndroidNotificationCenter.UpdateScheduledNotification(notificationID, newNotification, channelId);
+            }
+            else
+            {
+                AndroidNotificationCenter.CancelNotification(notificationID);
+            }
+            notificationID = -1;
+        }
+        //check new start period for other notifications
+        //get the new ID and set it to current reservation or create new notification and set the ID
+        List<IReservation> allReservations = ReservationDataManager.GetReservationsBetween(reservation.Period.Start, reservation.Period.Start.AddDays(1)).ToList();
+        List<IReservation> otherReservations = allReservations.Where(r => r.ID != reservation.ID).ToList();
+
+        if (otherReservations.Count() > 0)
+        {
+            notificationID = otherReservations[0].NotificationID;
+        }
+
+        AndroidNotification notification = new AndroidNotification();
+        notification.Title = reservationsGroup;
+        foreach (IReservation res in allReservations)
+        {
+            notification.Text = $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start}.\n";
+            notification.IntentData = $"{res.ID} & \n";
+        }
+        notification.FireTime = reservation.Period.Start.AddDays(-enumValue);
+
+        if (notificationID != -1)
+        {
+            AndroidNotificationCenter.UpdateScheduledNotification(notificationID, notification, channelId);
+        }
+        else
+        {
+            notificationID = AndroidNotificationCenter.SendNotification(notification, channelId);
+        }
+        reservation.NotificationID = notificationID;
+        //Debug.Log("Notification status = " + AndroidNotificationCenter.CheckScheduledNotificationStatus(notificationID));
     }
 
-    private void SendNotification()
+    /// <summary>
+    /// when the time before a notification is set in the set-up menu, 
+    /// this function should be called to update all current notifications according to new setting
+    /// </summary>
+    public void UpdateAllNotifications()
     {
-        AndroidNotification notification = new AndroidNotification();
-        notification.Title = "Rezevari apropiate";
-        notification.Text = $"first line {Environment.NewLine}  second line";
-        notification.FireTime = DateTime.Now.AddSeconds(20);
+        List<IReservation> previousReservations = ReservationDataManager.GetReservations().ToList();
+        foreach (IReservation reservation in previousReservations)
+        {
+            RegisterNotification(reservation);
+        }
+    }
 
-        int id = AndroidNotificationCenter.SendNotification(notification, channelId);
-
-        //if (AndroidNotificationCenter.CheckScheduledNotificationStatus(identifier) == NotificationStatus.Scheduled)
-        //{
-        //    Debug.Log("scheduled notification");
-        //    // Replace the currently scheduled notification with a new notification.
-        //    //UpdateScheduledNotifcation(identifier, newNotification);
-        //}
-        //else if (AndroidNotificationCenter.CheckScheduledNotificationStatus(identifier) == NotificationStatus.Delivered)
-        //{
-        //    Debug.Log("delivered notification");
-        //    //Remove the notification from the status bar
-        //    //CancelNotification(identifier)
-        //}
-
-        //List<IReservation> reservations = ReservationDataManager.GetReservationsBetween(DateTime.Today.Date, DateTime.Today.Date.AddDays(30)).ToList();
-        //
-        //int days = 3;
-        //for (int i = 0; i < reservations.Count(); i++)
-        //{
-        //    AndroidNotification notification = new AndroidNotification();
-        //    notification.Title = "Rezevari apropiate";
-        //    notification.Text = $"{reservations[i].CustomerName} - {PropertyDataManager.GetProperty(reservations[i].PropertyID).GetRoom(reservations[i].RoomID).Name} in {reservations[i].Period.Start} {Environment.NewLine}";
-        //    notification.FireTime = reservations[i].Period.Start.AddDays(-days);
-        //
-        //    int id = AndroidNotificationCenter.SendNotification(notification, channelId);
-        //    //Debug.Log("Notification status = " + AndroidNotificationCenter.CheckScheduledNotificationStatus(id));
-        //
-        //    if (AndroidNotificationCenter.CheckScheduledNotificationStatus(id) == NotificationStatus.Unknown)
-        //    {
-        //        //identifier = AndroidNotificationCenter.SendNotification(notification, "channel_id");
-        //    }
-        //}
+    private void UpdateScheduledNotifcation(int id, AndroidNotification newNotification)
+    {
+        AndroidNotificationCenter.CancelNotification(id);
     }
 
     private void NotificationReceived()

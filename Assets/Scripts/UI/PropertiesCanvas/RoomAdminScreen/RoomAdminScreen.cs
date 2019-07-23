@@ -9,6 +9,14 @@ using UnityEngine.UI;
 public class RoomAdminScreen : MonoBehaviour
 {
     [SerializeField]
+    private ReservationEditScreen reservation = null;
+
+    public void AddReservation()
+    {
+        reservation.OpenAddReservation(DateTime.Today.Date, DateTime.Today.Date.AddDays(1), currentRoom, null);
+    }
+
+    [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;

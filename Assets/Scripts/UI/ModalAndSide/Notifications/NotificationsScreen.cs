@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
+using Unity.Notifications.Android;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,27 +16,47 @@ public class NotificationsScreen : MonoBehaviour
     [SerializeField]
     private GameObject notificationItemPrefab = null;
     [SerializeField]
+    private GameObject noNotificationsObject = null;
+    [SerializeField]
+    private NotificationOptionsMenu notificationDropdown = null;
+    [SerializeField]
     private Transform scrollViewContent = null;
     [SerializeField]
     private Button backButton = null;
 
     private Queue<NotificationItem> notificationItemPool = new Queue<NotificationItem>();
     private List<NotificationItem> activeNotificationItems = new List<NotificationItem>();
-    private List<IReservation> currentMonthReservations = new List<IReservation>();
-    private DateTime startDate = DateTime.Today.Date;
-    private DateTime firstDay;
-    private DateTime lastDay;
+    private List<IReservation> currentReservations = new List<IReservation>();
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
 
+        noNotificationsObject.SetActive(false);
         for (int i = 0; i < 10; i++)
         {
             NotificationItem notificationItem = Instantiate(notificationItemPrefab, scrollViewContent).GetComponent<NotificationItem>();
             notificationItem.gameObject.SetActive(false);
             notificationItemPool.Enqueue(notificationItem);
         }
+
+        AndroidNotificationCenter.NotificationReceivedCallback receivedNotificationHandler =
+    delegate (AndroidNotificationIntentData data)
+    {
+        var msg = "Notification received : " + data.Id + "\n";
+        msg += "\n Notification received: ";
+        msg += "\n .Title: " + data.Notification.Title;
+        msg += "\n .Body: " + data.Notification.Text;
+        msg += "\n .Channel: " + data.Channel;
+        Debug.Log(msg);
+        //List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == data.Id).ToList();
+        //foreach (IReservation reservation in newReservations)
+        //{
+        //    currentReservations.Add(reservation);
+        //}
+        navigator.GoTo(GetComponent<NavScreen>());
+    };
+        AndroidNotificationCenter.OnNotificationReceived += receivedNotificationHandler;
     }
 
     private void OnEnable()
@@ -50,33 +72,39 @@ public class NotificationsScreen : MonoBehaviour
             notificationItemPool.Enqueue(item);
         }
         activeNotificationItems.Clear();
-    }
-
-    public void SetMonth(DateTime currentDate)
-    {
-        firstDay = new DateTime(currentDate.Year, currentDate.Month, 1);
-        lastDay = new DateTime(currentDate.Year, currentDate.Month, DateTime.DaysInMonth(currentDate.Year, currentDate.Month));
+        noNotificationsObject.SetActive(false);
     }
 
     public void Initialize()
     {
-        SetMonth(startDate);
-        foreach (var reservation in ReservationDataManager.GetReservationsBetween(firstDay, lastDay))
+        noNotificationsObject.SetActive(false);
+        currentReservations = ReservationDataManager.GetReservationsBetween(DateTime.Today.Date, DateTime.Today.Date.AddDays(3)).ToList();
+        foreach (var reservation in currentReservations)
         {
             try
             {
                 NotificationItem notificationItem = notificationItemPool.Dequeue();
                 notificationItem.gameObject.SetActive(true);
-                notificationItem.Initialize(reservation);
+                notificationItem.Initialize(reservation, OpenItemMenu);
                 activeNotificationItems.Add(notificationItem);
             }
             catch (Exception)
             {
                 NotificationItem notificationItem = Instantiate(notificationItemPrefab, scrollViewContent).GetComponent<NotificationItem>();
                 notificationItem.gameObject.SetActive(true);
-                notificationItem.Initialize(reservation);
+                notificationItem.Initialize(reservation, OpenItemMenu);
                 activeNotificationItems.Add(notificationItem);
             }
         }
+
+        if (activeNotificationItems.Count == 0)
+        {
+            noNotificationsObject.SetActive(true);
+        }
+    }
+
+    private void OpenItemMenu(IReservation reservation)
+    {
+        notificationDropdown.OpenMenu(reservation);
     }
 }
