@@ -8,6 +8,8 @@ using UnityEngine.Events;
 
 public class ReservationEditScreen : MonoBehaviour
 {
+    public NotificationManager notificationManager;
+
     #region Inspector references
         [Header("Navigation")]
         [SerializeField]
@@ -133,7 +135,8 @@ public class ReservationEditScreen : MonoBehaviour
                     inputManager.Message(Constants.RESERVATION_MODIFIED);
                 };
                 confirmationDialog.Show(editConfirmation);
-            }
+            notificationManager.RegisterNotification(currentReservation);
+        }
             else
             {
                 IReservation newReservation = ReservationDataManager.AddReservation(
@@ -146,7 +149,8 @@ public class ReservationEditScreen : MonoBehaviour
                 confirmationCallback?.Invoke(newReservation);
                 navigator.GoBack();
                 inputManager.Message(Constants.RESERVATION_SAVED);
-            }
+            notificationManager.RegisterNotification(newReservation);
+        }
         }
 
         public void RequestDelete()

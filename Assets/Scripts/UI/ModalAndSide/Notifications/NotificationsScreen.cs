@@ -49,12 +49,12 @@ public class NotificationsScreen : MonoBehaviour
         msg += "\n .Body: " + data.Notification.Text;
         msg += "\n .Channel: " + data.Channel;
         Debug.Log(msg);
-        //List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == data.Id).ToList();
-        //foreach (IReservation reservation in newReservations)
-        //{
-        //    currentReservations.Add(reservation);
-        //}
-        navigator.GoTo(GetComponent<NavScreen>());
+        List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == data.Id).ToList();
+        foreach (IReservation reservation in newReservations)
+        {
+            currentReservations.Add(reservation);
+            navigator.GoTo(GetComponent<NavScreen>());
+        }
     };
         AndroidNotificationCenter.OnNotificationReceived += receivedNotificationHandler;
     }
