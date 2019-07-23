@@ -9,6 +9,8 @@ public class DropdownAnimation : MonoBehaviour
     private RectTransform itemRectTransform;
     [SerializeField]
     private float maxNumberOfItems = 7;
+    [SerializeField]
+    private bool horizontalPosition = false;
 
     private RectTransform rectTransformComponent;
     private Dropdown dropdownComponent;
@@ -42,8 +44,13 @@ public class DropdownAnimation : MonoBehaviour
         {
             finalHeight = maxNumberOfItems * itemRectTransform.rect.height;
         }
-        float pivotPos = rectTransformComponent.position.y / Screen.height;
-        rectTransformComponent.pivot = new Vector2(rectTransformComponent.pivot.x, pivotPos);
+        float pivotPosX = rectTransformComponent.pivot.x;
+        if (horizontalPosition)
+        {
+            pivotPosX = rectTransformComponent.position.x / Screen.width;
+        }
+        float pivotPosY = rectTransformComponent.position.y / Screen.height;
+        rectTransformComponent.pivot = new Vector2(pivotPosX, pivotPosY);
         StartCoroutine(ExpandDropdown());
     }
 

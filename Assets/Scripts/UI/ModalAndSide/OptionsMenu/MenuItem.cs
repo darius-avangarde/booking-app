@@ -16,14 +16,17 @@ public class MenuItem : MonoBehaviour
     public void Initialize(string label, Sprite icon, Action Callback)
     {
         itemLabel.text = label;
-        if (icon != null)
+        if (itemImage != null)
         {
-            itemImage.gameObject.SetActive(true);
-            itemImage.sprite = icon;
-        }
-        else
-        {
-            itemImage.gameObject.SetActive(false);
+            if (icon != null)
+            {
+                itemImage.gameObject.SetActive(true);
+                itemImage.sprite = icon;
+            }
+            else
+            {
+                itemImage.gameObject.SetActive(false);
+            }
         }
         if (Callback != null)
         {

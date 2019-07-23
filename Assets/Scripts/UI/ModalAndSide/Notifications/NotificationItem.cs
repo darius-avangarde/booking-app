@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
@@ -7,8 +8,6 @@ using Unity.Notifications.Android;
 
 public class NotificationItem : MonoBehaviour
 {
-    [SerializeField]
-    private NotificationDropdown notificationDropdown = null;
     [SerializeField]
     private Text clientName = null;
     [SerializeField]
@@ -23,16 +22,19 @@ public class NotificationItem : MonoBehaviour
     private Text addedDate = null;
     [SerializeField]
     private Image roomTypeImage = null;
+    [SerializeField]
+    private Button menuButton = null;
+    [SerializeField]
+    private Sprite[] roomTypeIcons = null;
 
     private IReservation currentReservation;
     private IProperty currentProperty;
     private IRoom currentRoom;
-    private bool canceled = false;
+    private bool highlight = false;
 
-    public void Initialize(IReservation reservation)
+    public void Initialize(IReservation reservation, Action<IReservation> setReservation)
     {
         currentReservation = reservation;
-        //canceled = currentReservation.Canceled;
         clientName.text = ClientDataManager.GetClient(currentReservation.CustomerID).Name;
         startDate.text = currentReservation.Period.Start.Date.ToString();
         endDate.text = currentReservation.Period.End.Date.ToString();
@@ -41,7 +43,13 @@ public class NotificationItem : MonoBehaviour
         propertyName.text = currentProperty.Name;
         roomName.text = currentRoom.Name;
         //addedDate.text = currentReservation.AddedDate;
-        //roomTypeImage = currentRoom.Type
-        notificationDropdown.Initialize(currentReservation);
+        foreach (Sprite icon in roomTypeIcons)
+        {
+            if(icon.name.ToLower() == currentRoom.RoomType.ToString().ToLower())
+            {
+                roomTypeImage.sprite = icon;
+            }
+        }
+        menuButton.onClick.AddListener(() => setReservation(reservation));
     }
 }

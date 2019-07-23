@@ -10,14 +10,24 @@ public class NotificationManager : MonoBehaviour
     private AndroidNotificationChannel androidNotificationChannel;
     private const string channelId = "Default";
 
-    private string reservationsGroup = "Today's Reservations:";
-    private int days = 3;
+    private string reservationsGroup = "Rezevari apropiate:";
+    private string lastReservationsNotification;
 
     private void Start()
     {
         AndroidNotificationCenter.GetLastNotificationIntent();
         CreateNotificationChannel();
-        NotificationReceived();
+        SendNotification();
+    }
+
+    private void SendNotification()
+    {
+        AndroidNotification notification = new AndroidNotification();
+        notification.Title = reservationsGroup;
+        notification.Text = $"Sergiu Test - Camera Test in {DateTime.Now.Date.AddSeconds(-20)}.\n";
+        notification.FireTime = DateTime.Now.Date.AddSeconds(-20);
+
+        AndroidNotificationCenter.SendNotification(notification, channelId);
     }
 
     private void CreateNotificationChannel()
@@ -37,27 +47,29 @@ public class NotificationManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// call this when you create or edit a reservation to update the current set notifications
     /// </summary>
-    /// <param name="reservation"></param>
-    public void RegisterNotification(IReservation reservation)
+    /// <param name="reservation">the new reservation after add or edit</param>
+    /// <param name="enumValue">value for period before a notification fires</param>
+    public void RegisterNotification(IReservation reservation, int enumValue = 3)
     {
-        int notificationID = -1;//reservation.NotificationID;
+        int notificationID = reservation.NotificationID;
         if (notificationID != -1)
         {
             //check for reservation with current notification ID
             //update current notification or delete it
-            List<IReservation> previousReservations = ReservationDataManager.GetReservations().Where(r => /*r.notificationID == notificationID && */r.ID != reservation.ID).ToList();
+            List<IReservation> previousReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notificationID && r.ID != reservation.ID).ToList();
             if (previousReservations.Count() > 0)
             {
                 AndroidNotification newNotification = new AndroidNotification();
-                newNotification.Title = "Rezevari apropiate:";
-                //foreach reservation from the current reservation start date, set notification text
+                newNotification.Title = reservationsGroup;
                 foreach (IReservation res in previousReservations)
                 {
                     newNotification.Text = $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start}.\n";
+                    newNotification.IntentData = $"{res.ID}\n";
                 }
-                newNotification.FireTime = reservation.Period.Start.AddDays(-days);
+                newNotification.FireTime = reservation.Period.Start.AddDays(-enumValue);
+
 
                 AndroidNotificationCenter.UpdateScheduledNotification(notificationID, newNotification, channelId);
             }
@@ -74,17 +86,17 @@ public class NotificationManager : MonoBehaviour
 
         if (otherReservations.Count() > 0)
         {
-            //notificationID = withoutThisReservation[0].notificationID;
+            notificationID = otherReservations[0].NotificationID;
         }
 
         AndroidNotification notification = new AndroidNotification();
-        notification.Title = "Rezevari apropiate:";
-        //foreach reservation from the current reservation start date, set notification text
+        notification.Title = reservationsGroup;
         foreach (IReservation res in allReservations)
         {
             notification.Text = $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start}.\n";
+            notification.IntentData = $"{res.ID} & \n";
         }
-        notification.FireTime = reservation.Period.Start.AddDays(-days);
+        notification.FireTime = reservation.Period.Start.AddDays(-enumValue);
 
         if (notificationID != -1)
         {
@@ -94,8 +106,8 @@ public class NotificationManager : MonoBehaviour
         {
             notificationID = AndroidNotificationCenter.SendNotification(notification, channelId);
         }
-        Debug.Log("Notification status = " + AndroidNotificationCenter.CheckScheduledNotificationStatus(notificationID));
-        //reservation.notificationID = notificationID;
+        reservation.NotificationID = notificationID;
+        //Debug.Log("Notification status = " + AndroidNotificationCenter.CheckScheduledNotificationStatus(notificationID));
     }
 
     /// <summary>
