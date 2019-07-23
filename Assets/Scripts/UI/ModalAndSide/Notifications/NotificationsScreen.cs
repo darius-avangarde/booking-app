@@ -78,7 +78,7 @@ public class NotificationsScreen : MonoBehaviour
     public void Initialize()
     {
         noNotificationsObject.SetActive(false);
-        //currentReservations = ReservationDataManager.GetReservationsBetween(DateTime.Today.Date, DateTime.Today.Date.AddDays(3)).ToList();
+        currentReservations = ReservationDataManager.GetReservationsBetween(DateTime.Today.Date, DateTime.Today.Date.AddDays(3)).ToList();
         foreach (var reservation in currentReservations)
         {
             try

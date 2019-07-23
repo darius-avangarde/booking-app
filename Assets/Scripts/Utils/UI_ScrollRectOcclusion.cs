@@ -77,7 +77,6 @@ public class UI_ScrollRectOcclusion : MonoBehaviour
 
     public void Init()
 	{
-		Debug.Log("is init");
 		if (GetComponent<ScrollRect>() != null)
 		{
 			hasDisabledGridComponents = false;

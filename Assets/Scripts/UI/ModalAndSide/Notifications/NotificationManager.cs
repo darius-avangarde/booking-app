@@ -67,15 +67,15 @@ public class NotificationManager : MonoBehaviour
                     newNotification.Text = $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start}.\n";
                     newNotification.IntentData = $"{res.ID}\n";
                 }
-                newNotification.FireTime = new DateTime( reservation.Period.Start.Year, reservation.Period.Start.Month, reservation.Period.Start.Day, 14, 0, 0);
+                newNotification.FireTime = new DateTime( reservation.Period.Start.Year, reservation.Period.Start.Month, reservation.Period.Start.Day, 15, 20, 0);
 
-                AndroidNotificationCenter.UpdateScheduledNotification(notificationID, newNotification, channelId);
                 Debug.Log($"notification update: {notificationID}");
+                AndroidNotificationCenter.UpdateScheduledNotification(notificationID, newNotification, channelId);
             }
             else
             {
-                AndroidNotificationCenter.CancelNotification(notificationID);
                 Debug.Log($"notification canceled");
+                AndroidNotificationCenter.CancelNotification(notificationID);
             }
             notificationID = -1;
         }
@@ -97,17 +97,17 @@ public class NotificationManager : MonoBehaviour
             notification.IntentData = $"{res.ID} & \n";
         }
         //notification.FireTime = reservation.Period.Start.AddDays(-enumValue);
-        notification.FireTime = new DateTime(reservation.Period.Start.Year, reservation.Period.Start.Month, reservation.Period.Start.Day, 14, 0, 0);
+        notification.FireTime = new DateTime(reservation.Period.Start.Year, reservation.Period.Start.Month, reservation.Period.Start.Day, 15, 0, 0);
 
         if (notificationID != -1)
         {
-            AndroidNotificationCenter.UpdateScheduledNotification(notificationID, notification, channelId);
             Debug.Log($"notification update: {notificationID}");
+            AndroidNotificationCenter.UpdateScheduledNotification(notificationID, notification, channelId);
         }
         else
         {
-            notificationID = AndroidNotificationCenter.SendNotification(notification, channelId);
             Debug.Log($"notification send: {notificationID}");
+            notificationID = AndroidNotificationCenter.SendNotification(notification, channelId);
         }
         reservation.NotificationID = notificationID;
         //Debug.Log("Notification status = " + AndroidNotificationCenter.CheckScheduledNotificationStatus(notificationID));
