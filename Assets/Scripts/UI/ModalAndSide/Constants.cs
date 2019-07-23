@@ -62,6 +62,26 @@ public class Constants : MonoBehaviour
     public const string SPACE = " ";
 
     #region Reservation specific strings
+
+    #region Notification specific constants
+        ///<summary>
+        ///value is the number of hours for each duration
+        ///</summary>
+        public enum NotificationPreAlet
+        {
+            oneHour     = 1,
+            twoHour     = 2,
+            fourHour    = 4,
+            oneDay      = 24,
+            twoDay      = 48,
+            threeDay    = 72,
+            fourDay     = 96,
+            fiveDay     = 120,
+            sixDay      = 144,
+            sevenDay    = 168
+        }
+    #endregion
+
         public const string CLIENTS_TITLE = "Clienți";
         public const string DELETE_DIALOG = "Ștergeți rezervarea?";
         public const string EDIT_DIALOG = "Moficați rezervarea?";
