@@ -19,6 +19,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private PropertyDropdownHandler propertyDropdown;
     [SerializeField]
     private ReservationFilterScreen filterScreen;
+    [SerializeField]
+    private ReservationOptionsDropdown reservationOptions;
 
     [SerializeField]
     private ReservationEditScreen_New reservationEditScreen;
@@ -114,7 +116,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             dayColumns[i].SetDate(offsetDate.AddDays(i));
         }
 
-        reservationManager.SweepUpdateReservations(currentProperty, EditReservation);
+        reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
 
         topCalendar.CloseDropdownCalendar();
     }
@@ -181,7 +183,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
 
-        reservationManager.SweepUpdateReservations(currentProperty, EditReservation);
+        reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
     }
 
