@@ -153,7 +153,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     public void SetDate(bool isStart)
     {
-        modalCalendar.OpenCallendar((d) => SetDatesCallback(d, isStart), (isStart) ? resStartDate : resEndDate);
+        modalCalendar.OpenCallendar((d) => SetDatesCallback(d, isStart), (isStart) ? resStartDate :  (resEndDate == null && resStartDate != null) ? resStartDate.Value.AddDays(1) : resEndDate);
     }
 
     public void BeginSelectRooms()
