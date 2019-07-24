@@ -6,7 +6,7 @@ using UnityEngine;
 public class LocalizationManager : MonoBehaviour
 {
     private static LocalizationManager instance;
-    public static readonly string csvFile="Texts - Sheet1.csv";
+    public const string csvFile= "TextFile.csv";
     public IEnumerable<LanguageScript> Languages { get; set; }
     private static char fieldSeperator = '&';
     public static LocalizationManager Instance { get
@@ -21,12 +21,14 @@ public class LocalizationManager : MonoBehaviour
 
     private void Start()
     {
-        Languages = ReadFromCSV("Assets\\Resources\\TextsFileEx.csv"); 
+      
+        Languages = ReadFromCSV();//ReadFromCSV("Assets\\Resources\\TextsFileEx.csv"); 
        
     }
 
-    public  IEnumerable<LanguageScript> ReadFromCSV(string csvFilePath)
+    public  IEnumerable<LanguageScript> ReadFromCSV()//string csvFilePath)
     {
+        string csvFilePath = Path.Combine(Application.persistentDataPath, csvFile);
         var result = new List<LanguageScript>();
         if (File.Exists(csvFilePath))
         {

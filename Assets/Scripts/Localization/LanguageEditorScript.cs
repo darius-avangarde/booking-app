@@ -15,7 +15,7 @@ public class LanguageEditorScript : Editor
         myEditor = (LocalizedText)target;
         if (GUILayout.Button("ButtonLanguage"))
         {
-            LocalizationManager.Instance.ReadFromCSV("D:\\Booking\\Assets\\Resources\\TextsFileEx.csv");
+            LocalizationManager.Instance.ReadFromCSV();//("D:\\Booking\\Assets\\Resources\\TextsFileEx.csv");
              myEditor.GetTexts();
         }
         DrawDefaultInspector();
