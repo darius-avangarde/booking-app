@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class ClientPicker : MonoBehaviour
+public class ClientPicker : MonoBehaviour, IClosable
 {
     [SerializeField]
     private InputField searchFieldInput;
@@ -15,8 +15,12 @@ public class ClientPicker : MonoBehaviour
     private GameObject searchResultsParent;
     [SerializeField]
     private GameObject clientPickerObjectPrefab;
+    [SerializeField]
+    private DropDownAnimationExtended dropDownAnimation;
 
     [Space]
+    [SerializeField]
+    private GameObject closeButton;
     [SerializeField]
     private float getClientsDelay = 0.5f;
     [SerializeField]
@@ -29,18 +33,6 @@ public class ClientPicker : MonoBehaviour
     private bool isOpen = false;
 
 
-    private void Update()
-    {
-        if(isOpen && Input.touchCount != 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            if(!RectTransformUtility.RectangleContainsScreenPoint(searchResultsContent, touch.position) && touch.phase == TouchPhase.Began)
-            {
-                ClosePanel();
-            }
-        }
-    }
-
     public void SetCallback(UnityAction<IClient> setClientCallback, IClient selectedClient = null)
     {
         noMatchesText.gameObject.SetActive(false);
@@ -50,16 +42,20 @@ public class ClientPicker : MonoBehaviour
         searchFieldInput.onValueChanged.AddListener((s) => InitiateClientSearch());
     }
 
-    public void InitiateClientSearch()
+    public void InitiateClientSearch(bool isTap = false)
     {
+        closeButton.SetActive(true);
+        InputManager.CurrentlyOpenClosable = this;
         isOpen = true;
         searchResultsParent.SetActive(true);
-        CancelSearch();
+        if(!isTap) CancelSearch();
         StartCoroutine(DelayedGetClients());
     }
 
-    public void ClosePanel()
+    public void Close()
     {
+        closeButton.SetActive(false);
+        InputManager.CurrentlyOpenClosable = null;
         loadIndicator.rotation = Quaternion.identity;
         isOpen = false;
         CancelSearch();
@@ -105,7 +101,7 @@ public class ClientPicker : MonoBehaviour
     {
         UpdateSearchFieldText(client);
         setCallback?.Invoke(client);
-        ClosePanel();
+        Close();
     }
 
     private void CancelSearch()
@@ -125,8 +121,8 @@ public class ClientPicker : MonoBehaviour
         loadIndicator.rotation = Quaternion.identity;
 
         UpdateClientList(GetMatchingClients(searchFieldInput.text.ToLower()));
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(searchResultsContent);
+        dropDownAnimation.ManualAnimationTrigger();
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(searchResultsContent);
     }
 
     private List<IClient> GetMatchingClients(string inputString)

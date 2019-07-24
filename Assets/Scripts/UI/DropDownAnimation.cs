@@ -6,13 +6,13 @@ public class DropDownAnimation : MonoBehaviour
 {
     public float MaxNumberOfItems = 7;
     [SerializeField]
-    private RectTransform itemRectTransform;
+    protected RectTransform itemRectTransform;
     [SerializeField]
-    private bool horizontalPosition = false;
+    protected bool horizontalPosition = false;
 
-    private RectTransform rectTransformComponent;
-    private Dropdown dropdownComponent;
-    private float finalHeight;
+    protected RectTransform rectTransformComponent;
+    protected Dropdown dropdownComponent;
+    protected float finalHeight;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class DropDownAnimation : MonoBehaviour
         StartCoroutine(WaitForInitialization());
     }
 
-    private IEnumerator WaitForInitialization()
+    protected virtual IEnumerator WaitForInitialization()
     {
         yield return null;
         if (dropdownComponent == null)
@@ -41,17 +41,20 @@ public class DropDownAnimation : MonoBehaviour
         {
             finalHeight = MaxNumberOfItems * itemRectTransform.rect.height;
         }
+
         float pivotPosX = rectTransformComponent.pivot.x;
         if (horizontalPosition)
         {
             pivotPosX = rectTransformComponent.position.x / Screen.width;
         }
         float pivotPosY = rectTransformComponent.position.y / Screen.height;
+
         rectTransformComponent.pivot = new Vector2(pivotPosX, pivotPosY);
+
         StartCoroutine(ExpandDropdown());
     }
 
-    private IEnumerator ExpandDropdown()
+    protected IEnumerator ExpandDropdown()
     {
         Vector2 finalSize = new Vector2(rectTransformComponent.sizeDelta.x, finalHeight);
         float currentTime = 0;

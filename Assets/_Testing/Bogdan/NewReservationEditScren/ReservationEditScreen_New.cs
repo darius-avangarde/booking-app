@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UINavigation;
+using System.Collections;
 
 public class ReservationEditScreen_New : MonoBehaviour
 {
@@ -22,21 +23,25 @@ public class ReservationEditScreen_New : MonoBehaviour
     private ClientPicker clientPicker;
     [SerializeField]
     private ModalCalendar modalCalendar;
+    [SerializeField]
+    private ScrollRect screenScrollRect;
 
+
+    [Space]
     [SerializeField]
     private Text screenTitleText;
     [SerializeField]
     private Text startDateText;
     [SerializeField]
     private Text endDateText;
-
     [SerializeField]
     private Text errorText;
 
+    [Space]
     [SerializeField]
     private Dropdown propertyDropdown;
     [SerializeField]
-    private Dropdown roomDropdown;
+    private RoomToggleDropdown roomDropdown;
     [SerializeField]
     private GameObject roomDropdownParent;
     [SerializeField]
@@ -58,6 +63,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     private void Start()
     {
+        editConfirmation = new ConfirmationDialogOptions();
         UpdatePreAletDropdown();
         //add to update event of loc manager
     }
@@ -117,8 +123,8 @@ public class ReservationEditScreen_New : MonoBehaviour
                     resStartDate.Value,
                     resEndDate.Value
                 );
-                confirmationCallback?.Invoke(currentReservation);
                 navigator.GoBack();
+                confirmationCallback?.Invoke(currentReservation);
                 inputManager.Message(Constants.RESERVATION_MODIFIED);
             };
             confirmationDialog.Show(editConfirmation);
@@ -132,8 +138,8 @@ public class ReservationEditScreen_New : MonoBehaviour
                 resEndDate.Value
             );
 
-            confirmationCallback?.Invoke(newReservation);
             navigator.GoBack();
+            confirmationCallback?.Invoke(newReservation);
             inputManager.Message(Constants.RESERVATION_SAVED);
         }
 
@@ -148,6 +154,11 @@ public class ReservationEditScreen_New : MonoBehaviour
     public void SetDate(bool isStart)
     {
         modalCalendar.OpenCallendar((d) => SetDatesCallback(d, isStart), (isStart) ? resStartDate : resEndDate);
+    }
+
+    public void BeginSelectRooms()
+    {
+        roomDropdown.OpenRoomDropdown();
     }
 
     private void ClearData()
@@ -167,7 +178,7 @@ public class ReservationEditScreen_New : MonoBehaviour
         endDateText.text = resEndDate == null ? "Până în" : resEndDate.Value.ToString(Constants.DateTimePrintFormat);
         clientPicker.SetCallback((c) => resClient = c, resClient);
         UpdatePropertyDropdown();
-        UpdateRoomsDropdown();
+        UpdateRoomDropdown();
     }
 
     private void SelectProperty(int index)
@@ -175,25 +186,12 @@ public class ReservationEditScreen_New : MonoBehaviour
         resProperty = propertyOptions[index];
         resRooms.Clear();
         if(resProperty != null && !resProperty.HasRooms) resRooms.Add(resProperty.GetRoom(resProperty.GetPropertyRoomID));
-        UpdateRoomsDropdown();
+        UpdateRoomDropdown();
     }
 
-    private void SelectRoomSingle(int index)
+    private void SelectRooms(List<IRoom> rooms)
     {
-        resRooms.Clear();
-        resRooms.Add(roomOptions[index]);
-    }
-
-    private void SelectRoomToggle(int index, bool select)
-    {
-        if(select)
-        {
-            resRooms.Add(roomOptions[index]);
-        }
-        else
-        {
-            resRooms.Remove(roomOptions[index]);
-        }
+        resRooms = rooms;
     }
 
     private void SelectPreAlert(int index)
@@ -247,32 +245,15 @@ public class ReservationEditScreen_New : MonoBehaviour
         propertyDropdown.onValueChanged.AddListener(SelectProperty);
     }
 
-    private void UpdateRoomsDropdown()
+    private void UpdateRoomDropdown()
     {
-        roomDropdown.onValueChanged.RemoveAllListeners();
-        if(resProperty != null && resProperty.HasRooms)
-        {
-            //select rooms from resrooms
-            roomDropdownParent.SetActive(true);
-            List<IRoom> allRooms = resProperty.Rooms.ToList();
-            List<Dropdown.OptionData> optionList = new List<Dropdown.OptionData>();
-            optionList.Add(new Dropdown.OptionData(Constants.CHOOSE));
-            roomOptions = new List<IRoom>();
-            roomOptions.Add(null);
+        roomDropdownParent.SetActive(resProperty.HasRooms);
 
-            for (int i = 0; i < allRooms.Count; i++)
-            {
-                Dropdown.OptionData option = new Dropdown.OptionData(allRooms[i].Name/*, prop type sprite*/); //option image = roomtype image
-                optionList.Add(option);
-                roomOptions.Add(allRooms[i]);
-            }
-            roomDropdown.options = optionList;
-        }
-        else
-        {
-            roomDropdownParent.SetActive(false);
-        }
-        roomDropdown.onValueChanged.AddListener(SelectRoomSingle);
+        if(!resProperty.HasRooms)
+            return;
+
+        List<IRoom> allRooms = resProperty.Rooms.ToList();
+        roomDropdown.InitializeRoomDropdown(SelectRooms, allRooms, resRooms);
     }
 
     private void UpdatePreAletDropdown()
@@ -289,48 +270,66 @@ public class ReservationEditScreen_New : MonoBehaviour
     {
         if(resClient == null)
         {
-            errorText.text = Constants.ERR_CLIENT;
+            SetErrorAnState(Constants.ERR_CLIENT);
             return false;
         }
 
         if(resStartDate == null)
         {
-            errorText.text = Constants.ERR_DATES_START;
+            SetErrorAnState(Constants.ERR_DATES_START);
             return false;
         }
 
         if(resEndDate == null)
         {
-            errorText.text = Constants.ERR_DATES_END;
+            SetErrorAnState(Constants.ERR_DATES_END);
             return false;
         }
 
         if(resProperty == null)
         {
-            errorText.text = Constants.ERR_CLIENT;
+            SetErrorAnState(Constants.ERR_CLIENT);
             return false;
         }
 
         if(resRooms.Count == 0)
         {
-            errorText.text = Constants.ERR_ROOM;
+            SetErrorAnState(Constants.ERR_ROOM);
             return false;
         }
 
         if(startDateText == endDateText)
         {
-            errorText.text = Constants.ERR_DATES;
+            SetErrorAnState(Constants.ERR_DATES);
             return false;
         }
 
         if (OverlapsOtherReservation(resStartDate.Value, resEndDate.Value))
         {
-            errorText.text = Constants.ERR_PERIOD;
+            SetErrorAnState(Constants.ERR_PERIOD);
             return false;
         }
 
-        errorText.text = string.Empty;
+        SetErrorAnState(string.Empty);
         return true;
+    }
+
+    private void SetErrorAnState(string message)
+    {
+        errorText.text = message;
+        errorText.gameObject.SetActive(!string.IsNullOrEmpty(message));
+        StopAllCoroutines();
+        StartCoroutine(LerpToZero());
+    }
+
+    private IEnumerator LerpToZero()
+    {
+        float from = screenScrollRect.verticalNormalizedPosition;
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/0.15f){
+            screenScrollRect.verticalNormalizedPosition = Mathf.Lerp(from, 0, t);
+            yield return null;
+        }
+        screenScrollRect.verticalNormalizedPosition = 0;
     }
 
     private bool OverlapsOtherReservation(DateTime start, DateTime end)
