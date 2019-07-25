@@ -11,5 +11,6 @@ public class SettingsItem
 {
     public int themeStatus;
     public string language;
-    
+    public int PreAlertTime;
+    public bool ReceiveNotifications;
 }

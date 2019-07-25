@@ -30,6 +30,8 @@ public class SettingsManager : MonoBehaviour
                 DataElements.settings = new SettingsItem();
                 DataElements.settings.themeStatus = 0;
                 DataElements.settings.language = "Ro";
+                DataElements.settings.ReceiveNotifications = true;
+                DataElements.settings.PreAlertTime = 24;
                 WriteData();
 
             }
