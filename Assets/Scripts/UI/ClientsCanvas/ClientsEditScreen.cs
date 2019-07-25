@@ -1,10 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
+using static ClientDataManager;
 
 public class ClientsEditScreen : MonoBehaviour
 {
+    [SerializeField]
+    private ThemeManager theme;
+    [SerializeField]
+    private ConfirmationDialog confirmationDialog = null;
+    [SerializeField]
+    private Navigator navigator = null;
     [SerializeField]
     private InputField clientName;
     [SerializeField]
@@ -20,7 +29,10 @@ public class ClientsEditScreen : MonoBehaviour
     private Text textNameRequired;
     [SerializeField]
     private InfoBox infoDialog = null;
-
+    [SerializeField]
+    private ClientsScreen clientsScreen;
+    [SerializeField]
+    private List<GameObject> textList = new List<GameObject>();
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -37,6 +49,21 @@ public class ClientsEditScreen : MonoBehaviour
         clientPhone.text = currentClient.Number;
         clientAdress.text = currentClient.Adress;
         clientEmail.text = currentClient.Email;
+        
+    }
+    /*public void SetInpufieldsColor()
+    {
+        foreach (var item in textList)
+        {
+            theme.SetColor(item);
+        }
+    }*/
+    private void SetClient(Client client)
+    {
+        client.Name = clientName.text;
+        client.Number = clientPhone.text;
+        client.Email = clientEmail.text;
+        client.Adress = clientAdress.text;
     }
     public void ValidAdress()
     {
@@ -81,11 +108,75 @@ public class ClientsEditScreen : MonoBehaviour
     public void SetTextRequired()
     {
         textNameRequired.gameObject.SetActive(true);
-        textNameRequired.text = Constants.Name_Phone_Required;
+        textNameRequired.text = Constants.NameRequired;
     }
 
     public void ShowInfo()
     {
         infoDialog.Show(  $"{Environment.NewLine}*Câmpurile marcate cu steluță sunt obligatorii.");
+    }
+
+    private void DeleteClientButton(Action actionDelete = null)
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = Constants.DELETE_CLIENT,
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                ClientDataManager.DeleteClient(currentClient.ID);
+                ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
+                clientsScreen.InstantiateClients();
+                navigator.GoBack();
+                actionDelete?.Invoke();
+            },
+            CancelCallback = null
+        });
+    }
+    public void DeleteClientCurrent()
+    {
+        DeleteClientButton();
+    }
+
+    public void EditClient()
+    {
+       GetCurrentClient();
+        if (String.IsNullOrEmpty(clientName.text) || String.IsNullOrEmpty(clientPhone.text))
+        {
+            return;
+        }
+        else
+        {
+            Client client = new Client();
+            SetClient(client);
+            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
+                ClientDataManager.EditClient(currentClient.ID, client);
+        }
+
+        clientsScreen.InstantiateClients();
+        navigator.GoBack();
+    }
+
+    public void SaveAddedClient()
+    {
+        if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
+        {
+           SetTextRequired();
+            return;
+        }
+        else
+        {
+            Client client = new Client();
+            SetClient(client);
+            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
+            {
+                ClientDataManager.AddClient(client);
+                navigator.GoBack();
+            }
+
+        }
+
+        clientsScreen.InstantiateClients();
     }
 }

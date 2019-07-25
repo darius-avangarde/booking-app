@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using System.Linq;
 using static ClientDataManager;
 using System.Collections;
 
@@ -13,13 +11,15 @@ public class ClientsScreen : MonoBehaviour
 {
     #region SerializeFieldVariables
     [SerializeField]
-    private Navigator navigator = null;
+    private ThemeManager theme;
     [SerializeField]
-    private Transform clientAdminScreenTransform = null;
+    private Navigator navigator = null;
     [SerializeField]
     private Transform clientEditScreenTransform = null;
     [SerializeField]
     private GameObject clientPrefabButton = null;
+    [SerializeField]
+    private RectTransform clientPrefab;
     [SerializeField]
     private GameObject clientprefabLetter = null;
     [SerializeField]
@@ -46,6 +46,8 @@ public class ClientsScreen : MonoBehaviour
     private UI_ScrollRectOcclusion scrollRectComponent = null;
     [SerializeField]
     private ScrollRect clientsScrollView = null;
+    [SerializeField]
+    private Toggle clientToggle;
     #endregion
     #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
@@ -59,23 +61,52 @@ public class ClientsScreen : MonoBehaviour
     #endregion
     #region AnimationVariables
     public RectTransform Search;
-    public RectTransform LayoutContent;
     public RectTransform ClientContainer;
-    private float initialSizeSearch;
-    private float initialClientContainer;
+    private Vector2 firstPosition;
+    private Vector2 firstPositionContainer;
     #endregion
 
     private void Start()
     {
-        //initializations for different sizes
-        initialSizeSearch = Search.rect.height;
-        initialClientContainer = ClientContainer.sizeDelta.y;
-
-        Search.gameObject.SetActive(false);
-        ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, -30 - initialSizeSearch);
-        initialClientContainer = ClientContainer.sizeDelta.y;
+        firstPosition = new Vector2(0, 0);
+        firstPositionContainer = ClientContainer.offsetMax;
     }
-
+    #region AnimationSearch
+    public void SearchAnimation()
+    {
+        if (clientToggle.isOn)
+        {
+            FadeIn();
+        }
+        else
+        {
+            FadeOut();
+        }
+    }
+    public void FadeIn()
+    {
+        Search.gameObject.SetActive(true);
+        StopAllCoroutines();
+        StartCoroutine(Move(Search, ClientContainer, new Vector2(0, -120), new Vector2(0, -260)));
+    }
+    public void FadeOut()
+    {
+        Search.gameObject.SetActive(false);
+        ClearSearchField();
+        StopAllCoroutines();
+        StartCoroutine(Move(Search,ClientContainer, firstPosition, firstPositionContainer));
+    }
+    IEnumerator Move(RectTransform rt,RectTransform container, Vector2 targetPos, Vector2 targetPosContainer)
+    {
+        float step = 0;
+        while (step < 1)
+        {
+            rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, targetPos, step += Time.deltaTime);
+            container.offsetMax = Vector2.Lerp(container.offsetMax, targetPosContainer, step += Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
     public void InstantiateClients(bool fromReservation = false)
     {
         this.fromReservation = fromReservation;
@@ -89,32 +120,38 @@ public class ClientsScreen : MonoBehaviour
         {
             DestroyImmediate(letterButton);
         }
-        //clientButtons.Clear();
-        //letterButtons.Clear();
+        clientButtons.Clear();
+        letterButtons.Clear();
         foreach (var item in ClientDataManager.GetClientsToDictionary())
         {
             clientprefabLetter.GetComponent<Text>().text = item.Key.ToString().ToUpper();
             GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
             letterButtons.Add(clientLetters);
+            SetTheme(clientLetters);
             foreach (var client in item.Value)
             {
-                GameObject clientButton = Instantiate(clientPrefabButton, clientInfoContent);
+                GameObject clientButton = Instantiate(clientPrefab.gameObject, clientInfoContent);
+                theme.SetShadow(clientButton);
                 if (fromReservation)
-                    clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
+                    clientButton.GetComponent<ClientButton>().Initialize(client,SetTheme , phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else
-                    clientButton.GetComponent<ClientButton>().Initialize(client, OpenClientAdminScreen, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
+                    clientButton.GetComponent<ClientButton>().Initialize(client, SetTheme, phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 clientButtons.Add(clientButton);
             }
         }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(clientInfoContent);
-        Canvas.ForceUpdateCanvases();
-        clientsScrollView.verticalNormalizedPosition = scrollPosition;
-        if (clientsScrollView.content.childCount > 0)
-        {
-            scrollRectComponent.Init();
-        }
+        /* LayoutRebuilder.ForceRebuildLayoutImmediate(clientInfoContent);
+         Canvas.ForceUpdateCanvases();
+         clientsScrollView.verticalNormalizedPosition = scrollPosition;
+         if (clientsScrollView.content.childCount > 0)
+         {
+             scrollRectComponent.Init();
+         }*/
     }
-
+    public void SetTheme(GameObject myObj)
+    {
+        var item = myObj.GetComponent<Graphic>();
+       theme.SetColor(item);
+    }
     public void LastPosition()
     {
         scrollPosition = clientsScrollView.verticalNormalizedPosition;
@@ -123,35 +160,6 @@ public class ClientsScreen : MonoBehaviour
     {
         InstantiateClients(true);
         selectClientCallback = callback;
-    }
-
-
-    public void SaveAddedClient()
-    {
-        if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace) || String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
-        {
-            clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetTextRequired();
-            return;
-        }
-        else
-        {
-            Client client = new Client();
-            SetClient(client);
-            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
-            {
-                ClientDataManager.AddClient(client);
-                navigator.GoBack();
-            }
-
-            if (hasCallBack)
-            {
-                saveCallBack.Invoke(client);
-                cancelCallback.Invoke(true);
-            }
-            hasCallBack = false;
-        }
-
-        InstantiateClients(fromReservation);
     }
 
     private void SetClient(Client client)
@@ -179,43 +187,19 @@ public class ClientsScreen : MonoBehaviour
         cancelCallback = clientCancel;
     }
 
-    public void EditClient()
-    {
-        var currentClient = clientEditScreenTransform.GetComponent<ClientsEditScreen>().GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text) || String.IsNullOrEmpty(clientPhone.text))
-        {
-            return;
-        }
-        else
-        {
-            Client client = new Client();
-            SetClient(client);
-            if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
-                ClientDataManager.EditClient(currentClient.ID, client);
-        }
-
-        InstantiateClients(fromReservation);
-    }
-
     private void OpenClientScreen(IClient client)
     {
         selectClientCallback(client);
         navigator.GoBack();
     }
 
-    private void OpenClientAdminScreen(IClient client)
-    {
-        LastPosition();
-        clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
-        clientAdminScreenTransform.GetComponent<ClientsAdminScreen>().SetCurrentClient(client);
-        navigator.GoTo(clientAdminScreenTransform.GetComponent<NavScreen>());
-        ClearSearchField();
-    }
     private void OpenEditAdminScreen(IClient client)
     {
         SetTextOnEditPanel();
         saveButton.gameObject.SetActive(false);
         editButton.gameObject.SetActive(true);
+        //theme.SetColor(editButton);
+        //theme.SetColor(editButton.GetComponentInChildren<Text>().gameObject);
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
         ClearSearchField();
@@ -294,6 +278,7 @@ public class ClientsScreen : MonoBehaviour
         saveButton.gameObject.SetActive(true);
         editButton.gameObject.SetActive(false);
         ClearSearchField();
+        navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
     }
 
     public void SetTextOnAddPanel()
@@ -316,58 +301,6 @@ public class ClientsScreen : MonoBehaviour
     public void ClearSearchField()
     {
         searchField.text = string.Empty;
-    }
-    #endregion
-
-    #region Animations
-    public void SearchFieldShow(bool value)
-    {
-        StartCoroutine(Animate(value ? initialSizeSearch : 0, value));
-        if(!value)
-        {
-            ClearSearchField();
-        }
-    }
-    private IEnumerator Animate(float target, bool value)
-    {
-        float timer = 0.15f;
-        float init = Search.sizeDelta.y;
-
-        if (value)
-        {
-            //SHOW animation for search field and clients
-            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
-            Search.gameObject.SetActive(true);
-            for (float i = 0; i < timer; i += Time.deltaTime)
-            {
-                LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
-                Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(0, initialSizeSearch, i / timer));
-                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer, initialClientContainer - 280, i / timer));
-                yield return null;
-            }
-            Search.sizeDelta = new Vector2(Search.sizeDelta.x, initialSizeSearch);
-            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer - 280);
-            //ClientContainer.offsetMax = new Vector3(0, -320,0);
-            //ClientContainer.offsetMin = new Vector2(0, 0);
-        }
-        else
-        {
-            //HIDE animation for search field and clients
-            for (float i = 0; i < timer; i += Time.deltaTime)
-            {
-                LayoutRebuilder.ForceRebuildLayoutImmediate(LayoutContent);
-                Search.sizeDelta = new Vector2(Search.sizeDelta.x, Mathf.Lerp(initialSizeSearch, 0, i / timer));
-                ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, Mathf.Lerp(initialClientContainer - 280, initialClientContainer, i / timer));
-                yield return null;
-            }
-            Search.sizeDelta = new Vector2(Search.sizeDelta.x, 0);
-            ClientContainer.sizeDelta = new Vector2(ClientContainer.sizeDelta.x, initialClientContainer);
-           // ClientContainer.offsetMax = new Vector3(0, -180,0);
-           // ClientContainer.offsetMin = new Vector2(0, 0);
-        }
-
-
-        Search.gameObject.SetActive(value);
     }
     #endregion
 }
