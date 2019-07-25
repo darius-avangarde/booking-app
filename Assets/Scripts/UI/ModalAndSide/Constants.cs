@@ -62,6 +62,26 @@ public class Constants : MonoBehaviour
     public const string SPACE = " ";
 
     #region Reservation specific strings
+
+    #region Notification specific constants
+        ///<summary>
+        ///value is the number of hours for each duration
+        ///</summary>
+        public static Dictionary<int,string> PreAlertDict = new Dictionary<int, string>()
+        {
+            {1,  "label_1h"},
+            {2,  "label_2h"},
+            {4,  "label_4h"},
+            {24,  "label_1d"},
+            {24*2,  "label_2d"},
+            {24*3,  "label_3d"},
+            {24*4,  "label_4d"},
+            {24*5,  "label_5d"},
+            {24*6, "label_6d"},
+            {24*7, "label_7d"}
+        };
+    #endregion
+
         public const string CLIENTS_TITLE = "Clienți";
         public const string DELETE_DIALOG = "Ștergeți rezervarea?";
         public const string EDIT_DIALOG = "Moficați rezervarea?";
@@ -84,6 +104,8 @@ public class Constants : MonoBehaviour
         public const string ERR_PERIOD = "Există deja o rezervare pentru această cameră care se suprapune cu perioada selectată";
         public const string ERR_CLIENT = "Este necesară selectarea unui client pentru a crea sau modifica rezervarea";
         public const string ERR_DATES = "Specificați perioada rezervării";
+        public const string ERR_DATES_START = "Specificați data de sfârșit rezervării";
+        public const string ERR_DATES_END = "Specificați data de început rezervării";
     #endregion
 
     // COLORS

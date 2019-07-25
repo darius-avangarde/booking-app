@@ -52,7 +52,6 @@ public class PropertyDropdownHandler : MonoBehaviour
         if(selectedProperty == null || selectedProperty.Name != dropdownComponent.options[value].text)
         {
             selectedProperty = PropertyDataManager.GetProperty(propertyOptions[dropdownComponent.options[value]]);
-            Debug.Log(selectedProperty.Name);
         }
         if (!skipInvoke)
         {
