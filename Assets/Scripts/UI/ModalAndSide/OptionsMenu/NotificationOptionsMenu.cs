@@ -7,18 +7,14 @@ using UnityEngine.UI;
 public class NotificationOptionsMenu : MonoBehaviour
 {
     [SerializeField]
-    private ConfirmationDialog confirmationDialog = null;
-    [SerializeField]
-    private ReservationEditScreen reservationScreenComponent = null;
-    [SerializeField]
     private ClientsScreen clientsScreen = null;
     [SerializeField]
     private OptionsMenuDropdown notificationItemMenu = null;
     [SerializeField]
     private List<Sprite> dropdownIcons;
 
-    private enum DropdownOptions { call_icon, msg, email, edit, cancel, delete}
-    private string[] menuOptions = { "Apel", "Mesaj", "E-Mail", "Editează", "Anulează", "Șterge" };
+    private enum DropdownOptions { call_icon, msg, email}
+    private string[] menuOptions = { "Apel", "Mesaj", "E-Mail" };
 
     private Dictionary<string, Sprite> optionsPictures = new Dictionary<string, Sprite>();
     private Dictionary<string, DropdownOptions> optionsDictionary = new Dictionary<string, DropdownOptions>();
@@ -27,7 +23,7 @@ public class NotificationOptionsMenu : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i <= (int)DropdownOptions.delete; i++)
+        for (int i = 0; i <= (int)DropdownOptions.email; i++)
         {
             optionsDictionary.Add(menuOptions[i], (DropdownOptions)i);
         }
@@ -57,16 +53,6 @@ public class NotificationOptionsMenu : MonoBehaviour
                         case DropdownOptions.email:
                             notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => SendEmail());
                             break;
-                        case DropdownOptions.edit:
-                            notificationItemMenu.AddOption("", null, null, 20);
-                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => EditReservation());
-                            break;
-                        case DropdownOptions.cancel:
-                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => CancelReservation());
-                            break;
-                        case DropdownOptions.delete:
-                            notificationItemMenu.AddOption(menuOptions[i], optionsPictures[((DropdownOptions)i).ToString().ToLower()], () => DeleteProperty());
-                            break;
                         default:
                             break;
                     }
@@ -94,30 +80,5 @@ public class NotificationOptionsMenu : MonoBehaviour
     private void SendEmail()
     {
         clientsScreen.EmailUs(ClientDataManager.GetClient(currentReservation.CustomerID));
-    }
-
-    private void EditReservation()
-    {
-        reservationScreenComponent.OpenEditReservation(currentReservation, null);
-    }
-
-    private void CancelReservation()
-    {
-        currentReservation.CancelReservation();
-    }
-
-    private void DeleteProperty()
-    {
-        confirmationDialog.Show(new ConfirmationDialogOptions
-        {
-            Message = Constants.DELETE_ROOM_RESERVATIONS,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
-            ConfirmCallback = () =>
-            {
-                ReservationDataManager.DeleteReservation(currentReservation.ID);
-            },
-            CancelCallback = null
-        });
     }
 }

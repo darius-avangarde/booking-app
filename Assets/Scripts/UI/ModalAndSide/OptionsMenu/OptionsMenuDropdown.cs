@@ -9,11 +9,11 @@ public class OptionsMenuDropdown : MonoBehaviour
     [SerializeField]
     private GameObject itemTemplate = null;
     [SerializeField]
-    private GameObject notificationMenu = null;
+    private GameObject optionsMenuDropdown = null;
     [SerializeField]
-    private RectTransform notificationMenuTransform = null;
+    private RectTransform optionsItemMenuTransform = null;
     [SerializeField]
-    private Transform scrollContent = null;
+    private Transform itemsList = null;
     [SerializeField]
     private Button backgroundButton = null;
 
@@ -26,7 +26,7 @@ public class OptionsMenuDropdown : MonoBehaviour
     public void AddOption(string title, Sprite icon, Action Callback, float height = -1)
     {
         Callback += CloseMenu;
-        GameObject item = Instantiate(itemTemplate, scrollContent);
+        GameObject item = Instantiate(itemTemplate, itemsList);
         item.SetActive(true);
         if (height != -1)
         {
@@ -38,12 +38,12 @@ public class OptionsMenuDropdown : MonoBehaviour
 
     public void ShowMenu()
     {
-        notificationMenu.SetActive(true);
-        notificationMenuTransform.position = Input.mousePosition;
+        optionsMenuDropdown.SetActive(true);
+        optionsItemMenuTransform.position = Input.mousePosition;
     }
 
     public void CloseMenu()
     {
-        notificationMenu.SetActive(false);
+        optionsMenuDropdown.SetActive(false);
     }
 }
