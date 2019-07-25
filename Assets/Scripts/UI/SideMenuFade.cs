@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class SideMenuFade : MonoBehaviour
 {
     [SerializeField]
-    private ThemeManager theme;
-    [SerializeField]
     private List<GameObject> items = new List<GameObject>();
     [SerializeField]
     private float fadeTime = 0.35f;

@@ -1,17 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class LocalizationManager : MonoBehaviour
 {
     private static LocalizationManager instance;
-    public const string csvFile= "TextFile.csv";
+    public const string csvFile = "TextsFileEx.csv";
     public IEnumerable<LanguageScript> Languages { get; set; }
     private static char fieldSeperator = '&';
-    public static LocalizationManager Instance { get
+    public static LocalizationManager Instance
+    {
+        get
         {
-            if (instance == null )
+            if (instance == null)
             {
                 instance = FindObjectOfType<LocalizationManager>();
             }
@@ -19,45 +23,60 @@ public class LocalizationManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void CustomStart()
     {
-      
-        Languages = ReadFromCSV();//ReadFromCSV("Assets\\Resources\\TextsFileEx.csv"); 
-       
+        Languages = ReadFromCSV();
+        foreach (var item in Languages)
+        {
+            foreach (var col in item.Texts)
+            {
+
+                Debug.Log(col.Key + " ----- " + col.Value);
+            }
+
+            Debug.Log("-----------------------------------");
+        }
     }
 
-    public  IEnumerable<LanguageScript> ReadFromCSV()//string csvFilePath)
+    public IEnumerable<LanguageScript> ReadFromCSV()
     {
-        string csvFilePath = Path.Combine(Application.persistentDataPath, csvFile);
         var result = new List<LanguageScript>();
-        if (File.Exists(csvFilePath))
+        var fileContent = Read("TextFileCsv");
+        var tableHeader = fileContent.First().Split(fieldSeperator).Skip(1).ToList();
+        var tableContent = fileContent.Skip(1).ToList();
+        foreach (var language in tableHeader)
         {
-            var fileContent = File.ReadAllLines(csvFilePath);
-            var tableHeader = fileContent.First().Split(fieldSeperator).Skip(1).ToList();
-            var tableContent = fileContent.Skip(1).ToList();
-            foreach (var language in tableHeader)
+            var tempLanguage = new LanguageScript();
+            tempLanguage.Name = language;
+            var tempTexts = new Dictionary<string, string>();
+            foreach (var line in tableContent)
             {
-                var tempLanguage = new LanguageScript();
-                tempLanguage.Name = language;
-                var tempTexts = new Dictionary<string, string>();
-                foreach (var line in tableContent)
-                {
-                  
-                    var columns = line.Split(fieldSeperator).ToList();
-                    var key = columns.First();
-                    columns = columns.Skip(1).ToList();
-                    var value = columns.ElementAt(tableHeader.IndexOf(language));
-                    tempTexts.Add(key, value);
-                }
-                tempLanguage.Texts = tempTexts;
-                result.Add(tempLanguage);
+
+                var columns = line.Split(fieldSeperator).ToList();
+                var key = columns.First();
+                columns = columns.Skip(1).ToList();
+                var value = columns.ElementAt(tableHeader.IndexOf(language));
+                tempTexts.Add(key, value);
             }
+            tempLanguage.Texts = tempTexts;
+            result.Add(tempLanguage);
         }
-        Debug.Log(result.Count());
+
+        Debug.Log(result.Count);
         Languages = result;
         return result;
     }
 
+    public static string[] Read(string filename)
+    {
+      
+        TextAsset theTextFile = Resources.Load<TextAsset>(filename);
 
-   
+      
+        if (theTextFile != null)
+            return theTextFile.text.Split('\n');
+
+        return new string[] { "Empty" };
+    }
+
 }

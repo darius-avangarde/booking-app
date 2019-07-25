@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public class LocalizedText : MonoBehaviour
 {
-    //public List<LanguageScript> csvData; 
+   // public List<LanguageScript> csvData; 
     [SerializeField]
     private List<Text> texts;
     [SerializeField]
     private List<Text> textList;
     [SerializeField]
-    private LocalizationManager myManager = new LocalizationManager();
+    private LocalizationManager myManager;
     [SerializeField]
     private Dropdown languageDropdown;
     [SerializeField]
@@ -24,6 +24,8 @@ public class LocalizedText : MonoBehaviour
 
     private void Start()
     {
+        myManager = new LocalizationManager();
+        myManager.CustomStart();
         languageSet = new SettingsManager();
         languageSet.ReadData();
         option = languageSet.DataElements.settings.language;
@@ -31,13 +33,13 @@ public class LocalizedText : MonoBehaviour
         Debug.Log(option + "----limba este");
         ChangeOptionsDropdown();
        // m_MyEvent.AddListener(ChangeLanguage);
-       //myManager = LocalizationManager.instance;
+       //myManager = LocalizationManager.Instance;
     }
   
     public void ChangeLanguage()
     {
        // m_MyEvent.Invoke();
-       //csvData = LocalizationManager.Instance.ReadFromCSV(@"Assets/Resources/TextsFileEx.csv").ToList();
+       //csvData = LocalizationManager.Instance.ReadFromCSV().ToList();//@"Assets/Resources/TextsFileEx.csv").ToList();
         if (languageDropdown.value == 0)
         {
             option = "Ro";
@@ -79,7 +81,7 @@ public class LocalizedText : MonoBehaviour
     {
         //  myManager = LocalizationManager.Instance;
         textList = new List<Text>();
-        var language = myManager.Languages.Where(x => x.Name == "Ro").First().Texts;
+        var language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
 
         Debug.Log("clicked");
         texts = FindObjectsOfType<Text>().ToList();
@@ -143,7 +145,7 @@ public class LocalizedText : MonoBehaviour
 
     public   string[] SetOptionsValues(string lang, string myKey)
     {
-        var language = myManager.Languages.Where(x => x.Name == lang).First().Texts;
+        var language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
         var result = new string[12];
         foreach (var item in language)
         {
@@ -157,7 +159,9 @@ public class LocalizedText : MonoBehaviour
 
     private void SetLanguage(string language)
     {
-        var lang = myManager.Languages.Where(x => x.Name == language).First();
+       // myManager = LocalizationManager.Instance;
+       // var lang = csvData.Where(x => x.Name == language).First();
+        var lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         foreach (var item in textList)
         {
             item.text = lang.Texts[item.name];

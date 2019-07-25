@@ -33,12 +33,8 @@ public class ThemeManager : MonoBehaviour
         {
             themeToggle.isOn = false;
         }
-        Debug.Log(statusColor+ "----theme sts");
+        //Debug.Log(statusColor+ "----theme sts");
         
-        foreach (var item in TextList)
-        {
-            //Debug.Log(item.name + "from theme manager");
-        }
     }
     private void Awake()
     {

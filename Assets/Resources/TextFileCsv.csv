@@ -10,7 +10,7 @@ set_text3&Notificări&Notifications
 set_text4&Alerte notificări&Notifications alerts
 set_text5&Pre-alertă&Pre-alert
 set_text6&Orientare ecran:&Screen orientation:
-set_text7&Rotire automată&Auto-rotation
+set_text7&Rotire automată&Auto-rotate
 set_text8&Alege limba:&choose  language
 set_text9&Limba&Language
 propr_text1&Proprietate nouă&New Property
@@ -25,19 +25,15 @@ propr_text9&Camere per etaj&Rooms/floor
 propr_text10&Editare cameră&Edit room
 propr_text11&Introdu numele camerei:&Enter your room name:
 propr_text12&Alege tipul:&Choose type:
-propr_text13&Camera&Room
-propr_text14&Apartament&Apartment
-propr_text15&Vilă&Villa
-propr_text16&Cabană&chalet
-propr_text17&Pat&Bed
-propr_text18&Alege numărul de paturi:&choose the number of beds:
-client_text1&Caută clienți...&Search for cients...
+property_dropdown&Camera,Apartament,Vilă,Cabană,Pat&Room,Apartment,Villa,Chalet,Bed
+propr_text18&Alege numărul de paturi:&Choose the number of beds:
+PlaceholderSearch&Caută clienți...&Search for cients...
 client_text2&Client nou&New client
 client_text3&Editează client&Edit client
-client_text4&Nume*&Name*
-client_text5&Telefon&Phone
-client_text6&E-mail&E-mail
-client_text7&Adresa&Adress
+TextNameq&Nume&Name
+TextPhone&Telefon&Phone
+TextEmailw&E-mail&E-mail
+TextAdress&Adresa&Adress
 client_text8&Te rog adaugă un nume!&Please insert a name!
 client_text9&Inserează o adresă de email validă!&Insert a valid email adress!
 rez_text1&Rezervare nouă&New Reservation
@@ -69,3 +65,9 @@ room_text_help&"    Pentru a edita o cameră apăsați pe butonul cu camera dori
 client_text_help&"    Pentru a adăuga un client nou, apăsați pe butonul <sprite name=\""round\"" color=#43ae52><sprite name=\""plus\"" color=#FFFFFF> din colțul din dreapta, jos.{Environment.NewLine}{Environment.NewLine}    În panoul de adăugare clienți, va trebui să introduceți numele, numarul de telefon, e-mail-ul și adresa clientului.{Environment.NewLine}    *Numele este singurul câmp obligatoriu.{Environment.NewLine}{Environment.NewLine}    În lista de clienți veți găsi clienți pe care îi aveți salvați. Apăsând pe un client, se va deschide un mic panou cu detaliile clientului respectiv, și 4 butoane de unde veți putea să apelați <sprite name=\""phone\"" tint=1> , trimiteți mesaj <sprite name=\""message\"" tint=1> , trimiteți e-mail <sprite name=\""email\"" tint=1> , sau să editați <sprite name=\""edit\"" tint=1> clientul.{Environment.NewLine}{Environment.NewLine}    În cazul în care vreți să căutați un client, apăsați pe icoana de căutare <sprite name=\""search\"" tint=1> din colțul din dreapta, sus.{Environment.NewLine}    Un client se poate căuta după nume, număr de telefon, e-mail, sau adresă."&
 rez_text_help&"    Pentru a crea o rezervare nouă, în pagina principală, puteți apăsa pe butonul <sprite name=\""round\"" color=#cd7d2e><sprite name=\""plus\"" color=#FFFFFF> din colțul din dreapta, jos, sau puteți apăsa pe o dată din calendarul cu camere.{Environment.NewLine}    În cazul ulterior, data pe care ați apăsat va fi preselectată în meniul de creare rezervări ca dată de început a rezervării.{Environment.NewLine}{Environment.NewLine}    În panoul de creare rezervări, va trebui să introduceți perioada rezervarii (data de început <sprite name=\""start\"" tint=1> și data de sfârșit <sprite name=\""end\"" tint=1>), pe care o selectați cu ajutorul calendarului care se va deschide.{Environment.NewLine}{Environment.NewLine}    Proprietatea și camera o veți putea selecta din cele două meniuri derulante.{Environment.NewLine}    *La creearea unei rezervări se pot selecta multiple camere din meniul derulant.{Environment.NewLine}{Environment.NewLine}    Pentru a selecta un client, puteți introduce în câmpul \""Alege clientul\"" numele și să-l selectați din meniul derulant care apare*, sau să apăsați pe icoana <sprite name=\""arrow\"" tint=1>) din dreapta câmpului și să-l alegeți din lista de clienți care va apărea.{Environment.NewLine}    *În cazul în care introduceți un nume pe care nu-l aveți în lista de clienți, acesta se va salva automat în momentul în care salvați rezervarea."&
 filter_text_help&"    Pentru a filtra camerele vizibile în calendarul din pagina principală, apăsați pe icoana de filtre <sprite name=\""filter\"" tint=1> din partea stângă a calendarului.{Environment.NewLine}    În panoul de filtrare aveți opțiunea de a filtra după perioadă, tipul de cameră/proprietate, numărul de paturi și client.{Environment.NewLine}    Pentru a folosi una din opțiunile de filtrare, va trebui să activați opțiunea prin a apăsa pe caseta de bifat din dreptul fiecărei opțiuni.{Environment.NewLine}{Environment.NewLine}    <B>Perioada:</B> selectați o perioadă pentru afișarea camerelor libere în perioada respectiva.{Environment.NewLine}    <B>Tipul de cameră:</B> selecția tipului va afișa doar camerele respective.{Environment.NewLine}    <B>Numărul de paturi:</B> selectați un anumit numar de paturi pentru a afișa doar camerele cu configurația respectivă.{Environment.NewLine}    <B>Client:</B> alegeți un client pentru a afișa camerele cu rezervări făcute pe clientul respectiv.{Environment.NewLine}{Environment.NewLine}    Filtrele se pot folosi infividual sau împreună.{Environment.NewLine}{Environment.NewLine}    Pentru a șterge filtrele active, apăsați pe icoana <sprite name=\""xfilter\"" tint=1> din stânga calendarului din pagina principală"&
+Language&Română,Engleză&Romanian,English
+Days&Luni,Marți,Miercuri,Joi,Vineri,Sâmbătă,Duminică&Monday,Tuesday,Wednesday,Thursday,Friday,Satursay,Sunday
+Days_Short&Lu.,Ma.,Mi.,Joi.,Vi.,Sâ.,Du.&Mon.,Tue.,Wed.,Thu.,Fri.,Sat.,Sun.
+Months&Ianuarie,Februarie,Martie,Aprilie,Mai,Iunie,Iulie,August,Septembrie,Octombrie,Noiembrie,Decembrie&January,February,March,April,May,June,July,August,September,October,November,December
+Months_Short&Ian.,Feb.,Mar.,Apr.,Iun.,Iul.,Aug.,Sept.,Oct.,Nov.,Dec.&Jan.,Feb.,Mar.,Apr.,May.,Jun.,Jul.,Aug.,Sept.,Oct.,Nov.,Dec.
+Notifications&1 oră,2 ore,4 ore,1 zi,2 zile,3 zile,4 zile,5 zile,6 zile,7 zile&1 hour,2 hours,4 hours,1 day,2 days,3 days,4 days,5 days,6 days,7 days
