@@ -24,6 +24,9 @@ public class ReservationEditScreen_New : MonoBehaviour
     [SerializeField]
     private ModalCalendar modalCalendar;
     [SerializeField]
+    private NotificationManager notificationManager;
+
+    [SerializeField]
     private ScrollRect screenScrollRect;
 
 
