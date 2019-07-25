@@ -318,7 +318,7 @@ public static class ReservationDataManager
             this.customerID = customerID;
             this.period = new DateTimePeriod(start, end);
             this.notitficationID = notitficationID;
-            this.createdTicks = DateTime.Today.Ticks;
+            this.createdTicks = DateTime.Now.Ticks;
             this.canceled = false;
             WriteReservationData();
         }
