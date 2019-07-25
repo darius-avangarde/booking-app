@@ -107,7 +107,6 @@ public class PropertiesScreen : MonoBehaviour
     {
         propertyRoomScreen.ScrollToTop();
         propertyRoomScreen.SetCurrentProperty(property);
-        navigator.GoTo(propertyRoomScreen.GetComponent<NavScreen>());
     }
 
     /// <summary>
@@ -116,7 +115,6 @@ public class PropertiesScreen : MonoBehaviour
     /// <param name="property">the property to edit or the new property to create</param>
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        navigator.GoTo(propertyAdminScreen.GetComponent<NavScreen>());
-        propertyAdminScreen.SetCurrentProperty(property);
+        propertyAdminScreen.OpenPropertyAdminScreen(property);
     }
 }

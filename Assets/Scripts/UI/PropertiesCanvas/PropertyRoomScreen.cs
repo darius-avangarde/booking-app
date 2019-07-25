@@ -15,6 +15,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private RoomAdminScreen roomAdminScreen = null;
     [SerializeField]
+    private NavScreen propertyRoomScreen = null;
+    [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
     [SerializeField]
     private Text propertyRoomScreenTitle = null;
@@ -61,7 +63,7 @@ public class PropertyRoomScreen : MonoBehaviour
     public void SetCurrentProperty(IProperty property)
     {
         currentProperty = property;
-        Initialize();
+        navigator.GoTo(propertyRoomScreen);
     }
 
     /// <summary>
@@ -135,7 +137,6 @@ public class PropertyRoomScreen : MonoBehaviour
     /// <param name="room"> selected room</param>
     private void OpenRoomAdminScreen(IRoom room)
     {
-        navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());
         roomAdminScreen.SetCurrentPropertyRoom(room);
     }
 
@@ -145,7 +146,6 @@ public class PropertyRoomScreen : MonoBehaviour
     /// <param name="property">current property</param>
     private void OpenPropertyAdminScreen(IProperty property)
     {
-        navigator.GoTo(propertyAdminScreen.GetComponent<NavScreen>());
-        propertyAdminScreen.SetCurrentProperty(property);
+        propertyAdminScreen.OpenPropertyAdminScreen(property);
     }
 }

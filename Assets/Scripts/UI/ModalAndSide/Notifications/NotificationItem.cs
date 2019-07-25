@@ -43,7 +43,7 @@ public class NotificationItem : MonoBehaviour
         currentRoom = currentProperty.GetRoom(currentReservation.RoomID);
         propertyName.text = currentProperty.Name;
         roomName.text = currentRoom.Name;
-        addedDate.text = $"Adăugat la {currentReservation.CreatedDateTime}";
+        addedDate.text = $"Adăugat la {currentReservation.CreatedDateTime.Day}.{currentReservation.CreatedDateTime.Month}.{currentReservation.CreatedDateTime.Year}, {currentReservation.CreatedDateTime.Hour}:{currentReservation.CreatedDateTime.Minute}";
         foreach (Sprite icon in roomTypeIcons)
         {
             if(icon.name.ToLower() == currentRoom.RoomType.ToString().ToLower())
