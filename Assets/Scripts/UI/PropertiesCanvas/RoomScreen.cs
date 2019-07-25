@@ -221,6 +221,6 @@ public class RoomScreen : MonoBehaviour
     /// <param name="room"> selected room</param>
     private void OpenRoomAdminScreen()
     {
-        roomAdminScreen.SetCurrentPropertyRoom(currentRoom); 
+        roomAdminScreen.OpenRoomAdminScreen(currentRoom); 
     }
 }

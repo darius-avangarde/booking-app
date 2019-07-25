@@ -69,7 +69,7 @@ public class RoomAdminScreen : MonoBehaviour
     /// set the current property and room
     /// </summary>
     /// <param name="room">selected room</param>
-    public void SetCurrentPropertyRoom(IRoom room)
+    public void OpenRoomAdminScreen(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
