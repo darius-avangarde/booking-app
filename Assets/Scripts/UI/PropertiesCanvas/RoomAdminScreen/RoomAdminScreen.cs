@@ -9,17 +9,11 @@ using UnityEngine.UI;
 public class RoomAdminScreen : MonoBehaviour
 {
     [SerializeField]
-    private ReservationEditScreen reservation = null;
-
-    public void AddReservation()
-    {
-        reservation.OpenAddReservation(DateTime.Today.Date, DateTime.Today.Date.AddDays(1), currentRoom, null);
-    }
-
-    [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
+    [SerializeField]
+    private NavScreen roomAdminScreen = null;
     [SerializeField]
     private SetRoomName setRoomName = null;
     [SerializeField]
@@ -75,11 +69,11 @@ public class RoomAdminScreen : MonoBehaviour
     /// set the current property and room
     /// </summary>
     /// <param name="room">selected room</param>
-    public void SetCurrentPropertyRoom(IRoom room)
+    public void OpenRoomAdminScreen(IRoom room)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
-        Initialize();
+        navigator.GoTo(roomAdminScreen);
     }
 
     /// <summary>

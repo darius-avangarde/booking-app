@@ -12,8 +12,6 @@ public class NotificationsScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
-    private ReservationEditScreen reservationEditScreen = null;
-    [SerializeField]
     private GameObject notificationItemPrefab = null;
     [SerializeField]
     private GameObject noNotificationsObject = null;

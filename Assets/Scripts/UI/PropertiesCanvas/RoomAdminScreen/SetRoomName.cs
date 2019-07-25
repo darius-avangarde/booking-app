@@ -15,10 +15,14 @@ public class SetRoomName : MonoBehaviour
 
     private void OnEnable()
     {
-        roomNameCache = string.Empty;
-        roomPriceCache = string.Empty;
         roomNameInputField.text = roomNameCache;
         roomPriceInputField.text = roomPriceCache;
+    }
+
+    private void OnDisable()
+    {
+        roomNameCache = string.Empty;
+        roomPriceCache = string.Empty;
     }
 
     public void SetCurrentName(string value)
