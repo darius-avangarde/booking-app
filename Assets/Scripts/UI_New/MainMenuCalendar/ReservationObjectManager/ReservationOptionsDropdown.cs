@@ -65,6 +65,7 @@ public class ReservationOptionsDropdown : MonoBehaviour
 
     private void DeleteReservationCallback()
     {
+        ReservationDataManager.DeleteReservation(currentReservation.ID);
         calendarManager.JumpToDate(DateTime.Today.Date);
         inputManager.Message("Rezervarea a fost ștearsă cu succes");
     }

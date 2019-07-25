@@ -64,7 +64,7 @@ public class ReservationsCalendarManager : MonoBehaviour
     private int totalItemCount = 0;
 
     public static DateTime FocalDate => focalDate;
-    public int FocalDayColumnIndex => dayColumns.Count(d => d.transform.position.x < dayColumnScrollrect.viewport.position.x);
+    public int FocalDayColumnIndex => dayColumns.Count(d => d.transform.position.x < dayColumnScrollrect.viewport.position.x - 5);
 
     private static DateTime focalDate;
 

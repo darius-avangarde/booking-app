@@ -41,6 +41,8 @@ public class TopCalendar : MonoBehaviour
     private RectTransform topcalendarRectTransform;
     [SerializeField]
     private RectTransform lowerCalendarRectTransform;
+    [SerializeField]
+    private RectTransform arrow;
 
     #region Private variables
         private List<TopCalendarDayObject> dayItems = new List<TopCalendarDayObject>();
@@ -107,16 +109,21 @@ public class TopCalendar : MonoBehaviour
     {
         isOpening = true;
 
+        float fromRotationZ = arrow.rotation.eulerAngles.z;
+        float toRotationZ = (open) ? -180 : 0;
+
         Vector2 fromOffset = lowerCalendarRectTransform.offsetMax;
         Vector2 toOffset = fromOffset;
         toOffset.y = (open) ? topcalendarRectTransform.rect.yMin + topcalendarRectTransform.offsetMax.y : topcalendarRectTransform.offsetMax.y;
 
         for (float t = 0; t < 1.0f; t += Time.deltaTime/slideTime)
         {
+            arrow.rotation = Quaternion.Euler(Mathf.Lerp(fromRotationZ, toRotationZ, t*2), 0, 0);
             lowerCalendarRectTransform.offsetMax = Vector3.Lerp(fromOffset, toOffset, slideCurve.Evaluate(t));
             yield return null;
         }
 
+        arrow.rotation = Quaternion.Euler(toRotationZ, 0, 0);
         lowerCalendarRectTransform.offsetMax = toOffset;
 
         isOpening = false;
