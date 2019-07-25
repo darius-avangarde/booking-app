@@ -212,8 +212,7 @@ public class RoomScreen : MonoBehaviour
     /// <param name="property">current property</param>
     private void OpenPropertyAdminScreen()
     {
-        propertyAdminScreenTransform.SetCurrentProperty(currentProperty);
-        navigator.GoTo(propertyAdminScreenTransform.GetComponent<NavScreen>());
+        propertyAdminScreenTransform.OpenPropertyAdminScreen(currentProperty);
     }
 
     /// <summary>
@@ -222,7 +221,6 @@ public class RoomScreen : MonoBehaviour
     /// <param name="room"> selected room</param>
     private void OpenRoomAdminScreen()
     {
-        navigator.GoTo(roomAdminScreen.GetComponent<NavScreen>());
         roomAdminScreen.SetCurrentPropertyRoom(currentRoom); 
     }
 }

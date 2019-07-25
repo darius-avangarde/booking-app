@@ -23,6 +23,8 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private ToggleDialog toggleDialog = null;
     [SerializeField]
+    private NavScreen propertyAdminScreen = null;
+    [SerializeField]
     private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
@@ -68,7 +70,7 @@ public class PropertyAdminScreen : MonoBehaviour
     /// set the current property
     /// </summary>
     /// <param name="property">selected property</param>
-    public void SetCurrentProperty(IProperty property)
+    public void OpenPropertyAdminScreen(IProperty property)
     {
         CurrentProperty = property;
         if (CurrentProperty.Name != null)
@@ -82,6 +84,7 @@ public class PropertyAdminScreen : MonoBehaviour
             deleteButton.gameObject.SetActive(false);
         }
         SetPropertyFieldsText();
+        navigator.GoTo(propertyAdminScreen);
     }
 
     /// <summary>
