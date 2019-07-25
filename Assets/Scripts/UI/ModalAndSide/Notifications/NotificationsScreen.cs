@@ -12,6 +12,8 @@ public class NotificationsScreen : MonoBehaviour
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
+    private ThemeManager themeManager = null;
+    [SerializeField]
     private GameObject notificationItemPrefab = null;
     [SerializeField]
     private GameObject noNotificationsObject = null;
@@ -106,14 +108,14 @@ public class NotificationsScreen : MonoBehaviour
         {
             NotificationItem notificationItem = notificationItemPool.Dequeue();
             notificationItem.gameObject.SetActive(true);
-            notificationItem.Initialize(newNotification, reservation, OpenItemMenu);
+            notificationItem.Initialize(newNotification, themeManager, reservation, OpenItemMenu);
             activeNotificationItems.Add(notificationItem);
         }
         catch (Exception)
         {
             NotificationItem notificationItem = Instantiate(notificationItemPrefab, scrollViewContent).GetComponent<NotificationItem>();
             notificationItem.gameObject.SetActive(true);
-            notificationItem.Initialize(newNotification, reservation, OpenItemMenu);
+            notificationItem.Initialize(newNotification, themeManager,reservation, OpenItemMenu);
             activeNotificationItems.Add(notificationItem);
         }
     }

@@ -21,10 +21,13 @@ public class RoomButton : MonoBehaviour
     /// </summary>
     /// <param name="room">current room</param>
     /// <param name="roomCallback">callback to open room screen</param>
-    public void Initialize(IRoom room, Action<IRoom> roomCallback)
+    public void Initialize(IRoom room, Action<IRoom> roomCallback, Action<Graphic> setTheme)
     {
         roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : $"Camera {room.Name}";
         currentRoom = room;
         roomButton.onClick.AddListener(() => roomCallback(room));
+
+        setTheme(roomButton.GetComponent<Graphic>());
+        setTheme(roomName.GetComponent<Graphic>());
     }
 }

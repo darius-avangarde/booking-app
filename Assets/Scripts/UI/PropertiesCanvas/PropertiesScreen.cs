@@ -17,6 +17,8 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private RoomAdminScreen roomAdminScreen = null;
     [SerializeField]
+    private ThemeManager themeManager = null;
+    [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
     [SerializeField]
     private RectTransform propertiesContainerContent = null;
@@ -65,11 +67,11 @@ public class PropertiesScreen : MonoBehaviour
             propertyButton = Instantiate(propertyItemPrefab, propertiesContainerContent);
             if (property.HasRooms)
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyRoomScreen);
+                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyRoomScreen, SetTheme);
             }
             else
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen);
+                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen, SetTheme);
             }
             propertyButtonList.Add(propertyButton);
         }
@@ -80,6 +82,11 @@ public class PropertiesScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
+    }
+
+    private void SetTheme(Graphic myObj)
+    {
+        themeManager.SetColor(myObj);
     }
 
     /// <summary>

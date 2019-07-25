@@ -29,11 +29,22 @@ public class NotificationItem : MonoBehaviour
     [SerializeField]
     private Sprite[] roomTypeIcons = null;
 
+    [SerializeField]
+    private Graphic notificationBackground = null;
+    [SerializeField]
+    private Graphic clientUnderline = null;
+    [SerializeField]
+    private Graphic menuButtonImage = null;
+    [SerializeField]
+    private Graphic startDateIcon = null;
+    [SerializeField]
+    private Graphic endDateIcon = null;
+
     private IReservation currentReservation;
     private IProperty currentProperty;
     private IRoom currentRoom;
 
-    public void Initialize(bool newNotification, IReservation reservation, Action<IReservation> setReservation)
+    public void Initialize(bool newNotification, ThemeManager themeManagerComponent,  IReservation reservation, Action<IReservation> setReservation)
     {
         currentReservation = reservation;
         clientName.text = ClientDataManager.GetClient(currentReservation.CustomerID).Name;
@@ -46,12 +57,25 @@ public class NotificationItem : MonoBehaviour
         addedDate.text = $"Adăugat la {currentReservation.CreatedDateTime.Day}.{currentReservation.CreatedDateTime.Month}.{currentReservation.CreatedDateTime.Year}, {currentReservation.CreatedDateTime.Hour}:{currentReservation.CreatedDateTime.Minute}";
         foreach (Sprite icon in roomTypeIcons)
         {
-            if(icon.name.ToLower() == currentRoom.RoomType.ToString().ToLower())
+            if (icon.name.ToLower() == currentRoom.RoomType.ToString().ToLower())
             {
                 roomTypeImage.sprite = icon;
             }
         }
         menuButton.onClick.AddListener(() => setReservation(reservation));
         newNotificationMarker.SetActive(newNotification);
+
+        themeManagerComponent.AddItems(clientName.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(startDate.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(endDate.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(propertyName.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(roomName.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(addedDate.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(roomTypeImage.GetComponent<Graphic>());
+        themeManagerComponent.AddItems(notificationBackground);
+        themeManagerComponent.AddItems(clientUnderline);
+        themeManagerComponent.AddItems(menuButtonImage);
+        themeManagerComponent.AddItems(startDateIcon);
+        themeManagerComponent.AddItems(endDateIcon);
     }
 }

@@ -15,6 +15,8 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private RoomAdminScreen roomAdminScreen = null;
     [SerializeField]
+    private ThemeManager themeManager = null;
+    [SerializeField]
     private NavScreen propertyRoomScreen = null;
     [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
@@ -100,11 +102,12 @@ public class PropertyRoomScreen : MonoBehaviour
                         floorNumber.GetComponent<Text>().text = $"Etaj P";
                     }
                     lastFloor = currentFloor;
+                    SetTheme(floorNumber.GetComponent<Graphic>());
                     roomButtons.Add(floorNumber);
                 }
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);
                 RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
-                currentRoom.Initialize(room, OpenRoomAdminScreen);
+                currentRoom.Initialize(room, OpenRoomAdminScreen, SetTheme);
                 roomButtons.Add(roomButton);
                 roomCounter++;
                 if(roomCounter >= maxFloors)
@@ -121,6 +124,11 @@ public class PropertyRoomScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
+    }
+
+    private void SetTheme(Graphic myObj)
+    {
+        themeManager.SetColor(myObj);
     }
 
     /// <summary>
