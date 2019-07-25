@@ -131,6 +131,8 @@ public class ReservationEditScreen_New : MonoBehaviour
                 inputManager.Message(Constants.RESERVATION_MODIFIED);
             };
             confirmationDialog.Show(editConfirmation);
+
+            notificationManager.RegisterNotification(currentReservation, Constants.PreAlertDict.ElementAt(preAlertDropdown.value).Key);
         }
         else
         {
@@ -144,6 +146,8 @@ public class ReservationEditScreen_New : MonoBehaviour
             navigator.GoBack();
             confirmationCallback?.Invoke(newReservation);
             inputManager.Message(Constants.RESERVATION_SAVED);
+
+            notificationManager.RegisterNotification(newReservation, Constants.PreAlertDict.ElementAt(preAlertDropdown.value).Key);
         }
 
         //get pre hours from prealertdict in hours
