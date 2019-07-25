@@ -52,7 +52,7 @@ public class ThemeManager : MonoBehaviour
     {
         foreach (var item in TextList)
         {
-            Debug.Log(item.name);
+            //Debug.Log(item.name);
             SetItemColor(item, dataColor.textDark, dataColor.textLight);
         }
         foreach (var item in BackgroundList)

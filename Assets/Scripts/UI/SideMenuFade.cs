@@ -20,7 +20,7 @@ public class SideMenuFade : MonoBehaviour
     
     void Start()
     {
-        firstPosition =  new Vector2(-431, 0);  //sideMenu.anchoredPosition; 
+        firstPosition =  new Vector2(-431, 0);  //sideMenu.anchoredPosition; 431
     }
     public void FadeIn()
     {
