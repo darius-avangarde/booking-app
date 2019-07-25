@@ -135,7 +135,6 @@ public class ReservationEditScreen : MonoBehaviour
                     inputManager.Message(Constants.RESERVATION_MODIFIED);
                 };
                 confirmationDialog.Show(editConfirmation);
-            notificationManager.RegisterNotification(currentReservation);
         }
             else
             {
@@ -149,7 +148,6 @@ public class ReservationEditScreen : MonoBehaviour
                 confirmationCallback?.Invoke(newReservation);
                 navigator.GoBack();
                 inputManager.Message(Constants.RESERVATION_SAVED);
-            notificationManager.RegisterNotification(newReservation);
         }
         }
 
