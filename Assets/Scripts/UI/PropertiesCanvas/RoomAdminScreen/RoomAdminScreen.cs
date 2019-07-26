@@ -32,6 +32,7 @@ public class RoomAdminScreen : MonoBehaviour
     private Text errorMessage = null;
 
     private ConfirmationDialogOptions modalDialogOptions = new ConfirmationDialogOptions();
+    private Action<IRoom> returnCallback = null;
     private IProperty currentProperty;
     private IRoom currentRoom;
     private bool canSave = true;
@@ -69,10 +70,11 @@ public class RoomAdminScreen : MonoBehaviour
     /// set the current property and room
     /// </summary>
     /// <param name="room">selected room</param>
-    public void OpenRoomAdminScreen(IRoom room)
+    public void OpenRoomAdminScreen(IRoom room, Action<IRoom> callback = null)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
+        returnCallback = callback;
         navigator.GoTo(roomAdminScreen);
     }
 
@@ -100,6 +102,7 @@ public class RoomAdminScreen : MonoBehaviour
         Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
         currentRoom.SingleBeds = bedInfo.x;
         currentRoom.DoubleBeds = bedInfo.y;
+        returnCallback?.Invoke(currentRoom);
         navigator.GoBack();
     }
 

@@ -65,13 +65,14 @@ public class PropertiesScreen : MonoBehaviour
         {
             GameObject propertyButton;
             propertyButton = Instantiate(propertyItemPrefab, propertiesContainerContent);
+            themeManager.SetShadow(propertyButton);
             if (property.HasRooms)
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyRoomScreen, SetTheme);
+                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyRoomScreen, themeManager);
             }
             else
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen, SetTheme);
+                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen, themeManager);
             }
             propertyButtonList.Add(propertyButton);
         }
@@ -82,11 +83,6 @@ public class PropertiesScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
-    }
-
-    private void SetTheme(Graphic myObj)
-    {
-        themeManager.SetColor(myObj);
     }
 
     /// <summary>
