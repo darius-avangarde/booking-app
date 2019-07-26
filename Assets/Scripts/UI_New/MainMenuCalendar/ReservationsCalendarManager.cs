@@ -184,7 +184,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         currentProperty = property;
         currentRooms = FilteredRooms();
         Debug.Log(currentRooms.Count);
-        roomColumn.UpdateRooms(currentRooms, roomEditScreen.OpenRoomAdminScreen);
+        roomColumn.UpdateRooms(currentRooms, (r) => roomEditScreen.OpenRoomAdminScreen(r, (ro) => EditRoomCallback()));
 
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {
@@ -197,6 +197,14 @@ public class ReservationsCalendarManager : MonoBehaviour
 
         reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+    }
+
+    private void EditRoomCallback()
+    {
+        if(PropertyDataManager.GetProperty(currentProperty.ID) == null)
+            SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+        else
+            SelectProperty(currentProperty);
     }
 
     //Triggered on infinite scroll moving a calendar day column.

@@ -18,6 +18,7 @@ public class CalendarRoomColumnObject : MonoBehaviour
     [SerializeField]
     private Image doubleBedsImage;
 
+
     private void Start()
     {
         ThemeManager.Instance.AddItems(roomName, roomButton.targetGraphic, singleBeds, doubleBeds, singleBedsImage, doubleBedsImage);
@@ -32,11 +33,20 @@ public class CalendarRoomColumnObject : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        roomName.text = room.Name;
-        singleBeds.text = $"{room.SingleBeds}";
-        doubleBeds.text = $"{room.DoubleBeds}";
+        UpdateRoomObjectUI(room);
 
         roomButton.onClick.RemoveAllListeners();
         roomButton.onClick.AddListener(() => tapAction(room));
+    }
+
+
+
+    public void UpdateRoomObjectUI(IRoom room)
+    {
+        gameObject.SetActive(true);
+
+        roomName.text = room.Name;
+        singleBeds.text = $"{room.SingleBeds}";
+        doubleBeds.text = $"{room.DoubleBeds}";
     }
 }

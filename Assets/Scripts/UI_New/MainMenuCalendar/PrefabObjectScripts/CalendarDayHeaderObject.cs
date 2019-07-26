@@ -24,6 +24,7 @@ public class CalendarDayHeaderObject : MonoBehaviour
     private void Start()
     {
         ThemeManager.Instance.AddItems(dayOfWeekText, dateText);
+        ThemeManager.Instance.OnThemeChanged.AddListener(UpdateColors);
     }
 
     private void OnDestroy()
@@ -53,26 +54,34 @@ public class CalendarDayHeaderObject : MonoBehaviour
         dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
         dateText.text = date.Day.ToString();
 
-        if(date.Date == DateTime.Today.Date)
-        {
-            dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadCurrentColor;
-            backgroundImage.color = CalendarThemeManager.Instance.CalendarCurrentColor;
-        }
-        else if(isWeekend)
-        {
-            dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadWeekendColor;
-            backgroundImage.color = CalendarThemeManager.Instance.CalendarWeekendColor;
-        }
-        else
-        {
-            dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadNormalColor;
-            backgroundImage.color = CalendarThemeManager.Instance.CalendarNormalColor;
-        }
+        //update colors with theme bool from stuff
+        //UpdateColors(ThemeManager.Instance.IsDarkTheme)
     }
 
     public void UpdateProperty(IProperty property)
     {
         objProperty = property;
+    }
+
+    private void UpdateColors(bool isDark)
+    {
+        GetDayOfWeekIndex(objectDate.DayOfWeek, out bool isWeekend);
+
+        if(objectDate.Date == DateTime.Today.Date)
+        {
+            // dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadCurrentColor;
+            // backgroundImage.color = CalendarThemeManager.Instance.CalendarCurrentColor;
+        }
+        else if(isWeekend)
+        {
+            // dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadWeekendColor;
+            // backgroundImage.color = CalendarThemeManager.Instance.CalendarWeekendColor;
+        }
+        else
+        {
+            // dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadNormalColor;
+            // backgroundImage.color = CalendarThemeManager.Instance.CalendarNormalColor;
+        }
     }
 
     private int GetDayOfWeekIndex(DayOfWeek day, out bool isWeekend)

@@ -19,6 +19,14 @@ public class CalendarRoomColumn : MonoBehaviour
         }
     }
 
+    public void UpdateRoomsUI(List<IRoom> rooms)
+    {
+        for (int r = 0; r < rooms.Count; r++)
+        {
+            roomPool[r].UpdateRoomObjectUI(rooms[r]);
+        }
+    }
+
     private void ManagePool(List<IRoom> rooms)
     {
         if(rooms.Count != roomPool.Count)
