@@ -11,5 +11,13 @@ public class ColorsData : ScriptableObject
     public Color textLight = new Color(0.2235294f, 0.2235294f, 0.2235294f);
     public Color ItemDark = new Color(0.1254902f, 0.1254902f, 0.1254902f);
     public Color ItemLight = new Color(0.945098f, 0.945098f, 0.945098f);
+    public Color CalendarHeadCurrentColor;
+    public Color CalendarHeadWeekendColor;
+    public Color CalendarHeadNormalColor;
+    public Color CalendarCurrentColor;
+    public Color CalendarWeekendColor;
+    public Color CalendarNormalColor;
+    public Color CurrentReservationColor;
+    public Color PastReservationColor;
     #endregion
 }
