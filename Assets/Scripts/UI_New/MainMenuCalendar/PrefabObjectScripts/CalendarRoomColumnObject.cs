@@ -20,7 +20,7 @@ public class CalendarRoomColumnObject : MonoBehaviour
 
     private void Start()
     {
-        //ThemeManager.Instance.AddItems(roomButton.targetGraphic, singleBeds, doubleBeds, singleBedsImage, doubleBedsImage);
+        ThemeManager.Instance.AddItems(roomName, roomButton.targetGraphic, singleBeds, doubleBeds, singleBedsImage, doubleBedsImage);
     }
 
     private void OnDestroy()

@@ -26,7 +26,7 @@ public class TopCalendarDayObject : MonoBehaviour
     {
         objDate = date.Date;
         dateText.text = $"{date.Day}";
-        dateButton.targetGraphic.color =  (objDate == DateTime.Today.Date) ? Placeholder_ThemeManager.Instance.CalendarCurrentColor : Color.clear;
+        dateButton.targetGraphic.color =  (objDate == DateTime.Today.Date) ? CalendarThemeManager.Instance.CalendarCurrentColor : Color.clear;
         dateButton.onClick.RemoveAllListeners();
         dateButton.onClick.AddListener(() => tapAction(objDate));
     }

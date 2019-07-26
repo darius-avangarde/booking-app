@@ -15,10 +15,18 @@ public class CalendarDayColumnObject : MonoBehaviour
     [SerializeField]
     private Image backgorundImage;
     [SerializeField]
+    private Image separatorImage;
+    [SerializeField]
     private GameObject monthLineImage;
 
     private DateTime objDate;
     private IRoom objRoom;
+
+    private void Start()
+    {
+        ThemeManager.Instance.AddItems(separatorImage);
+        //ThemeManager.OnThemeChanged
+    }
 
     private void OnDestroy()
     {
@@ -34,19 +42,7 @@ public class CalendarDayColumnObject : MonoBehaviour
         dayButton.onClick.RemoveAllListeners();
         dayButton.onClick.AddListener(() => tapAction(objDate, room));
 
-
-        if(date.Date == DateTime.Today.Date)
-        {
-            backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarCurrentColor;
-        }
-        else if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
-        {
-            backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarWeekendColor;
-        }
-        else
-        {
-            backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarNormalColor;
-        }
+        UpdateColors();
     }
 
 
@@ -54,18 +50,7 @@ public class CalendarDayColumnObject : MonoBehaviour
     {
         objDate = new DateTime(date.Date.Ticks);
 
-        if(date.Date == DateTime.Today.Date)
-        {
-            backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarCurrentColor;
-        }
-        else if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
-        {
-            backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarWeekendColor;
-        }
-        else
-        {
-            backgorundImage.color = Placeholder_ThemeManager.Instance.CalendarNormalColor;
-        }
+        UpdateColors();
 
         if(date.Day == 1)
         {
@@ -74,6 +59,22 @@ public class CalendarDayColumnObject : MonoBehaviour
         else
         {
             monthLineImage.SetActive(false);
+        }
+    }
+
+    private void UpdateColors()
+    {
+        if(objDate.Date == DateTime.Today.Date)
+        {
+            backgorundImage.color = CalendarThemeManager.Instance.CalendarCurrentColor;
+        }
+        else if (objDate.DayOfWeek == DayOfWeek.Saturday || objDate.DayOfWeek == DayOfWeek.Sunday)
+        {
+            backgorundImage.color = CalendarThemeManager.Instance.CalendarWeekendColor;
+        }
+        else
+        {
+            backgorundImage.color = CalendarThemeManager.Instance.CalendarNormalColor;
         }
     }
 }

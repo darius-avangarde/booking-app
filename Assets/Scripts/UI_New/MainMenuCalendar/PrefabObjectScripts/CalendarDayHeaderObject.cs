@@ -21,6 +21,11 @@ public class CalendarDayHeaderObject : MonoBehaviour
     private DateTime objectDate;
     private IProperty objProperty;
 
+    private void Start()
+    {
+        ThemeManager.Instance.AddItems(dayOfWeekText, dateText);
+    }
+
     private void OnDestroy()
     {
         dayButton.onClick.RemoveAllListeners();
@@ -50,18 +55,18 @@ public class CalendarDayHeaderObject : MonoBehaviour
 
         if(date.Date == DateTime.Today.Date)
         {
-            dayBackgroundImage.color = Placeholder_ThemeManager.Instance.CalendarHeadCurrentColor;
-            backgroundImage.color = Placeholder_ThemeManager.Instance.CalendarCurrentColor;
+            dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadCurrentColor;
+            backgroundImage.color = CalendarThemeManager.Instance.CalendarCurrentColor;
         }
         else if(isWeekend)
         {
-            dayBackgroundImage.color = Placeholder_ThemeManager.Instance.CalendarHeadWeekendColor;
-            backgroundImage.color = Placeholder_ThemeManager.Instance.CalendarWeekendColor;
+            dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadWeekendColor;
+            backgroundImage.color = CalendarThemeManager.Instance.CalendarWeekendColor;
         }
         else
         {
-            dayBackgroundImage.color = Placeholder_ThemeManager.Instance.CalendarHeadNormalColor;
-            backgroundImage.color = Placeholder_ThemeManager.Instance.CalendarNormalColor;
+            dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadNormalColor;
+            backgroundImage.color = CalendarThemeManager.Instance.CalendarNormalColor;
         }
     }
 

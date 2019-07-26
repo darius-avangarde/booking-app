@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class CalendarDayColumn : MonoBehaviour
 {
@@ -11,12 +12,19 @@ public class CalendarDayColumn : MonoBehaviour
 
     [SerializeField]
     private GameObject dayColumnObjectPrefab;
+    [SerializeField]
+    private Image backgroundImage;
 
     private List<CalendarDayColumnObject> dayPool = new List<CalendarDayColumnObject>();
     private DateTime objectDate;
     private Vector3 lastPosition;
     private CalendarDayHeaderObject header;
 
+
+    private void Start()
+    {
+        ThemeManager.Instance.AddItems(backgroundImage);
+    }
 
     public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction, CalendarDayHeaderObject linkedHeader)
     {

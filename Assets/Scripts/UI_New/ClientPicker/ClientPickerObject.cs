@@ -17,7 +17,7 @@ public class ClientPickerObject : MonoBehaviour
 
     private void Start()
     {
-        //ThemeManager.Instance.AddItems(clientText, backgroundImage, underline);
+        ThemeManager.Instance.AddItems(clientText, backgroundImage, underline);
     }
 
     public void SetAndEnable(IClient client, UnityAction<IClient> callback)

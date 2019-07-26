@@ -1,36 +1,32 @@
 ﻿using UnityEngine;
 
-public class Placeholder_ThemeManager : MonoBehaviour
+public class CalendarThemeManager : MonoBehaviour
 {
     public Color CalendarHeadCurrentColor;
     public Color CalendarHeadWeekendColor;
     public Color CalendarHeadNormalColor;
-
-    [Space]
     public Color CalendarCurrentColor;
     public Color CalendarWeekendColor;
     public Color CalendarNormalColor;
-
-    [Space]
     public Color currentReservationColor;
     public Color pastReservationColor;
 
-    [Space]
     public Sprite currentDaySprite;
     public Sprite selectedDaySprite;
 
-    public static Placeholder_ThemeManager Instance
+
+    public static CalendarThemeManager Instance
     {
         get
         {
             if(instance == null)
             {
-                instance = GameObject.FindObjectOfType<Placeholder_ThemeManager>();
+                instance = GameObject.FindObjectOfType<CalendarThemeManager>();
             }
             return instance;
         }
     }
 
-    private static Placeholder_ThemeManager instance;
+    private static CalendarThemeManager instance;
 
 }

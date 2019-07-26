@@ -183,6 +183,7 @@ public class ReservationsCalendarManager : MonoBehaviour
     {
         currentProperty = property;
         currentRooms = FilteredRooms();
+        Debug.Log(currentRooms.Count);
         roomColumn.UpdateRooms(currentRooms, roomEditScreen.OpenRoomAdminScreen);
 
         foreach(CalendarDayColumn dayColumn in dayColumns)

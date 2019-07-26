@@ -37,7 +37,7 @@ public class ReservationObject : MonoBehaviour
 
         //reservationButton.onClick.RemoveAllListeners();
         //reservationButton.targetGraphic.color = (reservation.Period.End.Date > DateTime.Today.Date) ? Placeholder_ThemeManager.Instance.currentReservationColor : Placeholder_ThemeManager.Instance.pastReservationColor;
-        itemImage.color = (reservation.Period.End.Date > DateTime.Today.Date) ? Placeholder_ThemeManager.Instance.currentReservationColor : Placeholder_ThemeManager.Instance.pastReservationColor;
+        itemImage.color = (reservation.Period.End.Date > DateTime.Today.Date) ? CalendarThemeManager.Instance.currentReservationColor : CalendarThemeManager.Instance.pastReservationColor;
 
         co = c;
 

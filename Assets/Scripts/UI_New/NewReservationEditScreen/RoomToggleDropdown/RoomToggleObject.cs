@@ -34,7 +34,7 @@ public class RoomToggleObject : MonoBehaviour
 
     private void Start()
     {
-        //ThemeManager.Instance.AddItems(roomNameText, /*roomTypeIcon */ backgroundImage, underline, checkmarkFill, checkmarkRim);
+        ThemeManager.Instance.AddItems(roomNameText, /*roomTypeIcon */ backgroundImage, underline, checkmarkFill, checkmarkRim);
     }
 
     public void UpdateObject(UnityAction<IRoom, RoomToggleObject> tapCallback, UnityAction<RoomToggleObject> toggleCallback, IRoom room, bool selected)
