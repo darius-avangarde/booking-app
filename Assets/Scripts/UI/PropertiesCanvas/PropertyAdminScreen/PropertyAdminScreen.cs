@@ -161,8 +161,6 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 PropertyDataManager.DeleteProperty(CurrentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(CurrentProperty.ID);
-                ImageDataManager.DeletePropertyPhoto(CurrentProperty.ID);
-                navigator.GoBack();
                 navigator.GoBack();
             },
             CancelCallback = null

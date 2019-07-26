@@ -14,6 +14,8 @@ public class NotificationsScreen : MonoBehaviour
     [SerializeField]
     private ThemeManager themeManager = null;
     [SerializeField]
+    private SettingsManager settingsManager = null;
+    [SerializeField]
     private GameObject notificationItemPrefab = null;
     [SerializeField]
     private GameObject noNotificationsObject = null;
@@ -32,6 +34,7 @@ public class NotificationsScreen : MonoBehaviour
     private void Start()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
+        settingsManager.ReadData();
 
         noNotificationsObject.SetActive(false);
         for (int i = 0; i < 10; i++)
@@ -56,10 +59,10 @@ public class NotificationsScreen : MonoBehaviour
 
     private void OnDisable()
     {
-        foreach (NotificationItem item in activeNotificationItems)
+        foreach (NotificationItem notification in activeNotificationItems)
         {
-            item.gameObject.SetActive(false);
-            notificationItemPool.Enqueue(item);
+            notification.gameObject.SetActive(false);
+            notificationItemPool.Enqueue(notification);
         }
         activeNotificationItems.Clear();
         noNotificationsObject.SetActive(false);
@@ -79,7 +82,7 @@ public class NotificationsScreen : MonoBehaviour
     public void Initialize()
     {
         noNotificationsObject.SetActive(false);
-        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) >= DateTime.Today.Date.AddHours(12) && r.Period.Start.Date.AddHours(12) < DateTime.Today.Date.AddHours(12 + 24)).OrderBy(r => r.Period.Start).ToList();
+        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) >= DateTime.Today.Date.AddHours(12 - Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key) && r.Period.Start.Date.AddHours(12) < DateTime.Today.Date.AddHours(12)).OrderBy(r => r.Period.Start).ToList();
         if (currentNotifications != null)
         {
             foreach (IReservation reservation in currentNotifications)
