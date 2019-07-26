@@ -96,7 +96,7 @@ public class NotificationManager : MonoBehaviour
         }
         //check new start period for other notifications
         //get the new ID and set it to current reservation or create new notification and set the ID
-        List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) >= DateTime.Today.Date.AddHours(12 - preAlertTime) && r.Period.Start.Date.AddHours(12) < DateTime.Today.Date.AddHours(12)).OrderBy(r => r.Period.Start).ToList();
+        List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today.Date.AddHours(12) && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + preAlertTime)).OrderBy(r => r.Period.Start).ToList();
         List<IReservation> otherReservations = allReservations.Where(r => r.ID != reservation.ID).ToList();
 
         if (otherReservations.Count() > 0)

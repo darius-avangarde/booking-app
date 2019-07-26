@@ -85,7 +85,11 @@ public class ReservationsCalendarManager : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
 
         //Load first property to initialize day columns/items;
-        SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+        if(PropertyDataManager.GetProperties().Count() > 0)
+            SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+        else
+            InitializeWithNoProperty();
+
 
         //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
         StartCoroutine(DelayInfiniteScrollrectInitialization());
@@ -154,11 +158,12 @@ public class ReservationsCalendarManager : MonoBehaviour
                     JumpToDate(currentFilter.StartDate.Value);
                 }
 
-                ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
                 currentRooms = filteredRooms.ToList();
+                ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
             }
             else
             {
+                currentRooms = currentProperty.Rooms.ToList();
                 if(ReservationDataManager.GetActiveClientReservations(currentFilter.Client.ID).Where(r => r.PropertyID == currentProperty.ID).ToList().Count > 0)
                 {
                     JumpToDate(ReservationDataManager.GetActiveClientReservations(currentFilter.Client.ID).Where(r => r.PropertyID == currentProperty.ID).ToList()[0].Period.Start.Date);
@@ -167,7 +172,6 @@ public class ReservationsCalendarManager : MonoBehaviour
                 {
                     ShowNoFilterMatchText("Clientul selectat nu are rezervari pe această proprietate");
                 }
-                currentRooms = currentProperty.Rooms.ToList();
             }
         }
         else
@@ -181,9 +185,19 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     public void SelectProperty(IProperty property)
     {
+        if(property == null)
+        {
+            if(PropertyDataManager.GetProperties().Count() > 0)
+                SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+            else
+                InitializeWithNoProperty();
+
+            return;
+        }
+
         currentProperty = property;
         currentRooms = FilteredRooms();
-        roomColumn.UpdateRooms(currentRooms, (r) => roomEditScreen.OpenRoomAdminScreen(r, (ro) => EditRoomCallback()));
+        roomColumn.UpdateRooms(currentRooms, (r) => roomEditScreen.OpenRoomAdminScreen(r, () => EditRoomCallback()));
 
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {
@@ -195,6 +209,20 @@ public class ReservationsCalendarManager : MonoBehaviour
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
 
         reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+    }
+
+    public void InitializeWithNoProperty()
+    {
+        foreach(CalendarDayColumn dayColumn in dayColumns)
+        {
+            //dayColumn.UpdateRooms(currentRooms, NewReservationFromUnreservedDay);
+            dayColumn.LinkedHeader.UpdateProperty(currentProperty);
+        }
+
+        //Resize the day column content rect size to fit the number of rooms
+        dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
+
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
     }
 
@@ -271,7 +299,10 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private void NewReservationFromHeader(DateTime date, IProperty property)
     {
-        reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), property, date);
+        if(currentProperty != null)
+            reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), property, date);
+        else
+            ShowNoFilterMatchText("Nu aveti nici o proprietate");
     }
 
     private void NewReservationFromRoomColumn(IRoom room)
@@ -281,7 +312,8 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private void NewReservationFromUnreservedDay(DateTime date, IRoom room)
     {
-        reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room, date);
+        if(currentProperty != null)
+            reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room, date);
     }
 
 }

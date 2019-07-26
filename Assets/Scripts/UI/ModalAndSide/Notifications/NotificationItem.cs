@@ -44,6 +44,11 @@ public class NotificationItem : MonoBehaviour
     private IProperty currentProperty;
     private IRoom currentRoom;
 
+    private void OnDisable()
+    {
+        menuButton.onClick.RemoveAllListeners();
+    }
+
     public void Initialize(bool newNotification, ThemeManager themeManagerComponent,  IReservation reservation, Action<IReservation> setReservation)
     {
         currentReservation = reservation;
@@ -65,17 +70,6 @@ public class NotificationItem : MonoBehaviour
         menuButton.onClick.AddListener(() => setReservation(reservation));
         newNotificationMarker.SetActive(newNotification);
 
-        themeManagerComponent.AddItems(clientName.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(startDate.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(endDate.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(propertyName.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(roomName.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(addedDate.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(roomTypeImage.GetComponent<Graphic>());
-        themeManagerComponent.AddItems(notificationBackground);
-        themeManagerComponent.AddItems(clientUnderline);
-        themeManagerComponent.AddItems(menuButtonImage);
-        themeManagerComponent.AddItems(startDateIcon);
-        themeManagerComponent.AddItems(endDateIcon);
+        themeManagerComponent.AddItems(clientName.GetComponent<Graphic>(), startDate.GetComponent<Graphic>(), endDate.GetComponent<Graphic>(), propertyName.GetComponent<Graphic>(), roomName.GetComponent<Graphic>(), addedDate.GetComponent<Graphic>(), roomTypeImage.GetComponent<Graphic>(), notificationBackground, clientUnderline, menuButtonImage, startDateIcon, endDateIcon);
     }
 }
