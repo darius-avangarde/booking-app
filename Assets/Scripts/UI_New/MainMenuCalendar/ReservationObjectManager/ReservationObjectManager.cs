@@ -31,11 +31,16 @@ public class ReservationObjectManager : MonoBehaviour
     {
         foreach (ReservationObject resObj in pool)
         {
-            if(Mathf.Abs(resObj.transform.position.x) > Screen.width * 3)
+            if(resObj.ObjRectTransform.position.x + resObj.ObjRectTransform.rect.xMax < -Screen.width * 2 || resObj.ObjRectTransform.position.x + resObj.ObjRectTransform.rect.xMin > Screen.width * 3)
             {
                 placedReservations.Remove(resObj.ObjReservation);
                 resObj.Disable();
             }
+            // if(Mathf.Abs(resObj.transform.position.x) > Screen.width * 3)
+            // {
+            //     placedReservations.Remove(resObj.ObjReservation);
+            //     resObj.Disable();
+            // }
         }
     }
 
