@@ -9,7 +9,6 @@ public class SettingsManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(Application.persistentDataPath);
         ReadData();
     }
     public SettingsData ReadData()
