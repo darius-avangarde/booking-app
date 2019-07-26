@@ -9,6 +9,7 @@ public class ReservationObject : MonoBehaviour
 {
 
     public IReservation ObjReservation => objReservation;
+    public RectTransform ObjRectTransform => objectRectTransform;
 
     [SerializeField]
     private RectTransform objectRectTransform;
