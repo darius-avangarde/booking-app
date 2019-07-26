@@ -34,15 +34,15 @@ public class ThemeManager : MonoBehaviour
             themeToggle.isOn = false;
         }
         //Debug.Log(statusColor+ "----theme sts");
-        
+
     }
     private void Awake()
     {
         if (instance != null && instance != this)
-       {
+        {
             Destroy(this.gameObject);
         }
-       else
+        else
         {
             instance = this;
         }
@@ -74,23 +74,26 @@ public class ThemeManager : MonoBehaviour
         if (myObject.tag == "ItemBackground" && myObject != null)
         {
             ItemList.Add(myObject);
-            SelectTheme();
+            //SelectTheme();
+            //SetColor(myObject);
         }
         if (myObject.tag == "TextIcons" && myObject != null)
         {
             TextList.Add(myObject);
-            SelectTheme();
+            //SelectTheme();
+            
         }
         if (myObject.tag == "Separator" && myObject != null)
         {
             SeparatorList.Add(myObject);
-            SelectTheme();
+            //SelectTheme();
         }
         if (myObject.tag == "Background" && myObject != null)
         {
             BackgroundList.Add(myObject);
-            SelectTheme();
+            //SelectTheme();
         }
+        SetColor(myObject);
     }
 
     public void SetColor(Graphic items)
@@ -129,7 +132,7 @@ public class ThemeManager : MonoBehaviour
         else
         {
             items.color = light;
-          
+
             setMode.DataElements.settings.themeStatus = 1;
             setMode.WriteData();
         }
