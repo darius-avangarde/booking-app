@@ -13,7 +13,7 @@ public class ThemeManager : MonoBehaviour
     [SerializeField]
     private ColorsData dataColor;
     public bool IsDarkTheme => themeToggle.isOn;
-    public ColorsData ThemeColor => dataColor; 
+    public ColorsData ThemeColor => dataColor;
     [SerializeField]
     private Toggle themeToggle;
     public List<Graphic> TextList = new List<Graphic>();
@@ -24,7 +24,7 @@ public class ThemeManager : MonoBehaviour
     private static ThemeManager instance;
     public static ThemeManager Instance { get { return instance; } }
     private int statusColor;
-    public UnityEvent<bool> OnThemeChanged;
+    public UnityAction<bool> OnThemeChanged;
 
     void Start()
     {
@@ -179,10 +179,10 @@ public class ThemeManager : MonoBehaviour
        // var allChildren = myParent.GetComponentInChildren<RectTransform>(true);
         foreach (GameObject myText in GameObject.FindGameObjectsWithTag("TextIcons"))
         {
-           
+
                 Graphic graphicItem = myText.GetComponent<Graphic>();
                 TextList.Add(graphicItem);
-            
+
         }
         //TextList = GameObject.FindGameObjectsWithTag("TextIcons").ToList();
         foreach (GameObject myBg in GameObject.FindGameObjectsWithTag("Background"))

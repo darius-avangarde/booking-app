@@ -25,7 +25,7 @@ public class CalendarDayColumnObject : MonoBehaviour
     private void Start()
     {
         ThemeManager.Instance.AddItems(separatorImage);
-        //ThemeManager.OnThemeChanged
+        ThemeManager.Instance.OnThemeChanged += UpdateColors;
     }
 
     private void OnDestroy()
@@ -42,7 +42,7 @@ public class CalendarDayColumnObject : MonoBehaviour
         dayButton.onClick.RemoveAllListeners();
         dayButton.onClick.AddListener(() => tapAction(objDate, room));
 
-        UpdateColors();
+        UpdateColors(ThemeManager.Instance.IsDarkTheme);
     }
 
 
@@ -50,7 +50,7 @@ public class CalendarDayColumnObject : MonoBehaviour
     {
         objDate = new DateTime(date.Date.Ticks);
 
-        UpdateColors();
+        UpdateColors(ThemeManager.Instance.IsDarkTheme);
 
         if(date.Day == 1)
         {
@@ -62,19 +62,19 @@ public class CalendarDayColumnObject : MonoBehaviour
         }
     }
 
-    private void UpdateColors()
+    private void UpdateColors(bool isDark)
     {
         if(objDate.Date == DateTime.Today.Date)
         {
-            backgorundImage.color = CalendarThemeManager.Instance.CalendarCurrentColor;
+            backgorundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.DarkCurrentColor : ThemeManager.Instance.ThemeColor.LightCurrentColor;//CalendarThemeManager.Instance.CalendarCurrentColor;
         }
         else if (objDate.DayOfWeek == DayOfWeek.Saturday || objDate.DayOfWeek == DayOfWeek.Sunday)
         {
-            backgorundImage.color = CalendarThemeManager.Instance.CalendarWeekendColor;
+            backgorundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.DarkWeekendColor : ThemeManager.Instance.ThemeColor.LightWeekendColor;//CalendarThemeManager.Instance.CalendarCurrentColor;
         }
         else
         {
-            backgorundImage.color = CalendarThemeManager.Instance.CalendarNormalColor;
+            backgorundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.DarkNormalColor : ThemeManager.Instance.ThemeColor.LightNormalColor;
         }
     }
 }

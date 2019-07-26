@@ -24,7 +24,7 @@ public class CalendarDayHeaderObject : MonoBehaviour
     private void Start()
     {
         ThemeManager.Instance.AddItems(dayOfWeekText, dateText);
-        ThemeManager.Instance.OnThemeChanged.AddListener(UpdateColors);
+        ThemeManager.Instance.OnThemeChanged += UpdateColors;
     }
 
     private void OnDestroy()
@@ -54,8 +54,7 @@ public class CalendarDayHeaderObject : MonoBehaviour
         dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
         dateText.text = date.Day.ToString();
 
-        //update colors with theme bool from stuff
-        //UpdateColors(ThemeManager.Instance.IsDarkTheme)
+        UpdateColors(ThemeManager.Instance.IsDarkTheme);
     }
 
     public void UpdateProperty(IProperty property)
@@ -69,18 +68,18 @@ public class CalendarDayHeaderObject : MonoBehaviour
 
         if(objectDate.Date == DateTime.Today.Date)
         {
-            // dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadCurrentColor;
-            // backgroundImage.color = CalendarThemeManager.Instance.CalendarCurrentColor;
+            dayBackgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightHeadCurrentColor : ThemeManager.Instance.ThemeColor.DarkHeadCurrentColor;
+            backgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightCurrentColor : ThemeManager.Instance.ThemeColor.DarkCurrentColor;
         }
         else if(isWeekend)
         {
-            // dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadWeekendColor;
-            // backgroundImage.color = CalendarThemeManager.Instance.CalendarWeekendColor;
+            dayBackgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightHeadWeekendColor : ThemeManager.Instance.ThemeColor.DarkHeadWeekendColor;
+            backgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightWeekendColor : ThemeManager.Instance.ThemeColor.DarkWeekendColor;
         }
         else
         {
-            // dayBackgroundImage.color = CalendarThemeManager.Instance.CalendarHeadNormalColor;
-            // backgroundImage.color = CalendarThemeManager.Instance.CalendarNormalColor;
+            dayBackgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightHeadNormalColor : ThemeManager.Instance.ThemeColor.DarkHeadNormalColor;
+            backgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightNormalColor : ThemeManager.Instance.ThemeColor.DarkNormalColor;
         }
     }
 
