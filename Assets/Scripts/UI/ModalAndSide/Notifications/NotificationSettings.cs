@@ -17,7 +17,6 @@ public class NotificationSettings : MonoBehaviour
     [SerializeField]
     private Dropdown preAlertDropdown = null;
 
-    private string[] dropdownOptions = { "1 ora", "2 ore", "4 ore", "1 zi", "2 zile", "3 zile", "4 zile", "5 zile", "6 zile", "7 zile" };
     private int selecteOption = 0;
 
     private void Start()
