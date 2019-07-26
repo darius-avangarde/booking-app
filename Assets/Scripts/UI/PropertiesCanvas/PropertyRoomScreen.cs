@@ -102,12 +102,13 @@ public class PropertyRoomScreen : MonoBehaviour
                         floorNumber.GetComponent<Text>().text = $"Etaj P";
                     }
                     lastFloor = currentFloor;
-                    SetTheme(floorNumber.GetComponent<Graphic>());
+                    themeManager.SetColor(floorNumber.GetComponent<Graphic>());
                     roomButtons.Add(floorNumber);
                 }
                 GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);
+                themeManager.SetShadow(roomButton);
                 RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
-                currentRoom.Initialize(room, OpenRoomAdminScreen, SetTheme);
+                currentRoom.Initialize(room, OpenRoomAdminScreen, themeManager);
                 roomButtons.Add(roomButton);
                 roomCounter++;
                 if(roomCounter >= maxFloors)
@@ -124,11 +125,6 @@ public class PropertyRoomScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
-    }
-
-    private void SetTheme(Graphic myObj)
-    {
-        themeManager.SetColor(myObj);
     }
 
     /// <summary>
