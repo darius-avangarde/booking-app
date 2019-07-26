@@ -67,7 +67,7 @@ public class TopCalendar : MonoBehaviour
 
     public void ToggleDropdownCalendar()
     {
-        if(!isOpening)
+        if(!isOpening && !isSliding)
         {
             StartCoroutine(Slide(!isOpen));
         }
@@ -75,7 +75,7 @@ public class TopCalendar : MonoBehaviour
 
     public void CloseDropdownCalendar()
     {
-        if(!isOpening && isOpen)
+        if(!isOpening && !isSliding && isOpen)
         {
             StartCoroutine(Slide(false));
         }
@@ -100,7 +100,7 @@ public class TopCalendar : MonoBehaviour
     public void ChangeMonth(int monthOffset)
     {
         focusDateTime = focusDateTime.AddMonths(monthOffset).Date;
-        StopAllCoroutines();
+        //StopAllCoroutines();
         isSliding = false;
         StartCoroutine(Swipe(monthOffset < 0));
     }

@@ -41,22 +41,22 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
 
     public void Show(ConfirmationDialogOptions options)
     {
-        if(options.AditionalCallback)
-        {
-            confirmSecondButtonText.text = options.ConfirmTextSecond;
-            ConfirmCallbackSecond = options.ConfirmCallbackSecond;
-            confirmSecondButton.SetActive(true);
-            ButtonsLayoutGroup.padding.left = -40;
-            ButtonsLayoutGroup.padding.right = -40;
-            ButtonsLayoutGroup.spacing = 20;
-        }
-        else
-        {
-            confirmSecondButton.SetActive(false);
-            ButtonsLayoutGroup.padding.left = 60;
-            ButtonsLayoutGroup.padding.right = 60;
-            ButtonsLayoutGroup.spacing = 60;
-        }
+        // if(options.AditionalCallback)
+        // {
+        //     confirmSecondButtonText.text = options.ConfirmTextSecond;
+        //     ConfirmCallbackSecond = options.ConfirmCallbackSecond;
+        //     confirmSecondButton.SetActive(true);
+        //     ButtonsLayoutGroup.padding.left = -40;
+        //     ButtonsLayoutGroup.padding.right = -40;
+        //     ButtonsLayoutGroup.spacing = 20;
+        // }
+        // else
+        // {
+        //     confirmSecondButton.SetActive(false);
+        //     ButtonsLayoutGroup.padding.left = 60;
+        //     ButtonsLayoutGroup.padding.right = 60;
+        //     ButtonsLayoutGroup.spacing = 60;
+        // }
 
         messageText.text = options.Message ?? defaultMessage;
         confirmButtonText.text = options.ConfirmText ?? defaultConfirmButtonText;
