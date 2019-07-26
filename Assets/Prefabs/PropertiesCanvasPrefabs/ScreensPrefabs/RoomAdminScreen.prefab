@@ -841,7 +841,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1063498628412837167}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4065635589767094439}
+        m_MethodName: set_text
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &2393787930089817360
@@ -2783,11 +2794,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoomTypeContainer
       objectReference: {fileID: 0}
-    - target: {fileID: 5074829723368720393, guid: f8519a1488509a0449facaf0fb5ba010,
-        type: 3}
-      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6557232096182329528, guid: f8519a1488509a0449facaf0fb5ba010,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2893,6 +2899,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5074829723368720393, guid: f8519a1488509a0449facaf0fb5ba010,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6660096628711260856, guid: f8519a1488509a0449facaf0fb5ba010,
         type: 3}
       propertyPath: m_Enabled
@@ -2939,41 +2950,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InfoBedType
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_HideMobileInput
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_SelectionColor.r
-      value: 0.19607843
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_SelectionColor.g
-      value: 0.6392157
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_SelectionColor.b
-      value: 0.65882355
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_Colors.m_HighlightedColor.r
-      value: 0.19607843
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_Colors.m_HighlightedColor.g
-      value: 0.6392157
-      objectReference: {fileID: 0}
-    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_Colors.m_HighlightedColor.b
-      value: 0.65882355
       objectReference: {fileID: 0}
     - target: {fileID: 5001972579194239194, guid: a6677b6bda305c84fa703f60671dd422,
         type: 3}
@@ -3080,6 +3056,51 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8791577206871505259, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_TagString
+      value: TextIcons
+      objectReference: {fileID: 0}
+    - target: {fileID: 4704387676518073740, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_TagString
+      value: TextIcons
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_HideMobileInput
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_SelectionColor.r
+      value: 0.19607843
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_SelectionColor.g
+      value: 0.6392157
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_SelectionColor.b
+      value: 0.65882355
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.r
+      value: 0.19607843
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.g
+      value: 0.6392157
+      objectReference: {fileID: 0}
+    - target: {fileID: 5001972580005049509, guid: a6677b6bda305c84fa703f60671dd422,
+        type: 3}
+      propertyPath: m_Colors.m_HighlightedColor.b
+      value: 0.65882355
+      objectReference: {fileID: 0}
     - target: {fileID: 1649300927907617286, guid: a6677b6bda305c84fa703f60671dd422,
         type: 3}
       propertyPath: m_SelectionColor.r
@@ -3114,16 +3135,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_HideMobileInput
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8791577206871505259, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_TagString
-      value: TextIcons
-      objectReference: {fileID: 0}
-    - target: {fileID: 4704387676518073740, guid: a6677b6bda305c84fa703f60671dd422,
-        type: 3}
-      propertyPath: m_TagString
-      value: TextIcons
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6677b6bda305c84fa703f60671dd422, type: 3}

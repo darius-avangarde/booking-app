@@ -34,7 +34,6 @@ public class NotificationsScreen : MonoBehaviour
     private void Start()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
-        settingsManager.ReadData();
 
         noNotificationsObject.SetActive(false);
         for (int i = 0; i < 10; i++)
@@ -81,8 +80,9 @@ public class NotificationsScreen : MonoBehaviour
 
     public void Initialize()
     {
+        settingsManager.ReadData();
         noNotificationsObject.SetActive(false);
-        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) >= DateTime.Today.Date.AddHours(12 - Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key) && r.Period.Start.Date.AddHours(12) < DateTime.Today.Date.AddHours(12)).OrderBy(r => r.Period.Start).ToList();
+        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today.Date.AddHours(12) && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
         if (currentNotifications != null)
         {
             foreach (IReservation reservation in currentNotifications)

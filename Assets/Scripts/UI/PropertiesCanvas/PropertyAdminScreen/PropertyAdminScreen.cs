@@ -23,6 +23,8 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private ToggleDialog toggleDialog = null;
     [SerializeField]
+    private ReservationsCalendarManager reservationCallendar = null;
+    [SerializeField]
     private NavScreen propertyAdminScreen = null;
     [SerializeField]
     private Text propertyScreenTitle = null;
@@ -143,6 +145,7 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 navigator.GoBack();
             }
+            reservationCallendar.SelectProperty(CurrentProperty);
         }
     }
 
@@ -162,6 +165,7 @@ public class PropertyAdminScreen : MonoBehaviour
                 PropertyDataManager.DeleteProperty(CurrentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(CurrentProperty.ID);
                 navigator.GoBack();
+                reservationCallendar.SelectProperty(null);
             },
             CancelCallback = null
         });
