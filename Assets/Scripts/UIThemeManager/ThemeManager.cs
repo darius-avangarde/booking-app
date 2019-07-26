@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ThemeManager : MonoBehaviour
@@ -18,6 +19,7 @@ public class ThemeManager : MonoBehaviour
     private static ThemeManager instance;
     public static ThemeManager Instance { get { return instance; } }
     private int statusColor;
+    public UnityEvent<bool> OnThemeChanged;
 
     void Start()
     {
@@ -31,19 +33,19 @@ public class ThemeManager : MonoBehaviour
         else
         {
             themeToggle.isOn = false; //Debug.Log(statusColor+ "----theme sts");
-        }      
-    }
-    private void Awake()
-    {
-        if (instance != null && instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            instance = this;
         }
     }
+      private void Awake()
+      {
+          if (instance != null && instance != this)
+          {
+              Destroy(this.gameObject);
+          }
+          else
+          {
+              instance = this;
+          }
+      }
 
     public void SelectTheme()
     {
@@ -118,6 +120,7 @@ public class ThemeManager : MonoBehaviour
     {
         if (themeToggle.isOn)
         {
+
             if (items != null)
             {
                 items.color = dark;
@@ -143,6 +146,7 @@ public class ThemeManager : MonoBehaviour
             setMode.DataElements.settings.themeStatus = 1;
             setMode.WriteData();
         }
+        OnThemeChanged?.Invoke(themeToggle.isOn);
     }
 
     public void SetShadow(GameObject item)

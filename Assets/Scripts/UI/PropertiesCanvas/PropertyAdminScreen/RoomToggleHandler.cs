@@ -12,10 +12,6 @@ public class RoomToggleHandler : MonoBehaviour
     [SerializeField]
     private Toggle withoutRoomsToggle = null;
     [SerializeField]
-    private Image withRoomsToggleBackground = null;
-    [SerializeField]
-    private Image ithoutRoomsToggleBackground = null;
-    [SerializeField]
     private Button saveButton = null;
     [SerializeField]
     private GameObject addRoomsField = null;
@@ -33,8 +29,6 @@ public class RoomToggleHandler : MonoBehaviour
         withRoomsToggle.isOn = false;
         withoutRoomsToggle.isOn = false;
         addRoomsField.SetActive(false);
-        withRoomsToggleBackground.color = Color.grey;
-        ithoutRoomsToggleBackground.color = Color.grey;
     }
 
     private void SetToggle(bool hasRooms)
@@ -66,15 +60,11 @@ public class RoomToggleHandler : MonoBehaviour
         {
             currentHasRooms = true;
             saveButton.interactable = true;
-            withRoomsToggleBackground.color = Color.green;
-            ithoutRoomsToggleBackground.color = Color.grey;
         }
         else if(withoutRoomsToggle.isOn)
         {
             currentHasRooms = false;
             saveButton.interactable = true;
-            withRoomsToggleBackground.color = Color.grey;
-            ithoutRoomsToggleBackground.color = Color.green;
         }
         else
         {
