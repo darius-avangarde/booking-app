@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class ThemeManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject myParent;
+    private  GameObject[] parents;
     [SerializeField]
     private SettingsManager setMode;
     [SerializeField]
@@ -176,29 +176,30 @@ public class ThemeManager : MonoBehaviour
         ItemList.Clear();
         ShadowList.Clear();
         Debug.Log("Clicked Button");
-       // var allChildren = myParent.GetComponentInChildren<RectTransform>(true);
-        foreach (GameObject myText in GameObject.FindGameObjectsWithTag("TextIcons"))
+        Graphic[] elements = new Graphic[700];
+        foreach (var item in parents)
         {
-
-                Graphic graphicItem = myText.GetComponent<Graphic>();
-                TextList.Add(graphicItem);
-
-        }
-        //TextList = GameObject.FindGameObjectsWithTag("TextIcons").ToList();
-        foreach (GameObject myBg in GameObject.FindGameObjectsWithTag("Background"))
-        {
-            Graphic graphicItem = myBg.GetComponent<Graphic>();
-            BackgroundList.Add(graphicItem);
-        }
-        foreach (GameObject separator in GameObject.FindGameObjectsWithTag("Separator"))
-        {
-            Graphic graphicItem = separator.GetComponent<Graphic>();
-            SeparatorList.Add(graphicItem);
-        }
-        foreach (GameObject item in GameObject.FindGameObjectsWithTag("ItemBackground"))
-        {
-            Graphic graphicItem = item.GetComponent<Graphic>();
-            ItemList.Add(graphicItem);
+            elements = item.GetComponentsInChildren<Graphic>(true);
+            foreach (var elem in elements)
+            {
+                if (elem.gameObject.tag == "Background")
+                {
+                    BackgroundList.Add(elem);
+                }
+                if (elem.gameObject.tag == "TextIcons")
+                {
+                    TextList.Add(elem);
+                }
+                if (elem.gameObject.tag == "Separator")
+                {
+                    SeparatorList.Add(elem);
+                }
+                if (elem.gameObject.tag == "ItemBackground")
+                {
+                    ItemList.Add(elem);
+                }
+            }
+            //Debug.Log(elements.Length);
         }
         foreach (GameObject separator in GameObject.FindGameObjectsWithTag("ItemBackground"))
         {
