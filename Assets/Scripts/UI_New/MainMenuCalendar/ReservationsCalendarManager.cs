@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -73,7 +74,7 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationFilter currentFilter = null;
 
 
-     private void Awake()
+     private void Start()
     {
         propertyDropdown.OnSelectProperty = SelectProperty;
 
@@ -84,10 +85,13 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Load first property to initialize day columns/items;
         SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
 
+        //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
+        StartCoroutine(DelayInfiniteScrollrectInitialization());
     }
 
-    private void Start()
+    private IEnumerator DelayInfiniteScrollrectInitialization()
     {
+        yield return null;
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
     }
