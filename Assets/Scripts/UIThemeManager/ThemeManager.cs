@@ -32,8 +32,9 @@ public class ThemeManager : MonoBehaviour
         }
         else
         {
-            themeToggle.isOn = false; //Debug.Log(statusColor+ "----theme sts");
+            themeToggle.isOn = false;
         }
+        SelectTheme();
     }
       private void Awake()
       {
