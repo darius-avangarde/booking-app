@@ -68,18 +68,18 @@ public class CalendarDayHeaderObject : MonoBehaviour
 
         if(objectDate.Date == DateTime.Today.Date)
         {
-            dayBackgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightHeadCurrentColor : ThemeManager.Instance.ThemeColor.DarkHeadCurrentColor;
-            backgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightCurrentColor : ThemeManager.Instance.ThemeColor.DarkCurrentColor;
+            dayBackgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightHeadCurrentColor : ThemeManager.Instance.ThemeColor.DarkHeadCurrentColor;
+            backgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightCurrentColor : ThemeManager.Instance.ThemeColor.DarkCurrentColor;
         }
         else if(isWeekend)
         {
-            dayBackgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightHeadWeekendColor : ThemeManager.Instance.ThemeColor.DarkHeadWeekendColor;
-            backgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightWeekendColor : ThemeManager.Instance.ThemeColor.DarkWeekendColor;
+            dayBackgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightHeadWeekendColor : ThemeManager.Instance.ThemeColor.DarkHeadWeekendColor;
+            backgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightWeekendColor : ThemeManager.Instance.ThemeColor.DarkWeekendColor;
         }
         else
         {
-            dayBackgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightHeadNormalColor : ThemeManager.Instance.ThemeColor.DarkHeadNormalColor;
-            backgroundImage.color = (isDark) ? ThemeManager.Instance.ThemeColor.LightNormalColor : ThemeManager.Instance.ThemeColor.DarkNormalColor;
+            dayBackgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightHeadNormalColor : ThemeManager.Instance.ThemeColor.DarkHeadNormalColor;
+            backgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightNormalColor : ThemeManager.Instance.ThemeColor.DarkNormalColor;
         }
     }
 
