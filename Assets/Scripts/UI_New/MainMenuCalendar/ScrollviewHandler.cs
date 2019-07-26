@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -158,7 +157,7 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
 
     private float NearestSnapPointX(ScrollRect scrollRect)
     {
-        float snapPos = scrollRect.normalizedPosition.y;
+        float snapPos = scrollRect.horizontalNormalizedPosition;
 
         float normalizedWidth = scrollRect.viewport.rect.width / (scrollRect.content.rect.width - scrollRect.viewport.rect.width) + 1;
         float snapSize = normalizedWidth/scrollRect.content.childCount;
