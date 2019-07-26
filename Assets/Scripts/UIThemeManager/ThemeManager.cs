@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
-
 
 public class ThemeManager : MonoBehaviour
 {
@@ -17,9 +14,11 @@ public class ThemeManager : MonoBehaviour
     public List<Graphic> BackgroundList = new List<Graphic>();
     public List<Graphic> SeparatorList = new List<Graphic>();
     public List<Graphic> ItemList = new List<Graphic>();
+    public List<Shadow> ShadowList = new List<Shadow>();
     private static ThemeManager instance;
     public static ThemeManager Instance { get { return instance; } }
     private int statusColor;
+
     void Start()
     {
         setMode = new SettingsManager();
@@ -31,10 +30,8 @@ public class ThemeManager : MonoBehaviour
         }
         else
         {
-            themeToggle.isOn = false;
-        }
-        //Debug.Log(statusColor+ "----theme sts");
-
+            themeToggle.isOn = false; //Debug.Log(statusColor+ "----theme sts");
+        }      
     }
     private void Awake()
     {
@@ -50,89 +47,99 @@ public class ThemeManager : MonoBehaviour
 
     public void SelectTheme()
     {
-        foreach (var item in TextList)
+        foreach (Graphic item in TextList)
         {
-            //Debug.Log(item.name);
-            SetItemColor(item, dataColor.textDark, dataColor.textLight);
+            SetItemColor(dataColor.textDark, dataColor.textLight, item);
         }
-        foreach (var item in BackgroundList)
+        foreach (Graphic item in BackgroundList)
         {
-            SetItemColor(item, dataColor.darkBackground, dataColor.lightBackground);
+            SetItemColor(dataColor.darkBackground, dataColor.lightBackground, item);
         }
-        foreach (var item in SeparatorList)
+        foreach (Graphic item in SeparatorList)
         {
-            SetItemColor(item, dataColor.separatorDark, dataColor.separatorLight);
+            SetItemColor(dataColor.separatorDark, dataColor.separatorLight, item);
         }
-        foreach (var item in ItemList)
+        foreach (Graphic item in ItemList)
         {
-            SetItemColor(item, dataColor.ItemDark, dataColor.ItemLight);
+            SetItemColor(dataColor.ItemDark, dataColor.ItemLight, item);
         }
+        foreach (Shadow item in ShadowList)
+        {
+            SetItemColor(dataColor.separatorDark, dataColor.separatorLight, null, item);
+        }
+
     }
 
-    public void AddItems(Graphic myObject)
+    public void AddItems(params Graphic[] myObjects)
     {
-        if (myObject.tag == "ItemBackground" && myObject != null)
+        foreach (Graphic myObject in myObjects)
         {
-            ItemList.Add(myObject);
-            //SelectTheme();
-            //SetColor(myObject);
+            if (myObject.tag == "ItemBackground" && myObject != null)
+            {
+                ItemList.Add(myObject); //SelectTheme();
+            }
+            if (myObject.tag == "TextIcons" && myObject != null)
+            {
+                TextList.Add(myObject);
+            }
+            if (myObject.tag == "Separator" && myObject != null)
+            {
+                SeparatorList.Add(myObject);
+            }
+            if (myObject.tag == "Background" && myObject != null)
+            {
+                BackgroundList.Add(myObject);
+            }
+            SetColor(myObject);
         }
-        if (myObject.tag == "TextIcons" && myObject != null)
-        {
-            TextList.Add(myObject);
-            //SelectTheme();
-            
-        }
-        if (myObject.tag == "Separator" && myObject != null)
-        {
-            SeparatorList.Add(myObject);
-            //SelectTheme();
-        }
-        if (myObject.tag == "Background" && myObject != null)
-        {
-            BackgroundList.Add(myObject);
-            //SelectTheme();
-        }
-        SetColor(myObject);
     }
 
     public void SetColor(Graphic items)
     {
-
         if (items.tag == "ItemBackground" && items != null)
         {
-            SetItemColor(items, dataColor.ItemDark, dataColor.ItemLight);
-
+            SetItemColor(dataColor.ItemDark, dataColor.ItemLight, items);
         }
         if (items.tag == "TextIcons" && items != null)
         {
-            SetItemColor(items, dataColor.textDark, dataColor.textLight);
-
+            SetItemColor(dataColor.textDark, dataColor.textLight, items);
         }
         if (items.tag == "Separator" && items != null)
         {
-            SetItemColor(items, dataColor.separatorDark, dataColor.separatorLight);
-
+            SetItemColor(dataColor.separatorDark, dataColor.separatorLight, items);
         }
         if (items.tag == "Background" && items != null)
         {
-            SetItemColor(items, dataColor.darkBackground, dataColor.lightBackground);
-
+            SetItemColor(dataColor.darkBackground, dataColor.lightBackground, items);
         }
     }
 
-    private void SetItemColor(Graphic items, Color dark, Color light)
+    private void SetItemColor(Color dark, Color light, Graphic items = null, Shadow myShadow = null)
     {
         if (themeToggle.isOn)
         {
-            items.color = dark;
+            if (items != null)
+            {
+                items.color = dark;
+            }
+            if (myShadow != null)
+            {
+                myShadow.effectColor = dark;
+            }
+
             setMode.DataElements.settings.themeStatus = 0;
             setMode.WriteData();
         }
         else
         {
-            items.color = light;
-
+            if (items != null)
+            {
+                items.color = light;
+            }
+            if (myShadow != null)
+            {
+                myShadow.effectColor = light;
+            }
             setMode.DataElements.settings.themeStatus = 1;
             setMode.WriteData();
         }
@@ -140,7 +147,7 @@ public class ThemeManager : MonoBehaviour
 
     public void SetShadow(GameObject item)
     {
-        var shadow = item.GetComponent<Shadow>();
+        Shadow shadow = item.GetComponent<Shadow>();
         if (themeToggle.isOn)
         {
             shadow.effectColor = dataColor.separatorDark;
@@ -157,28 +164,36 @@ public class ThemeManager : MonoBehaviour
         BackgroundList.Clear();
         SeparatorList.Clear();
         ItemList.Clear();
+        ShadowList.Clear();
         Debug.Log("Clicked Button");
-        foreach (var myText in GameObject.FindGameObjectsWithTag("TextIcons"))
+        foreach (GameObject myText in GameObject.FindGameObjectsWithTag("TextIcons"))
         {
-            var graphicItem = myText.GetComponent<Graphic>();
+            Graphic graphicItem = myText.GetComponent<Graphic>();
             TextList.Add(graphicItem);
         }
         //TextList = GameObject.FindGameObjectsWithTag("TextIcons").ToList();
-        foreach (var myBg in GameObject.FindGameObjectsWithTag("Background"))
+        foreach (GameObject myBg in GameObject.FindGameObjectsWithTag("Background"))
         {
-            var graphicItem = myBg.GetComponent<Graphic>();
+            Graphic graphicItem = myBg.GetComponent<Graphic>();
             BackgroundList.Add(graphicItem);
         }
-        foreach (var separator in GameObject.FindGameObjectsWithTag("Separator"))
+        foreach (GameObject separator in GameObject.FindGameObjectsWithTag("Separator"))
         {
-            var graphicItem = separator.GetComponent<Graphic>();
+            Graphic graphicItem = separator.GetComponent<Graphic>();
             SeparatorList.Add(graphicItem);
         }
-        foreach (var item in GameObject.FindGameObjectsWithTag("ItemBackground"))
+        foreach (GameObject item in GameObject.FindGameObjectsWithTag("ItemBackground"))
         {
-            var graphicItem = item.GetComponent<Graphic>();
+            Graphic graphicItem = item.GetComponent<Graphic>();
             ItemList.Add(graphicItem);
-
+        }
+        foreach (GameObject separator in GameObject.FindGameObjectsWithTag("ItemBackground"))
+        {
+            Shadow shadow = separator.GetComponent<Shadow>();
+            if (shadow != null)
+            {
+                ShadowList.Add(shadow);
+            }
         }
     }
 }
