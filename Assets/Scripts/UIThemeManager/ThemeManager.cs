@@ -13,6 +13,7 @@ public class ThemeManager : MonoBehaviour
     [SerializeField]
     private ColorsData dataColor;
     public bool IsDarkTheme => themeToggle.isOn;
+    public ColorsData ThemeColor => dataColor; 
     [SerializeField]
     private Toggle themeToggle;
     public List<Graphic> TextList = new List<Graphic>();
