@@ -40,15 +40,15 @@ public class ModalCalendarPage : MonoBehaviour
         {
             if(selectedDate != null && selectedDate.Value.Date == day.ObjDate.Date)
             {
-                day.UpdateSpriteAndColor(CalendarThemeManager.Instance.selectedDaySprite, CalendarThemeManager.Instance.currentReservationColor);
+                day.UpdateSpriteAndColor(CalendarSprites.Instance.selectedDaySprite, ThemeManager.Instance.ThemeColor.CurrentReservationColor);
             }
             else if(day.ObjDate.Date == DateTime.Today.Date)
             {
-                day.UpdateSpriteAndColor(CalendarThemeManager.Instance.currentDaySprite, CalendarThemeManager.Instance.CalendarCurrentColor);
+                day.UpdateSpriteAndColor(CalendarSprites.Instance.currentDaySprite, ThemeManager.Instance.ThemeColor.CurrentReservationColor);
             }
             else
             {
-                day.UpdateSpriteAndColor(CalendarThemeManager.Instance.selectedDaySprite, Color.clear);
+                day.UpdateSpriteAndColor(CalendarSprites.Instance.selectedDaySprite, Color.clear);
             }
         }
     }
