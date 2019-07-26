@@ -31,7 +31,6 @@ public class ReservationObjectManager : MonoBehaviour
     {
         foreach (ReservationObject resObj in pool)
         {
-
             if(Mathf.Abs(resObj.transform.position.x) > Screen.width * 3)
             {
                 placedReservations.Remove(resObj.ObjReservation);

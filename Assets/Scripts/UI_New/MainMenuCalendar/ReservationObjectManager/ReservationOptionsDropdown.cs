@@ -16,11 +16,20 @@ public class ReservationOptionsDropdown : MonoBehaviour
     [SerializeField]
     private InputManager inputManager;
 
+    [SerializeField]
+    private GameObject[] futureOnlyOptions;
+
     private IReservation currentReservation;
     private ConfirmationDialogOptions confirmationDialogOptions = new ConfirmationDialogOptions();
 
     public void OpenReservationMenu(IReservation clickReservation)
     {
+        bool isPast = clickReservation.Period.End.Date < DateTime.Today.Date;
+        foreach(GameObject g in futureOnlyOptions)
+        {
+            g.SetActive(!isPast);
+        }
+
         currentReservation = clickReservation;
         optionsRect.position = Input.mousePosition;
         gameObject.SetActive(true);
