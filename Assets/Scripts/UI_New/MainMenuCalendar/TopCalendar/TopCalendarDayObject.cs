@@ -12,6 +12,11 @@ public class TopCalendarDayObject : MonoBehaviour
 
     private DateTime objDate;
 
+    private void Start()
+    {
+        ThemeManager.Instance.AddItems(dateText);
+    }
+
     private void OnDestroy()
     {
         dateButton.onClick.RemoveAllListeners();

@@ -34,7 +34,7 @@ public class ThemeManager : MonoBehaviour
             themeToggle.isOn = false;
         }
         //Debug.Log(statusColor+ "----theme sts");
-        
+
     }
     private void Awake()
     {
@@ -129,7 +129,7 @@ public class ThemeManager : MonoBehaviour
         else
         {
             items.color = light;
-          
+
             setMode.DataElements.settings.themeStatus = 1;
             setMode.WriteData();
         }

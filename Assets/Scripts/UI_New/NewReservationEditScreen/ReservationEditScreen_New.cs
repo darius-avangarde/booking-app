@@ -25,6 +25,8 @@ public class ReservationEditScreen_New : MonoBehaviour
     private ModalCalendar modalCalendar;
     [SerializeField]
     private NotificationManager notificationManager;
+    [SerializeField]
+    private SettingsManager settings;
 
     [SerializeField]
     private ScrollRect screenScrollRect;
@@ -49,6 +51,8 @@ public class ReservationEditScreen_New : MonoBehaviour
     private GameObject roomDropdownParent;
     [SerializeField]
     private Dropdown preAlertDropdown;
+    [SerializeField]
+    private GameObject preAlertDropdownParent;
 
     private UnityAction<IReservation> confirmationCallback;
     private List<IProperty> propertyOptions;
@@ -186,6 +190,9 @@ public class ReservationEditScreen_New : MonoBehaviour
         clientPicker.SetCallback((c) => resClient = c, resClient);
         UpdatePropertyDropdown();
         UpdateRoomDropdown();
+
+        preAlertDropdownParent.SetActive(settings.ReadData().settings.ReceiveNotifications);
+        preAlertDropdown.value = settings.ReadData().settings.PreAlertTime;
     }
 
     private void SelectProperty(int index)
@@ -270,7 +277,9 @@ public class ReservationEditScreen_New : MonoBehaviour
         {
             optionList.Add(new Dropdown.OptionData(Constants.PreAlertDict.ElementAt(i).Value));
         }
+
         preAlertDropdown.options = optionList;
+        preAlertDropdown.value = settings.ReadData().settings.PreAlertTime;
     }
 
     private bool InputIsValid()

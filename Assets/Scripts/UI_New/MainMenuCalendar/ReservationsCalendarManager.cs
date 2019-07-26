@@ -22,6 +22,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationFilterScreen filterScreen;
     [SerializeField]
     private ReservationOptionsDropdown reservationOptions;
+    [SerializeField]
+    private RoomAdminScreen roomEditScreen;
 
     [SerializeField]
     private ReservationEditScreen_New reservationEditScreen;
@@ -181,7 +183,7 @@ public class ReservationsCalendarManager : MonoBehaviour
     {
         currentProperty = property;
         currentRooms = FilteredRooms();
-        roomColumn.UpdateRooms(currentRooms, NewReservationFromRoomColumn);
+        roomColumn.UpdateRooms(currentRooms, roomEditScreen.OpenRoomAdminScreen);
 
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {

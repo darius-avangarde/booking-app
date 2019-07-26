@@ -18,9 +18,24 @@ public class RoomToggleObject : MonoBehaviour
     [SerializeField]
     private Image roomTypeIcon;
 
+    [Space]
+    [SerializeField]
+    private Image backgroundImage;
+    [SerializeField]
+    private Image underline;
+    [SerializeField]
+    private Image checkmarkRim;
+    [SerializeField]
+    private Image checkmarkFill;
+
     private IRoom currentRoom;
     private UnityAction<IRoom, RoomToggleObject> onTapCallback;
     private UnityAction<RoomToggleObject> onToggleCallback;
+
+    private void Start()
+    {
+        //ThemeManager.Instance.AddItems(roomNameText, /*roomTypeIcon */ backgroundImage, underline, checkmarkFill, checkmarkRim);
+    }
 
     public void UpdateObject(UnityAction<IRoom, RoomToggleObject> tapCallback, UnityAction<RoomToggleObject> toggleCallback, IRoom room, bool selected)
     {

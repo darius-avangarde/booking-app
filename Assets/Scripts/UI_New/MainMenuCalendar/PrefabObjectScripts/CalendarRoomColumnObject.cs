@@ -13,8 +13,15 @@ public class CalendarRoomColumnObject : MonoBehaviour
     private Text singleBeds;
     [SerializeField]
     private Text doubleBeds;
+    [SerializeField]
+    private Image singleBedsImage;
+    [SerializeField]
+    private Image doubleBedsImage;
 
-
+    private void Start()
+    {
+        //ThemeManager.Instance.AddItems(roomButton.targetGraphic, singleBeds, doubleBeds, singleBedsImage, doubleBedsImage);
+    }
 
     private void OnDestroy()
     {
