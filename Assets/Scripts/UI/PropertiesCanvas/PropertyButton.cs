@@ -15,6 +15,11 @@ public class PropertyButton : MonoBehaviour
 
     private IProperty currentProperty;
 
+    private void OnDisable()
+    {
+        propertyButtonItem.onClick.RemoveAllListeners();
+    }
+
     /// <summary>
     /// set the current property
     /// set property name

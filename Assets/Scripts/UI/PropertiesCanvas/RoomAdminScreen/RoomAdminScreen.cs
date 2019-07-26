@@ -32,7 +32,7 @@ public class RoomAdminScreen : MonoBehaviour
     private Text errorMessage = null;
 
     private ConfirmationDialogOptions modalDialogOptions = new ConfirmationDialogOptions();
-    private Action<IRoom> returnCallback = null;
+    private Action returnCallback = null;
     private IProperty currentProperty;
     private IRoom currentRoom;
     private bool canSave = true;
@@ -42,18 +42,6 @@ public class RoomAdminScreen : MonoBehaviour
         backButton.onClick.AddListener(() => navigator.GoBack());
         calcelButton.onClick.AddListener(() => navigator.GoBack());
         deleteButton.onClick.AddListener(() => DeleteRoom());
-
-        modalDialogOptions.Message = Constants.DELETE_ROOM;
-        modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
-        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
-        modalDialogOptions.ConfirmCallback = () =>
-        {
-            currentProperty.DeleteRoom(currentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
-            navigator.GoBack();
-            navigator.GoBack();
-        };
-        modalDialogOptions.CancelCallback = null;
     }
 
     private void OnEnable()
@@ -70,7 +58,7 @@ public class RoomAdminScreen : MonoBehaviour
     /// set the current property and room
     /// </summary>
     /// <param name="room">selected room</param>
-    public void OpenRoomAdminScreen(IRoom room, Action<IRoom> callback = null)
+    public void OpenRoomAdminScreen(IRoom room, Action callback = null)
     {
         currentProperty = PropertyDataManager.GetProperty(room.PropertyID);
         currentRoom = room;
@@ -87,7 +75,14 @@ public class RoomAdminScreen : MonoBehaviour
     {
         if (currentRoom != null)
         {
-            propertyRoomTitle.text = Constants.EDIT_ROOM;
+            if (currentProperty.HasRooms)
+            {
+                propertyRoomTitle.text = Constants.EDIT_ROOM;
+            }
+            else
+            {
+                propertyRoomTitle.text = Constants.EDIT_PROPERTY;
+            }
             setRoomName.SetCurrentName(currentRoom.Name);
             setRoomTypeDropdown.CurrentRoomType = currentRoom.RoomType;
             Vector2Int bedInfo = new Vector2Int(currentRoom.SingleBeds, currentRoom.DoubleBeds);
@@ -98,12 +93,16 @@ public class RoomAdminScreen : MonoBehaviour
     public void SaveChanges()
     {
         currentRoom.Name = setRoomName.GetCurrentName();
+        if (!currentProperty.HasRooms)
+        {
+            currentProperty.Name = setRoomName.GetCurrentName();
+        }
         currentRoom.RoomType = setRoomTypeDropdown.CurrentRoomType;
         Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
         currentRoom.SingleBeds = bedInfo.x;
         currentRoom.DoubleBeds = bedInfo.y;
-        returnCallback?.Invoke(currentRoom);
         navigator.GoBack();
+        returnCallback?.Invoke();
     }
 
     public void DeleteRoom()
@@ -113,10 +112,18 @@ public class RoomAdminScreen : MonoBehaviour
         modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
         modalDialogOptions.ConfirmCallback = () =>
         {
-            currentProperty.DeleteRoom(currentRoom.ID);
-            ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            if (currentProperty.HasRooms)
+            {
+                currentProperty.DeleteRoom(currentRoom.ID);
+                ReservationDataManager.DeleteReservationsForRoom(currentRoom.ID);
+            }
+            else
+            {
+                PropertyDataManager.DeleteProperty(currentProperty.ID);
+                ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
+            }
             navigator.GoBack();
-            navigator.GoBack();
+            returnCallback?.Invoke();
         };
         modalDialogOptions.CancelCallback = null;
         confirmationDialog.Show(modalDialogOptions);
