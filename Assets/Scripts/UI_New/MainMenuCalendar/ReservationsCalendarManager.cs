@@ -73,16 +73,21 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationFilter currentFilter = null;
 
 
-    private void Start()
+     private void Awake()
     {
         propertyDropdown.OnSelectProperty = SelectProperty;
 
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
         CreateDayItems();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
 
         //Load first property to initialize day columns/items;
         SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
 
+    }
+
+    private void Start()
+    {
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
     }
@@ -204,8 +209,10 @@ public class ReservationsCalendarManager : MonoBehaviour
     //Create enough day headers and day columns to cover the screen in landscape mode
     private void CreateDayItems()
     {
-        float maxScreen = Mathf.Max(Screen.width, Screen.height);
-        totalItemCount = Mathf.RoundToInt((maxScreen * 1.3f)/dayHeaderPrefab.GetComponent<RectTransform>().rect.width);
+        // float maxScreen = Mathf.Max(Screen.width, Screen.height);
+        // totalItemCount = Mathf.RoundToInt((maxScreen * 1.3f)/dayHeaderPrefab.GetComponent<RectTransform>().rect.width);
+        // Debug.Log(totalItemCount);
+        totalItemCount = 19;
 
         for (int d = 0; d < totalItemCount; d++)
         {
