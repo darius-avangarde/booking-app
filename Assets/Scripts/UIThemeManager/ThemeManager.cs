@@ -28,7 +28,6 @@ public class ThemeManager : MonoBehaviour
 
     void Start()
     {
-        setMode = new SettingsManager();
         setMode.ReadData();
         statusColor = setMode.ReadData().settings.themeStatus;
         if (statusColor == 0)
