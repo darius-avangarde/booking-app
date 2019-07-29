@@ -27,6 +27,7 @@ public class ThemeManager : MonoBehaviour
     private bool result = true;
     void Start()
     {
+       // themeToggle.onValueChanged.RemoveAllListeners();
         setMode.ReadData();
         statusColor = setMode.ReadData().settings.themeStatus;
         if (statusColor == 0)
@@ -75,6 +76,7 @@ public class ThemeManager : MonoBehaviour
             SetItemColor(dataColor.separatorDark, dataColor.separatorLight, null, item);
         }
 
+        Verify();
     }
 
     public void AddItems(params Graphic[] myObjects)
@@ -126,14 +128,12 @@ public class ThemeManager : MonoBehaviour
     {
        
         if (themeToggle.isOn)
-        {
-            result = true;
+        { 
             setMode.DataElements.settings.themeStatus = 0;
             setMode.WriteData();
         }
         else
         {
-            result = false;
             setMode.DataElements.settings.themeStatus = 1;
             setMode.WriteData();
         }
@@ -141,9 +141,8 @@ public class ThemeManager : MonoBehaviour
     }
     private void SetItemColor(Color dark, Color light, Graphic items = null, Shadow myShadow = null)
     {
-        if (result)
+        if (themeToggle.isOn)
         {
-
             if (items != null)
             {
                 items.color = dark;
@@ -156,6 +155,7 @@ public class ThemeManager : MonoBehaviour
         }
         else
         {
+           
             if (items != null)
             {
                 items.color = light;
