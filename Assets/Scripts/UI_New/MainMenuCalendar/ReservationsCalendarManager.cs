@@ -300,7 +300,11 @@ public class ReservationsCalendarManager : MonoBehaviour
     private void NewReservationFromHeader(DateTime date, IProperty property)
     {
         if(currentProperty != null)
+        {
             reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), property, date);
+            scrollviewHandler.InstantSnap();
+        }
+
         else
             ShowNoFilterMatchText("Nu aveti nici o proprietate");
     }
@@ -313,7 +317,10 @@ public class ReservationsCalendarManager : MonoBehaviour
     private void NewReservationFromUnreservedDay(DateTime date, IRoom room)
     {
         if(currentProperty != null)
+        {
             reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room, date);
+            scrollviewHandler.InstantSnap();
+        }
     }
 
 }

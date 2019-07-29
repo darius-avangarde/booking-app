@@ -48,6 +48,10 @@ public class ReservationObjectManager : MonoBehaviour
     {
         reservationButtonAction = tapAction;
         DisableAllReservationObjects();
+
+        if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
+            return;
+
         //get ordered by hierarchy day columns
         StartCoroutine(DelayDraw(property));
     }
@@ -85,6 +89,7 @@ public class ReservationObjectManager : MonoBehaviour
         reservations = ReservationDataManager.GetActivePropertyReservations(property.ID).ToList();
         //ManagePool(reservations);
 
+
         placedReservations = new List<IReservation>();
 
         foreach (IReservation r in reservations)
@@ -92,6 +97,11 @@ public class ReservationObjectManager : MonoBehaviour
             if((r.Period.Start.Date >= minDate && r.Period.Start.Date <= maxDate) || (r.Period.End.Date >= minDate && r.Period.End.Date <= maxDate))
             {
                 DrawReservation(r, columns);
+                placedReservations.Add(r);
+            }
+            if(r.Period.Start.Date < minDate.Date && r.Period.End.Date > maxDate.Date)
+            {
+                DrawReservationOverlapped(r, columns);
                 placedReservations.Add(r);
             }
         }
@@ -104,6 +114,18 @@ public class ReservationObjectManager : MonoBehaviour
             if(r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
+                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
+            }
+        }
+    }
+
+    private void DrawReservationOverlapped(IReservation r, List<CalendarDayColumn> columns)
+    {
+        foreach (CalendarDayColumnObject cdco in columns[0].ActiveDayColumnsObjects)
+        {
+            if(r.ContainsRoom(cdco.ObjectRoom.ID))
+            {
+                PointSize p = CalculatePositionSpan((int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
                 GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
             }
         }
@@ -145,6 +167,20 @@ public class ReservationObjectManager : MonoBehaviour
         output.minPos = (Vector2)dayRect.position;
 
         output.pivot = isStart ? Vector2.zero : Vector2.right;
+
+        return output;
+    }
+
+    private PointSize CalculatePositionSpan(int daySpan, int differenceFromFirstDate, RectTransform firstRect)
+    {
+        PointSize output = new PointSize();
+        output.size.x = (daySpan) * firstRect.rect.width;
+        output.size.y = dayColumnObjectPrefabRect.rect.height;
+        output.minPos = (Vector2)firstRect.position;
+
+        output.minPos.x -= differenceFromFirstDate * firstRect.rect.width;
+
+        output.pivot = Vector2.zero;
 
         return output;
     }
