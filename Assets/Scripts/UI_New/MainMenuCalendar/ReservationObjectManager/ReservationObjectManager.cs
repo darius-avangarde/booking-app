@@ -170,11 +170,11 @@ public class ReservationObjectManager : MonoBehaviour
     private PointSize CalculatePositionSpan(int daySpan, int differenceFromFirstDate, RectTransform firstRect)
     {
         PointSize output = new PointSize();
-        output.size.x = (daySpan) * dayColumnObjectPrefabRect.rect.width;
+        output.size.x = (daySpan) * firstRect.rect.width;
         output.size.y = dayColumnObjectPrefabRect.rect.height;
         output.minPos = (Vector2)firstRect.position;
 
-        output.minPos.x -= differenceFromFirstDate * dayColumnObjectPrefabRect.rect.width;
+        output.minPos.x -= differenceFromFirstDate * firstRect.rect.width;
 
         output.pivot = Vector2.zero;
 
