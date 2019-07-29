@@ -83,6 +83,8 @@ public class ReservationEditScreen_New : MonoBehaviour
         resStartDate = reservationStartDate;
         resProperty = property;
         resRooms.Clear();
+        if(!resProperty.HasRooms)
+            resRooms.Add(resProperty.GetRoom(resProperty.GetPropertyRoomID));
         UpdateAllUI();
         navigator.GoTo(navScreen);
     }
@@ -193,6 +195,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
         preAlertDropdownParent.SetActive(settings.ReadData().settings.ReceiveNotifications);
         preAlertDropdown.value = settings.ReadData().settings.PreAlertTime;
+        SetErrorAnState(null);
     }
 
     private void SelectProperty(int index)
@@ -334,8 +337,11 @@ public class ReservationEditScreen_New : MonoBehaviour
     {
         errorText.text = message;
         errorText.gameObject.SetActive(!string.IsNullOrEmpty(message));
-        StopAllCoroutines();
-        StartCoroutine(LerpToZero());
+        if(!string.IsNullOrEmpty(message))
+        {
+            StopAllCoroutines();
+            StartCoroutine(LerpToZero());
+        }
     }
 
     private IEnumerator LerpToZero()

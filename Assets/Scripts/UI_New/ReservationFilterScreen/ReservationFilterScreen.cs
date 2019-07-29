@@ -137,7 +137,7 @@ public class ReservationFilterScreen : MonoBehaviour
 
     public void SetDate(bool isStart)
     {
-        modalCalendar.OpenCallendar((d) => SetDatesCallback(d, isStart));
+        modalCalendar.OpenCallendar((d) => SetDatesCallback(d, isStart),  (isStart) ? startDate :  (endDate == null && startDate != null) ? startDate.Value.AddDays(1) : endDate);
     }
 
     private void SetDatesCallback(DateTime date, bool isStart)
