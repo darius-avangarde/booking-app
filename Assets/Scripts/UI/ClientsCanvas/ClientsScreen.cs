@@ -41,6 +41,8 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private GameObject editButton;
     [SerializeField]
+    private GameObject deleteButton;
+    [SerializeField]
     private InputManager inputManager;
     [SerializeField]
     private UI_ScrollRectOcclusion scrollRectComponent = null;
@@ -198,6 +200,7 @@ public class ClientsScreen : MonoBehaviour
         SetTextOnEditPanel();
         saveButton.gameObject.SetActive(false);
         editButton.gameObject.SetActive(true);
+        deleteButton.gameObject.SetActive(true);
         //theme.SetColor(editButton);
         //theme.SetColor(editButton.GetComponentInChildren<Text>().gameObject);
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
@@ -277,6 +280,7 @@ public class ClientsScreen : MonoBehaviour
         SetTextOnAddPanel();
         saveButton.gameObject.SetActive(true);
         editButton.gameObject.SetActive(false);
+        deleteButton.gameObject.SetActive(false);
         ClearSearchField();
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
     }

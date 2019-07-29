@@ -142,7 +142,7 @@ public class ClientsEditScreen : MonoBehaviour
     public void EditClient()
     {
        GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text) || String.IsNullOrEmpty(clientPhone.text))
+        if (String.IsNullOrEmpty(clientName.text)) //|| String.IsNullOrEmpty(clientPhone.text))
         {
             return;
         }

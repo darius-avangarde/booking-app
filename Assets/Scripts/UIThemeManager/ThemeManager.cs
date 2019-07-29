@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -7,7 +6,7 @@ using UnityEngine.UI;
 public class ThemeManager : MonoBehaviour
 {
     [SerializeField]
-    private  GameObject[] parents;
+    private GameObject[] parents;
     [SerializeField]
     private SettingsManager setMode;
     [SerializeField]
@@ -25,11 +24,12 @@ public class ThemeManager : MonoBehaviour
     public static ThemeManager Instance { get { return instance; } }
     private int statusColor;
     public UnityAction<bool> OnThemeChanged;
-
+    private bool result = true;
     void Start()
     {
         setMode.ReadData();
         statusColor = setMode.ReadData().settings.themeStatus;
+        //Debug.Log(statusColor);
         if (statusColor == 0)
         {
             themeToggle.isOn = true;
@@ -39,18 +39,19 @@ public class ThemeManager : MonoBehaviour
             themeToggle.isOn = false;
         }
         SelectTheme();
+        Debug.Log(statusColor);
     }
-      private void Awake()
-      {
-          if (instance != null && instance != this)
-          {
-              Destroy(this.gameObject);
-          }
-          else
-          {
-              instance = this;
-          }
-      }
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
 
     public void SelectTheme()
     {
@@ -121,6 +122,20 @@ public class ThemeManager : MonoBehaviour
         }
     }
 
+
+    public void Verify()
+    {
+       
+        if (themeToggle.isOn)
+        {
+            result = true;
+        }
+        else
+        {
+            result = false;
+        }
+       
+    }
     private void SetItemColor(Color dark, Color light, Graphic items = null, Shadow myShadow = null)
     {
         if (themeToggle.isOn)
