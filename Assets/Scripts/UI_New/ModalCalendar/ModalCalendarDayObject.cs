@@ -44,5 +44,6 @@ public class ModalCalendarDayObject : MonoBehaviour
     {
         dateButton.onClick.RemoveAllListeners();
         dateText.text = string.Empty;
+        objDate = DateTime.MinValue;
     }
 }
