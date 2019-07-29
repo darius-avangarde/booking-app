@@ -34,8 +34,6 @@ public class NotificationsScreen : MonoBehaviour
     private void Start()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
-
-        noNotificationsObject.SetActive(false);
         for (int i = 0; i < 10; i++)
         {
             NotificationItem notificationItem = Instantiate(notificationItemPrefab, scrollViewContent).GetComponent<NotificationItem>();
@@ -46,7 +44,7 @@ public class NotificationsScreen : MonoBehaviour
 
     public int GetNotificationsCount()
     {
-        newNotifications = NotificationDataManager.GetNewNotifications();
+        //newNotifications = NotificationDataManager.GetNotifications();
         int notificationsCount = newNotifications.Count();
         return notificationsCount;
     }
@@ -75,19 +73,18 @@ public class NotificationsScreen : MonoBehaviour
         }
         int notificationsCount = newNotifications.Count();
         SetNewNotifications?.Invoke(notificationsCount);
-        NotificationDataManager.SetNewNotification(newNotifications);
     }
 
     public void Initialize()
     {
-        settingsManager.ReadData();
         noNotificationsObject.SetActive(false);
-        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today.Date.AddHours(12) && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
+        settingsManager.ReadData();
+        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
         if (currentNotifications != null)
         {
             foreach (IReservation reservation in currentNotifications)
             {
-                if (newNotifications.Any(r => r.ID == reservation.ID))
+                if (newNotifications.Any(n => n.ID == reservation.ID))
                 {
                     InitializeNotification(reservation, true);
                 }
@@ -98,7 +95,6 @@ public class NotificationsScreen : MonoBehaviour
             }
         }
         newNotifications = new List<IReservation>();
-
         if (activeNotificationItems.Count == 0)
         {
             noNotificationsObject.SetActive(true);

@@ -27,13 +27,12 @@ public class NotificationDataManager : MonoBehaviour
                     cache = new NotificationData();
                 }
             }
-
             return cache;
         }
     }
 
     /// <summary>
-    /// save property data to json file
+    /// save notification data to json file
     /// </summary>
     private static void WriteNotificationData()
     {
@@ -43,36 +42,69 @@ public class NotificationDataManager : MonoBehaviour
         File.WriteAllText(filePath, dataAsJson);
     }
 
-    public static void DeleteNewNotifications()
+    public static INotification AddNotification()
     {
         Notification newNotification = new Notification();
-        //newNotification.NewNotifications = new List<IReservation>();
+        Data.notification.Add(newNotification);
+        WriteNotificationData();
+        return newNotification;
     }
 
-    public static void SetNewNotification(List<IReservation> reservationIDs)
+    public static INotification GetNotification(int ID)
+    {
+        return Data.notification.Find(n => n.NotificationID == ID);
+    }
+
+    public static List<INotification> GetNotifications()
+    {
+        List<INotification> notificationsList = new List<INotification>();
+        List<Notification> notifications = Data.notification;
+        foreach (Notification notification in notifications)
+        {
+            notificationsList.Add(notification);
+        }
+        return notificationsList;
+    }
+
+    public static List<INotification> GetNewNotifications()
+    {
+        List<INotification> notificationsList = new List<INotification>();
+        List<Notification> notifications = Data.notification.FindAll(n => n.UnRead);
+        foreach (Notification notification in notifications)
+        {
+            notificationsList.Add(notification);
+        }
+        return notificationsList;
+    }
+
+    public static void SetNotificationReservations(List<IReservation> reservationIDs)
     {
         Notification newNotification = new Notification();
         newNotification.SetReservationIDs(reservationIDs);
     }
 
-    public static List<IReservation> GetNewNotifications()
+    /// <summary>
+    /// delete selected notification
+    /// </summary>
+    /// <param name="ID">notification id</param>
+    public static void DeleteNotification(int ID)
     {
-        List<IReservation> reservationsList = new List<IReservation>();
-        foreach (string reservationID in Data.notification.NewNotifications)
+        Notification property = Data.notification.Find(n => n.NotificationID.Equals(ID));
+        if (property != null)
         {
-            reservationsList.Add(ReservationDataManager.GetReservation(reservationID));
+            property.Deleted = true;
+            WriteNotificationData();
         }
-        return reservationsList;
     }
 
     [Serializable]
     private class NotificationData
     {
-        public Notification notification;
+        public List<Notification> notification;
 
         public NotificationData()
         {
-            this.notification = new Notification();
+            this.notification = new List<Notification>();
         }
     }
 
@@ -80,15 +112,63 @@ public class NotificationDataManager : MonoBehaviour
     private class Notification : INotification
     {
         [SerializeField]
-        private List<string> newNotifications = new List<string>();
-        public List<string> NewNotifications => newNotifications;
-
-        public void SetReservationIDs(List<IReservation> reservationIDs)
+        private int notificationID;
+        public int NotificationID
         {
-            newNotifications = new List<string>();
-            for (int i = 0; i < reservationIDs.Count(); i++)
+            get => notificationID;
+            set
             {
-                newNotifications.Add(reservationIDs[0].ID);
+                notificationID = value;
+                WriteNotificationData();
+            }
+        }
+
+        [SerializeField]
+        private int preAlertTime;
+        public int PreAlertTime
+        {
+            get => preAlertTime;
+            set
+            {
+                preAlertTime = value;
+                WriteNotificationData();
+            }
+        }
+
+        [SerializeField]
+        private bool unRead = true;
+        public bool UnRead
+        {
+            get => unRead;
+            set
+            {
+                unRead = value;
+                WriteNotificationData();
+            }
+        }
+
+        [SerializeField]
+        private bool deleted = false;
+        public bool Deleted
+        {
+            get => deleted;
+            set
+            {
+                deleted = value;
+                WriteNotificationData();
+            }
+        }
+
+        [SerializeField]
+        private List<string> reservationIDs = new List<string>();
+        public List<string> ReservationIDs => reservationIDs;
+
+        public void SetReservationIDs(List<IReservation> reservationsList)
+        {
+            reservationIDs = new List<string>();
+            for (int i = 0; i < reservationsList.Count(); i++)
+            {
+                reservationIDs.Add(reservationsList[0].ID);
             }
         }
     }

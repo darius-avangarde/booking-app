@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 public interface INotification 
 {
-    List<string> NewNotifications { get; }
+    int NotificationID { get; set; }
+    int PreAlertTime { get; set; }
+    bool UnRead { get; set; }
+    List<string> ReservationIDs { get; }
 
-    void SetReservationIDs(List<IReservation> reservationIDs);
+    void SetReservationIDs(List<IReservation> reservationsList);
 }

@@ -98,7 +98,7 @@ public class PropertyAdminScreen : MonoBehaviour
         if (CurrentProperty != null)
         {
             propertyNameInputField.text = CurrentProperty.Name ?? "";
-            propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? Constants.EDIT_PROPERTY : Constants.NEW_PROPERTY;
+            propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? Constants.NEW_PROPERTY : Constants.EDIT_PROPERTY;
             if (!string.IsNullOrEmpty(CurrentProperty.Name))
             {
                 SetRoomsToggle(CurrentProperty.HasRooms);
@@ -164,6 +164,7 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 PropertyDataManager.DeleteProperty(CurrentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(CurrentProperty.ID);
+                navigator.GoBack();
                 navigator.GoBack();
                 reservationCallendar.SelectProperty(null);
             },
