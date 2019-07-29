@@ -48,6 +48,10 @@ public class ReservationObjectManager : MonoBehaviour
     {
         reservationButtonAction = tapAction;
         DisableAllReservationObjects();
+
+        if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
+            return;
+
         //get ordered by hierarchy day columns
         StartCoroutine(DelayDraw(property));
     }
