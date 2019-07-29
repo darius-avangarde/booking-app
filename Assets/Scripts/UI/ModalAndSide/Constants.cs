@@ -56,6 +56,7 @@ public class Constants : MonoBehaviour
     public const string PhoneRequired = "Te rog adaugă un număr de telefon!";
     public const string Name_Phone_Required = "Numele și telefonul sunt necesare!";
     public const string MessageEmail = "Nu există email înregistrat!";
+    public const string MessageNumber = "Nu există număr înregistrat!";
     public const string Valid_Email = "Inserează o adresă de email validă!";
     public const string defaultCustomerName = "NumeClient";
     public const string defaultPropertyPicture = "DefaultPicture";

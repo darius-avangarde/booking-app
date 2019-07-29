@@ -224,17 +224,32 @@ public class ClientsScreen : MonoBehaviour
 
     string MyEscapeURL(string url)
     {
+
         return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
     }
 
     public void phoneUS(IClient currentClient = null)
     {
-        Application.OpenURL("tel:" + currentClient.Number);
+        if (string.IsNullOrEmpty(currentClient.Number))
+        {
+            inputManager.Message(Constants.MessageNumber);
+        }
+        else
+        {
+            Application.OpenURL("tel:" + currentClient.Number);
+        }
     }
 
     public void SmsUs(IClient currentClient = null)
     {
-        Application.OpenURL("sms:" + currentClient.Number);
+        if (string.IsNullOrEmpty(currentClient.Number))
+        {
+            inputManager.Message(Constants.MessageNumber);
+        }
+        else
+        {
+            Application.OpenURL("sms:" + currentClient.Number);
+        }
     }
     #endregion
 
