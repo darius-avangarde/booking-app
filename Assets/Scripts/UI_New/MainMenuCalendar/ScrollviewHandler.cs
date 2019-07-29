@@ -81,6 +81,13 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         }
     }
 
+    public void InstantSnap()
+    {
+        float snapTo = NearestSnapPointX(DayColumnScrollrect);
+        DayColumnScrollrect.horizontalNormalizedPosition = snapTo;
+        DayHeaderScrollrect.horizontalNormalizedPosition = snapTo;
+    }
+
     public void CancelSnap(bool cancelIsScrolling = false)
     {
         StopAllCoroutines();
