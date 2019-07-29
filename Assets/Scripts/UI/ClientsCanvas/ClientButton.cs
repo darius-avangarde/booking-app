@@ -40,7 +40,7 @@ public class ClientButton : MonoBehaviour
     private List<GameObject> separatorsList = new List<GameObject>();
     private float containerSize;
     private float initialContainerSize;
-   
+    public bool isOpen = false;
     public void Start()
     {
         //containerSize = textSize.sizeDelta.y;
@@ -76,8 +76,10 @@ public class ClientButton : MonoBehaviour
 
     public void AnimationPrefab()
     {
-        if (clientToggle.isOn)
+        if (isOpen == false)
         {
+            isOpen = true;
+
             if (string.IsNullOrEmpty(phoneNumber.text) == false)
             {
                 phoneNumber.gameObject.SetActive(true);
@@ -109,6 +111,7 @@ public class ClientButton : MonoBehaviour
         }
         else
         {
+            isOpen = false;
             containerSize =textSize.sizeDelta.y;
             Debug.Log(containerSize);
             phoneNumber.gameObject.SetActive(false);
