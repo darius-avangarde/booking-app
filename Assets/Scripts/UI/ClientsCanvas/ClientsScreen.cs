@@ -11,7 +11,7 @@ public class ClientsScreen : MonoBehaviour
 {
     #region SerializeFieldVariables
     [SerializeField]
-    private ThemeManager theme;
+    private ThemeManager theme = null;
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]

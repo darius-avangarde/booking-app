@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SideMenuFade : MonoBehaviour
+public class SideMenuFade : MonoBehaviour, IClosable
 {
     [SerializeField]
     private List<GameObject> items = new List<GameObject>();
@@ -33,7 +33,7 @@ public class SideMenuFade : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(Move(sideMenu, firstPosition));
-        StartCoroutine(Close());
+        StartCoroutine(CloseMenu());
         StartCoroutine(CanvasFade(true));
     }
     IEnumerator Move(RectTransform rt, Vector2 targetPos)
@@ -46,7 +46,7 @@ public class SideMenuFade : MonoBehaviour
         }
     }
 
-    IEnumerator Close()
+    IEnumerator CloseMenu()
     {
         yield return new WaitForSeconds(0.5f);
         sideMenuPanel.SetActive(false);
@@ -76,5 +76,10 @@ public class SideMenuFade : MonoBehaviour
     {
         sideMenuPanel.SetActive(true);
         FadeIn();
+    }
+
+    public void Close()
+    {
+        FadeOut();
     }
 }

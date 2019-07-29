@@ -29,7 +29,6 @@ public class ThemeManager : MonoBehaviour
     {
         setMode.ReadData();
         statusColor = setMode.ReadData().settings.themeStatus;
-        //Debug.Log(statusColor);
         if (statusColor == 0)
         {
             themeToggle.isOn = true;
@@ -39,7 +38,7 @@ public class ThemeManager : MonoBehaviour
             themeToggle.isOn = false;
         }
         SelectTheme();
-        Debug.Log(statusColor);
+        //Debug.Log(statusColor);
     }
     private void Awake()
     {
