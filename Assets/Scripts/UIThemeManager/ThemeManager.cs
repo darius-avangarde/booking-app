@@ -38,7 +38,7 @@ public class ThemeManager : MonoBehaviour
             themeToggle.isOn = false;
         }
         SelectTheme();
-        //Debug.Log(statusColor);
+     
     }
     private void Awake()
     {
@@ -128,16 +128,20 @@ public class ThemeManager : MonoBehaviour
         if (themeToggle.isOn)
         {
             result = true;
+            setMode.DataElements.settings.themeStatus = 0;
+            setMode.WriteData();
         }
         else
         {
             result = false;
+            setMode.DataElements.settings.themeStatus = 1;
+            setMode.WriteData();
         }
        
     }
     private void SetItemColor(Color dark, Color light, Graphic items = null, Shadow myShadow = null)
     {
-        if (themeToggle.isOn)
+        if (result)
         {
 
             if (items != null)
@@ -149,8 +153,6 @@ public class ThemeManager : MonoBehaviour
                 myShadow.effectColor = dark;
             }
 
-            setMode.DataElements.settings.themeStatus = 0;
-            setMode.WriteData();
         }
         else
         {
@@ -162,15 +164,13 @@ public class ThemeManager : MonoBehaviour
             {
                 myShadow.effectColor = light;
             }
-            setMode.DataElements.settings.themeStatus = 1;
-            setMode.WriteData();
+           
         }
         OnThemeChanged?.Invoke(themeToggle.isOn);
     }
 
-    public void SetShadow(GameObject item)
+    public void SetShadow(Shadow shadow)
     {
-        Shadow shadow = item.GetComponent<Shadow>();
         if (themeToggle.isOn)
         {
             shadow.effectColor = dataColor.separatorDark;
@@ -188,7 +188,7 @@ public class ThemeManager : MonoBehaviour
         SeparatorList.Clear();
         ItemList.Clear();
         ShadowList.Clear();
-        Debug.Log("Clicked Button");
+       // Debug.Log("Clicked Button");
         Graphic[] elements = new Graphic[700];
         foreach (var item in parents)
         {

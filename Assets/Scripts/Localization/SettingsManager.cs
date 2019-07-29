@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 
 public class SettingsManager : MonoBehaviour
@@ -25,13 +24,8 @@ public class SettingsManager : MonoBehaviour
             else
             {
                 DataElements = new SettingsData();
-                Debug.Log("Unable to read default input file");
                 DataElements.settings = new SettingsItem();
-                DataElements.settings.themeStatus = 0;
-                DataElements.settings.language = "Ro";
-                DataElements.settings.ReceiveNotifications = true;
-                DataElements.settings.PreAlertTime = 24;
-                WriteData();
+               
 
             }
         }

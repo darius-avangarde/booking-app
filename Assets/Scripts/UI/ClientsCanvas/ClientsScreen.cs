@@ -17,9 +17,7 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private Transform clientEditScreenTransform = null;
     [SerializeField]
-    private GameObject clientPrefabButton = null;
-    [SerializeField]
-    private RectTransform clientPrefab;
+    private Shadow clientPrefab;
     [SerializeField]
     private GameObject clientprefabLetter = null;
     [SerializeField]
@@ -132,8 +130,9 @@ public class ClientsScreen : MonoBehaviour
             SetTheme(clientLetters);
             foreach (var client in item.Value)
             {
+                theme.SetShadow(clientPrefab);
                 GameObject clientButton = Instantiate(clientPrefab.gameObject, clientInfoContent);
-                theme.SetShadow(clientButton);
+                
                 if (fromReservation)
                     clientButton.GetComponent<ClientButton>().Initialize(client,SetTheme , phoneUS, SmsUs, EmailUs, OpenEditAdminScreen);
                 else

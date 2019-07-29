@@ -113,7 +113,6 @@ public class ClientButton : MonoBehaviour
         {
             isOpen = false;
             containerSize =textSize.sizeDelta.y;
-            //Debug.Log(containerSize);
             phoneNumber.gameObject.SetActive(false);
             clientEmail.gameObject.SetActive(false);
             clientAdress.gameObject.SetActive(false);

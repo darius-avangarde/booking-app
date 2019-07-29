@@ -25,7 +25,7 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private ScrollRect propertiesScrollView = null;
     [SerializeField]
-    private GameObject propertyItemPrefab = null;
+    private Shadow propertyItemPrefab = null;
     [SerializeField]
     private Button addPropertyButton = null;
     [SerializeField]
@@ -63,9 +63,9 @@ public class PropertiesScreen : MonoBehaviour
         propertyButtonList = new List<GameObject>();
         foreach (var property in PropertyDataManager.GetProperties())
         {
+            themeManager.SetShadow(propertyItemPrefab);
             GameObject propertyButton;
-            propertyButton = Instantiate(propertyItemPrefab, propertiesContainerContent);
-            themeManager.SetShadow(propertyButton);
+            propertyButton = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
             if (property.HasRooms)
             {
                 propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyRoomScreen, themeManager);

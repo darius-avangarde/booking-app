@@ -27,7 +27,7 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private RectTransform roomsContentScrollView = null;
     [SerializeField]
-    private GameObject roomItemPrefab = null;
+    private Shadow roomItemPrefab = null;
     [SerializeField]
     private GameObject roomFloorNumberPrefab = null;
     [SerializeField]
@@ -105,8 +105,8 @@ public class PropertyRoomScreen : MonoBehaviour
                     themeManager.SetColor(floorNumber.GetComponent<Graphic>());
                     roomButtons.Add(floorNumber);
                 }
-                GameObject roomButton = Instantiate(roomItemPrefab, roomsContentScrollView);
-                themeManager.SetShadow(roomButton);
+                themeManager.SetShadow(roomItemPrefab);
+                GameObject roomButton = Instantiate(roomItemPrefab.gameObject, roomsContentScrollView);
                 RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
                 currentRoom.Initialize(room, OpenRoomAdminScreen, themeManager);
                 roomButtons.Add(roomButton);
