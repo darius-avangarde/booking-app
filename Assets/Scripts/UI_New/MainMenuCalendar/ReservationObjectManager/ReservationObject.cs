@@ -27,17 +27,11 @@ public class ReservationObject : MonoBehaviour
     private IReservation objReservation;
     UnityAction<IReservation> currentTapAction;
 
-    // private void OnDestroy()
-    // {
-    //     reservationButton.onClick.RemoveAllListeners();
-    // }
 
     public void PlaceUpdateObject(ReservationObjectManager.PointSize pointSize, CalendarDayColumnObject c, IReservation reservation, UnityAction<IReservation> tapAction, bool forceReposition = false)
     {
         currentTapAction = tapAction;
 
-        //reservationButton.onClick.RemoveAllListeners();
-        //reservationButton.targetGraphic.color = (reservation.Period.End.Date > DateTime.Today.Date) ? Placeholder_ThemeManager.Instance.currentReservationColor : Placeholder_ThemeManager.Instance.pastReservationColor;
         itemImage.color = (reservation.Period.End.Date > DateTime.Today.Date) ? ThemeManager.Instance.ThemeColor.CurrentReservationColor : ThemeManager.Instance.ThemeColor.PastReservationColor;
 
         co = c;
@@ -49,7 +43,6 @@ public class ReservationObject : MonoBehaviour
         objectRectTransform.pivot = pointSize.pivot;
 
         objReservation = reservation;
-        //reservationButton.onClick.AddListener(() => tapAction(objReservation));
 
         clientNameText.text = reservation.CustomerName;
 
@@ -83,6 +76,5 @@ public class ReservationObject : MonoBehaviour
     public void Disable()
     {
         gameObject.SetActive(false);
-        //reservationButton.onClick.RemoveAllListeners();
     }
 }

@@ -83,6 +83,8 @@ public class ReservationEditScreen_New : MonoBehaviour
         resStartDate = reservationStartDate;
         resProperty = property;
         resRooms.Clear();
+        if(!resProperty.HasRooms)
+            resRooms.Add(resProperty.GetRoom(resProperty.GetPropertyRoomID));
         UpdateAllUI();
         navigator.GoTo(navScreen);
     }
