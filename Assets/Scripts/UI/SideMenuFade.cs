@@ -15,15 +15,18 @@ public class SideMenuFade : MonoBehaviour, IClosable
     [SerializeField]
     private GameObject sideMenuPanel;
     [SerializeField]
+    private Button sideMenuButton;
+    [SerializeField]
     private Image img;
-    
-    
+    bool isClosed = false;
+
     void Start()
     {
-        firstPosition =  new Vector2(-650, 0);  //sideMenu.anchoredPosition; 431
+        firstPosition = new Vector2(-650, 0); 
     }
     public void FadeIn()
     {
+        sideMenuButton.interactable = true;
         StopAllCoroutines();
         StartCoroutine(Move(sideMenu, new Vector2(0, 0)));
         img.color = new Color(0, 0, 0, 0.5f);
@@ -35,6 +38,10 @@ public class SideMenuFade : MonoBehaviour, IClosable
         StartCoroutine(Move(sideMenu, firstPosition));
         StartCoroutine(CloseMenu());
         StartCoroutine(CanvasFade(true));
+        if (isClosed == true)
+        {
+            sideMenuButton.interactable = false;
+        }
     }
     IEnumerator Move(RectTransform rt, Vector2 targetPos)
     {
@@ -54,25 +61,28 @@ public class SideMenuFade : MonoBehaviour, IClosable
 
     IEnumerator CanvasFade(bool fadeAway)
     {
+        isClosed = true;
         if (fadeAway)
         {
             for (float i = 0.5f; i >= 0; i -= Time.deltaTime)
             {
                 img.color = new Color(0, 0, 0, i);
                 yield return null;
+                isClosed = false;
             }
         }
         else
         {
-            for (float i = 0.5f; i <= 1; i +=Time.deltaTime)
+            for (float i = 0.5f; i <= 1; i += Time.deltaTime)
             {
                 img.color = new Color(0, 0, 0, i);
                 yield return null;
             }
         }
+       
     }
 
-   public void ShowMenu()
+    public void ShowMenu()
     {
         sideMenuPanel.SetActive(true);
         FadeIn();
