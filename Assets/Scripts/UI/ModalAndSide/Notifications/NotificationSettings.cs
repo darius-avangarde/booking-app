@@ -17,7 +17,8 @@ public class NotificationSettings : MonoBehaviour
     [SerializeField]
     private Dropdown preAlertDropdown = null;
 
-    private int selecteOption = 0;
+    private int selectedOption = 0;
+    private int previousSelectedOption = 0;
 
     private void Start()
     {
@@ -35,9 +36,10 @@ public class NotificationSettings : MonoBehaviour
 
     public void SelectDropdownValue(int value)
     {
-        selecteOption = value;
-        settingsManager.DataElements.settings.PreAlertTime = value;
-        notificatoinManager.UpdateAllNotifications(Constants.PreAlertDict.ElementAt(value).Key);
+        previousSelectedOption = selectedOption;
+        selectedOption = value;
+        settingsManager.DataElements.settings.PreAlertTime = selectedOption;
+        notificatoinManager.UpdateAllNotifications(previousSelectedOption, Constants.PreAlertDict.ElementAt(selectedOption).Key);
         settingsManager.WriteData();
     }
 
