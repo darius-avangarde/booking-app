@@ -63,6 +63,7 @@ public class TopCalendar : MonoBehaviour
         cachePage.CreateDayItems();
         cachePage.UpdatePage(DateTime.Today.Date);
         swipeHandler.Enabled = false;
+        monthText.text = $"{Constants.MonthNamesDict[DateTime.Today.Month]} {DateTime.Today.Year}";
     }
 
     public void ToggleDropdownCalendar()
