@@ -289,8 +289,18 @@ public class ReservationEditScreen_New : MonoBehaviour
     {
         if(resClient == null)
         {
-            SetErrorAnState(Constants.ERR_CLIENT);
-            return false;
+            if(!string.IsNullOrEmpty(clientPicker.CurrentInputText))
+            {
+                ClientDataManager.Client c = new ClientDataManager.Client();
+                c.Name = clientPicker.CurrentInputText;
+                ClientDataManager.AddClient(c);
+                resClient = c;
+            }
+            else
+            {
+                SetErrorAnState(Constants.ERR_CLIENT);
+                return false;
+            }
         }
 
         if(resStartDate == null)

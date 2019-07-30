@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class ClientPicker : MonoBehaviour, IClosable
 {
+    public string CurrentInputText => searchFieldInput.text;
+
     [SerializeField]
     private InputField searchFieldInput;
     [SerializeField]
