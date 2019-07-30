@@ -48,7 +48,7 @@ public class SideMenuFade : MonoBehaviour, IClosable
 
     IEnumerator CloseMenu()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.4f);
         sideMenuPanel.SetActive(false);
     }
 
