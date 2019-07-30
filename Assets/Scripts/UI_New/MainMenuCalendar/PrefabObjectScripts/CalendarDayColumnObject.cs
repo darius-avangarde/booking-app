@@ -7,6 +7,7 @@ public class CalendarDayColumnObject : MonoBehaviour
 {
     public RectTransform DayRectTransform => dayRectTransform;
     public IRoom ObjectRoom => objRoom;
+    public bool HasRoom => hasRoom;
 
     [SerializeField]
     private Button dayButton;
@@ -21,6 +22,7 @@ public class CalendarDayColumnObject : MonoBehaviour
 
     private DateTime objDate;
     private IRoom objRoom;
+    private bool hasRoom;
 
     private void Start()
     {
@@ -33,8 +35,9 @@ public class CalendarDayColumnObject : MonoBehaviour
         dayButton.onClick.RemoveAllListeners();
     }
 
-    public void UpdateEnableDayObject(DateTime date, IRoom room, UnityAction<DateTime,IRoom> tapAction)
+    public void UpdateDayObject(DateTime date, IRoom room, UnityAction<DateTime,IRoom> tapAction)
     {
+        hasRoom = true;
         objDate = new DateTime(date.Date.Ticks);
         objRoom = room;
 
@@ -60,6 +63,12 @@ public class CalendarDayColumnObject : MonoBehaviour
         {
             monthLineImage.SetActive(false);
         }
+    }
+
+    public void Disable()
+    {
+        hasRoom = false;
+        //gameObject.SetActive(false);
     }
 
     private void UpdateColors(bool isDark)
