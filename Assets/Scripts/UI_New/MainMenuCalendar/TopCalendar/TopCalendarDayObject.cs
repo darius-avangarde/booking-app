@@ -9,6 +9,8 @@ public class TopCalendarDayObject : MonoBehaviour
     private Text dateText;
     [SerializeField]
     private Button dateButton;
+    [SerializeField]
+    private Image dateImage;
 
     private DateTime objDate;
 
@@ -26,7 +28,7 @@ public class TopCalendarDayObject : MonoBehaviour
     {
         objDate = date.Date;
         dateText.text = $"{date.Day}";
-        dateButton.targetGraphic.color =  (objDate == DateTime.Today.Date) ? ThemeManager.Instance.ThemeColor.LightHeadCurrentColor : Color.clear;
+        dateImage.color =  (objDate == DateTime.Today.Date) ? ThemeManager.Instance.ThemeColor.LightHeadCurrentColor : Color.clear;
         dateButton.onClick.RemoveAllListeners();
         dateButton.onClick.AddListener(() => tapAction(objDate));
     }

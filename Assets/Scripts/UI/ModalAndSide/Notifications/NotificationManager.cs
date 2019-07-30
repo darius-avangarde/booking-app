@@ -134,7 +134,7 @@ public class NotificationManager : MonoBehaviour
         }
         //check new start period for other notifications
         //get the new ID and set it to current reservation or create new notification and set the ID
-        List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today.Date.AddHours(12) && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + preAlertTime)).OrderBy(r => r.Period.Start).ToList();
+        List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + preAlertTime)).OrderBy(r => r.Period.Start).ToList();
         IReservation otherReservation = allReservations.Find(r => r.ID != reservation.ID);
 
         if (otherReservation != null)
@@ -207,12 +207,16 @@ public class NotificationManager : MonoBehaviour
     /// when the time before a notification is set in the set-up menu, 
     /// this function should be called to update all current notifications according to new setting
     /// </summary>
-    public void UpdateAllNotifications(int preAlert)
+    public void UpdateAllNotifications(int previousPreAlert, int newPreAlert)
     {
         List<IReservation> previousReservations = ReservationDataManager.GetReservations().ToList();
         foreach (IReservation reservation in previousReservations)
         {
-            RegisterNotification(reservation, preAlert);
+            INotification notification = NotificationDataManager.GetNotification(reservation.NotificationID);
+            if (notification != null && notification.PreAlertTime == previousPreAlert)
+            {
+                RegisterNotification(reservation, newPreAlert);
+            }
         }
     }
 
@@ -222,11 +226,11 @@ public class NotificationManager : MonoBehaviour
 
         foreach (INotification notification in notifications)
         {
-             if (notification.NotificationID > 0 && AndroidNotificationCenter.CheckScheduledNotificationStatus(notification.NotificationID) == NotificationStatus.Delivered)
-             {
-                 List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.NotificationID).ToList();
-                 notificationsScreen.AddNewReservations(newReservations);
-             }
+            if (notification.NotificationID > 0 && AndroidNotificationCenter.CheckScheduledNotificationStatus(notification.NotificationID) == NotificationStatus.Delivered)
+            {
+                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.NotificationID).ToList();
+                notificationsScreen.AddNewReservations(newReservations);
+            }
         }
     }
 

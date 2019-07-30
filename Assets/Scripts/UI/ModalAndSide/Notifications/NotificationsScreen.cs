@@ -42,11 +42,6 @@ public class NotificationsScreen : MonoBehaviour
         }
     }
 
-    public int GetNotificationsCount()
-    {
-        return newReservations.Count();
-    }
-
     private void OnEnable()
     {
         Initialize();
@@ -77,7 +72,7 @@ public class NotificationsScreen : MonoBehaviour
     {
         noNotificationsObject.SetActive(false);
         settingsManager.ReadData();
-        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
+        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
         if (currentReservations != null)
         {
             foreach (IReservation reservation in currentReservations)
