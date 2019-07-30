@@ -58,7 +58,7 @@ public class NotificationDataManager : MonoBehaviour
     public static List<INotification> GetNotifications()
     {
         List<INotification> notificationsList = new List<INotification>();
-        List<Notification> notifications = Data.notification;
+        List<Notification> notifications = Data.notification.FindAll(n => !n.Deleted);
         foreach (Notification notification in notifications)
         {
             notificationsList.Add(notification);
@@ -69,7 +69,7 @@ public class NotificationDataManager : MonoBehaviour
     public static List<INotification> GetNewNotifications()
     {
         List<INotification> notificationsList = new List<INotification>();
-        List<Notification> notifications = Data.notification.FindAll(n => n.UnRead);
+        List<Notification> notifications = Data.notification.FindAll(n => n.UnRead && !n.Deleted);
         foreach (Notification notification in notifications)
         {
             notificationsList.Add(notification);
@@ -93,7 +93,6 @@ public class NotificationDataManager : MonoBehaviour
         if (property != null)
         {
             property.Deleted = true;
-            WriteNotificationData();
         }
     }
 
@@ -112,7 +111,7 @@ public class NotificationDataManager : MonoBehaviour
     private class Notification : INotification
     {
         [SerializeField]
-        private int notificationID;
+        private int notificationID = -1;
         public int NotificationID
         {
             get => notificationID;

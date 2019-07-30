@@ -6,27 +6,35 @@ using UnityEngine.UI;
 public class NotificationBadge : MonoBehaviour
 {
     [SerializeField]
-    private NotificationsScreen NotificationsScreen = null;
-    [SerializeField]
     private GameObject notificationsBadgeObject = null;
     [SerializeField]
     private Text notificationsBadgeText = null;
 
-    private void Start()
+    private int badgeCount = 0;
+
+    private void OnEnable()
     {
-        NotificationsScreen.SetNewNotifications += SetNotificationBadge;
+        if (badgeCount > 0)
+        {
+            notificationsBadgeObject.SetActive(true);
+        }
+    }
+
+    private void OnDisable()
+    {
+        notificationsBadgeObject.SetActive(false);
     }
 
     public void SetNotificationBadge(int newNotifications)
     {
         if (newNotifications > 0)
         {
-            notificationsBadgeObject.SetActive(true);
-            notificationsBadgeText.text = newNotifications.ToString();
+            badgeCount = newNotifications;
+            notificationsBadgeText.text = badgeCount.ToString();
         }
         else
         {
-            notificationsBadgeObject.SetActive(false);
+            badgeCount = 0;
         }
     }
 }

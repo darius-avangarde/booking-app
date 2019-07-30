@@ -7,14 +7,14 @@ using UnityEngine.UI;
 
 public class NotificationsScreen : MonoBehaviour
 {
-    public Action<int> SetNewNotifications;
-
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
     private ThemeManager themeManager = null;
     [SerializeField]
     private SettingsManager settingsManager = null;
+    [SerializeField]
+    private NotificationBadge notificationBadge = null;
     [SerializeField]
     private GameObject notificationItemPrefab = null;
     [SerializeField]
@@ -65,7 +65,7 @@ public class NotificationsScreen : MonoBehaviour
             this.newReservations.Add(reservation);
         }
         int notificationsCount = newNotifications.Count();
-        SetNewNotifications?.Invoke(notificationsCount);
+        notificationBadge.SetNotificationBadge(notificationsCount);
     }
 
     public void Initialize()
@@ -89,6 +89,7 @@ public class NotificationsScreen : MonoBehaviour
             }
         }
         newReservations = new List<IReservation>();
+        notificationBadge.SetNotificationBadge(newReservations.Count);
         if (activeNotificationItems.Count == 0)
         {
             noNotificationsObject.SetActive(true);

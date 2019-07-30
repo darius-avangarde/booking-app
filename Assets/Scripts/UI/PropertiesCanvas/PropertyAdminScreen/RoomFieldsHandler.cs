@@ -48,22 +48,38 @@ public class RoomFieldsHandler : MonoBehaviour
 
     public void SetFloorInputField(string value)
     {
-        currentFloorValue = int.Parse(value);
-        multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
-        multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
-        if (currentFloorValue > 0)
+        if (!string.IsNullOrEmpty(value))
         {
-            multipleFloorsField.text = $"P+{currentFloorValue}";
+            currentFloorValue = int.Parse(value);
+            multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
+            multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
+            if (currentFloorValue > 0)
+            {
+                multipleFloorsField.text = $"P+{currentFloorValue}";
+            }
+            else
+            {
+                multipleFloorsField.text = $"P";
+            }
         }
         else
         {
+            currentFloorValue = 0;
+            multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
             multipleFloorsField.text = $"P";
         }
     }
 
     public void SetRoomInputField(string value)
     {
-        currenRoomValue = int.Parse(value);
+        if (!string.IsNullOrEmpty(value))
+        {
+            currenRoomValue = int.Parse(value);
+        }
+        else
+        {
+            currenRoomValue = 1;
+        }
         multipleRoomsScript.multipleRoomsNumber = currenRoomValue;
         multipleRoomsField.text = value;
     }
