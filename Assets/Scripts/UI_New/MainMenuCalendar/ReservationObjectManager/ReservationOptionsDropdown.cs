@@ -24,7 +24,7 @@ public class ReservationOptionsDropdown : MonoBehaviour
 
     public void OpenReservationMenu(IReservation clickReservation)
     {
-        bool isPast = clickReservation.Period.End.Date < DateTime.Today.Date;
+        bool isPast = clickReservation.Period.End.Date <= DateTime.Today.Date;
         foreach(GameObject g in futureOnlyOptions)
         {
             g.SetActive(!isPast);
