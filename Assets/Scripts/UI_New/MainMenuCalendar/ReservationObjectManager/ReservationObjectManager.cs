@@ -19,6 +19,8 @@ public class ReservationObjectManager : MonoBehaviour
     [Space]
     [SerializeField]
     private RectTransform dayColumnObjectPrefabRect;
+    [SerializeField]
+    private CanvasGroup reservationsCanvasGroup;
 
 
     private List<ReservationObject> pool = new List<ReservationObject>();
@@ -26,6 +28,8 @@ public class ReservationObjectManager : MonoBehaviour
     private List<IReservation> placedReservations = new List<IReservation>();
 
     private UnityAction<IReservation> reservationButtonAction;
+
+
 
     public void DisableUnseenReservations()
     {
@@ -46,13 +50,22 @@ public class ReservationObjectManager : MonoBehaviour
 
     public void SweepUpdateReservations(IProperty property, UnityAction<IReservation> tapAction)
     {
-        reservationButtonAction = tapAction;
+        StartCoroutine(DelaySweep(property,tapAction));
+        // reservationButtonAction = tapAction;
+        // DisableAllReservationObjects();
+
+        // if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
+        //     return;
+
+        // //get ordered by hierarchy day columns
+        // StartCoroutine(DelayDraw(property));
+    }
+
+    private IEnumerator DelaySweep(IProperty property, UnityAction<IReservation> tapAction)
+    {
         DisableAllReservationObjects();
-
-        if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
-            return;
-
-        //get ordered by hierarchy day columns
+        reservationButtonAction = tapAction;
+        yield return new WaitForSeconds(0.1f);
         StartCoroutine(DelayDraw(property));
     }
 
@@ -99,7 +112,7 @@ public class ReservationObjectManager : MonoBehaviour
                 DrawReservation(r, columns);
                 placedReservations.Add(r);
             }
-            if(r.Period.Start.Date < minDate.Date && r.Period.End.Date > maxDate.Date)
+            else if(r.Period.Start.Date < minDate.Date && r.Period.End.Date > maxDate.Date)
             {
                 DrawReservationOverlapped(r, columns);
                 placedReservations.Add(r);

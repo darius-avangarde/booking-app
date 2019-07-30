@@ -207,8 +207,8 @@ public class ReservationsCalendarManager : MonoBehaviour
 
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
-
         reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
+
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
     }
 
