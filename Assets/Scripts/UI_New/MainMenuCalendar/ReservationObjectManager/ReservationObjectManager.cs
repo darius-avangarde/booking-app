@@ -50,24 +50,24 @@ public class ReservationObjectManager : MonoBehaviour
 
     public void SweepUpdateReservations(IProperty property, UnityAction<IReservation> tapAction)
     {
-        StartCoroutine(DelaySweep(property,tapAction));
-        // reservationButtonAction = tapAction;
-        // DisableAllReservationObjects();
-
-        // if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
-        //     return;
-
-        // //get ordered by hierarchy day columns
-        // StartCoroutine(DelayDraw(property));
-    }
-
-    private IEnumerator DelaySweep(IProperty property, UnityAction<IReservation> tapAction)
-    {
-        DisableAllReservationObjects();
+        // StartCoroutine(DelaySweep(property,tapAction));
         reservationButtonAction = tapAction;
-        yield return new WaitForSeconds(0.1f);
+        DisableAllReservationObjects();
+
+        if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
+            return;
+
+        //get ordered by hierarchy day columns
         StartCoroutine(DelayDraw(property));
     }
+
+    // private IEnumerator DelaySweep(IProperty property, UnityAction<IReservation> tapAction)
+    // {
+    //     DisableAllReservationObjects();
+    //     reservationButtonAction = tapAction;
+    //     yield return new WaitForSeconds(0.1f);
+    //     StartCoroutine(DelayDraw(property));
+    // }
 
     public void CreateReservationsForColumn(CalendarDayColumn dayColumn, IProperty property, bool isStart)
     {
