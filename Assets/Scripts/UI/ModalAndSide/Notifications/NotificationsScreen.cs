@@ -28,8 +28,8 @@ public class NotificationsScreen : MonoBehaviour
 
     private Queue<NotificationItem> notificationItemPool = new Queue<NotificationItem>();
     private List<NotificationItem> activeNotificationItems = new List<NotificationItem>();
-    private List<IReservation> newNotifications = new List<IReservation>();
-    private List<IReservation> currentNotifications = new List<IReservation>();
+    private List<IReservation> newReservations = new List<IReservation>();
+    private List<IReservation> currentReservations = new List<IReservation>();
 
     private void Start()
     {
@@ -44,9 +44,7 @@ public class NotificationsScreen : MonoBehaviour
 
     public int GetNotificationsCount()
     {
-        //newNotifications = NotificationDataManager.GetNotifications();
-        int notificationsCount = newNotifications.Count();
-        return notificationsCount;
+        return newReservations.Count();
     }
 
     private void OnEnable()
@@ -65,11 +63,11 @@ public class NotificationsScreen : MonoBehaviour
         noNotificationsObject.SetActive(false);
     }
 
-    public void AddNewNotification(List<IReservation> newNotifications)
+    public void AddNewReservations(List<IReservation> newNotifications)
     {
         foreach (IReservation reservation in newNotifications)
         {
-            this.newNotifications.Add(reservation);
+            this.newReservations.Add(reservation);
         }
         int notificationsCount = newNotifications.Count();
         SetNewNotifications?.Invoke(notificationsCount);
@@ -79,14 +77,15 @@ public class NotificationsScreen : MonoBehaviour
     {
         noNotificationsObject.SetActive(false);
         settingsManager.ReadData();
-        currentNotifications = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
-        if (currentNotifications != null)
+        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Today && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + Constants.PreAlertDict.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
+        if (currentReservations != null)
         {
-            foreach (IReservation reservation in currentNotifications)
+            foreach (IReservation reservation in currentReservations)
             {
-                if (newNotifications.Any(n => n.ID == reservation.ID))
+                if (newReservations.Any(r => r.ID == reservation.ID))
                 {
                     InitializeNotification(reservation, true);
+                    NotificationDataManager.GetNotification(reservation.NotificationID).UnRead = false;
                 }
                 else
                 {
@@ -94,7 +93,7 @@ public class NotificationsScreen : MonoBehaviour
                 }
             }
         }
-        newNotifications = new List<IReservation>();
+        newReservations = new List<IReservation>();
         if (activeNotificationItems.Count == 0)
         {
             noNotificationsObject.SetActive(true);

@@ -70,16 +70,16 @@ public class Constants : MonoBehaviour
         ///</summary>
         public static Dictionary<int,string> PreAlertDict = new Dictionary<int, string>()
         {
-            {1,  "label_1h"},
-            {2,  "label_2h"},
-            {4,  "label_4h"},
-            {24,  "label_1d"},
-            {24*2,  "label_2d"},
-            {24*3,  "label_3d"},
-            {24*4,  "label_4d"},
-            {24*5,  "label_5d"},
-            {24*6, "label_6d"},
-            {24*7, "label_7d"}
+            {1,  "1 oră"}, //"label_1h"
+            {2,  "2 ore"}, //"label_2h"
+            {4,  "4 ore"}, //"label_4h"
+            {24,  "1 zi"}, //"label_1d"
+            {24*2,  "2 zile"}, //"label_2d"
+            {24*3,  "3 zile"}, //"label_3d"
+            {24*4,  "4 zile"}, //"label_4d"
+            {24*5,  "5 zile"}, //"label_5d"
+            {24*6, "6 zile"}, //"label_6d"
+            {24*7, "7 zile"} //"label_7d"
         };
     #endregion
 

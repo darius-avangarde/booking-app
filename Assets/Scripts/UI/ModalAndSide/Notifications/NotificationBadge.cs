@@ -15,7 +15,6 @@ public class NotificationBadge : MonoBehaviour
     private void Start()
     {
         NotificationsScreen.SetNewNotifications += SetNotificationBadge;
-        SetNotificationBadge(NotificationsScreen.GetNotificationsCount());
     }
 
     private void OnEnable()
