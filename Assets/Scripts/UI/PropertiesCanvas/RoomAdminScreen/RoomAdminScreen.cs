@@ -13,6 +13,10 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
+    private PropertyDropdownHandler propertyDropdownHandler = null;
+    [SerializeField]
+    private ReservationsCalendarManager reservationCallendar = null;
+    [SerializeField]
     private NavScreen roomAdminScreen = null;
     [SerializeField]
     private SetRoomName setRoomName = null;
@@ -107,7 +111,14 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void DeleteRoom()
     {
-        modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+        if (currentProperty.HasRooms)
+        {
+            modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+        }
+        else
+        {
+            modalDialogOptions.Message = Constants.DELETE_PROPERTY;
+        }
         modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
         modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
         modalDialogOptions.ConfirmCallback = () =>
@@ -121,6 +132,7 @@ public class RoomAdminScreen : MonoBehaviour
             {
                 PropertyDataManager.DeleteProperty(currentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(currentProperty.ID);
+                propertyDropdownHandler.UpdateDropdown();
             }
             navigator.GoBack();
             returnCallback?.Invoke();
