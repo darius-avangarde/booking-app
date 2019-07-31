@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ReservationsCalendarManager : MonoBehaviour
@@ -75,8 +76,11 @@ public class ReservationsCalendarManager : MonoBehaviour
     private bool infiniteScrollsInitialized = false;
     private ReservationFilter currentFilter = null;
 
+    private IProperty propertyToLoadOnEnable;
+    private bool loadPropertyOnEnable = false;
 
-     private void Start()
+
+    private void Start()
     {
         propertyDropdown.OnSelectProperty = SelectProperty;
 
@@ -93,6 +97,21 @@ public class ReservationsCalendarManager : MonoBehaviour
 
         //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
         StartCoroutine(DelayInfiniteScrollrectInitialization());
+    }
+
+    private void OnEnable()
+    {
+        if(loadPropertyOnEnable)
+        {
+            SelectProperty(propertyToLoadOnEnable);
+            loadPropertyOnEnable = false;
+        }
+    }
+
+    public void SetPropertyToBeLoadedOnEnable(IProperty property)
+    {
+        loadPropertyOnEnable = true;
+        propertyToLoadOnEnable = property;
     }
 
     private IEnumerator DelayInfiniteScrollrectInitialization()
