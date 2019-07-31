@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class LocalizedText : MonoBehaviour
 {
-   // public List<LanguageScript> csvData; 
+    // public List<LanguageScript> csvData; 
+    [SerializeField]
+    private GameObject[] parents;
     [SerializeField]
     private List<Text> texts;
     [SerializeField]
@@ -17,6 +19,7 @@ public class LocalizedText : MonoBehaviour
     private Dropdown languageDropdown;
     [SerializeField]
     private List<Sprite> spriteList;
+
     public  string option;
     private SettingsManager languageSet;
     private string[] dropOptions = { "Română", "Engleză" };
@@ -81,15 +84,20 @@ public class LocalizedText : MonoBehaviour
     {
         //  myManager = LocalizationManager.Instance;
         textList = new List<Text>();
+        Text[] elements = new Text[250];
         var language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
 
         Debug.Log("clicked");
-        texts = FindObjectsOfType<Text>().ToList();
-        foreach (var item in texts)
+        foreach (var item in parents)
         {
-            if (language.ContainsKey(item.name))
+            elements = item.GetComponentsInChildren<Text>(true);
+            //texts = FindObjectsOfType<Text>().ToList();
+            foreach (var items in elements)
             {
-                textList.Add(item);
+                if (language.ContainsKey(items.name))
+                {
+                    textList.Add(items);
+                }
             }
         }
 
