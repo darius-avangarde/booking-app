@@ -26,16 +26,20 @@ public class CalendarDayColumn : MonoBehaviour
         ThemeManager.Instance.AddItems(backgroundImage);
     }
 
-    public void Initialize(DateTime date, List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction, CalendarDayHeaderObject linkedHeader)
+    public void Initialize(DateTime date, int initialItemCount, UnityAction<DateTime,IRoom> tapAction, CalendarDayHeaderObject linkedHeader)
     {
         objectDate = new DateTime(date.Date.Ticks);
 
-        ManagePool(rooms);
-
-        for (int r = 0; r < rooms.Count; r++)
+        for (int i = 0; i < initialItemCount; i++)
         {
-            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
+            CreateDayColumnObject();
         }
+        // ManagePool(rooms);
+
+        // for (int r = 0; r < rooms.Count; r++)
+        // {
+        //     dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
+        // }
 
         header = linkedHeader;
     }
