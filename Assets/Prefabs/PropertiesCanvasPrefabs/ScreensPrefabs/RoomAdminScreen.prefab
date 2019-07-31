@@ -171,7 +171,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.3, y: 1}
   m_AnchorMax: {x: 0.7, y: 1}
-  m_AnchoredPosition: {x: -324, y: -0.000061035156}
+  m_AnchoredPosition: {x: -324.00012, y: 0}
   m_SizeDelta: {x: 648, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &9079422933328366833
@@ -1400,6 +1400,9 @@ GameObject:
   - component: {fileID: 4065635589664640080}
   - component: {fileID: 4167821348595363815}
   - component: {fileID: 4065635589664640086}
+  - component: {fileID: 843942430}
+  - component: {fileID: 843942428}
+  - component: {fileID: 843942429}
   m_Layer: 5
   m_Name: RoomAdminScreen
   m_TagString: Background
@@ -1416,7 +1419,7 @@ RectTransform:
   m_GameObject: {fileID: 4065635589664640082}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 3884689893921281608}
   - {fileID: 4533800574138544366}
@@ -1480,6 +1483,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   navigator: {fileID: 0}
   confirmationDialog: {fileID: 0}
+  propertyDropdownHandler: {fileID: 0}
+  reservationCallendar: {fileID: 0}
   roomAdminScreen: {fileID: 4065635589664640086}
   setRoomName: {fileID: 3014862976316731494}
   setRoomTypeDropdown: {fileID: 7462400908320406399}
@@ -1521,6 +1526,66 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!223 &843942430
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4065635589664640082}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!114 &843942428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4065635589664640082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1301386320, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &843942429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4065635589664640082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1980459831, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0.5
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
 --- !u!1 &4065635589767094433
 GameObject:
   m_ObjectHideFlags: 0
@@ -2303,7 +2368,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.024963379, y: -0.000061035156}
+  m_AnchoredPosition: {x: -0.024902344, y: 0}
   m_SizeDelta: {x: 0.1, y: -280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7050588265450414080
@@ -2979,20 +3044,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6660096628711260856, guid: f8519a1488509a0449facaf0fb5ba010,
+    - target: {fileID: 2891020348702244779, guid: f8519a1488509a0449facaf0fb5ba010,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: m_AnchoredPosition.y
+      value: -0.000061035156
       objectReference: {fileID: 0}
-    - target: {fileID: 7410895046625874260, guid: f8519a1488509a0449facaf0fb5ba010,
+    - target: {fileID: 5412934149146414642, guid: f8519a1488509a0449facaf0fb5ba010,
         type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6092719989803163776, guid: f8519a1488509a0449facaf0fb5ba010,
-        type: 3}
-      propertyPath: maxNumberOfItems
-      value: 10
+      propertyPath: m_Name
+      value: Underline
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f8519a1488509a0449facaf0fb5ba010, type: 3}
@@ -3133,6 +3193,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6677b6bda305c84fa703f60671dd422, type: 3}
+--- !u!224 &4065635590525153515 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5001972579194239194, guid: a6677b6bda305c84fa703f60671dd422,
+    type: 3}
+  m_PrefabInstance: {fileID: 9009056915077072945}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &572073304749998122 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8860533386577020955, guid: a6677b6bda305c84fa703f60671dd422,
@@ -3145,9 +3211,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8cd68250af1c347b8a84d5102806e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &4065635590525153515 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5001972579194239194, guid: a6677b6bda305c84fa703f60671dd422,
-    type: 3}
-  m_PrefabInstance: {fileID: 9009056915077072945}
-  m_PrefabAsset: {fileID: 0}
