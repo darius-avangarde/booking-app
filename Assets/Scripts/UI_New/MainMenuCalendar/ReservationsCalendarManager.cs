@@ -195,6 +195,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             return;
         }
 
+        propertyDropdown.SelectDropdownProperty(property, true);
         currentProperty = property;
         currentRooms = FilteredRooms();
         roomColumn.UpdateRooms(currentRooms, (r) => roomEditScreen.OpenRoomAdminScreen(r, () => EditRoomCallback()));
@@ -267,7 +268,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
             dayColumn.name = $"Day column {d}";
-            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), new List<IRoom>(), NewReservationFromUnreservedDay, header);
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), 50, NewReservationFromUnreservedDay, header);
             dayColumns.Add(dayColumn);
         }
 
