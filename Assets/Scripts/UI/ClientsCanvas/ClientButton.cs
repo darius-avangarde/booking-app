@@ -105,8 +105,6 @@ public class ClientButton : MonoBehaviour
             footer.SetActive(true);
             RebuildUI();
             containerSize += initialContainerSize + 20;
-           
-            AnimateTriangle(0, 180);
             FadeIn();
         }
         else
@@ -117,15 +115,18 @@ public class ClientButton : MonoBehaviour
             clientEmail.gameObject.SetActive(false);
             clientAdress.gameObject.SetActive(false);
             footer.SetActive(false);
-            AnimateTriangle(180,0);
             FadeOut();
         }
     }
-    
-    public void AnimateTriangle(float from, float to)
+
+    IEnumerator AnimateTriangle(float to)
     {
-        float angle = Mathf.LerpAngle(from, to, Time.time/0.4f);
-        triangleImage.transform.eulerAngles = new Vector3(0, 0, angle);
+        float fromRotationZ = triangleImage.rotation.eulerAngles.z;
+        for (float t = 0; t < 1.0f; t += Time.deltaTime / 0.35f)
+        {
+            triangleImage.rotation = Quaternion.Euler(Mathf.Lerp(fromRotationZ, to, t * 2), 0, 0);
+            yield return null;
+        }
     }
     IEnumerator Move(RectTransform rt, Vector2 targetPos)
     {
@@ -141,6 +142,7 @@ public class ClientButton : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(Move(clientBtn, new Vector2(1080, containerSize)));
+        StartCoroutine(AnimateTriangle(-180));
 
     }
 
@@ -148,6 +150,7 @@ public class ClientButton : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(Move(clientBtn, new Vector2(900, containerSize)));
+        StartCoroutine(AnimateTriangle(0));
     }
 
     public bool SearchClients(string input)
