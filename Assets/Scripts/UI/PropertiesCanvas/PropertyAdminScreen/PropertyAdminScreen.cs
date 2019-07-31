@@ -134,18 +134,21 @@ public class PropertyAdminScreen : MonoBehaviour
             }
             else
             {
-                PropertyDataManager.CreatePropertyRoom(CurrentProperty);
-                CurrentProperty.GetPropertyRoom().Name = CurrentProperty.Name;
+                if (CurrentProperty.GetPropertyRoom() == null)
+                {
+                    PropertyDataManager.CreatePropertyRoom(CurrentProperty);
+                    CurrentProperty.GetPropertyRoom().Name = CurrentProperty.Name;
+                }
             }
             if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
             {
                 PropertyDataManager.SaveProperty(CurrentProperty);
+                reservationCallendar.SelectProperty(CurrentProperty);
             }
             if (shouldGoBack)
             {
                 navigator.GoBack();
             }
-            reservationCallendar.SelectProperty(CurrentProperty);
         }
     }
 
