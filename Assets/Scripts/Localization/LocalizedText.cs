@@ -30,7 +30,7 @@ public class LocalizedText : MonoBehaviour
         languageSet.ReadData();
         option = languageSet.DataElements.settings.language;
         SetLanguage(option);
-        Debug.Log(option + "----limba este");
+        //Debug.Log(option + "----limba este");
         ChangeOptionsDropdown();
        // m_MyEvent.AddListener(ChangeLanguage);
        //myManager = LocalizationManager.Instance;

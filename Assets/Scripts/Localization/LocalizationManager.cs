@@ -29,10 +29,10 @@ public class LocalizationManager : MonoBehaviour
             foreach (var col in item.Texts)
             {
 
-                Debug.Log(col.Key + " ----- " + col.Value);
+                //Debug.Log(col.Key + " ----- " + col.Value);
             }
 
-            Debug.Log("-----------------------------------");
+           // Debug.Log("-----------------------------------");
         }
     }
 
