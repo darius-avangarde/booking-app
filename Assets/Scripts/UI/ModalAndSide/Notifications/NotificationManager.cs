@@ -114,7 +114,7 @@ public class NotificationManager : MonoBehaviour
         }
         //check new start period for other notifications
         //get the new ID and set it to current reservation or create new notification and set the ID
-        List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + preAlertTime)).OrderBy(r => r.Period.Start).ToList();
+        List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date).ToList();
         IReservation otherReservation = allReservations.Find(r => r.ID != reservation.ID);
 
         if (otherReservation != null)
@@ -193,14 +193,11 @@ public class NotificationManager : MonoBehaviour
 
         foreach (INotification notification in notifications)
         {
-            if (notification.NotificationID > 0)
+            if (AndroidNotificationCenter.CheckScheduledNotificationStatus(notification.NotificationID) == NotificationStatus.Delivered)
             {
-                if (AndroidNotificationCenter.CheckScheduledNotificationStatus(notification.NotificationID) == NotificationStatus.Delivered)
-                {
-                    AndroidNotificationChannel notificationChannel = AndroidNotificationCenter.GetNotificationChannel(channelId);
-                    List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.NotificationID).ToList();
-                    notificationsScreen.AddNewReservations(newReservations);
-                }
+                AndroidNotificationChannel notificationChannel = AndroidNotificationCenter.GetNotificationChannel(channelId);
+                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.NotificationID).ToList();
+                notificationsScreen.AddNewReservations(newReservations);
             }
         }
     }
