@@ -32,14 +32,6 @@ public class RoomToggleDropdown : MonoBehaviour, IClosable
     private List<RoomToggleObject> pool = new List<RoomToggleObject>();
     private List<IRoom> currentSelection = new List<IRoom>();
 
-    private void Start()
-    {
-        for (int i = 0; i < 100; i++)
-        {
-            CreateNewRoomObject();
-            pool[i].DisableObject();
-        }
-    }
 
     public void InitializeRoomDropdown(UnityAction<List<IRoom>> selectionCallback, List<IRoom> allRooms, List<IRoom> selectedRooms = null)
     {
