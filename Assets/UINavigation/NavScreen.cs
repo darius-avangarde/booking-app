@@ -33,14 +33,16 @@ namespace UINavigation
                 if(canvasGroups == null)
                 {
                     canvasGroups = new List<CanvasGroup>();
-                    if(GetComponent<CanvasGroup>() != null)
-                        canvasGroups.Add(GetComponent<CanvasGroup>());
-                    else
-                        canvasGroups.Add(gameObject.AddComponent<CanvasGroup>());
-
-                    foreach (Canvas c in gameObject.GetComponentsInChildren<Canvas>())
+                    foreach (Canvas i in GetComponentsInChildren<Canvas>())
                     {
-                        canvasGroups.Add(c.gameObject.AddComponent<CanvasGroup>());
+                        if(i.GetComponent<CanvasGroup>() != null)
+                        {
+                            canvasGroups.Add(i.GetComponent<CanvasGroup>());
+                        }
+                        else
+                        {
+                            canvasGroups.Add(i.gameObject.AddComponent<CanvasGroup>());
+                        }
                     }
                 }
 
