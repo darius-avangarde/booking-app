@@ -14,15 +14,32 @@ public class PropertyDropdownHandler : MonoBehaviour
     private Dictionary<string, int> propertyDropdownOptions;
     private IProperty selectedProperty;
     private bool invokeAction = true;
-    private bool onValueChangeCall = true;
 
     private void Awake()
     {
         dropdownComponent = GetComponent<Dropdown>();
         dropdownComponent.onValueChanged.AddListener((value) => SelectDropdown(value));
+        UpdateDropdown();
     }
 
-    private void OnEnable ()
+    private void OnDestroy()
+    {
+        OnSelectProperty = null;
+    }
+
+    private void SelectDropdown(int value, bool skipInvoke = false)
+    {
+        if (selectedProperty == null || selectedProperty.Name != dropdownComponent.options[value].text)
+        {
+            selectedProperty = PropertyDataManager.GetProperty(propertyOptions[dropdownComponent.options[value]]);
+        }
+        if (!skipInvoke)
+        {
+            OnSelectProperty?.Invoke(selectedProperty);
+        }
+    }
+
+    public void UpdateDropdown()
     {
         propertyOptions = new Dictionary<Dropdown.OptionData, string>();
         propertyDropdownOptions = new Dictionary<string, int>();
@@ -37,32 +54,11 @@ public class PropertyDropdownHandler : MonoBehaviour
         dropdownComponent.RefreshShownValue();
     }
 
-    private void OnDestroy()
-    {
-        OnSelectProperty = null;
-    }
-
-    private void SelectDropdown(int value, bool skipInvoke = false)
-    {
-        if (!onValueChangeCall)
-        {
-            onValueChangeCall = true;
-            return;
-        }
-        if(selectedProperty == null || selectedProperty.Name != dropdownComponent.options[value].text)
-        {
-            selectedProperty = PropertyDataManager.GetProperty(propertyOptions[dropdownComponent.options[value]]);
-        }
-        if (!skipInvoke)
-        {
-            OnSelectProperty?.Invoke(selectedProperty);
-        }
-    }
-
     public void SelectDropdownProperty(IProperty property, bool skipInvoke = true)
     {
+        dropdownComponent.onValueChanged.RemoveAllListeners();
         SelectDropdown(propertyDropdownOptions[property.ID], skipInvoke);
-        onValueChangeCall = false;
         dropdownComponent.value = propertyDropdownOptions[property.ID];
+        dropdownComponent.onValueChanged.AddListener((value) => SelectDropdown(value));
     }
 }

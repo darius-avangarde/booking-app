@@ -25,6 +25,8 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private ReservationsCalendarManager reservationCallendar = null;
     [SerializeField]
+    private PropertyDropdownHandler propertyDropdownHandler = null;
+    [SerializeField]
     private NavScreen propertyAdminScreen = null;
     [SerializeField]
     private Text propertyScreenTitle = null;
@@ -143,12 +145,13 @@ public class PropertyAdminScreen : MonoBehaviour
             if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
             {
                 PropertyDataManager.SaveProperty(CurrentProperty);
-                reservationCallendar.SelectProperty(CurrentProperty);
+                propertyDropdownHandler.UpdateDropdown();
             }
             if (shouldGoBack)
             {
                 navigator.GoBack();
             }
+            reservationCallendar.SetPropertyToBeLoadedOnEnable(CurrentProperty);
         }
     }
 
@@ -165,11 +168,16 @@ public class PropertyAdminScreen : MonoBehaviour
             CancelText = Constants.DELETE_CANCEL,
             ConfirmCallback = () =>
             {
+                bool hasRooms = CurrentProperty.HasRooms;
                 PropertyDataManager.DeleteProperty(CurrentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(CurrentProperty.ID);
+                propertyDropdownHandler.UpdateDropdown();
                 navigator.GoBack();
-                navigator.GoBack();
-                reservationCallendar.SelectProperty(null);
+                if (hasRooms)
+                {
+                    navigator.GoBack();
+                }
+                reservationCallendar.SetPropertyToBeLoadedOnEnable(null);
             },
             CancelCallback = null
         });
