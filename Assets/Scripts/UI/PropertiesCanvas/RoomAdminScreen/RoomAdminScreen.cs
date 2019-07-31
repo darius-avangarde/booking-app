@@ -15,8 +15,6 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private PropertyDropdownHandler propertyDropdownHandler = null;
     [SerializeField]
-    private ReservationsCalendarManager reservationCallendar = null;
-    [SerializeField]
     private NavScreen roomAdminScreen = null;
     [SerializeField]
     private SetRoomName setRoomName = null;
