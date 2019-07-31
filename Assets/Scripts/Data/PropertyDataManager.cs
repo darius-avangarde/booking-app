@@ -67,7 +67,7 @@ public static class PropertyDataManager
     /// <returns>Property object</returns>
     public static IProperty GetProperty(string ID)
     {
-        return Data.properties.Find(p => p.ID.Equals(ID));
+        return Data.properties.Find(p => p.ID.Equals(ID) && !p.Deleted);
     }
 
     /// <summary>
