@@ -25,9 +25,7 @@ public class ClientsScreen : MonoBehaviour
     [SerializeField]
     private InputField searchField = null;
     [SerializeField]
-    private GameObject headerAddText;
-    [SerializeField]
-    private GameObject headerEditText;
+    private Text headerAddText;
     [SerializeField]
     private InputField clientName;
     [SerializeField]
@@ -303,14 +301,12 @@ public class ClientsScreen : MonoBehaviour
 
     public void SetTextOnAddPanel()
     {
-        headerEditText.SetActive(false);
-        headerAddText.SetActive(true);
+        headerAddText.text = LocalizedText.Instance.HeaderClients[0];
     }
 
     public void SetTextOnEditPanel()
     {
-        headerAddText.SetActive(false);
-        headerEditText.SetActive(true);
+        headerAddText.text = LocalizedText.Instance.HeaderClients[1];
     }
     #region ClearFieldsForClient
     public void ClearClientFields()
