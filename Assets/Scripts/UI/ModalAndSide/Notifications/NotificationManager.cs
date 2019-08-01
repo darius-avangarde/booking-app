@@ -17,7 +17,7 @@ public class NotificationManager : MonoBehaviour
     private AndroidNotificationChannel androidNotificationChannel;
     private const string channelId = "Default";
 
-    private string reservationsGroup = "Rezevari apropiate:";
+    private string reservationsTitle = "Rezevari apropiate:";
     private string lastReservationsNotification;
     private int preAlertTime = 0;
 
@@ -76,7 +76,7 @@ public class NotificationManager : MonoBehaviour
             if (previousReservations.Count() > 0)
             {
                 AndroidNotification newNotification = new AndroidNotification();
-                newNotification.Title = reservationsGroup;
+                newNotification.Title = reservationsTitle;
                 foreach (IReservation prevReservation in previousReservations)
                 {
                     newNotification.Text += $"{prevReservation.CustomerName} - {PropertyDataManager.GetProperty(prevReservation.PropertyID).GetRoom(prevReservation.RoomID).Name} in {prevReservation.Period.Start.Day}/{prevReservation.Period.Start.Month}/{prevReservation.Period.Start.Year}.\n";
@@ -90,6 +90,7 @@ public class NotificationManager : MonoBehaviour
                 if (notificationItem != null)
                 {
                     notificationItem.UnRead = true;
+                    notificationItem.FireTime = newNotification.FireTime;
                     notificationItem.SetReservationIDs(previousReservations);
                 }
                 else
@@ -98,6 +99,7 @@ public class NotificationManager : MonoBehaviour
                     notificationItem.NotificationID = notificationID;
                     notificationItem.UnRead = true;
                     notificationItem.PreAlertTime = preAlert;
+                    notificationItem.FireTime = newNotification.FireTime;
                     notificationItem.SetReservationIDs(previousReservations);
                 }
             }
@@ -124,7 +126,7 @@ public class NotificationManager : MonoBehaviour
         }
 
         AndroidNotification notification = new AndroidNotification();
-        notification.Title = reservationsGroup;
+        notification.Title = reservationsTitle;
         foreach (IReservation res in allReservations)
         {
             notification.Text += $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start.Day}/{res.Period.Start.Month}/{res.Period.Start.Year}.\n";
@@ -140,6 +142,7 @@ public class NotificationManager : MonoBehaviour
             if (notificationItem != null)
             {
                 notificationItem.UnRead = true;
+                notificationItem.FireTime = notification.FireTime;
                 notificationItem.SetReservationIDs(allReservations);
             }
             else
@@ -148,6 +151,7 @@ public class NotificationManager : MonoBehaviour
                 notificationItem.NotificationID = notificationID;
                 notificationItem.UnRead = true;
                 notificationItem.PreAlertTime = preAlert;
+                notificationItem.FireTime = notification.FireTime;
                 notificationItem.SetReservationIDs(allReservations);
             }
         }
@@ -159,6 +163,7 @@ public class NotificationManager : MonoBehaviour
             notificationItem.NotificationID = notificationID;
             notificationItem.UnRead = true;
             notificationItem.PreAlertTime = preAlert;
+            notificationItem.FireTime = notification.FireTime;
             notificationItem.SetReservationIDs(allReservations);
         }
         reservation.NotificationID = notificationID;
@@ -187,13 +192,52 @@ public class NotificationManager : MonoBehaviour
         }
     }
 
+    public void DeleteNotification(IReservation reservation)
+    {
+        int notificationID = reservation.NotificationID;
+        if (notificationID <= 0)
+        {
+            return;
+        }
+        INotification notificationItem = NotificationDataManager.GetNotification(notificationID);
+        IReservation otherReservation = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date).ToList().Find(r => r.ID != reservation.ID);
+
+
+        if (otherReservation == null)
+        {
+            Debug.Log($"deleted notification: {reservation.NotificationID}");
+            AndroidNotificationCenter.CancelNotification(reservation.NotificationID);
+            NotificationDataManager.DeleteNotification(reservation.NotificationID);
+        }
+        else
+        {
+            List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date && r.NotificationID == notificationID && r.ID != reservation.ID).ToList();
+
+            AndroidNotification notification = new AndroidNotification();
+            notification.Title = reservationsTitle;
+            foreach (IReservation res in allReservations)
+            {
+                Debug.Log($"update notification: {reservation.CustomerName}");
+                notification.Text += $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start.Day}/{res.Period.Start.Month}/{res.Period.Start.Year}.\n";
+                notification.IntentData += $"{res.ID} & \n";
+            }
+            notification.FireTime = notificationItem.FireTime;
+            notification.Style = NotificationStyle.BigTextStyle;
+
+            ReplaceNotification(notificationID, notification, channelId);
+
+            notificationItem.UnRead = true;
+            notificationItem.SetReservationIDs(allReservations);
+        }
+    }
+
     private void CheckDeliveredNotification()
     {
         List<INotification> notifications = NotificationDataManager.GetNewNotifications();
 
         foreach (INotification notification in notifications)
         {
-            if (AndroidNotificationCenter.CheckScheduledNotificationStatus(notification.NotificationID) == NotificationStatus.Delivered)
+            if (notification.FireTime < DateTime.Now)
             {
                 AndroidNotificationChannel notificationChannel = AndroidNotificationCenter.GetNotificationChannel(channelId);
                 List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.NotificationID).ToList();

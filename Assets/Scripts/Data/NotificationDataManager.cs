@@ -89,10 +89,10 @@ public class NotificationDataManager : MonoBehaviour
     /// <param name="ID">notification id</param>
     public static void DeleteNotification(int ID)
     {
-        Notification property = Data.notification.Find(n => n.NotificationID.Equals(ID));
-        if (property != null)
+        Notification notification = Data.notification.Find(n => n.NotificationID.Equals(ID));
+        if (notification != null)
         {
-            property.Deleted = true;
+            notification.Deleted = true;
         }
     }
 
@@ -130,6 +130,18 @@ public class NotificationDataManager : MonoBehaviour
             set
             {
                 preAlertTime = value;
+                WriteNotificationData();
+            }
+        }
+
+        [SerializeField]
+        private DateTime fireTime;
+        public DateTime FireTime
+        {
+            get => fireTime;
+            set
+            {
+                fireTime = value;
                 WriteNotificationData();
             }
         }

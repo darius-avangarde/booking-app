@@ -42,6 +42,7 @@ public class CreateMultipleRooms : MonoBehaviour
                 IRoom newRoom = propertyAdminScreen.CurrentProperty.AddRoom();
                 newRoom.Name = $"Camera {j}";
                 newRoom.RoomNumber = j;
+                newRoom.Floor = 0;
                 newRoom.Multiple = true;
                 roomsList.Add(newRoom);
             }
@@ -62,6 +63,7 @@ public class CreateMultipleRooms : MonoBehaviour
                             newRoom.Name = $"Camera {i}{j}";
                             newRoom.RoomNumber = int.Parse($"{i}{j}");
                         }
+                        newRoom.Floor = i;
                         newRoom.Multiple = true;
                         roomsList.Add(newRoom);
                     }
@@ -81,6 +83,7 @@ public class CreateMultipleRooms : MonoBehaviour
                             newRoom.Name = $"Camera {i}{j}";
                             newRoom.RoomNumber = int.Parse($"{i}{j}");
                         }
+                        newRoom.Floor = i;
                         newRoom.Multiple = true;
                         roomsList.Add(newRoom);
                     }
@@ -94,6 +97,7 @@ public class CreateMultipleRooms : MonoBehaviour
                 IRoom newRoom = propertyAdminScreen.CurrentProperty.AddRoom();
                 newRoom.Name = $"Camera {j}";
                 newRoom.RoomNumber = j;
+                newRoom.Floor = 0;
                 newRoom.Multiple = true;
                 roomsList.Add(newRoom);
             }

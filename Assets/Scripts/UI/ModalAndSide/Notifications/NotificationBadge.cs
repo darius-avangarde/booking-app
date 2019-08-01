@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class NotificationBadge : MonoBehaviour
 {
     [SerializeField]
+    private GameObject notificationButton = null;
+    [SerializeField]
     private GameObject notificationsBadgeObject = null;
     [SerializeField]
     private Text notificationsBadgeText = null;
@@ -35,6 +37,17 @@ public class NotificationBadge : MonoBehaviour
         else
         {
             badgeCount = 0;
+        }
+        if (notificationButton.activeInHierarchy)
+        {
+            if (badgeCount > 0)
+            {
+                notificationsBadgeObject.SetActive(true);
+            }
+            else
+            {
+                notificationsBadgeObject.SetActive(false);
+            }
         }
     }
 }

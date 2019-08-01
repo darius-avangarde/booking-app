@@ -14,6 +14,8 @@ public class ReservationOptionsDropdown : MonoBehaviour
     [SerializeField]
     private ClientsScreen clientsScreen;
     [SerializeField]
+    private NotificationManager notificatoinManager;
+    [SerializeField]
     private InputManager inputManager;
 
     [SerializeField]
@@ -74,6 +76,7 @@ public class ReservationOptionsDropdown : MonoBehaviour
 
     private void DeleteReservationCallback()
     {
+        notificatoinManager.DeleteNotification(currentReservation);
         ReservationDataManager.DeleteReservation(currentReservation.ID);
         calendarManager.JumpToDate(DateTime.Today.Date);
         inputManager.Message("Rezervarea a fost ștearsă cu succes");

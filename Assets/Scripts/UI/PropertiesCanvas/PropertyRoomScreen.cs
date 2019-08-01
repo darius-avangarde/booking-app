@@ -87,9 +87,9 @@ public class PropertyRoomScreen : MonoBehaviour
             int currentFloor = 0;
             int lastFloor = -1;
             int maxFloors = currentProperty.FloorRooms;
-            int roomCounter = 0;
             foreach (var room in currentRooms)
             {
+                currentFloor = room.Floor;
                 if (lastFloor != currentFloor )
                 {
                     GameObject floorNumber = Instantiate(roomFloorNumberPrefab, roomsContentScrollView);
@@ -101,21 +101,15 @@ public class PropertyRoomScreen : MonoBehaviour
                     {
                         floorNumber.GetComponent<Text>().text = $"Etaj P";
                     }
-                    lastFloor = currentFloor;
                     themeManager.SetColor(floorNumber.GetComponent<Graphic>());
                     roomButtons.Add(floorNumber);
+                    lastFloor = currentFloor;
                 }
                 themeManager.SetShadow(roomItemPrefab);
                 GameObject roomButton = Instantiate(roomItemPrefab.gameObject, roomsContentScrollView);
                 RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
                 currentRoom.Initialize(room, OpenRoomAdminScreen, themeManager);
                 roomButtons.Add(roomButton);
-                roomCounter++;
-                if(roomCounter >= maxFloors)
-                {
-                    roomCounter = 0;
-                    currentFloor++;
-                }
             }
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(roomsContentScrollView);

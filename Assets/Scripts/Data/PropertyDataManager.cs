@@ -9,7 +9,8 @@ public static class PropertyDataManager
     public const string DATA_FILE_NAME = "propertyData.json";
 
     private static PropertyData cache;
-    public enum RoomType { room, apartment, villa, cabin, bed, Any}
+    public enum PropertyType { hotel, villa, cabin}
+    public enum RoomType { room, apartment, villa, cabin, bed}
 
     private static PropertyData Data
     {
@@ -89,6 +90,7 @@ public static class PropertyDataManager
     {
         IRoom newRoom = property.AddRoom();
         newRoom.Name = property.Name;
+        newRoom.RoomType = RoomType.cabin;
         property.SaveRoom(newRoom);
         property.GetPropertyRoomID = newRoom.ID;
     }
@@ -334,6 +336,18 @@ public static class PropertyDataManager
             set
             {
                 multiple = value;
+                WritePropertyData();
+            }
+        }
+
+        [SerializeField]
+        private int floor = 0;
+        public int Floor
+        {
+            get => floor;
+            set
+            {
+                floor = value;
                 WritePropertyData();
             }
         }
