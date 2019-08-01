@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class LocalizedText : MonoBehaviour
 {
-    // public List<LanguageScript> csvData; 
+    public UnityEvent OnLanguageChanged;
+    //public List<LanguageScript> csvData; 
     [SerializeField]
     private GameObject[] parents;
     [SerializeField]
@@ -14,54 +15,74 @@ public class LocalizedText : MonoBehaviour
     [SerializeField]
     private List<Text> textList;
     [SerializeField]
+    private Image ddImage;
+    [SerializeField]
     private LocalizationManager myManager;
     [SerializeField]
     private Dropdown languageDropdown;
     [SerializeField]
     private List<Sprite> spriteList;
-
-    public  string option;
+    private static LocalizedText instance;
+    private  string option;
     private SettingsManager languageSet;
     private string[] dropOptions = { "Română", "Engleză" };
-    UnityEvent m_MyEvent = new UnityEvent();
-
-    private void Start()
+   
+    public static LocalizedText Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<LocalizedText>();
+            }
+            return instance;
+        }
+    }
+    private void Awake()
     {
         myManager = new LocalizationManager();
         myManager.CustomStart();
         languageSet = new SettingsManager();
         languageSet.ReadData();
         option = languageSet.DataElements.settings.language;
+        DropdownValue();
         SetLanguage(option);
-        //Debug.Log(option + "----limba este");
         ChangeOptionsDropdown();
-       // m_MyEvent.AddListener(ChangeLanguage);
-       //myManager = LocalizationManager.Instance;
     }
   
+    private void DropdownValue()
+    {
+        if (option == "Ro")
+        {
+            languageDropdown.value = 0;
+        }
+        else
+        {
+            languageDropdown.value = 1;
+        }
+    }
     public void ChangeLanguage()
     {
-       // m_MyEvent.Invoke();
-       //csvData = LocalizationManager.Instance.ReadFromCSV().ToList();//@"Assets/Resources/TextsFileEx.csv").ToList();
         if (languageDropdown.value == 0)
         {
+            ddImage.sprite = spriteList[0];
             option = "Ro";
             SetLanguage(option);
             languageSet.DataElements.settings.language = option;
             languageSet.WriteData();
             ChangeOptionsDropdown();
-
         }
         else if (languageDropdown.value == 1)
         {
+            ddImage.sprite = spriteList[1];
             option = "En";
             languageSet.DataElements.settings.language = option;
             SetLanguage(option);  
             ChangeOptionsDropdown();  
             languageSet.WriteData();
-          
-           
+
         }
+        OnLanguageChanged?.Invoke();
     }
     private void ChangeOptionsDropdown()
     {
@@ -82,7 +103,7 @@ public class LocalizedText : MonoBehaviour
 
     public void GetTexts()
     {
-        //  myManager = LocalizationManager.Instance;
+        //myManager = LocalizationManager.Instance;
         textList = new List<Text>();
         Text[] elements = new Text[250];
         var language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
@@ -91,7 +112,6 @@ public class LocalizedText : MonoBehaviour
         foreach (var item in parents)
         {
             elements = item.GetComponentsInChildren<Text>(true);
-            //texts = FindObjectsOfType<Text>().ToList();
             foreach (var items in elements)
             {
                 if (language.ContainsKey(items.name))
