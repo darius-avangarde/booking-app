@@ -88,9 +88,23 @@ public class ReservationsCalendarManager : MonoBehaviour
         CreateDayItems();
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
 
-        //Load first property to initialize day columns/items;
+
+        //Load property with most rooms to initialize day columns/items;
         if(PropertyDataManager.GetProperties().Count() > 0)
-            SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+        {
+            int lastRoomCount = 0;
+            string biggestPropertyID = string.Empty;
+            foreach (IProperty p in PropertyDataManager.GetProperties())
+            {
+                if(p.Rooms.Count() > lastRoomCount)
+                {
+                    lastRoomCount = p.Rooms.Count();
+                    biggestPropertyID = p.ID;
+                }
+            }
+            //SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+            SelectProperty(PropertyDataManager.GetProperty(biggestPropertyID));
+        }
         else
             InitializeWithNoProperty();
 
@@ -119,6 +133,12 @@ public class ReservationsCalendarManager : MonoBehaviour
         yield return null;
         dayHeaderInfScroll.Init();
         dayColumnInfScroll.Init();
+
+        //Load first property to initialize day columns/items;
+        if(PropertyDataManager.GetProperties().Count() > 0)
+        {
+            SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+        }
     }
 
     #region FilerActions

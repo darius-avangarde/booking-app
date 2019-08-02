@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections;
 
 public class CalendarDayColumn : MonoBehaviour
 {
@@ -98,5 +100,6 @@ public class CalendarDayColumn : MonoBehaviour
     private void CreateDayColumnObject()
     {
         dayPool.Add(Instantiate(dayColumnObjectPrefab, transform).GetComponent<CalendarDayColumnObject>());
+        dayPool[dayPool.Count - 1].DayRectTransform.localPosition = - (Vector3.up * dayColumnObjectRect.rect.height) * (dayPool.Count);
     }
 }
