@@ -212,7 +212,7 @@ public class ClientsScreen : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentClient.Email))
         {
-            inputManager.Message(Constants.MessageEmail);
+            inputManager.Message(LocalizedText.Instance.MailRequired);
         }
         else
         {
@@ -231,7 +231,7 @@ public class ClientsScreen : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentClient.Number))
         {
-            inputManager.Message(Constants.MessageNumber);
+            inputManager.Message(LocalizedText.Instance.PhoneRequired);
         }
         else
         {
@@ -243,7 +243,7 @@ public class ClientsScreen : MonoBehaviour
     {
         if (string.IsNullOrEmpty(currentClient.Number))
         {
-            inputManager.Message(Constants.MessageNumber);
+            inputManager.Message(LocalizedText.Instance.PhoneRequired);
         }
         else
         {

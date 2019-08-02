@@ -93,6 +93,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
     {
         focusDateTime = focusDate == null ? DateTime.Today.Date : focusDate.Value.Date;
         UpdateCurrentMonthText(focusDateTime);
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdateCurrentMonthText(focusDateTime));
         selectedDateTime = focusDate;
         callback = doneCallback;
         UpdateSelectedDate(focusDateTime, focusDate != null);
@@ -139,7 +140,8 @@ public class ModalCalendar : MonoBehaviour, IClosable
 
     private void UpdateCurrentMonthText(DateTime date)
     {
-        currentMonthYearText.text = $"{Constants.MonthNamesDict[date.Month]} {date.Year}";
+         //currentMonthYearText.text = $"{Constants.MonthNamesDict[date.Month]} {date.Year}";
+         currentMonthYearText.text = $"{LocalizedText.Instance.Months[date.Month-1]} {date.Year}";
     }
 
     private void UpdateSelectedDate(DateTime date, bool alsoSetSelected = true)
@@ -152,9 +154,11 @@ public class ModalCalendar : MonoBehaviour, IClosable
         foreach (TextMeshProUGUI t in dateTexts)
             t.text = $"{date.Day}";
 
-        dayText.text = Constants.DayOfWeekNamesFull[(int)date.DayOfWeek];
-        monthYearText.text = $"<b>{Constants.MonthNamesDict[date.Month]}</b>\n{date.Year}";
-        monthYearDayText.text = $"{Constants.DayOfWeekNamesFull[(int)date.DayOfWeek]}\n<b>{Constants.MonthNamesDict[date.Month]}</b>\n{date.Year}";
+       // dayText.text = Constants.DayOfWeekNamesFull[(int)date.DayOfWeek];
+       dayText.text = LocalizedText.Instance.DaysLong[(int)date.DayOfWeek];
+        monthYearText.text = $"<b>{LocalizedText.Instance.Months[date.Month-1]}</b>\n{date.Year}";
+        //monthYearDayText.text = $"{Constants.DayOfWeekNamesFull[(int)date.DayOfWeek]}\n<b>{LocalizedText.Instance.Months[date.Month - 1]}</b>\n{date.Year}";
+        monthYearDayText.text = $"{LocalizedText.Instance.DaysLong[(int)date.DayOfWeek]}\n<b>{LocalizedText.Instance.Months[date.Month - 1]}</b>\n{date.Year}";
 
         confirmButton.interactable = (selectedDateTime != null);
 

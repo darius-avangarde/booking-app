@@ -82,7 +82,7 @@ public class ClientsEditScreen : MonoBehaviour
     {
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = Constants.NameRequired;
+            textNameRequired.text = LocalizedText.Instance.NameRequired;
             textNameRequired.gameObject.SetActive(true);
         }
         else
@@ -95,7 +95,7 @@ public class ClientsEditScreen : MonoBehaviour
     {
         if (String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = Constants.PhoneRequired;
+            textNameRequired.text = LocalizedText.Instance.PhoneRequired;
             textNameRequired.gameObject.SetActive(true);
         }
         else
@@ -108,7 +108,7 @@ public class ClientsEditScreen : MonoBehaviour
     public void SetTextRequired()
     {
         textNameRequired.gameObject.SetActive(true);
-        textNameRequired.text = Constants.NameRequired;
+        textNameRequired.text = LocalizedText.Instance.NameRequired; ;
     }
 
     public void ShowInfo()

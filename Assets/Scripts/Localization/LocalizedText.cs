@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,7 +27,7 @@ public class LocalizedText : MonoBehaviour
     private SettingsManager languageSet;
     private string option;
     private string[] dropOptions = { "Română", "Engleză" };
-
+    private DateTime date;
     public static LocalizedText Instance
     {
         get
@@ -154,7 +155,27 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "TextAddClient");
         }
     }
-
+    public string MailRequired
+    {
+        get
+        {
+            return SetTextValue(option, "MessageEmail");
+        }
+    }
+    public string PhoneRequired
+    {
+        get
+        {
+            return SetTextValue(option, "MessagePhone");
+        }
+    }
+    public string NameRequired
+    {
+        get
+        {
+            return SetTextValue(option, "NameRequired");
+        }
+    }
     public string[] HelpTextMainPage
     {
         get
@@ -238,7 +259,7 @@ public class LocalizedText : MonoBehaviour
     public string[] SetOptionsValues(string lang, string myKey)
     {
         Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
-        string[] result = new string[12];
+        string[] result = new string[20];
         foreach (var item in language)
         {
             if (item.Key == myKey)
