@@ -26,7 +26,7 @@ public class LocalizedText : MonoBehaviour
     private SettingsManager languageSet;
     private string option;
     private string[] dropOptions = { "Română", "Engleză" };
-   
+
     public static LocalizedText Instance
     {
         get
@@ -49,7 +49,7 @@ public class LocalizedText : MonoBehaviour
         SetLanguage(option);
         ChangeOptionsDropdown();
     }
-  
+
     private void DropdownValue()
     {
         if (option == "Ro")
@@ -85,15 +85,23 @@ public class LocalizedText : MonoBehaviour
     }
     private void ChangeOptionsDropdown()
     {
-        languageDropdown.options[0].text =Languages[0];
+        languageDropdown.options[0].text = Languages[0];
         languageDropdown.options[1].text = Languages[1];
 
     }
 
-   
-    public string[] DaysLong {
+
+    public string[] ReservationHeader
+    {
         get
-        { 
+        {
+            return SetOptionsValues(option, "ReservationEditHeaderText");
+        }
+    }
+    public string[] DaysLong
+    {
+        get
+        {
             return SetOptionsValues(option, "Days");
         }
     }
@@ -243,8 +251,8 @@ public class LocalizedText : MonoBehaviour
 
     public string SetTextValue(string lang, string myKey)
     {
-        Dictionary<string,string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
-        string result = string.Empty ;
+        Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
+        string result = string.Empty;
         foreach (var item in language)
         {
             if (item.Key == myKey)
@@ -276,8 +284,8 @@ public class LocalizedText : MonoBehaviour
 
     private void SetLanguage(string language)
     {
-       // myManager = LocalizationManager.Instance;
-       // var lang = csvData.Where(x => x.Name == language).First();
+        // myManager = LocalizationManager.Instance;
+        // var lang = csvData.Where(x => x.Name == language).First();
         var lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         foreach (var item in textList)
         {

@@ -51,12 +51,18 @@ public class CalendarDayHeaderObject : MonoBehaviour
         if(objectDate.Date != date.Date)
             objectDate = new DateTime(date.Date.Ticks);
 
-        dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
+        // dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
+        SetDays(date);
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDays(date));
         dateText.text = date.Day.ToString();
 
         UpdateColors(ThemeManager.Instance.IsDarkTheme);
     }
 
+    private void SetDays(DateTime myDate)
+    {
+        dayOfWeekText.text = LocalizedText.Instance.DaysShort[GetDayOfWeekIndex(myDate.DayOfWeek, out bool isWeekend)];
+    }
     public void UpdateProperty(IProperty property)
     {
         objProperty = property;

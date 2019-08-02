@@ -63,7 +63,14 @@ public class TopCalendar : MonoBehaviour
         cachePage.CreateDayItems();
         cachePage.UpdatePage(DateTime.Today.Date);
         swipeHandler.Enabled = false;
-        monthText.text = $"{Constants.MonthNamesDict[DateTime.Today.Month]} {DateTime.Today.Year}";
+        //monthText.text = $"{Constants.MonthNamesDict[DateTime.Today.Month]} {DateTime.Today.Year}";
+        SetMonth();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetMonth());
+    }
+
+    private void SetMonth()
+    {
+        monthText.text = $"{LocalizedText.Instance.Months[DateTime.Today.Month - 1]}{DateTime.Today.Year}";
     }
 
     public void ToggleDropdownCalendar()
@@ -84,6 +91,7 @@ public class TopCalendar : MonoBehaviour
 
     public void UpdateMonth(DateTime date)
     {
+        
         //only update if the year or motnth is different
         if(focusDateTime.Year != date.Year || focusDateTime.Month != date.Month)
         {
@@ -93,7 +101,8 @@ public class TopCalendar : MonoBehaviour
                 focusDateTime = date.Date;
                 isSliding = false;
                 currentPage.UpdatePage(focusDateTime);
-                monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
+                //monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
+                monthText.text = $"{LocalizedText.Instance.Months[focusDateTime.Month-1]}{focusDateTime.Year}";
             }
         }
     }
@@ -135,8 +144,8 @@ public class TopCalendar : MonoBehaviour
     private IEnumerator Swipe(bool isLeft)
     {
         isSliding = true;
-        monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
-
+        // monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
+        monthText.text = $"{LocalizedText.Instance.Months[focusDateTime.Month-1]} {focusDateTime.Year}" ;
         cachePage.Rect.position = (isLeft) ? slideLeft.position : slideRight.position;
         cachePage.UpdatePage(focusDateTime);
 

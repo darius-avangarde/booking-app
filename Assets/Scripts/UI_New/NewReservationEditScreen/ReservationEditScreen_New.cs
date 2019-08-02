@@ -186,7 +186,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     private void UpdateAllUI()
     {
-        screenTitleText.text = currentReservation == null ? "Rezervare nouă" : "Modifică rezervarea";
+        screenTitleText.text = currentReservation == null ? LocalizedText.Instance.ReservationHeader[0] : LocalizedText.Instance.ReservationHeader[1];
         startDateText.text = resStartDate == null ? "Din" : resStartDate.Value.ToString(Constants.DateTimePrintFormat);
         endDateText.text = resEndDate == null ? "Până în" : resEndDate.Value.ToString(Constants.DateTimePrintFormat);
         clientPicker.SetCallback((c) => resClient = c, resClient);
