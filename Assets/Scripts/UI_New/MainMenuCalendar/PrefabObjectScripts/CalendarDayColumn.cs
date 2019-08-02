@@ -82,7 +82,7 @@ public class CalendarDayColumn : MonoBehaviour
         if(rooms.Count != dayPool.Count)
         {
             //CreateNewObjects as needed
-            while(dayPool.Count < rooms.Count)
+            for (int i = dayPool.Count; i < rooms.Count; i++)
             {
                 CreateDayColumnObject();
             }
