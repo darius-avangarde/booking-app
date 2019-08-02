@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +28,7 @@ public class PropertyDropdownHandler : MonoBehaviour
 
     private void SelectDropdown(int value, bool skipInvoke = false)
     {
-        if (selectedProperty == null || selectedProperty.Name != dropdownComponent.options[value].text)
+        if (selectedProperty == null || !selectedProperty.Name.Equals(dropdownComponent.options[value].text))
         {
             selectedProperty = PropertyDataManager.GetProperty(propertyOptions[dropdownComponent.options[value]]);
         }
