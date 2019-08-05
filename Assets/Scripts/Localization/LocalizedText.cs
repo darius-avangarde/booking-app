@@ -161,6 +161,21 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Prepositions");
         }
     }
+    public string[] ConfirmAction
+    {
+        get
+        {
+            return SetOptionsValues(option, "ConfirmAction");
+        }
+    }
+
+    public string[] ConfirmDelete
+    {
+        get
+        {
+            return SetOptionsValues(option, "ConfirmDelete");
+        }
+    }
     public string[] Languages
     {
         get
