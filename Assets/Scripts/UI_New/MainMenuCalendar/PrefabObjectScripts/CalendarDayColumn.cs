@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections;
 
 public class CalendarDayColumn : MonoBehaviour
 {
@@ -13,12 +15,17 @@ public class CalendarDayColumn : MonoBehaviour
     [SerializeField]
     private GameObject dayColumnObjectPrefab;
     [SerializeField]
+    private RectTransform dayColumnObjectRect;
+    [SerializeField]
     private Image backgroundImage;
+    [SerializeField]
+    private RectTransform thisRectTransform;
 
     private List<CalendarDayColumnObject> dayPool = new List<CalendarDayColumnObject>();
     private DateTime objectDate;
     private Vector3 lastPosition;
     private CalendarDayHeaderObject header;
+
 
 
     private void Start()
@@ -34,12 +41,6 @@ public class CalendarDayColumn : MonoBehaviour
         {
             CreateDayColumnObject();
         }
-        // ManagePool(rooms);
-
-        // for (int r = 0; r < rooms.Count; r++)
-        // {
-        //     dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
-        // }
 
         header = linkedHeader;
     }
@@ -47,6 +48,8 @@ public class CalendarDayColumn : MonoBehaviour
     public void UpdateRooms(List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction)
     {
         ManagePool(rooms);
+        thisRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rooms.Count * dayColumnObjectRect.rect.height);
+
 
         for (int r = 0; r < rooms.Count; r++)
         {
@@ -81,7 +84,7 @@ public class CalendarDayColumn : MonoBehaviour
         if(rooms.Count != dayPool.Count)
         {
             //CreateNewObjects as needed
-            while(dayPool.Count < rooms.Count)
+            for (int i = dayPool.Count; i < rooms.Count; i++)
             {
                 CreateDayColumnObject();
             }
@@ -97,5 +100,6 @@ public class CalendarDayColumn : MonoBehaviour
     private void CreateDayColumnObject()
     {
         dayPool.Add(Instantiate(dayColumnObjectPrefab, transform).GetComponent<CalendarDayColumnObject>());
+        dayPool[dayPool.Count - 1].DayRectTransform.localPosition = - (Vector3.up * dayColumnObjectRect.rect.height) * (dayPool.Count);
     }
 }

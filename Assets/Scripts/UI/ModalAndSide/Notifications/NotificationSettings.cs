@@ -26,6 +26,7 @@ public class NotificationSettings : MonoBehaviour
         settingsManager.ReadData();
         sendNotitifationsToggle.isOn = settingsManager.DataElements.settings.ReceiveNotifications;
         SetDropdownOptions();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
         SetDropdownInteractable(sendNotitifationsToggle.isOn);
     }
 
@@ -39,7 +40,7 @@ public class NotificationSettings : MonoBehaviour
         previousSelectedOption = selectedOption;
         selectedOption = value;
         settingsManager.DataElements.settings.PreAlertTime = selectedOption;
-        notificatoinManager.UpdateAllNotifications(previousSelectedOption, Constants.PreAlertDict.ElementAt(selectedOption).Key);
+        notificatoinManager.UpdateAllNotifications(previousSelectedOption, LocalizedText.Instance.PreAlertDictFunction.ElementAt(selectedOption).Key);//Constants.PreAlertDict.ElementAt(selectedOption).Key);
         settingsManager.WriteData();
     }
 
@@ -52,11 +53,11 @@ public class NotificationSettings : MonoBehaviour
     private void SetDropdownOptions()
     {
         List<Dropdown.OptionData> dropdownOptionsList = new List<Dropdown.OptionData>();
-        for (int i = 0; i < Constants.PreAlertDict.Count; i++)
+        for (int i = 0; i < LocalizedText.Instance.PreAlertDictFunction.Count; i++)//Constants.PreAlertDict.Count; i++)
         {
             Dropdown.OptionData newOption = new Dropdown.OptionData();
-            newOption.text = Constants.PreAlertDict.ElementAt(i).Value;
-            dropdownOptionsList.Add(newOption);
+            newOption.text = LocalizedText.Instance.PreAlertDictFunction.ElementAt(i).Value;//Constants.PreAlertDict.ElementAt(i).Value;
+        dropdownOptionsList.Add(newOption);
         }
         preAlertDropdown.options = dropdownOptionsList;
         preAlertDropdown.value = settingsManager.DataElements.settings.PreAlertTime;

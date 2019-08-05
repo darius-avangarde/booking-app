@@ -31,8 +31,8 @@ public class CalendarRoomColumn : MonoBehaviour
     {
         if(rooms.Count != roomPool.Count)
         {
-            //Create New Objects as needed
-            while(roomPool.Count < rooms.Count)
+            //CreateNewObjects as needed
+            for (int i = roomPool.Count; i < rooms.Count; i++)
             {
                 CreateRoomColumnObject();
             }

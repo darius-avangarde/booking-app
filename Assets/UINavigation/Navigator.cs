@@ -174,9 +174,9 @@ namespace UINavigation
 
             string path = "";
 
-            foreach (var screen in screens)
+            for (int i=0; i < screens.Count; i++)
             {
-                path += "/" + screen.name;
+                path = string.Concat(path, screens[i]);
             }
 
             return path;

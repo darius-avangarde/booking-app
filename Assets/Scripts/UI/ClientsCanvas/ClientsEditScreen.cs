@@ -82,7 +82,7 @@ public class ClientsEditScreen : MonoBehaviour
     {
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = Constants.NameRequired;
+            textNameRequired.text = LocalizedText.Instance.NameRequired;
             textNameRequired.gameObject.SetActive(true);
         }
         else
@@ -95,7 +95,7 @@ public class ClientsEditScreen : MonoBehaviour
     {
         if (String.IsNullOrEmpty(clientPhone.text) || clientPhone.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = Constants.PhoneRequired;
+            textNameRequired.text = LocalizedText.Instance.PhoneRequired;
             textNameRequired.gameObject.SetActive(true);
         }
         else
@@ -108,7 +108,7 @@ public class ClientsEditScreen : MonoBehaviour
     public void SetTextRequired()
     {
         textNameRequired.gameObject.SetActive(true);
-        textNameRequired.text = Constants.NameRequired;
+        textNameRequired.text = LocalizedText.Instance.NameRequired;
     }
 
     public void ShowInfo()
@@ -120,9 +120,9 @@ public class ClientsEditScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = Constants.DELETE_CLIENT,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
+            Message = LocalizedText.Instance.ConfirmDelete[0],
+            ConfirmText = LocalizedText.Instance.ConfirmAction[0],
+            CancelText = LocalizedText.Instance.ConfirmAction[1],
             ConfirmCallback = () =>
             {
                 ClientDataManager.DeleteClient(currentClient.ID);
@@ -142,7 +142,7 @@ public class ClientsEditScreen : MonoBehaviour
     public void EditClient()
     {
        GetCurrentClient();
-        if (String.IsNullOrEmpty(clientName.text)) //|| String.IsNullOrEmpty(clientPhone.text))
+        if (String.IsNullOrEmpty(clientName.text))
         {
             return;
         }

@@ -48,13 +48,20 @@ public class CalendarDayHeaderObject : MonoBehaviour
 
     public void UpdateUI(DateTime date)
     {
-        if(objectDate.Date != date.Date)
+        if(!objectDate.Date.Equals(date.Date))
             objectDate = new DateTime(date.Date.Ticks);
 
-        dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
+        // dayOfWeekText.text = Constants.DayOfWeekNamesShort[GetDayOfWeekIndex(date.DayOfWeek, out bool isWeekend)];
+        SetDays(date);
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDays(date));
         dateText.text = date.Day.ToString();
 
         UpdateColors(ThemeManager.Instance.IsDarkTheme);
+    }
+
+    private void SetDays(DateTime myDate)
+    {
+        dayOfWeekText.text = LocalizedText.Instance.DaysShort[GetDayOfWeekIndex(myDate.DayOfWeek, out bool isWeekend)];
     }
 
     public void UpdateProperty(IProperty property)
@@ -66,7 +73,7 @@ public class CalendarDayHeaderObject : MonoBehaviour
     {
         GetDayOfWeekIndex(objectDate.DayOfWeek, out bool isWeekend);
 
-        if(objectDate.Date == DateTime.Today.Date)
+        if(objectDate.Date.Equals(DateTime.Today.Date))
         {
             dayBackgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightHeadCurrentColor : ThemeManager.Instance.ThemeColor.DarkHeadCurrentColor;
             backgroundImage.color = (!isDark) ? ThemeManager.Instance.ThemeColor.LightCurrentColor : ThemeManager.Instance.ThemeColor.DarkCurrentColor;

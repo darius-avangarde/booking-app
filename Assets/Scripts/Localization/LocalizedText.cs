@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,10 +24,10 @@ public class LocalizedText : MonoBehaviour
     [SerializeField]
     private List<Sprite> spriteList;
     private static LocalizedText instance;
-    private  string option;
     private SettingsManager languageSet;
+    private string option;
     private string[] dropOptions = { "Română", "Engleză" };
-   
+    private DateTime date;
     public static LocalizedText Instance
     {
         get
@@ -49,7 +50,7 @@ public class LocalizedText : MonoBehaviour
         SetLanguage(option);
         ChangeOptionsDropdown();
     }
-  
+
     private void DropdownValue()
     {
         if (option == "Ro")
@@ -65,66 +66,43 @@ public class LocalizedText : MonoBehaviour
     {
         if (languageDropdown.value == 0)
         {
-            ddImage.sprite = spriteList[0];
-            option = "Ro";
-            SetLanguage(option);
-            languageSet.DataElements.settings.language = option;
-            languageSet.WriteData();
-            ChangeOptionsDropdown();
+            SetFunctionsOnChange(0, "Ro");
         }
         else if (languageDropdown.value == 1)
         {
-            ddImage.sprite = spriteList[1];
-            option = "En";
-            languageSet.DataElements.settings.language = option;
-            SetLanguage(option);  
-            ChangeOptionsDropdown();  
-            languageSet.WriteData();
-
+            SetFunctionsOnChange(1, "En");
         }
         OnLanguageChanged?.Invoke();
     }
+
+    private void SetFunctionsOnChange(int value, string myOption)
+    {
+        ddImage.sprite = spriteList[value];
+        option = myOption;
+        languageSet.DataElements.settings.language = option;
+        SetLanguage(option);
+        ChangeOptionsDropdown();
+        languageSet.WriteData();
+    }
     private void ChangeOptionsDropdown()
     {
-        languageDropdown.options[0].text =Languages[0];
+        languageDropdown.options[0].text = Languages[0];
         languageDropdown.options[1].text = Languages[1];
 
     }
-    private void PopulateDropdown(string optionL)
+
+
+    public string[] ReservationHeader
     {
-        Debug.Log(optionL + "----limba este");
-        dropOptions = SetOptionsValues(optionL, "Language");
-        languageDropdown.ClearOptions();
-        for (int i = 0; i < spriteList.Count; i++)
-        {
-            languageDropdown.options.Add(new Dropdown.OptionData(dropOptions[i], spriteList[i]));
-        }
-    }
-
-    public void GetTexts()
-    {
-        //myManager = LocalizationManager.Instance;
-        textList = new List<Text>();
-        Text[] elements = new Text[250];
-        var language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
-
-        Debug.Log("clicked");
-        foreach (var item in parents)
-        {
-            elements = item.GetComponentsInChildren<Text>(true);
-            foreach (var items in elements)
-            {
-                if (language.ContainsKey(items.name))
-                {
-                    textList.Add(items);
-                }
-            }
-        }
-
-    }
-    public string[] DaysLong {
         get
-        { 
+        {
+            return SetOptionsValues(option, "ReservationEditHeaderText");
+        }
+    }
+    public string[] DaysLong
+    {
+        get
+        {
             return SetOptionsValues(option, "Days");
         }
     }
@@ -163,6 +141,41 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Notifications");
         }
     }
+    public Dictionary<int, string> PreAlertDictFunction
+    {
+        get
+        {
+            Dictionary<int, string> result = new Dictionary<int, string>();
+            for (int i = 0; i < Notifications.Length; i++)
+            {
+                result.Add(i, Notifications[i]);
+            }
+            return result;
+        }
+    }
+
+    public string[] Prepositions
+    {
+        get
+        {
+            return SetOptionsValues(option, "Prepositions");
+        }
+    }
+    public string[] ConfirmAction
+    {
+        get
+        {
+            return SetOptionsValues(option, "ConfirmAction");
+        }
+    }
+
+    public string[] ConfirmDelete
+    {
+        get
+        {
+            return SetOptionsValues(option, "ConfirmDelete");
+        }
+    }
     public string[] Languages
     {
         get
@@ -170,11 +183,118 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Language");
         }
     }
-
-    public   string[] SetOptionsValues(string lang, string myKey)
+    public string[] HeaderClients
     {
-        var language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
-        var result = new string[12];
+        get
+        {
+            return SetOptionsValues(option, "TextAddClient");
+        }
+    }
+    public string MailRequired
+    {
+        get
+        {
+            return SetTextValue(option, "MessageEmail");
+        }
+    }
+    public string PhoneRequired
+    {
+        get
+        {
+            return SetTextValue(option, "MessagePhone");
+        }
+    }
+    public string NameRequired
+    {
+        get
+        {
+            return SetTextValue(option, "NameRequired");
+        }
+    }
+    public string[] HelpTextMainPage
+    {
+        get
+        {
+            string textMain = SetTextValue(option, "main_text_help");
+            string textTitle = SetTextValue(option, "TextMainPage");
+            textMain = textMain.Replace('~', '\n');
+            string[] content = new string[2];
+            content[0] = textTitle;
+            content[1] = textMain;
+            return content;
+        }
+    }
+
+    public string[] HelpTextPropertyPage
+    {
+        get
+        {
+            string textMain = SetTextValue(option, "propr_text_help");
+            string textTitle = SetTextValue(option, "TextProperties");
+            textMain = textMain.Replace('~', '\n');
+            string[] content = new string[2];
+            content[0] = textTitle;
+            content[1] = textMain;
+            return content;
+        }
+    }
+
+    public string[] HelpTextRoomPage
+    {
+        get
+        {
+            string textMain = SetTextValue(option, "room_text_help");
+            string textTitle = SetTextValue(option, "TextRooms");
+            textMain = textMain.Replace('~', '\n');
+            string[] content = new string[2];
+            content[0] = textTitle;
+            content[1] = textMain;
+            return content;
+        }
+    }
+    public string[] HelpTextClientPage
+    {
+        get
+        {
+            string textClient = SetTextValue(option, "client_text_help");
+            string textTitle = SetTextValue(option, "TextClients");
+            textClient = textClient.Replace('~', '\n');
+            string[] content = new string[2];
+            content[0] = textTitle;
+            content[1] = textClient;
+            return content;
+        }
+    }
+    public string[] HelpTextFilterPage
+    {
+        get
+        {
+            string textMain = SetTextValue(option, "filter_text_help");
+            string textTitle = SetTextValue(option, "TextFilters");
+            textMain = textMain.Replace('~', '\n');
+            string[] content = new string[2];
+            content[0] = textTitle;
+            content[1] = textMain;
+            return content;
+        }
+    }
+    public string[] HelpTextReservationPage
+    {
+        get
+        {
+            string textMain = SetTextValue(option, "rez_text_help");
+            string textTitle = SetTextValue(option, "TextReservations");
+            textMain = textMain.Replace('~', '\n');
+            string[] content = new string[2];
+            content[0] = textTitle;
+            content[1] = textMain;
+            return content;
+        }
+    }
+    public string[] SetOptionsValues(string lang, string myKey)
+    {
+        Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
+        string[] result = new string[20];
         foreach (var item in language)
         {
             if (item.Key == myKey)
@@ -185,10 +305,43 @@ public class LocalizedText : MonoBehaviour
         return result;
     }
 
+    public string SetTextValue(string lang, string myKey)
+    {
+        Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
+        string result = string.Empty;
+        foreach (var item in language)
+        {
+            if (item.Key == myKey)
+            {
+                result = item.Value;
+            }
+        }
+        return result;
+    }
+
+    public void GetTexts()
+    {
+        textList = new List<Text>();
+        Text[] elements = new Text[250];
+        Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
+        Debug.Log("clicked");
+        foreach (var item in parents)
+        {
+            elements = item.GetComponentsInChildren<Text>(true);
+            foreach (var items in elements)
+            {
+                if (language.ContainsKey(items.name))
+                {
+                    textList.Add(items);
+                }
+            }
+        }
+    }
+
     private void SetLanguage(string language)
     {
-       // myManager = LocalizationManager.Instance;
-       // var lang = csvData.Where(x => x.Name == language).First();
+        // myManager = LocalizationManager.Instance;
+        // var lang = csvData.Where(x => x.Name == language).First();
         var lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         foreach (var item in textList)
         {
