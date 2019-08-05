@@ -70,7 +70,7 @@ public class TopCalendar : MonoBehaviour
 
     private void SetMonth()
     {
-        monthText.text = $"{LocalizedText.Instance.Months[DateTime.Today.Month - 1]}{DateTime.Today.Year}";
+        monthText.text = $"{LocalizedText.Instance.Months[DateTime.Today.Month - 1]} {DateTime.Today.Year}";
     }
 
     public void ToggleDropdownCalendar()
@@ -91,7 +91,7 @@ public class TopCalendar : MonoBehaviour
 
     public void UpdateMonth(DateTime date)
     {
-        
+
         //only update if the year or motnth is different
         if(focusDateTime.Year != date.Year || focusDateTime.Month != date.Month)
         {
@@ -102,7 +102,7 @@ public class TopCalendar : MonoBehaviour
                 isSliding = false;
                 currentPage.UpdatePage(focusDateTime);
                 //monthText.text = $"{Constants.MonthNamesDict[focusDateTime.Month]} {focusDateTime.Year}";
-                monthText.text = $"{LocalizedText.Instance.Months[focusDateTime.Month-1]}{focusDateTime.Year}";
+                monthText.text = $"{LocalizedText.Instance.Months[focusDateTime.Month-1]} {focusDateTime.Year}";
             }
         }
     }
