@@ -325,14 +325,15 @@ public class LocalizedText : MonoBehaviour
         Text[] elements = new Text[250];
         Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
         Debug.Log("clicked");
-        foreach (var item in parents)
+        for (int i = 0; i < parents.Length; i++)
         {
-            elements = item.GetComponentsInChildren<Text>(true);
-            foreach (var items in elements)
+            elements = parents[i].GetComponentsInChildren<Text>(true);
+         
+            for (int j = 0; j < elements.Length; j++)
             {
-                if (language.ContainsKey(items.name))
+                if (language.ContainsKey(elements[j].name))
                 {
-                    textList.Add(items);
+                    textList.Add(elements[j]);
                 }
             }
         }
@@ -343,9 +344,9 @@ public class LocalizedText : MonoBehaviour
         // myManager = LocalizationManager.Instance;
         // var lang = csvData.Where(x => x.Name == language).First();
         var lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
-        foreach (var item in textList)
+        for (int i = 0; i < textList.Count; i++)
         {
-            item.text = lang.Texts[item.name];
+            textList[i].text = lang.Texts[textList[i].name];
         }
     }
 
