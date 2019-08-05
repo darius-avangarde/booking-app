@@ -17,7 +17,7 @@ public class NotificationManager : MonoBehaviour
     private AndroidNotificationChannel androidNotificationChannel;
     private const string channelId = "Default";
 
-    private string reservationsTitle = "Rezevari apropiate:";
+    private string reservationsTitle = "Rezervări apropiate:";
     private string lastReservationsNotification;
     private int preAlertTime = 0;
 
@@ -79,7 +79,7 @@ public class NotificationManager : MonoBehaviour
                 newNotification.Title = reservationsTitle;
                 foreach (IReservation prevReservation in previousReservations)
                 {
-                    newNotification.Text += $"{prevReservation.CustomerName} - {PropertyDataManager.GetProperty(prevReservation.PropertyID).GetRoom(prevReservation.RoomID).Name} in {prevReservation.Period.Start.Day}/{prevReservation.Period.Start.Month}/{prevReservation.Period.Start.Year}.\n";
+                    newNotification.Text += $"{prevReservation.CustomerName} - {PropertyDataManager.GetProperty(prevReservation.PropertyID).Name}, {PropertyDataManager.GetProperty(prevReservation.PropertyID).GetRoom(prevReservation.RoomID).Name} in {prevReservation.Period.Start.Day}/{prevReservation.Period.Start.Month}/{prevReservation.Period.Start.Year}.\n";
                     newNotification.IntentData += $"{prevReservation.ID}\n";
                 }
                 newNotification.FireTime = fireTime.AddHours(-preAlert);

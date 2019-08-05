@@ -11,39 +11,102 @@ public class RoomFieldsHandler : MonoBehaviour
     [SerializeField]
     private CreateMultipleRooms multipleRoomsScript = null;
     [SerializeField]
-    private InputField multipleFloorsField = null;
+    private GameObject floorRoomsObject = null;
     [SerializeField]
-    private InputField multipleRoomsField = null;
+    private RectTransform floorRoomsParent = null;
+    [SerializeField]
+    private RectTransform screenContent = null;
+    [SerializeField]
+    private InputField multipleFloorsField = null;
     [SerializeField]
     private Dropdown multipleFloorDropdown = null;
     [SerializeField]
-    private Dropdown multipleRoomsDropdown = null;
+    private InputField allMultipleRoomsFields = null;
+    [SerializeField]
+    private Dropdown allMultipleRoomsDropdown = null;
 
+    private List<FloorRoomsHandler> floorItemList = new List<FloorRoomsHandler>();
     private int currentFloorValue = 0;
     private int currenRoomValue = 0;
 
     private void Awake()
     {
+        for (int i = 0; i <= 5; i++)
+        {
+            GameObject floorRooms = Instantiate(floorRoomsObject, floorRoomsParent);
+            FloorRoomsHandler roomsFloor = floorRooms.GetComponent<FloorRoomsHandler>();
+            floorRooms.SetActive(false);
+            floorItemList.Add(roomsFloor);
+        }
         propertyAdminScreen.SetMultipleRoomsFields += SetFields;
     }
 
     private void OnEnable()
     {
         multipleFloorDropdown.value = 0;
-        multipleRoomsDropdown.value = 0;
         SetFloorInputField("0");
-        SetRoomInputField("1");
+    }
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < floorItemList.Count; i++)
+        {
+            floorItemList[i].gameObject.SetActive(false);
+        }
     }
 
     public void StartInput()
     {
+        multipleFloorsField.text = string.Empty;
         multipleFloorsField.characterValidation = InputField.CharacterValidation.Integer;
     }
 
-    private void SetFields(int floors, int rooms)
+    private void SetFields(int floors, int[] floorRooms)
     {
+        multipleRoomsScript.multipleFloorsNumber = floors;
+        multipleRoomsScript.multipleRoomsNumber = floorRooms;
         SetFloorInputField((floors - 1).ToString());
-        SetRoomInputField(rooms.ToString());
+        InitializeFloorRooms(floors);
+    }
+
+    private void InitializeFloorRooms(int floors)
+    {
+        if (floorItemList.Count != floors)
+        {
+            //Create New Objects as needed
+            for (int i = floorItemList.Count - 1; i < floors; i++)
+            {
+                InstantiateFloors();
+            }
+
+            //Disable unused objects
+            for (int i = floorItemList.Count - 1; i > floors; i--)
+            {
+                floorItemList[i].gameObject.SetActive(false);
+            }
+        }
+
+        for (int i = 0; i < floors; i++)
+        {
+            floorItemList[i].gameObject.SetActive(true);
+            floorItemList[i].SetPropertyFloor(i);
+            if (multipleRoomsScript.multipleRoomsNumber[i] != 0)
+            {
+                floorItemList[i].SetRoomInputField(multipleRoomsScript.multipleRoomsNumber[i].ToString());
+            }
+            else
+            {
+                floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(floorRoomsParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(screenContent);
+    }
+    private void InstantiateFloors()
+    {
+        GameObject floorRooms = Instantiate(floorRoomsObject, floorRoomsParent);
+        FloorRoomsHandler roomsFloor = floorRooms.GetComponent<FloorRoomsHandler>();
+        floorItemList.Add(roomsFloor);
     }
 
     public void SetFloorInputField(string value)
@@ -68,6 +131,48 @@ public class RoomFieldsHandler : MonoBehaviour
             multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
             multipleFloorsField.text = $"P";
         }
+        int[] tempArray = multipleRoomsScript.multipleRoomsNumber;
+        multipleRoomsScript.multipleRoomsNumber = new int[currentFloorValue + 1];
+        if (tempArray.Length < multipleRoomsScript.multipleRoomsNumber.Length)
+        {
+            for (int i = 0; i < tempArray.Length; i++)
+            {
+                multipleRoomsScript.multipleRoomsNumber[i] = tempArray[i];
+            }
+        }
+        else
+        {
+            for (int i = 0; i < multipleRoomsScript.multipleRoomsNumber.Length; i++)
+            {
+                multipleRoomsScript.multipleRoomsNumber[i] = tempArray[i];
+            }
+        }
+        InitializeFloorRooms(currentFloorValue);
+    }
+
+    public void SetFloorDropdownOption()
+    {
+        currentFloorValue = multipleFloorDropdown.value;
+        multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
+        multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
+        multipleFloorsField.text = multipleFloorDropdown.options[multipleFloorDropdown.value].text;
+        int[] tempArray = multipleRoomsScript.multipleRoomsNumber;
+        multipleRoomsScript.multipleRoomsNumber = new int[currentFloorValue + 1];
+        if (tempArray.Length < multipleRoomsScript.multipleRoomsNumber.Length)
+        {
+            for (int i = 0; i < tempArray.Length; i++)
+            {
+                multipleRoomsScript.multipleRoomsNumber[i] = tempArray[i];
+            }
+        }
+        else
+        {
+            for (int i = 0; i < multipleRoomsScript.multipleRoomsNumber.Length; i++)
+            {
+                multipleRoomsScript.multipleRoomsNumber[i] = tempArray[i];
+            }
+        }
+        InitializeFloorRooms(currentFloorValue);
     }
 
     public void SetRoomInputField(string value)
@@ -80,22 +185,20 @@ public class RoomFieldsHandler : MonoBehaviour
         {
             currenRoomValue = 1;
         }
-        multipleRoomsScript.multipleRoomsNumber = currenRoomValue;
-        multipleRoomsField.text = value;
-    }
-
-    public void SetFloorDropdownOption()
-    {
-        currentFloorValue = multipleFloorDropdown.value;
-        multipleRoomsScript.multipleFloorsNumber = currentFloorValue;
-        multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
-        multipleFloorsField.text = multipleFloorDropdown.options[multipleFloorDropdown.value].text;
+        for (int i = 0; i <= currentFloorValue; i++)
+        {
+            floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
+        }
+        allMultipleRoomsFields.text = currenRoomValue.ToString();
     }
 
     public void SetRoomDropdownOption()
     {
-        currenRoomValue = multipleRoomsDropdown.value + 1;
-        multipleRoomsScript.multipleRoomsNumber = currenRoomValue;
-        multipleRoomsField.text = multipleRoomsDropdown.options[multipleRoomsDropdown.value].text;
+        currenRoomValue = allMultipleRoomsDropdown.value + 1;
+        for (int i = 0; i <= currentFloorValue; i++)
+        {
+            floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
+        }
+        allMultipleRoomsFields.text = currenRoomValue.ToString();
     }
 }

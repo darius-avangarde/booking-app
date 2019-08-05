@@ -20,8 +20,8 @@ public class RoomToggleHandler : MonoBehaviour
 
     private void Awake()
     {
-        propertyAdminScreenComponent.SetRoomsToggle += SetToggle;
-        propertyAdminScreenComponent.GetRoomsToggle += GetCurrentToggles;
+        //propertyAdminScreenComponent.SetRoomsToggle += SetToggle;
+        //propertyAdminScreenComponent.GetRoomsToggle += GetCurrentToggles;
     }
 
     private void OnEnable()
@@ -59,16 +59,16 @@ public class RoomToggleHandler : MonoBehaviour
         if (withRoomsToggle.isOn)
         {
             currentHasRooms = true;
-            saveButton.interactable = true;
+            //saveButton.interactable = true;
         }
         else if(withoutRoomsToggle.isOn)
         {
             currentHasRooms = false;
-            saveButton.interactable = true;
+            //saveButton.interactable = true;
         }
         else
         {
-            saveButton.interactable = false;
+            //saveButton.interactable = false;
         }
     }
 }

@@ -11,7 +11,11 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Text propertyName = null;
     [SerializeField]
+    private Image propertyIcon = null;
+    [SerializeField]
     private Button propertyButtonItem = null;
+    [SerializeField]
+    private Sprite[] propertyIcons = null;
 
     private IProperty currentProperty;
 
@@ -32,9 +36,17 @@ public class PropertyButton : MonoBehaviour
     {
         currentProperty = property;
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"Proprietatea{Environment.NewLine}{property.Name}";
+        for (int i = 0; i < propertyIcons.Length; i++)
+        {
+            if (propertyIcons[i].name == property.PropertyType.ToString())
+            {
+                propertyIcon.sprite = propertyIcons[i];
+            }
+        }
         propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
 
         themeManager.SetColor(propertyButtonItem.GetComponent<Graphic>());
         themeManager.SetColor(propertyName.GetComponent<Graphic>());
+        themeManager.SetColor(propertyIcon.GetComponent<Graphic>());
     }
 }

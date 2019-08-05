@@ -8,14 +8,13 @@ using UnityEngine.UI;
 
 public class PropertyAdminScreen : MonoBehaviour
 {
-    public event Action<int, int> SetMultipleRoomsFields = delegate { };
-    public event Action<bool, bool> MultipleRooms = delegate { };
-    public event Action<bool> SetRoomsToggle = delegate { };
-    public event Action GetRoomsToggle = delegate { };
+    public event Action<int, int[]> SetMultipleRoomsFields = delegate { };
+    public event Action<bool> MultipleRooms = delegate { };
+    //public event Action<bool> SetRoomsToggle = delegate { };
+    //public event Action GetRoomsToggle = delegate { };
     public event Action CheckSave = delegate { };
     public IProperty CurrentProperty { get; set; }
     public bool CanSave { get; set; } = true;
-
     public Navigator navigator;
 
     [SerializeField]
@@ -27,13 +26,17 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private PropertyDropdownHandler propertyDropdownHandler = null;
     [SerializeField]
+    private SetPropertyTypeDropdown setPropertyTypeDropdown = null;
+    [SerializeField]
     private NavScreen propertyAdminScreen = null;
     [SerializeField]
     private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
     [SerializeField]
-    private GameObject RoomsToggleField = null;
+    private GameObject roomsToggleField = null;
+    [SerializeField]
+    private GameObject multipleRoomsField = null;
     [SerializeField]
     private Button saveButton = null;
     [SerializeField]
@@ -48,6 +51,7 @@ public class PropertyAdminScreen : MonoBehaviour
     private Dictionary<string, Dropdown.OptionData> FloorsOptions;
     private Dictionary<int, Dropdown.OptionData> roomsOptions;
     private ToggleDialogOptions toggleDialogOptions = new ToggleDialogOptions();
+    private bool withRooms = true;
     private bool shouldGoBack = true;
 
     private void Awake()
@@ -55,14 +59,15 @@ public class PropertyAdminScreen : MonoBehaviour
         backButton.onClick.AddListener(() => navigator.GoBack());
         deleteButton.onClick.AddListener(() => DeleteProperty());
         calcelButton.onClick.AddListener(() => navigator.GoBack());
+        setPropertyTypeDropdown.ChangePropertyType += SetPropertyType;
 
-        toggleDialogOptions.TitleMessage = Constants.ADD_MULTIPLE_ROOMS;
-        toggleDialogOptions.ConfirmText = Constants.CONFIRM;
-        toggleDialogOptions.CancelText = Constants.DELETE_CANCEL;
-        toggleDialogOptions.SetOptions(
-            new ToggleOption(Constants.REPLACE_ROOMS, () => MultipleRooms(true, true)),
-            new ToggleOption(Constants.ADD_OVER_ROOMS, () => MultipleRooms(false, true))
-            );
+        //toggleDialogOptions.TitleMessage = Constants.ADD_MULTIPLE_ROOMS;
+        //toggleDialogOptions.ConfirmText = Constants.CONFIRM;
+        //toggleDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        //toggleDialogOptions.SetOptions(
+        //    new ToggleOption(Constants.REPLACE_ROOMS, () => MultipleRooms(true, true)),
+        //    new ToggleOption(Constants.ADD_OVER_ROOMS, () => MultipleRooms(false, true))
+        //    );
     }
 
     private void OnEnable()
@@ -79,15 +84,16 @@ public class PropertyAdminScreen : MonoBehaviour
         CurrentProperty = property;
         if (CurrentProperty.Name != null)
         {
-            RoomsToggleField.SetActive(false);
+            //RoomsToggleField.SetActive(false);
             deleteButton.gameObject.SetActive(true);
         }
         else
         {
-            RoomsToggleField.SetActive(true);
+            //RoomsToggleField.SetActive(true);
             deleteButton.gameObject.SetActive(false);
         }
         SetPropertyFieldsText();
+        setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
         navigator.GoTo(propertyAdminScreen);
     }
 
@@ -103,13 +109,36 @@ public class PropertyAdminScreen : MonoBehaviour
             propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? Constants.NEW_PROPERTY : Constants.EDIT_PROPERTY;
             if (!string.IsNullOrEmpty(CurrentProperty.Name))
             {
-                SetRoomsToggle(CurrentProperty.HasRooms);
-                if (CurrentProperty.FloorRooms != 0)
+                //SetRoomsToggle(CurrentProperty.HasRooms);
+                setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
+                if (CurrentProperty.Floors >= 0)
                 {
-                    SetMultipleRoomsFields(CurrentProperty.Rooms.Count() / CurrentProperty.FloorRooms, CurrentProperty.FloorRooms);
+                    SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
                 }
             }
         }
+    }
+
+    private void SetPropertyType(PropertyDataManager.PropertyType propertyType)
+    {
+        switch (propertyType)
+        {
+            case PropertyDataManager.PropertyType.hotel:
+                withRooms = true;
+                break;
+            case PropertyDataManager.PropertyType.guesthouse:
+                withRooms = true;
+                break;
+            case PropertyDataManager.PropertyType.villa:
+                withRooms = false;
+                break;
+            case PropertyDataManager.PropertyType.cabin:
+                withRooms = false;
+                break;
+            default:
+                break;
+        }
+        multipleRoomsField.SetActive(withRooms);
     }
 
     /// <summary>
@@ -121,18 +150,19 @@ public class PropertyAdminScreen : MonoBehaviour
         if (CanSave)
         {
             CurrentProperty.Name = propertyNameInputField.text;
-            GetRoomsToggle();
+            CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
+            CurrentProperty.HasRooms = withRooms;
             if (CurrentProperty.HasRooms)
             {
-                if (CurrentProperty.Rooms.Count() > 0)
-                {
-                    shouldGoBack = false;
-                    toggleDialog.Show(toggleDialogOptions);
-                }
-                else
-                {
-                    MultipleRooms(true, false);
-                }
+                //if (CurrentProperty.Rooms.Count() > 0)
+                //{
+                //    shouldGoBack = false;
+                //    toggleDialog.Show(toggleDialogOptions);
+                //}
+                //else
+                //{
+                    MultipleRooms(false);
+                //}
             }
             else
             {

@@ -40,7 +40,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
         {
             roomIcons.Add(icon.name.ToLower(), icon);
         }
-        for (int i = 0; i <= (int)PropertyDataManager.RoomType.bed; i++)
+        for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
             roomTypeName[(PropertyDataManager.RoomType)i] = roomTypeText[i];
         }
@@ -53,7 +53,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
     private void SetDropdownOptions()
     {
         roomTypeDropdown.options.Clear();
-        for (int i = 0; i <= (int)PropertyDataManager.RoomType.bed; i++)
+        for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
             roomTypeName[(PropertyDataManager.RoomType)i] = roomTypeText[i];
             Dropdown.OptionData newOption = new Dropdown.OptionData();

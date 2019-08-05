@@ -6,7 +6,9 @@ public interface IProperty
     string Name { get; set; }
     string GetPropertyRoomID { get; set; }
     bool HasRooms { get; set; }
-    int FloorRooms { get; set; }
+    int Floors { get; set; }
+    int[] FloorRooms { get; set; }
+    PropertyDataManager.PropertyType PropertyType { get; set; }
     IEnumerable<IRoom> Rooms { get; }
     IEnumerable<IRoom> DeletedRooms { get; }
 

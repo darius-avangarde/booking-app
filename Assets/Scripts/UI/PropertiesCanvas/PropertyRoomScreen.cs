@@ -86,7 +86,7 @@ public class PropertyRoomScreen : MonoBehaviour
             List<IRoom> currentRooms = currentProperty.Rooms.OrderBy(r => r.RoomNumber).ThenBy(r => r.Name).ToList();
             int currentFloor = 0;
             int lastFloor = -1;
-            int maxFloors = currentProperty.FloorRooms;
+            int maxFloors = currentProperty.Floors;
             foreach (var room in currentRooms)
             {
                 currentFloor = room.Floor;
