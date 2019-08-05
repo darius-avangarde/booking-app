@@ -282,6 +282,7 @@ public static class PropertyDataManager
                 multipleRooms.Add((Room)room);
             }
             rooms.AddRange(multipleRooms);
+            rooms = rooms.OrderBy(r => r.RoomNumber).ToList();
             WritePropertyData();
         }
 

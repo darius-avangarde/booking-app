@@ -49,6 +49,12 @@ public class RoomFieldsHandler : MonoBehaviour
         }
     }
 
+    public void UpdateUILayout()
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(floorRoomsParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(screenContent);
+    }
+
     public void StartInput()
     {
         multipleFloorsField.text = string.Empty;
@@ -184,9 +190,8 @@ public class RoomFieldsHandler : MonoBehaviour
             {
                 floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
             }
+            UpdateUILayout();
         }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(floorRoomsParent);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(screenContent);
     }
 
     private void InstantiateFloors()

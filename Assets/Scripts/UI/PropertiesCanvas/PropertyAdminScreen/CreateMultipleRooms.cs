@@ -10,12 +10,15 @@ public class CreateMultipleRooms : MonoBehaviour
     public int[] multipleRoomsNumber { get; set; } = new int[1];
 
     [SerializeField]
-    private PropertyAdminScreen propertyAdminScreen;
+    private PropertyAdminScreen propertyAdminScreen = null;
+    [SerializeField]
+    private ConfirmationDialog confirmationDialog = null;
 
     private List<IRoom> roomsList = new List<IRoom>();
 
     private int previousFloors = 0;
     private int[] previousRooms = new int[1];
+    private bool changeRooms = true;
 
     private void Start()
     {
@@ -38,6 +41,55 @@ public class CreateMultipleRooms : MonoBehaviour
             previousRooms = new int[multipleFloorsNumber + 1];
         }
 
+        CheckRoomChanges();
+    }
+
+    private void CheckRoomChanges()
+    {
+        if (multipleFloorsNumber < propertyAdminScreen.CurrentProperty.Floors)
+        {
+            changeRooms = false;
+            DeleteRooms();
+        }
+        else
+        {
+            for (int i = 0; i < propertyAdminScreen.CurrentProperty.Floors; i++)
+            {
+                if (multipleRoomsNumber[i] < propertyAdminScreen.CurrentProperty.FloorRooms[i])
+                {
+                    changeRooms = false;
+                    DeleteRooms();
+                    break;
+                }
+                else
+                {
+                    changeRooms = true;
+                }
+            }
+        }
+        if (changeRooms)
+        {
+            ChangeRooms();
+        }
+    }
+
+    private void DeleteRooms()
+    {
+        confirmationDialog.Show(new ConfirmationDialogOptions
+        {
+            Message = "Urmeaza sa se stearga cateva camere, se vor sterge si rezervarile acestora.",
+            ConfirmText = Constants.DELETE_CONFIRM,
+            CancelText = Constants.DELETE_CANCEL,
+            ConfirmCallback = () =>
+            {
+                ChangeRooms();
+            },
+            CancelCallback = null
+        });
+    }
+
+    private void ChangeRooms()
+    {
         propertyAdminScreen.CurrentProperty.Floors = multipleFloorsNumber;
         propertyAdminScreen.CurrentProperty.FloorRooms = multipleRoomsNumber;
 
@@ -47,11 +99,9 @@ public class CreateMultipleRooms : MonoBehaviour
         {
             CreateFloorRooms(i);
         }
+
         propertyAdminScreen.CurrentProperty.SaveMultipleRooms(roomsList);
-        if (shouldGoBack)
-        {
-            propertyAdminScreen.navigator.GoBack();
-        }
+        propertyAdminScreen.navigator.GoBack();
     }
 
     private void CreateFloorRooms(int currentFloor)

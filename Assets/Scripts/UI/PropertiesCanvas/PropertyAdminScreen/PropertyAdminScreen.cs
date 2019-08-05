@@ -153,15 +153,8 @@ public class PropertyAdminScreen : MonoBehaviour
             CurrentProperty.HasRooms = withRooms;
             if (CurrentProperty.HasRooms)
             {
-                //if (CurrentProperty.Rooms.Count() > 0)
-                //{
-                //    shouldGoBack = false;
-                //    toggleDialog.Show(toggleDialogOptions);
-                //}
-                //else
-                //{
-                    MultipleRooms(false);
-                //}
+                shouldGoBack = false;
+                MultipleRooms(true);
             }
             else
             {

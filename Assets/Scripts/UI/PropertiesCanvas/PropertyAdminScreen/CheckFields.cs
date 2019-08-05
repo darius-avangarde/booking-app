@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class CheckFields : MonoBehaviour
 {
     [SerializeField]
-    private PropertyAdminScreen propertyAdminScreenComponent;
+    private PropertyAdminScreen propertyAdminScreenComponent = null;
     [SerializeField]
-    private InputField propertyNameField;
+    private InputField propertyNameField= null;
     [SerializeField]
     private Text errorMessage = null;
 
