@@ -141,6 +141,26 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Notifications");
         }
     }
+    public Dictionary<int, string> PreAlertDictFunction
+    {
+        get
+        {
+            Dictionary<int, string> result = new Dictionary<int, string>();
+            for (int i = 0; i < Notifications.Length; i++)
+            {
+                result.Add(i, Notifications[i]);
+            }
+            return result;
+        }
+    }
+
+    public string[] Prepositions
+    {
+        get
+        {
+            return SetOptionsValues(option, "Prepositions");
+        }
+    }
     public string[] Languages
     {
         get

@@ -72,6 +72,7 @@ public class ReservationEditScreen_New : MonoBehaviour
     {
         editConfirmation = new ConfirmationDialogOptions();
         UpdatePreAletDropdown();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdatePreAletDropdown());
         //add to update event of loc manager
     }
 
@@ -138,7 +139,7 @@ public class ReservationEditScreen_New : MonoBehaviour
             };
             confirmationDialog.Show(editConfirmation);
 
-            notificationManager.RegisterNotification(currentReservation, Constants.PreAlertDict.ElementAt(preAlertDropdown.value).Key);
+            notificationManager.RegisterNotification(currentReservation, LocalizedText.Instance.PreAlertDictFunction.ElementAt(preAlertDropdown.value).Key);
         }
         else
         {
@@ -153,7 +154,7 @@ public class ReservationEditScreen_New : MonoBehaviour
             confirmationCallback?.Invoke(newReservation);
             inputManager.Message(Constants.RESERVATION_SAVED);
 
-            notificationManager.RegisterNotification(newReservation, Constants.PreAlertDict.ElementAt(preAlertDropdown.value).Key);
+            notificationManager.RegisterNotification(newReservation, LocalizedText.Instance.PreAlertDictFunction.ElementAt(preAlertDropdown.value).Key);
         }
 
         //get pre hours from prealertdict in hours
@@ -213,7 +214,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     private void SelectPreAlert(int index)
     {
-        resPreAlertDays = Constants.PreAlertDict.ElementAt(index).Key;
+        resPreAlertDays = LocalizedText.Instance.PreAlertDictFunction.ElementAt(index).Key;
     }
 
     private void SetDatesCallback(DateTime date, bool isStart)
@@ -276,9 +277,9 @@ public class ReservationEditScreen_New : MonoBehaviour
     private void UpdatePreAletDropdown()
     {
         List<Dropdown.OptionData> optionList = new List<Dropdown.OptionData>();
-        for (int i = 0; i < Constants.PreAlertDict.Count; i++)
+        for (int i = 0; i < LocalizedText.Instance.PreAlertDictFunction.Count; i++)
         {
-            optionList.Add(new Dropdown.OptionData(Constants.PreAlertDict.ElementAt(i).Value));
+            optionList.Add(new Dropdown.OptionData(LocalizedText.Instance.PreAlertDictFunction.ElementAt(i).Value));
         }
 
         preAlertDropdown.options = optionList;
