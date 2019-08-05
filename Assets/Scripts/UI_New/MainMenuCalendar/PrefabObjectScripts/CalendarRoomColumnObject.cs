@@ -4,6 +4,11 @@ using UnityEngine.UI;
 
 public class CalendarRoomColumnObject : MonoBehaviour
 {
+    public RectTransform RoomRectTransform => roomRectTransform;
+
+    [SerializeField]
+    private RectTransform roomRectTransform;
+
     [SerializeField]
     private Button roomButton;
 
@@ -39,8 +44,6 @@ public class CalendarRoomColumnObject : MonoBehaviour
         roomButton.onClick.AddListener(() => tapAction(room));
     }
 
-
-
     public void UpdateRoomObjectUI(IRoom room)
     {
         gameObject.SetActive(true);
@@ -48,5 +51,10 @@ public class CalendarRoomColumnObject : MonoBehaviour
         roomName.text = room.Name;
         singleBeds.text = $"{room.SingleBeds}";
         doubleBeds.text = $"{room.DoubleBeds}";
+    }
+
+    public void DisableObject()
+    {
+        gameObject.SetActive(false);
     }
 }

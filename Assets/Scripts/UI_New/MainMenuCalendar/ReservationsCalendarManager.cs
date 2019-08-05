@@ -307,7 +307,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
             dayColumn.name = $"Day column {d}";
-            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), 50, NewReservationFromUnreservedDay, header);
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), 12, NewReservationFromUnreservedDay, header);
             dayColumns.Add(dayColumn);
         }
 
