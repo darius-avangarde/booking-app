@@ -41,12 +41,6 @@ public class RoomFieldsHandler : MonoBehaviour
         propertyAdminScreen.SetMultipleRoomsFields += SetFields;
     }
 
-    private void OnEnable()
-    {
-        multipleFloorDropdown.value = 0;
-        SetFloorInputField("0");
-    }
-
     private void OnDisable()
     {
         for (int i = 0; i < floorItemList.Count; i++)
@@ -65,48 +59,7 @@ public class RoomFieldsHandler : MonoBehaviour
     {
         multipleRoomsScript.multipleFloorsNumber = floors;
         multipleRoomsScript.multipleRoomsNumber = floorRooms;
-        SetFloorInputField((floors - 1).ToString());
-        InitializeFloorRooms(floors);
-    }
-
-    private void InitializeFloorRooms(int floors)
-    {
-        if (floorItemList.Count != floors)
-        {
-            //Create New Objects as needed
-            for (int i = floorItemList.Count - 1; i < floors; i++)
-            {
-                InstantiateFloors();
-            }
-
-            //Disable unused objects
-            for (int i = floorItemList.Count - 1; i > floors; i--)
-            {
-                floorItemList[i].gameObject.SetActive(false);
-            }
-        }
-
-        for (int i = 0; i < floors; i++)
-        {
-            floorItemList[i].gameObject.SetActive(true);
-            floorItemList[i].SetPropertyFloor(i);
-            if (multipleRoomsScript.multipleRoomsNumber[i] != 0)
-            {
-                floorItemList[i].SetRoomInputField(multipleRoomsScript.multipleRoomsNumber[i].ToString());
-            }
-            else
-            {
-                floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
-            }
-        }
-        LayoutRebuilder.ForceRebuildLayoutImmediate(floorRoomsParent);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(screenContent);
-    }
-    private void InstantiateFloors()
-    {
-        GameObject floorRooms = Instantiate(floorRoomsObject, floorRoomsParent);
-        FloorRoomsHandler roomsFloor = floorRooms.GetComponent<FloorRoomsHandler>();
-        floorItemList.Add(roomsFloor);
+        SetFloorInputField(floors.ToString());
     }
 
     public void SetFloorInputField(string value)
@@ -200,5 +153,46 @@ public class RoomFieldsHandler : MonoBehaviour
             floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
         }
         allMultipleRoomsFields.text = currenRoomValue.ToString();
+    }
+
+    private void InitializeFloorRooms(int floors)
+    {
+        if (floorItemList.Count != floors)
+        {
+            //Create New Objects as needed
+            for (int i = floorItemList.Count - 1; i <= floors; i++)
+            {
+                InstantiateFloors();
+            }
+
+            //Disable unused objects
+            for (int i = floorItemList.Count - 1; i >= floors; i--)
+            {
+                floorItemList[i].gameObject.SetActive(false);
+            }
+        }
+
+        for (int i = 0; i <= floors; i++)
+        {
+            floorItemList[i].gameObject.SetActive(true);
+            floorItemList[i].SetPropertyFloor(i);
+            if (multipleRoomsScript.multipleRoomsNumber[i] != 0)
+            {
+                floorItemList[i].SetRoomInputField(multipleRoomsScript.multipleRoomsNumber[i].ToString());
+            }
+            else
+            {
+                floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
+            }
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(floorRoomsParent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(screenContent);
+    }
+
+    private void InstantiateFloors()
+    {
+        GameObject floorRooms = Instantiate(floorRoomsObject, floorRoomsParent);
+        FloorRoomsHandler roomsFloor = floorRooms.GetComponent<FloorRoomsHandler>();
+        floorItemList.Add(roomsFloor);
     }
 }

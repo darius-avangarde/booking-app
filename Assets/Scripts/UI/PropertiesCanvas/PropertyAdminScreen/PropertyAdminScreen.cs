@@ -70,11 +70,6 @@ public class PropertyAdminScreen : MonoBehaviour
         //    );
     }
 
-    private void OnEnable()
-    {
-        SetPropertyFieldsText();
-    }
-
     /// <summary>
     /// set the current property
     /// </summary>
@@ -115,6 +110,10 @@ public class PropertyAdminScreen : MonoBehaviour
                 {
                     SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
                 }
+            }
+            else
+            {
+                SetMultipleRoomsFields?.Invoke(1, new int[1]);
             }
         }
     }

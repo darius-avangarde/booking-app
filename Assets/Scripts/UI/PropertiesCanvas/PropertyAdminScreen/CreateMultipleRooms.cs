@@ -69,7 +69,7 @@ public class CreateMultipleRooms : MonoBehaviour
                 roomsList.Add(newRoom);
             }
 
-            for (int j = previousRooms[currentFloor] + 1; j >= multipleRoomsNumber[currentFloor]; j--)
+            for (int j = previousRooms[currentFloor] + 1; j > multipleRoomsNumber[currentFloor]; j--)
             {
                 List<IRoom> roomsToDelete = propertyAdminScreen.CurrentProperty.Rooms.Where(r => r.Floor == currentFloor && r.RoomNumber == j).ToList();
                 for (int i = 0; i < roomsToDelete.Count; i++)
@@ -98,7 +98,7 @@ public class CreateMultipleRooms : MonoBehaviour
                 roomsList.Add(newRoom);
             }
 
-            for (int j = previousRooms[currentFloor] + 1; j >= multipleRoomsNumber[currentFloor]; j--)
+            for (int j = previousRooms[currentFloor] + 1; j > multipleRoomsNumber[currentFloor]; j--)
             {
                 int roomNumber = 0;
                 if (j < 10)

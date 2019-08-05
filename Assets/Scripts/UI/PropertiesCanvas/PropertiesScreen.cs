@@ -99,7 +99,7 @@ public class PropertiesScreen : MonoBehaviour
     private void AddPropertyItem()
     {
         IProperty property = PropertyDataManager.AddProperty();
-        OpenPropertyAdminScreen(property);
+        propertyAdminScreen.OpenPropertyAdminScreen(property);
     }
 
     /// <summary>

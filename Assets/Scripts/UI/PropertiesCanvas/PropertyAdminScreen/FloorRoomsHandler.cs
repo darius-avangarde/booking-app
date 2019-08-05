@@ -17,13 +17,6 @@ public class FloorRoomsHandler : MonoBehaviour
     private int currenRoomValue = 0;
     private int currentFloor = 0;
 
-    private void OnEnable()
-    {
-        currentFloor = 0;
-        floorRoomsDropdown.value = 0;
-        SetRoomInputField("1");
-    }
-
     public void SetPropertyFloor(int floor)
     {
         if(floor == 0)

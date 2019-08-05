@@ -10,8 +10,6 @@ public class CheckFields : MonoBehaviour
     [SerializeField]
     private InputField propertyNameField;
     [SerializeField]
-    private InputField multipleRoomsField = null;
-    [SerializeField]
     private Text errorMessage = null;
 
     private void Start()
@@ -34,18 +32,6 @@ public class CheckFields : MonoBehaviour
         if (string.IsNullOrEmpty(propertyNameField.text))
         {
             errorMessage.text = Constants.ERR_PROPERTY_NAME;
-            propertyAdminScreenComponent.CanSave = false;
-            return;
-        }
-        else if (string.IsNullOrEmpty(multipleRoomsField.text))
-        {
-            errorMessage.text = Constants.ERR_ROOM_NUMBER;
-            propertyAdminScreenComponent.CanSave = false;
-            return;
-        }
-        else if (int.Parse(multipleRoomsField.text) <= 0)
-        {
-            errorMessage.text = Constants.ERR_ROOM_NULL_NUMBER;
             propertyAdminScreenComponent.CanSave = false;
             return;
         }
