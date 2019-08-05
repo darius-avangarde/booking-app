@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Linq;
 
 public class CalendarRoomColumn : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class CalendarRoomColumn : MonoBehaviour
     private float _disableMarginY = 0;
     private float _treshold = 100f;
 
+
     private void Start()
     {
         //populate pool
@@ -37,32 +39,9 @@ public class CalendarRoomColumn : MonoBehaviour
         _recordOffsetY = roomPool[0].RoomRectTransform.anchoredPosition.y - roomPool[1].RoomRectTransform.anchoredPosition.y;
         _disableMarginY = _recordOffsetY * roomPool.Count / 2;
 
-        roomColumnScrolrect.onValueChanged.AddListener(OnScroll);
         verticalLayoutGroup.enabled = false;
         cfg.enabled = false;
-    }
-
-    private void OnScroll(Vector2 pos)
-    {
-        for (int i = 0; i < roomPool.Count; i++)
-        {
-            if (roomColumnScrolrect.transform.InverseTransformPoint(roomPool[i].gameObject.transform.position).y > _disableMarginY + _treshold)
-            {
-                _newAnchoredPosition = roomPool[i].RoomRectTransform.anchoredPosition;
-                _newAnchoredPosition.y -= roomPool.Count * _recordOffsetY;
-                roomPool[i].RoomRectTransform.anchoredPosition = _newAnchoredPosition;
-                Transform item = roomColumnScrolrect.content.GetChild(roomPool.Count - 1).transform;
-                item.SetAsFirstSibling();
-            }
-            else if (roomColumnScrolrect.transform.InverseTransformPoint(roomPool[i].gameObject.transform.position).y < -_disableMarginY)
-            {
-                _newAnchoredPosition = roomPool[i].RoomRectTransform.anchoredPosition;
-                _newAnchoredPosition.y += roomPool.Count * _recordOffsetY;
-                roomPool[i].RoomRectTransform.anchoredPosition = _newAnchoredPosition;
-                Transform item = roomColumnScrolrect.content.GetChild(0).transform;
-                item.SetAsLastSibling();
-            }
-        }
+        roomColumnScrolrect.onValueChanged.AddListener(OnScroll);
     }
 
     public void UpdateRooms(List<IRoom> rooms, UnityAction<IRoom> tapAction)
@@ -70,55 +49,58 @@ public class CalendarRoomColumn : MonoBehaviour
         currentRooms = (rooms != null) ? rooms : new List<IRoom>();
         roomColumnScrolrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical ,rooms.Count * _recordOffsetY);
 
-        for (int i = 0; i < roomPool.Count; i++)
+        for (int i = 0; i < roomPool.Count - 1; i++)
         {
             if(currentRooms.Count > i)
             {
-                roomPool[i].UpdateRoomObjectUI(currentRooms[i]);
+                roomPool[i].UpdateRoomObjectUI(currentRooms[i], i);
             }
             else
             {
                 roomPool[i].DisableObject();
             }
+
+            roomPool[roomPool.Count -1].UpdateRoomObjectUI(null, -1);
+
+            //reposition and reorder items
             roomPool[i].RoomRectTransform.SetSiblingIndex(i);
+            roomPool[i].RoomRectTransform.anchoredPosition = i * (- Vector2.up * _recordOffsetY);
         }
-
-    //     ManagePool(rooms);
-
-    //     for (int r = 0; r < rooms.Count; r++)
-    //     {
-    //         roomPool[r].UpdateRoomObject(rooms[r], tapAction);
-    //     }
     }
 
-    // public void UpdateRoomsUI(List<IRoom> rooms)
-    // {
-    //     for (int r = 0; r < rooms.Count; r++)
-    //     {
-    //         roomPool[r].UpdateRoomObjectUI(rooms[r]);
-    //     }
-    // }
+    private void OnScroll(Vector2 pos)
+    {
+        if(currentRooms.Count > roomPool.Count)
+        {
+            for (int i = 0; i < roomPool.Count; i++)
+            {
+                //pulling scrolrect down
+                if (roomColumnScrolrect.transform.InverseTransformPoint(roomPool[i].transform.position).y > _disableMarginY + _treshold)
+                {
+                    _newAnchoredPosition = roomPool[i].RoomRectTransform.anchoredPosition;
+                    _newAnchoredPosition.y -= roomPool.Count * _recordOffsetY;
+                    roomPool[i].RoomRectTransform.anchoredPosition = _newAnchoredPosition;
+                    roomPool[i].RoomRectTransform.SetAsLastSibling(); // item is moved up
+                    OnMovedItem(roomPool[i], true);
+                }
 
-    // private void ManagePool(List<IRoom> rooms)
-    // {
-    //     if(rooms.Count != roomPool.Count)
-    //     {
-    //         //CreateNewObjects as needed
-    //         for (int i = roomPool.Count; i < rooms.Count; i++)
-    //         {
-    //             CreateRoomColumnObject();
-    //         }
+                //pulling scrolrect up
+                else if (roomColumnScrolrect.transform.InverseTransformPoint(roomPool[i].transform.position).y < -_disableMarginY)
+                {
+                    _newAnchoredPosition = roomPool[i].RoomRectTransform.anchoredPosition;
+                    _newAnchoredPosition.y += roomPool.Count * _recordOffsetY;
+                    roomPool[i].RoomRectTransform.anchoredPosition = _newAnchoredPosition;
+                    roomPool[i].RoomRectTransform.SetAsFirstSibling(); // item is moved down
+                    OnMovedItem(roomPool[i], false);
+                }
+            }
+        }
+    }
 
-    //         //Disable unused objects
-    //         for (int i = roomPool.Count - 1; i > rooms.Count - 1; i--)
-    //         {
-    //             roomPool[i].gameObject.SetActive(false);
-    //         }
-    //     }
-    // }
 
-    // private void CreateRoomColumnObject()
-    // {
-    //     roomPool.Add(Instantiate(roomColumnObjectPrefab, transform).GetComponent<CalendarRoomColumnObject>());
-    // }
+    private void OnMovedItem(CalendarRoomColumnObject c, bool isUp)
+    {
+        int nextIndex = Mathf.Clamp(c.RoomIndex + (isUp ? roomPool.Count : -roomPool.Count), 0 ,currentRooms.Count - 1);
+        c.UpdateRoomObjectUI(currentRooms[nextIndex], nextIndex);
+    }
 }

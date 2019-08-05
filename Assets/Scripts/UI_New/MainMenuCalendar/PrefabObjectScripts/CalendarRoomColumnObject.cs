@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class CalendarRoomColumnObject : MonoBehaviour
 {
     public RectTransform RoomRectTransform => roomRectTransform;
+    public int RoomIndex => currentRoomIndex;
 
     [SerializeField]
     private RectTransform roomRectTransform;
@@ -23,6 +24,7 @@ public class CalendarRoomColumnObject : MonoBehaviour
     [SerializeField]
     private Image doubleBedsImage;
 
+    private int currentRoomIndex = 0;
 
     private void Start()
     {
@@ -38,19 +40,23 @@ public class CalendarRoomColumnObject : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        UpdateRoomObjectUI(room);
+        UpdateRoomObjectUI(room, 0);
 
         roomButton.onClick.RemoveAllListeners();
         roomButton.onClick.AddListener(() => tapAction(room));
     }
 
-    public void UpdateRoomObjectUI(IRoom room)
+    public void UpdateRoomObjectUI(IRoom room, int roomIndex)
     {
+        currentRoomIndex = roomIndex;
         gameObject.SetActive(true);
 
-        roomName.text = room.Name;
-        singleBeds.text = $"{room.SingleBeds}";
-        doubleBeds.text = $"{room.DoubleBeds}";
+        if(room !=null)
+        {
+            roomName.text = room.Name;
+            singleBeds.text = $"{room.SingleBeds}";
+            doubleBeds.text = $"{room.DoubleBeds}";
+        }
     }
 
     public void DisableObject()
