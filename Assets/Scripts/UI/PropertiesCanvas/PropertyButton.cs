@@ -31,6 +31,11 @@ public class PropertyButton : MonoBehaviour
         LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetText());
     }
 
+    private void OnDisable()
+    {
+        propertyButtonItem.onClick.RemoveAllListeners();
+    }
+
     /// <summary>
     /// set the current property
     /// set property name

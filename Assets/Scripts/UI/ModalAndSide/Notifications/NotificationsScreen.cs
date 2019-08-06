@@ -42,11 +42,6 @@ public class NotificationsScreen : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     private void OnDisable()
     {
         foreach (NotificationItem notification in activeNotificationItems)

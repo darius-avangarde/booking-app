@@ -31,13 +31,24 @@ public class PropertiesScreen : MonoBehaviour
     [SerializeField]
     private Button backButton = null;
 
-    private List<GameObject> propertyButtonList = new List<GameObject>();
+    private List<PropertyButton> propertyButtonList = new List<PropertyButton>();
     private float scrollPosition = 1;
 
     private void Awake()
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
         addPropertyButton.onClick.AddListener(() => AddPropertyItem());
+    }
+    private void Start()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            //themeManager.SetShadow(propertyItemPrefab);
+            GameObject propertyButtonObject = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
+            propertyButtonObject.SetActive(false);
+            PropertyButton propertyButton = propertyButtonObject.GetComponent<PropertyButton>();
+            propertyButtonList.Add(propertyButton);
+        }
     }
 
     private void OnDisable()
@@ -50,27 +61,36 @@ public class PropertiesScreen : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        //scrollRectComponent.ResetAll();
-        for (int i = 0; i < propertyButtonList.Count; i++)
-        {
-            DestroyImmediate(propertyButtonList[i]);
-        }
-        propertyButtonList = new List<GameObject>();
+        scrollRectComponent.ResetAll();
         List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
+        
+        if(properties.Count != propertyButtonList.Count)
+        {
+            //Create New Objects as needed
+            for (int i = propertyButtonList.Count - 1; i < properties.Count; i++)
+            {
+                InstantiatePropertyButton();
+            }
+        
+            //Disable unused objects
+            for (int i = propertyButtonList.Count - 1; i > properties.Count; i--)
+            {
+                propertyButtonList[i].gameObject.SetActive(false);
+            }
+        }
+        
         for (int i = 0; i < properties.Count(); i++)
         {
-            themeManager.SetShadow(propertyItemPrefab);
-            GameObject propertyButton;
-            propertyButton = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
+            propertyButtonList[i].gameObject.SetActive(true);
+            PropertyButton propertyButton = propertyButtonList[i];
             if (properties[i].HasRooms)
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(properties[i], OpenPropertyRoomScreen, themeManager);
+                propertyButton.Initialize(properties[i], OpenPropertyRoomScreen, themeManager);
             }
             else
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(properties[i], OpenPropertyAdminScreen, themeManager);
+                propertyButton.Initialize(properties[i], OpenPropertyAdminScreen, themeManager);
             }
-            propertyButtonList.Add(propertyButton);
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(propertiesContainerContent);
         Canvas.ForceUpdateCanvases();
@@ -79,6 +99,15 @@ public class PropertiesScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
+    }
+
+    private void InstantiatePropertyButton()
+    {
+        //themeManager.SetShadow(propertyItemPrefab);
+        GameObject propertyButtonObject = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
+        propertyButtonObject.SetActive(false);
+        PropertyButton propertyButton = propertyButtonObject.GetComponent<PropertyButton>();
+        propertyButtonList.Add(propertyButton);
     }
 
     /// <summary>
