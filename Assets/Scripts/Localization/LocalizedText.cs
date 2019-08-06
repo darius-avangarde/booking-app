@@ -105,6 +105,15 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "PropertyEditHeaderText");
         }
     }
+
+    
+         public string[] PropertyRoomsTitle
+    {
+        get
+        {
+            return SetOptionsValues(option, "PropertyRoomsTitle");
+        }
+    }
     public string[] DaysLong
     {
         get

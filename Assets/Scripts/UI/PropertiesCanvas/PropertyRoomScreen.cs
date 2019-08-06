@@ -95,11 +95,11 @@ public class PropertyRoomScreen : MonoBehaviour
                     GameObject floorNumber = Instantiate(roomFloorNumberPrefab, roomsContentScrollView);
                     if (currentFloor != 0)
                     {
-                        floorNumber.GetComponent<Text>().text = $"Etaj {currentFloor}";
+                        floorNumber.GetComponent<Text>().text = $"{LocalizedText.Instance.FloorType[1]} {currentFloor}";
                     }
                     else
                     {
-                        floorNumber.GetComponent<Text>().text = $"Etaj P";
+                        floorNumber.GetComponent<Text>().text = $"{LocalizedText.Instance.FloorType[1]} P";
                     }
                     themeManager.SetColor(floorNumber.GetComponent<Graphic>());
                     roomButtons.Add(floorNumber);

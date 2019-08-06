@@ -81,12 +81,12 @@ public class RoomAdminScreen : MonoBehaviour
         {
             if (currentProperty.HasRooms)
             {
-                propertyRoomTitle.text = Constants.EDIT_ROOM;
+                propertyRoomTitle.text = LocalizedText.Instance.PropertyRoomsTitle[1];
                 roomTypeContainer.SetActive(true);
             }
             else
             {
-                propertyRoomTitle.text = Constants.EDIT_PROPERTY;
+                propertyRoomTitle.text = LocalizedText.Instance.PropertyRoomsTitle[0];
                 roomTypeContainer.SetActive(false);
             }
             setRoomName.SetCurrentName(currentRoom.Name);
