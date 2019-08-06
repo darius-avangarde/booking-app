@@ -48,11 +48,6 @@ public class RoomAdminScreen : MonoBehaviour
         deleteButton.onClick.AddListener(() => DeleteRoom());
     }
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     private void OnDisable()
     {
         DefaultValues();
@@ -68,6 +63,7 @@ public class RoomAdminScreen : MonoBehaviour
         currentRoom = room;
         returnCallback = callback;
         navigator.GoTo(roomAdminScreen);
+        Initialize();
     }
 
     /// <summary>
@@ -107,6 +103,7 @@ public class RoomAdminScreen : MonoBehaviour
         Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
         currentRoom.SingleBeds = bedInfo.x;
         currentRoom.DoubleBeds = bedInfo.y;
+        currentProperty.SaveRoomData();
         navigator.GoBack();
         returnCallback?.Invoke();
     }

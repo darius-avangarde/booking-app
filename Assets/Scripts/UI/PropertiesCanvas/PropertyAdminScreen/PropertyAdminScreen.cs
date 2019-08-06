@@ -201,6 +201,10 @@ public class PropertyAdminScreen : MonoBehaviour
                     PropertyDataManager.SaveProperty(CurrentProperty);
                     propertyDropdownHandler.UpdateDropdown();
                 }
+                else
+                {
+                    PropertyDataManager.SavePropertyData();
+                }
             }
             if (shouldGoBack)
             {

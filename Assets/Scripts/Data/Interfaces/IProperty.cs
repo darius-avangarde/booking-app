@@ -15,6 +15,7 @@ public interface IProperty
     IRoom AddRoom();
     IRoom GetRoom(string ID);
     IRoom GetPropertyRoom();
+    void SaveRoomData();
     void SaveRoom(IRoom room);
     void SaveMultipleRooms(List<IRoom> roomsList);
     void DeleteRoom(string ID);

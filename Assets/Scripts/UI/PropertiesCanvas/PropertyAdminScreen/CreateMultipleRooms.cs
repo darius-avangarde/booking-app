@@ -112,7 +112,7 @@ public class CreateMultipleRooms : MonoBehaviour
             for (int j = previousRooms[currentFloor] + 1; j <= multipleRoomsNumber[currentFloor]; j++)
             {
                 IRoom newRoom = propertyAdminScreen.CurrentProperty.AddRoom();
-                newRoom.Name = $"Camera {j}";
+                newRoom.Name = $"{j}";
                 newRoom.RoomNumber = j;
                 newRoom.Floor = 0;
                 newRoom.Multiple = true;
@@ -135,12 +135,12 @@ public class CreateMultipleRooms : MonoBehaviour
                 IRoom newRoom = propertyAdminScreen.CurrentProperty.AddRoom();
                 if (j < 10)
                 {
-                    newRoom.Name = $"Camera {currentFloor}0{j}";
+                    newRoom.Name = $"{currentFloor}0{j}";
                     newRoom.RoomNumber = int.Parse($"{currentFloor}0{j}");
                 }
                 else
                 {
-                    newRoom.Name = $"Camera {currentFloor}{j}";
+                    newRoom.Name = $"{currentFloor}{j}";
                     newRoom.RoomNumber = int.Parse($"{currentFloor}{j}");
                 }
                 newRoom.Floor = currentFloor;

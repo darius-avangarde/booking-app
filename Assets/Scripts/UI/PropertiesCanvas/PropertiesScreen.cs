@@ -40,11 +40,6 @@ public class PropertiesScreen : MonoBehaviour
         addPropertyButton.onClick.AddListener(() => AddPropertyItem());
     }
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     private void OnDisable()
     {
         LastPosition();

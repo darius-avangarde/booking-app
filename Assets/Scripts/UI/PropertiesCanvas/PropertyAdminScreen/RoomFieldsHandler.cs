@@ -90,7 +90,6 @@ public class RoomFieldsHandler : MonoBehaviour
             multipleFloorsField.characterValidation = InputField.CharacterValidation.None;
             multipleFloorsField.text = $"P";
         }
-        multipleFloorDropdown.value = currentFloorValue;
         int[] tempArray = multipleRoomsScript.multipleRoomsNumber;
         multipleRoomsScript.multipleRoomsNumber = new int[currentFloorValue + 1];
         if (tempArray.Length < multipleRoomsScript.multipleRoomsNumber.Length)
