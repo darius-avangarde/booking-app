@@ -25,7 +25,7 @@ public class CreateMultipleRooms : MonoBehaviour
         propertyAdminScreen.MultipleRooms += SaveMultipleRooms;
     }
 
-    private void SaveMultipleRooms(bool shouldGoBack)
+    private void SaveMultipleRooms()
     {
         if (propertyAdminScreen.CurrentProperty.Floors > 0)
         {

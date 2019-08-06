@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PropertyAdminScreen : MonoBehaviour
 {
     public event Action<int, int[]> SetMultipleRoomsFields = delegate { };
-    public event Action<bool> MultipleRooms = delegate { };
+    public event Action MultipleRooms = delegate { };
     //public event Action<bool> SetRoomsToggle = delegate { };
     //public event Action GetRoomsToggle = delegate { };
     public event Action CheckSave = delegate { };
@@ -159,7 +159,6 @@ public class PropertyAdminScreen : MonoBehaviour
             default:
                 break;
         }
-        Debug.Log(withRooms);
         multipleRoomsField.SetActive(withRooms);
     }
 
@@ -175,12 +174,18 @@ public class PropertyAdminScreen : MonoBehaviour
             CurrentProperty.HasRooms = withRooms;
             if (CurrentProperty.HasRooms)
             {
-                CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
                 shouldGoBack = false;
-                MultipleRooms(true);
+                CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
+                if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
+                {
+                    PropertyDataManager.SaveProperty(CurrentProperty);
+                    propertyDropdownHandler.UpdateDropdown();
+                }
+                MultipleRooms();
             }
             else
             {
+                shouldGoBack = true;
                 if (CurrentProperty.GetPropertyRoom() == null)
                 {
                     CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
@@ -191,11 +196,11 @@ public class PropertyAdminScreen : MonoBehaviour
                 {
                     CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType + 2;
                 }
-            }
-            if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
-            {
-                PropertyDataManager.SaveProperty(CurrentProperty);
-                propertyDropdownHandler.UpdateDropdown();
+                if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
+                {
+                    PropertyDataManager.SaveProperty(CurrentProperty);
+                    propertyDropdownHandler.UpdateDropdown();
+                }
             }
             if (shouldGoBack)
             {

@@ -25,6 +25,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private Text propertyRoomTitle = null;
     [SerializeField]
+    private GameObject roomTypeContainer = null;
+    [SerializeField]
     private Button deleteButton = null;
     [SerializeField]
     private Button backButton = null;
@@ -80,10 +82,12 @@ public class RoomAdminScreen : MonoBehaviour
             if (currentProperty.HasRooms)
             {
                 propertyRoomTitle.text = Constants.EDIT_ROOM;
+                roomTypeContainer.SetActive(true);
             }
             else
             {
                 propertyRoomTitle.text = Constants.EDIT_PROPERTY;
+                roomTypeContainer.SetActive(false);
             }
             setRoomName.SetCurrentName(currentRoom.Name);
             setRoomTypeDropdown.CurrentRoomType = currentRoom.RoomType;
