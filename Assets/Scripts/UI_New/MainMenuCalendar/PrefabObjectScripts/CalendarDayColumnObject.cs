@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class CalendarDayColumnObject : MonoBehaviour
 {
     public RectTransform DayRectTransform => dayRectTransform;
-    public IRoom ObjectRoom => objRoom;
+    public IRoom ObjectRoom => linkedRoomObject.Room;
+    public DateTime ObjDate => objDate;
 
     [SerializeField]
     private Button dayButton;
@@ -20,7 +21,7 @@ public class CalendarDayColumnObject : MonoBehaviour
     private GameObject monthLineImage;
 
     private DateTime objDate;
-    private IRoom objRoom;
+    private CalendarRoomColumnObject linkedRoomObject;
 
     private void Start()
     {
@@ -33,15 +34,31 @@ public class CalendarDayColumnObject : MonoBehaviour
         dayButton.onClick.RemoveAllListeners();
     }
 
-    public void UpdateEnableDayObject(DateTime date, IRoom room, UnityAction<DateTime,IRoom> tapAction)
+    public void SetObjectAction(UnityAction<DateTime, IRoom> tapAction, CalendarRoomColumnObject roomObject)
+    {
+        linkedRoomObject = roomObject;
+        dayButton.onClick.RemoveAllListeners();
+        dayButton.onClick.AddListener(() => tapAction(objDate, ObjectRoom));
+    }
+
+    public void SetPosition(bool alsoEnable = false)
+    {
+        if(alsoEnable) gameObject.SetActive(true);
+        Vector3 pos = dayRectTransform.anchoredPosition;
+        pos.y = linkedRoomObject.RoomRectTransform.anchoredPosition.y - linkedRoomObject.RoomRectTransform.rect.height;
+        dayRectTransform.anchoredPosition = pos;
+    }
+
+    public void DisableObject()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void UpdateEnableDayObject(DateTime date)
     {
         objDate = new DateTime(date.Date.Ticks);
-        objRoom = room;
 
         gameObject.SetActive(true);
-        dayButton.onClick.RemoveAllListeners();
-        dayButton.onClick.AddListener(() => tapAction(objDate, room));
-
         UpdateColors(ThemeManager.Instance.IsDarkTheme);
     }
 

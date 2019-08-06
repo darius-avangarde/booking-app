@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class ReservationObjectManager : MonoBehaviour
@@ -20,7 +21,7 @@ public class ReservationObjectManager : MonoBehaviour
     [SerializeField]
     private RectTransform dayColumnObjectPrefabRect;
     [SerializeField]
-    private CanvasGroup reservationsCanvasGroup;
+    private ScrollRect reservationsScrolrect;
 
 
     private List<ReservationObject> pool = new List<ReservationObject>();
@@ -29,6 +30,7 @@ public class ReservationObjectManager : MonoBehaviour
 
     private UnityAction<IReservation> reservationButtonAction;
 
+    private float _treshold = 100f;
 
 
     public void DisableUnseenReservations()
@@ -40,11 +42,19 @@ public class ReservationObjectManager : MonoBehaviour
                 placedReservations.Remove(resObj.ObjReservation);
                 resObj.Disable();
             }
-            // if(Mathf.Abs(resObj.transform.position.x) > Screen.width * 3)
-            // {
-            //     placedReservations.Remove(resObj.ObjReservation);
-            //     resObj.Disable();
-            // }
+
+            if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y > CalendarRoomColumn.DisableMargin + _treshold)
+            {
+                placedReservations.Remove(resObj.ObjReservation);
+                resObj.Disable();
+            }
+
+            //pulling scrolrect up
+            else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y < -CalendarRoomColumn.DisableMargin)
+            {
+                placedReservations.Remove(resObj.ObjReservation);
+                resObj.Disable();
+            }
         }
     }
 
@@ -61,14 +71,6 @@ public class ReservationObjectManager : MonoBehaviour
         StartCoroutine(DelayDraw(property));
     }
 
-    // private IEnumerator DelaySweep(IProperty property, UnityAction<IReservation> tapAction)
-    // {
-    //     DisableAllReservationObjects();
-    //     reservationButtonAction = tapAction;
-    //     yield return new WaitForSeconds(0.1f);
-    //     StartCoroutine(DelayDraw(property));
-    // }
-
     public void CreateReservationsForColumn(CalendarDayColumn dayColumn, IProperty property, bool isStart)
     {
         if(reservations.Exists(r => (isStart ? r.Period.Start.Date : r.Period.End.Date) == dayColumn.ObjectDate.Date))
@@ -79,13 +81,50 @@ public class ReservationObjectManager : MonoBehaviour
                 {
                     placedReservations.Add(res);
                     StartCoroutine(DrawReservation(res, dayColumn, isStart));
-
-                    // Debug.Log(res.CustomerName + " - "
-                    // + res.Period.Start.ToString(Constants.DateTimePrintFormat)
-                    // + " - " + res.Period.End.ToString(Constants.DateTimePrintFormat)
-                    // + " - " + PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomIDs[0]).Name
-                    // );
                 }
+            }
+        }
+    }
+
+    public void CreateReservationsForRow(List<CalendarDayColumnObject> dayObjects)
+    {
+        List<CalendarDayColumn> columns = reservationsCalendarManager.OrderedDayColumns;
+
+        DateTime minDate = columns[0].ObjectDate.Date;
+        DateTime maxDate = columns[columns.Count - 1].ObjectDate.Date;
+
+        IRoom focalRoom = dayObjects[0].ObjectRoom;
+
+        List<IReservation> roomReservations = reservations.Where(r => r.ContainsRoom(focalRoom.ID)).ToList();
+        for (int i = 0; i < dayObjects.Count; i++)
+        {
+            if(roomReservations.Exists(r => r.Period.Start.Date == dayObjects[i].ObjDate.Date))
+            {
+                IReservation res = roomReservations.Find(r => r.Period.Start.Date == dayObjects[i].ObjDate.Date);
+
+                PointSize p = CalculatePositionSpan(true, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
+                GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+
+                roomReservations.Remove(res);
+            }
+
+            if(roomReservations.Exists(r => r.Period.End.Date == dayObjects[i].ObjDate.Date))
+            {
+                IReservation res = roomReservations.Find(r => r.Period.End.Date == dayObjects[i].ObjDate.Date);
+
+                PointSize p = CalculatePositionSpan(false, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
+                GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+
+                roomReservations.Remove(res);
+            }
+
+
+            if(roomReservations.Exists(r => r.Period.Start.Date < minDate && r.Period.End > maxDate))
+            {
+                IReservation res = roomReservations.Find(r => r.Period.Start.Date < minDate && r.Period.End > maxDate);
+                PointSize p = CalculatePositionSpan((int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
+                GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                roomReservations.Remove(res);
             }
         }
     }
@@ -124,7 +163,7 @@ public class ReservationObjectManager : MonoBehaviour
     {
         foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).ActiveDayColumnsObjects)
         {
-            if(r.ContainsRoom(cdco.ObjectRoom.ID))
+            if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
                 GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
@@ -136,7 +175,7 @@ public class ReservationObjectManager : MonoBehaviour
     {
         foreach (CalendarDayColumnObject cdco in columns[0].ActiveDayColumnsObjects)
         {
-            if(r.ContainsRoom(cdco.ObjectRoom.ID))
+            if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan((int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
                 GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
@@ -149,7 +188,7 @@ public class ReservationObjectManager : MonoBehaviour
         yield return null;
         foreach (CalendarDayColumnObject cdco in column.ActiveDayColumnsObjects)
         {
-            if(r.ContainsRoom(cdco.ObjectRoom.ID))
+            if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
                 GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction, true);

@@ -78,10 +78,14 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private IProperty propertyToLoadOnEnable;
     private bool loadPropertyOnEnable = false;
-
+    private List<CalendarRoomColumnObject> roomColumnObjects;
 
     private void Start()
     {
+        roomColumnObjects = roomColumn.InitializeRoomColumn((r) => roomEditScreen.OpenRoomAdminScreen(r));
+
+
+
         propertyDropdown.OnSelectProperty = SelectProperty;
 
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
@@ -237,11 +241,11 @@ public class ReservationsCalendarManager : MonoBehaviour
         propertyDropdown.SelectDropdownProperty(property, true);
         currentProperty = property;
         currentRooms = FilteredRooms();
-        roomColumn.UpdateRooms(currentRooms, (r) => roomEditScreen.OpenRoomAdminScreen(r, () => EditRoomCallback()));
+        roomColumn.UpdateRooms(currentRooms);
 
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {
-            dayColumn.UpdateRooms(currentRooms, NewReservationFromUnreservedDay);
+            dayColumn.UpdateRooms(currentRooms);
             dayColumn.LinkedHeader.UpdateProperty(currentProperty);
         }
 
@@ -307,7 +311,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             //Create day columns
             CalendarDayColumn dayColumn = Instantiate(dayColumnPrefab, dayColumnScrollrect.content).GetComponent<CalendarDayColumn>();
             dayColumn.name = $"Day column {d}";
-            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), 50, NewReservationFromUnreservedDay, header);
+            dayColumn.Initialize(DateTime.Today.Date.AddDays(d), roomColumnObjects, NewReservationFromUnreservedDay, header);
             dayColumns.Add(dayColumn);
         }
 
@@ -329,7 +333,6 @@ public class ReservationsCalendarManager : MonoBehaviour
             noFilterMatchTextParent.SetActive(true);
         }
     }
-
 
     private void EditReservation(IReservation reservation)
     {

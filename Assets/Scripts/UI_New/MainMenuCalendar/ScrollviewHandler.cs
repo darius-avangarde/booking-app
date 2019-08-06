@@ -81,6 +81,13 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         }
     }
 
+    public void KillMainVelocity()
+    {
+        DayColumnScrollrect.velocity = Vector2.zero;
+        DayHeaderScrollrect.velocity = Vector2.zero;
+        RoomsColumnScrollrect.velocity = Vector2.zero;
+    }
+
     public void InstantSnap()
     {
         float snapTo = NearestSnapPointX(DayColumnScrollrect);
