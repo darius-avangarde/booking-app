@@ -6,6 +6,13 @@ using System.Linq;
 
 public class CalendarRoomColumn : MonoBehaviour
 {
+    public List<CalendarRoomColumnObject> ActiveRoomObjects => roomPool.FindAll(g => g.gameObject.activeSelf);
+    public static float DisableMargin => _disableMarginY;
+
+
+    [SerializeField]
+    private ReservationObjectManager reservationsManager;
+
     [SerializeField]
     private GameObject roomColumnObjectPrefab;
     [SerializeField]
@@ -15,7 +22,7 @@ public class CalendarRoomColumn : MonoBehaviour
     [SerializeField]
     private VerticalLayoutGroup verticalLayoutGroup;
     [SerializeField]
-    private ContentSizeFitter cfg;
+    private ContentSizeFitter sizeFitter;
 
     [Space]
     [SerializeField]
@@ -24,43 +31,48 @@ public class CalendarRoomColumn : MonoBehaviour
 
     private Vector2 _newAnchoredPosition = Vector2.zero;
     private float _recordOffsetY = 0;
-    private float _disableMarginY = 0;
+    private static float _disableMarginY = 0;
     private float _treshold = 100f;
 
 
-    private void Start()
+    public List<CalendarRoomColumnObject> InitializeRoomColumn(UnityAction<IRoom> tapAction)
     {
         //populate pool
+        verticalLayoutGroup.enabled = false;
+        sizeFitter.enabled = false;
+
         for (int i = 0; i < roomColumnScrolrect.content.childCount; i++)
         {
             roomPool.Add(roomColumnScrolrect.content.GetChild(i).GetComponent<CalendarRoomColumnObject>());
+            roomPool[i].SetObjectAction(tapAction);
         }
 
         _recordOffsetY = roomPool[0].RoomRectTransform.anchoredPosition.y - roomPool[1].RoomRectTransform.anchoredPosition.y;
         _disableMarginY = _recordOffsetY * roomPool.Count / 2;
 
-        verticalLayoutGroup.enabled = false;
-        cfg.enabled = false;
         roomColumnScrolrect.onValueChanged.AddListener(OnScroll);
+
+        return roomPool;
     }
 
-    public void UpdateRooms(List<IRoom> rooms, UnityAction<IRoom> tapAction)
+    public void UpdateRooms(List<IRoom> rooms)
     {
         currentRooms = (rooms != null) ? rooms : new List<IRoom>();
         roomColumnScrolrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical ,rooms.Count * _recordOffsetY);
+        roomColumnScrolrect.verticalNormalizedPosition = 1;
 
         for (int i = 0; i < roomPool.Count - 1; i++)
         {
             if(currentRooms.Count > i)
             {
-                roomPool[i].UpdateRoomObjectUI(currentRooms[i], i);
+                roomPool[i].UpdateObjectRoom(currentRooms[i], i);
             }
             else
             {
                 roomPool[i].DisableObject();
             }
 
-            roomPool[roomPool.Count -1].UpdateRoomObjectUI(null, -1);
+            roomPool[roomPool.Count -1].UpdateObjectRoom(null, -1);
 
             //reposition and reorder items
             roomPool[i].RoomRectTransform.SetSiblingIndex(i);
@@ -100,7 +112,33 @@ public class CalendarRoomColumn : MonoBehaviour
 
     private void OnMovedItem(CalendarRoomColumnObject c, bool isUp)
     {
-        int nextIndex = Mathf.Clamp(c.RoomIndex + (isUp ? roomPool.Count : -roomPool.Count), 0 ,currentRooms.Count - 1);
-        c.UpdateRoomObjectUI(currentRooms[nextIndex], nextIndex);
+        //int nextIndex = Mathf.Clamp(currentRooms.IndexOf(c.Room) + (isUp ? roomPool.Count : -roomPool.Count), 0 ,currentRooms.Count - 1);
+        // int nextIndex = Mathf.Clamp(isUp ? LastItemRoomIndex() : FirstItemRoomIndex(), 0 ,currentRooms.Count - 1);
+
+        // c.UpdateObjectRoom(currentRooms[nextIndex], nextIndex);
+
+        c.UpdateObjectRoom(RoomByPosition(c), 0);
+
+        if(c.Room != null)
+        {
+            reservationsManager.DisableUnseenReservations();
+            reservationsManager.CreateReservationsForRow(c.LinkedDayRow);
+        }
+    }
+
+    private IRoom RoomByPosition(CalendarRoomColumnObject c)
+    {
+        int roomHeightInRect = -(int)(c.RoomRectTransform.anchoredPosition.y/(roomColumnScrolrect.content.rect.height / currentRooms.Count));
+        return currentRooms[Mathf.Clamp(roomHeightInRect, 0, currentRooms.Count - 1)];
+    }
+
+    private int LastItemRoomIndex()
+    {
+        return currentRooms.IndexOf(roomPool.Find(r => r.RoomRectTransform.GetSiblingIndex() == roomPool.Count -2).Room) + 1;
+    }
+
+    private int FirstItemRoomIndex()
+    {
+        return currentRooms.IndexOf(roomPool.Find(r => r.RoomRectTransform.GetSiblingIndex() == 1).Room) -1;
     }
 }

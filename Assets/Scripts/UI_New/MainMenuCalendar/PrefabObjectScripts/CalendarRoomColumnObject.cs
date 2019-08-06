@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -6,6 +7,8 @@ public class CalendarRoomColumnObject : MonoBehaviour
 {
     public RectTransform RoomRectTransform => roomRectTransform;
     public int RoomIndex => currentRoomIndex;
+    public IRoom Room => currentRoom;
+    public List<CalendarDayColumnObject> LinkedDayRow => linkedDayRow;
 
     [SerializeField]
     private RectTransform roomRectTransform;
@@ -25,6 +28,8 @@ public class CalendarRoomColumnObject : MonoBehaviour
     private Image doubleBedsImage;
 
     private int currentRoomIndex = 0;
+    private IRoom currentRoom;
+    private List<CalendarDayColumnObject> linkedDayRow = new List<CalendarDayColumnObject>();
 
     private void Start()
     {
@@ -36,26 +41,33 @@ public class CalendarRoomColumnObject : MonoBehaviour
         roomButton.onClick.RemoveAllListeners();
     }
 
-    public void UpdateRoomObject(IRoom room, UnityAction<IRoom> tapAction)
+    public void AddLinkedDayObject(CalendarDayColumnObject dayObject)
     {
-        gameObject.SetActive(true);
-
-        UpdateRoomObjectUI(room, 0);
-
-        roomButton.onClick.RemoveAllListeners();
-        roomButton.onClick.AddListener(() => tapAction(room));
+        linkedDayRow.Add(dayObject);
     }
 
-    public void UpdateRoomObjectUI(IRoom room, int roomIndex)
+    public void SetObjectAction(UnityAction<IRoom> tapAction)
+    {
+        roomButton.onClick.RemoveAllListeners();
+        roomButton.onClick.AddListener(() => tapAction(currentRoom));
+    }
+
+    public void UpdateObjectRoom(IRoom room, int roomIndex)
     {
         currentRoomIndex = roomIndex;
+        currentRoom = room;
         gameObject.SetActive(true);
 
-        if(room !=null)
+        if(currentRoom !=null)
         {
             roomName.text = room.Name;
             singleBeds.text = $"{room.SingleBeds}";
             doubleBeds.text = $"{room.DoubleBeds}";
+        }
+
+        for (int i = 0; i < linkedDayRow.Count; i++)
+        {
+            linkedDayRow[i].SetPosition();
         }
     }
 

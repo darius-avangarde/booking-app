@@ -31,27 +31,35 @@ public class CalendarDayColumn : MonoBehaviour
         ThemeManager.Instance.AddItems(backgroundImage);
     }
 
-    public void Initialize(DateTime date, int initialItemCount, UnityAction<DateTime,IRoom> tapAction, CalendarDayHeaderObject linkedHeader)
+    public void Initialize(DateTime date, List<CalendarRoomColumnObject> roomObjects, UnityAction<DateTime,IRoom> tapAction, CalendarDayHeaderObject linkedHeader)
     {
         objectDate = new DateTime(date.Date.Ticks);
-
-        for (int i = 0; i < initialItemCount; i++)
-        {
-            CreateDayColumnObject();
-        }
-
         header = linkedHeader;
+
+        for (int i = 0; i < roomObjects.Count; i++)
+        {
+            CalendarDayColumnObject dayObj = Instantiate(dayColumnObjectPrefab, transform).GetComponent<CalendarDayColumnObject>();
+            dayPool.Add(dayObj);
+            dayObj.SetObjectAction(tapAction, roomObjects[i]);
+            roomObjects[i].AddLinkedDayObject(dayObj);
+            //dayObj.DayRectTransform.localPosition = - (Vector3.up * dayColumnObjectRect.rect.height) * (dayPool.Count);
+        }
     }
 
-    public void UpdateRooms(List<IRoom> rooms, UnityAction<DateTime,IRoom> tapAction)
+    public void UpdateRooms(List<IRoom> rooms)
     {
-        ManagePool(rooms);
         thisRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rooms.Count * dayColumnObjectRect.rect.height);
 
-
-        for (int r = 0; r < rooms.Count; r++)
+        for (int i = 0; i < dayPool.Count; i++)
         {
-            dayPool[r].UpdateEnableDayObject(objectDate, rooms[r], tapAction);
+            if(rooms.Count > i)
+            {
+                dayPool[i].SetPosition(true);
+            }
+            else
+            {
+                dayPool[i].DisableObject();
+            }
         }
     }
 
@@ -84,7 +92,7 @@ public class CalendarDayColumn : MonoBehaviour
             //CreateNewObjects as needed
             for (int i = dayPool.Count; i < rooms.Count; i++)
             {
-                CreateDayColumnObject();
+                InitializeDayObject();
             }
 
             //Disable unused objects
@@ -95,9 +103,10 @@ public class CalendarDayColumn : MonoBehaviour
         }
     }
 
-    private void CreateDayColumnObject()
+    private void InitializeDayObject()
     {
-        dayPool.Add(Instantiate(dayColumnObjectPrefab, transform).GetComponent<CalendarDayColumnObject>());
-        dayPool[dayPool.Count - 1].DayRectTransform.localPosition = - (Vector3.up * dayColumnObjectRect.rect.height) * (dayPool.Count);
+        CalendarDayColumnObject dayObj = Instantiate(dayColumnObjectPrefab, transform).GetComponent<CalendarDayColumnObject>();
+        dayPool.Add(dayObj);
+        dayObj.DayRectTransform.localPosition = - (Vector3.up * dayColumnObjectRect.rect.height) * (dayPool.Count);
     }
 }
