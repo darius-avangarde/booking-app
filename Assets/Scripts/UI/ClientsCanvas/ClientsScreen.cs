@@ -150,7 +150,7 @@ public class ClientsScreen : MonoBehaviour
     }
     public void SetTheme(GameObject myObj)
     {
-        var item = myObj.GetComponent<Graphic>();
+        Graphic item = myObj.GetComponent<Graphic>();
        theme.SetColor(item);
     }
     public void LastPosition()
@@ -259,7 +259,7 @@ public class ClientsScreen : MonoBehaviour
                 letterButtons[i].SetActive(false);
             }
        
-            foreach (var client in clientButtons)
+            foreach (GameObject client in clientButtons)
             {
 
                 if (client.GetComponent<ClientButton>().SearchClients(searchField.text))

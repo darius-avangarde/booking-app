@@ -363,7 +363,7 @@ public class LocalizedText : MonoBehaviour
     {
         Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
         string[] result = new string[20];
-        foreach (var item in language)
+        foreach (KeyValuePair<string, string> item in language)
         {
             if (item.Key == myKey)
             {
@@ -377,7 +377,7 @@ public class LocalizedText : MonoBehaviour
     {
         Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
         string result = string.Empty;
-        foreach (var item in language)
+        foreach (KeyValuePair<string,string> item in language)
         {
             if (item.Key == myKey)
             {
@@ -410,7 +410,7 @@ public class LocalizedText : MonoBehaviour
     private void SetLanguage(string language)
     {  // myManager = LocalizationManager.Instance;
         // var lang = csvData.Where(x => x.Name == language).First();
-        var lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
+        LanguageScript lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         for (int i = 0; i < textList.Count; i++)
         {
             textList[i].text = lang.Texts[textList[i].name];

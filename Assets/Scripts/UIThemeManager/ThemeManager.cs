@@ -190,7 +190,7 @@ public class ThemeManager : MonoBehaviour
         for (int i = 0; i < parents.Length; i++)
         {
             elements = parents[i].GetComponentsInChildren<Graphic>(true);
-            foreach (var elem in elements)
+            foreach (Graphic elem in elements)
             {
                 if (elem.gameObject.tag == "Background")
                 {
