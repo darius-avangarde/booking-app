@@ -17,6 +17,13 @@ public class PropertyButton : MonoBehaviour
     [SerializeField]
     private Sprite[] propertyIcons = null;
 
+    [Header("Theme objects"), SerializeField]
+    private Graphic propertyNameText = null;
+    [SerializeField]
+    private Graphic propertyImage = null;
+    [SerializeField]
+    private Graphic propertyBackground = null;
+
     private IProperty currentProperty;
 
     private void OnDisable()
@@ -45,8 +52,8 @@ public class PropertyButton : MonoBehaviour
         }
         propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
 
-        themeManager.SetColor(propertyButtonItem.GetComponent<Graphic>());
-        themeManager.SetColor(propertyName.GetComponent<Graphic>());
-        themeManager.SetColor(propertyIcon.GetComponent<Graphic>());
+        themeManager.SetColor(propertyNameText);
+        themeManager.SetColor(propertyImage);
+        themeManager.SetColor(propertyBackground);
     }
 }

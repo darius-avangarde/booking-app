@@ -23,10 +23,8 @@ public class CheckFields : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// check if name input field is set correclty
     /// </summary>
-    /// <param name="canSave">bool to check if no error was returned</param>
-    /// <param name="error">error message</param>
     private void CheckNameAndRooms()
     {
         if (string.IsNullOrEmpty(propertyNameField.text))

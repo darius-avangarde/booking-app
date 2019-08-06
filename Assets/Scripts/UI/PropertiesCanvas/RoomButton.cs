@@ -13,6 +13,11 @@ public class RoomButton : MonoBehaviour
     [SerializeField]
     private Button roomButton = null;
 
+    [Header("Theme objects"), SerializeField]
+    private Graphic roomNameText = null;
+    [SerializeField]
+    private Graphic roomBackground = null;
+
     private IRoom currentRoom;
 
     /// <summary>
@@ -27,7 +32,7 @@ public class RoomButton : MonoBehaviour
         currentRoom = room;
         roomButton.onClick.AddListener(() => roomCallback(room));
 
-        themeManager.SetColor(roomButton.GetComponent<Graphic>());
-        themeManager.SetColor(roomName.GetComponent<Graphic>());
+        themeManager.SetColor(roomNameText);
+        themeManager.SetColor(roomBackground);
     }
 }

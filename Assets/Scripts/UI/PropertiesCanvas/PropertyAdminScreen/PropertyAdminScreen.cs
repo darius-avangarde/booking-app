@@ -79,16 +79,25 @@ public class PropertyAdminScreen : MonoBehaviour
         CurrentProperty = property;
         if (CurrentProperty.Name != null)
         {
-            //RoomsToggleField.SetActive(false);
             deleteButton.gameObject.SetActive(true);
+            multipleRoomsField.SetActive(CurrentProperty.HasRooms);
+            if (CurrentProperty.HasRooms)
+            {
+                //roomsToggleField.SetActive(true);
+                setPropertyTypeDropdown.SetDropdownOptions(0, 1);
+            }
+            else
+            {
+                //roomsToggleField.SetActive(false);
+                setPropertyTypeDropdown.SetDropdownOptions(2, 3);
+            }
         }
         else
         {
-            //RoomsToggleField.SetActive(true);
             deleteButton.gameObject.SetActive(false);
+            setPropertyTypeDropdown.SetDropdownOptions(0, 3);
         }
         SetPropertyFieldsText();
-        setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
         navigator.GoTo(propertyAdminScreen);
     }
 
@@ -105,21 +114,34 @@ public class PropertyAdminScreen : MonoBehaviour
             if (!string.IsNullOrEmpty(CurrentProperty.Name))
             {
                 //SetRoomsToggle(CurrentProperty.HasRooms);
-                setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
-                if (CurrentProperty.Floors >= 0)
+                if (CurrentProperty.HasRooms)
                 {
-                    SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
+                    setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
+                    if (CurrentProperty.Floors >= 0)
+                    {
+                        SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
+                    }
+                }
+                else
+                {
+                    setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType - 2;
                 }
             }
             else
             {
-                SetMultipleRoomsFields?.Invoke(1, new int[1]);
+                setPropertyTypeDropdown.CurrentPropertyType = 0;
+                setPropertyTypeDropdown.SetPropertyType(0);
+                SetMultipleRoomsFields?.Invoke(0, new int[1]);
             }
         }
     }
 
     private void SetPropertyType(PropertyDataManager.PropertyType propertyType)
     {
+        if (!CurrentProperty.HasRooms)
+        {
+            propertyType += 2;
+        }
         switch (propertyType)
         {
             case PropertyDataManager.PropertyType.hotel:
@@ -137,6 +159,7 @@ public class PropertyAdminScreen : MonoBehaviour
             default:
                 break;
         }
+        Debug.Log(withRooms);
         multipleRoomsField.SetActive(withRooms);
     }
 
@@ -149,10 +172,10 @@ public class PropertyAdminScreen : MonoBehaviour
         if (CanSave)
         {
             CurrentProperty.Name = propertyNameInputField.text;
-            CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
             CurrentProperty.HasRooms = withRooms;
             if (CurrentProperty.HasRooms)
             {
+                CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
                 shouldGoBack = false;
                 MultipleRooms(true);
             }
@@ -160,8 +183,13 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 if (CurrentProperty.GetPropertyRoom() == null)
                 {
+                    CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
                     PropertyDataManager.CreatePropertyRoom(CurrentProperty);
                     CurrentProperty.GetPropertyRoom().Name = CurrentProperty.Name;
+                }
+                else
+                {
+                    CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType + 2;
                 }
             }
             if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)

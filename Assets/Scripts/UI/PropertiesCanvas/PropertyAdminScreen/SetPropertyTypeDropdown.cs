@@ -19,6 +19,7 @@ public class SetPropertyTypeDropdown : MonoBehaviour
         set
         {
             propertyTypeDropdown.value = (int)value;
+            propertyTypeDropdown.RefreshShownValue();
         }
     }
 
@@ -29,7 +30,6 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     private void Start()
     {
         SetDictionaries();
-        SetDropdownOptions();
     }
 
     public void SetPropertyType(int value)
@@ -57,11 +57,13 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     /// <summary>
     /// set dropdown options with text and icons
     /// for every item in the enum, find the coresponding icon and text using dictionaries
+    /// if a property with rooms is selected the dropdown options should update only with hotel and guesthouse
+    /// if a property without rooms is selected the dropdown options should update only with villa and cabin
     /// </summary>
-    private void SetDropdownOptions()
+    public void SetDropdownOptions(int optionStart, int optionEnd)
     {
         propertyTypeDropdown.options.Clear();
-        for (int i = 0; i <= (int)PropertyDataManager.PropertyType.cabin; i++)
+        for (int i = optionStart; i <= optionEnd; i++)
         {
             propertyTypeName[(PropertyDataManager.PropertyType)i] = propertyTypeText[i];
             Dropdown.OptionData newOption = new Dropdown.OptionData();
