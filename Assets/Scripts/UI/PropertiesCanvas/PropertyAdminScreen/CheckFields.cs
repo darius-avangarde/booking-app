@@ -29,7 +29,7 @@ public class CheckFields : MonoBehaviour
     {
         if (string.IsNullOrEmpty(propertyNameField.text))
         {
-            errorMessage.text = Constants.ERR_PROPERTY_NAME;
+            errorMessage.text = LocalizedText.Instance.PropertyErrorText;
             propertyAdminScreenComponent.CanSave = false;
             return;
         }

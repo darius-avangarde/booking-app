@@ -105,9 +105,14 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "PropertyEditHeaderText");
         }
     }
-
-    
-         public string[] PropertyRoomsTitle
+    public string PropertyErrorText
+    {
+        get
+        {
+            return SetTextValue(option, "PropertyErrorText");
+        }
+    }
+    public string[] PropertyRoomsTitle
     {
         get
         {
@@ -236,7 +241,7 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "MessageEmail");
         }
     }
-  
+
     public string PhoneRequired
     {
         get
