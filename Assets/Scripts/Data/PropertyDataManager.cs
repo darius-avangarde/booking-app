@@ -277,9 +277,9 @@ public static class PropertyDataManager
         public void SaveMultipleRooms(List<IRoom> roomsList)
         {
             List<Room> multipleRooms = new List<Room>();
-            foreach (var room in roomsList)
+            for (int i = 0; i < roomsList.Count; i++)
             {
-                multipleRooms.Add((Room)room);
+                multipleRooms.Add((Room)roomsList[i]);
             }
             rooms.AddRange(multipleRooms);
             rooms = rooms.OrderBy(r => r.RoomNumber).ToList();

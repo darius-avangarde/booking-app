@@ -40,9 +40,9 @@ public class SetRoomTypeDropdown : MonoBehaviour
     private void SetDictionaries()
     {
         roomIcons.Clear();
-        foreach (var icon in roomTypeIcons)
+        for (int i = 0; i < roomTypeIcons.Length; i++)
         {
-            roomIcons.Add(icon.name.ToLower(), icon);
+            roomIcons.Add(roomTypeIcons[i].name.ToLower(), roomTypeIcons[i]);
         }
         for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
@@ -62,7 +62,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
             roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];
             Dropdown.OptionData newOption = new Dropdown.OptionData();
             newOption.text = LocalizedText.Instance.RoomType[i];
-            foreach (var icon in roomIcons)
+            foreach (KeyValuePair<string, Sprite> icon in roomIcons)
             {
                 if (icon.Key == ((PropertyDataManager.RoomType)i).ToString())
                 {

@@ -75,9 +75,9 @@ public class PropertyRoomScreen : MonoBehaviour
     public void Initialize()
     {
         //scrollRectComponent.ResetAll();
-        foreach (var roomButton in roomButtons)
+        for (int i = 0; i < roomButtons.Count; i++)
         {
-            DestroyImmediate(roomButton);
+            DestroyImmediate(roomButtons[i]);
         }
         roomButtons = new List<GameObject>();
         if (currentProperty != null)
@@ -87,9 +87,9 @@ public class PropertyRoomScreen : MonoBehaviour
             int currentFloor = 0;
             int lastFloor = -1;
             int maxFloors = currentProperty.Floors;
-            foreach (var room in currentRooms)
+            for (int i = 0; i < currentRooms.Count; i++)
             {
-                currentFloor = room.Floor;
+                currentFloor = currentRooms[i].Floor;
                 if (lastFloor != currentFloor )
                 {
                     GameObject floorNumber = Instantiate(roomFloorNumberPrefab, roomsContentScrollView);
@@ -108,7 +108,7 @@ public class PropertyRoomScreen : MonoBehaviour
                 themeManager.SetShadow(roomItemPrefab);
                 GameObject roomButton = Instantiate(roomItemPrefab.gameObject, roomsContentScrollView);
                 RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
-                currentRoom.Initialize(room, OpenRoomAdminScreen, themeManager);
+                currentRoom.Initialize(currentRooms[i], OpenRoomAdminScreen, themeManager);
                 roomButtons.Add(roomButton);
             }
         }

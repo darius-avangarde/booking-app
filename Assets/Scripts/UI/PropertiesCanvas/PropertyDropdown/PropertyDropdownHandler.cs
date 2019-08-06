@@ -43,10 +43,11 @@ public class PropertyDropdownHandler : MonoBehaviour
         propertyOptions = new Dictionary<Dropdown.OptionData, string>();
         propertyDropdownOptions = new Dictionary<string, int>();
         int propertyCount = 0;
-        foreach (var property in PropertyDataManager.GetProperties())
+        List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
+        for (int i = 0; i < properties.Count; i++)
         {
-            propertyOptions.Add(new Dropdown.OptionData(property.Name), property.ID);
-            propertyDropdownOptions.Add(property.ID, propertyCount);
+            propertyOptions.Add(new Dropdown.OptionData(properties[i].Name), properties[i].ID);
+            propertyDropdownOptions.Add(properties[i].ID, propertyCount);
             propertyCount++;
         }
         dropdownComponent.options = propertyOptions.Keys.ToList();

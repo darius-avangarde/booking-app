@@ -77,10 +77,10 @@ public class NotificationManager : MonoBehaviour
             {
                 AndroidNotification newNotification = new AndroidNotification();
                 newNotification.Title = reservationsTitle;
-                foreach (IReservation prevReservation in previousReservations)
+                for (int i = 0; i < previousReservations.Count; i++)
                 {
-                    newNotification.Text += $"{prevReservation.CustomerName} - {PropertyDataManager.GetProperty(prevReservation.PropertyID).Name}, {PropertyDataManager.GetProperty(prevReservation.PropertyID).GetRoom(prevReservation.RoomID).Name} in {prevReservation.Period.Start.Day}/{prevReservation.Period.Start.Month}/{prevReservation.Period.Start.Year}.\n";
-                    newNotification.IntentData += $"{prevReservation.ID}\n";
+                    newNotification.Text += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
+                    newNotification.IntentData += $"{previousReservations[i].ID}\n";
                 }
                 newNotification.FireTime = fireTime.AddHours(-preAlert);
                 //newNotification.FireTime = DateTime.Now.AddMinutes(1);
@@ -127,10 +127,10 @@ public class NotificationManager : MonoBehaviour
 
         AndroidNotification notification = new AndroidNotification();
         notification.Title = reservationsTitle;
-        foreach (IReservation res in allReservations)
+        for (int i = 0; i < allReservations.Count; i++)
         {
-            notification.Text += $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start.Day}/{res.Period.Start.Month}/{res.Period.Start.Year}.\n";
-            notification.IntentData += $"{res.ID} & \n";
+            notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
+            notification.IntentData += $"{allReservations[i].ID} & \n";
         }
         notification.FireTime = fireTime.AddHours(-preAlert);
         //notification.FireTime = DateTime.Now.AddMinutes(1);
@@ -182,12 +182,12 @@ public class NotificationManager : MonoBehaviour
     public void UpdateAllNotifications(int previousPreAlert, int newPreAlert)
     {
         List<IReservation> previousReservations = ReservationDataManager.GetReservations().ToList();
-        foreach (IReservation reservation in previousReservations)
+        for (int i = 0; i < previousReservations.Count; i++)
         {
-            INotification notification = NotificationDataManager.GetNotification(reservation.NotificationID);
+            INotification notification = NotificationDataManager.GetNotification(previousReservations[i].NotificationID);
             if (notification != null && notification.PreAlertTime == previousPreAlert)
             {
-                RegisterNotification(reservation, newPreAlert);
+                RegisterNotification(previousReservations[i], newPreAlert);
             }
         }
     }
@@ -205,7 +205,6 @@ public class NotificationManager : MonoBehaviour
 
         if (otherReservation == null)
         {
-            Debug.Log($"deleted notification: {reservation.NotificationID}");
             AndroidNotificationCenter.CancelNotification(reservation.NotificationID);
             NotificationDataManager.DeleteNotification(reservation.NotificationID);
         }
@@ -215,11 +214,10 @@ public class NotificationManager : MonoBehaviour
 
             AndroidNotification notification = new AndroidNotification();
             notification.Title = reservationsTitle;
-            foreach (IReservation res in allReservations)
+            for (int i = 0; i < allReservations.Count; i++)
             {
-                Debug.Log($"update notification: {reservation.CustomerName}");
-                notification.Text += $"{res.CustomerName} - {PropertyDataManager.GetProperty(res.PropertyID).GetRoom(res.RoomID).Name} in {res.Period.Start.Day}/{res.Period.Start.Month}/{res.Period.Start.Year}.\n";
-                notification.IntentData += $"{res.ID} & \n";
+                notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
+                notification.IntentData += $"{allReservations[i].ID} & \n";
             }
             notification.FireTime = notificationItem.FireTime;
             notification.Style = NotificationStyle.BigTextStyle;
@@ -234,13 +232,12 @@ public class NotificationManager : MonoBehaviour
     private void CheckDeliveredNotification()
     {
         List<INotification> notifications = NotificationDataManager.GetNewNotifications();
-
-        foreach (INotification notification in notifications)
+        for (int i = 0; i < notifications.Count; i++)
         {
-            if (notification.FireTime < DateTime.Now)
+            if (notifications[i].FireTime < DateTime.Now)
             {
                 AndroidNotificationChannel notificationChannel = AndroidNotificationCenter.GetNotificationChannel(channelId);
-                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.NotificationID).ToList();
+                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].NotificationID).ToList();
                 notificationsScreen.AddNewReservations(newReservations);
             }
         }
