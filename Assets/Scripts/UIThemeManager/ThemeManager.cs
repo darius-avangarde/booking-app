@@ -27,7 +27,7 @@ public class ThemeManager : MonoBehaviour
     private bool result = true;
     void Start()
     {
-       // themeToggle.onValueChanged.RemoveAllListeners();
+        // themeToggle.onValueChanged.RemoveAllListeners();
         setMode.ReadData();
         statusColor = setMode.ReadData().settings.themeStatus;
         if (statusColor == 0)
@@ -39,7 +39,7 @@ public class ThemeManager : MonoBehaviour
             themeToggle.isOn = false;
         }
         SelectTheme();
-     
+
     }
     private void Awake()
     {
@@ -126,9 +126,9 @@ public class ThemeManager : MonoBehaviour
 
     public void Verify()
     {
-       
+
         if (themeToggle.isOn)
-        { 
+        {
             setMode.DataElements.settings.themeStatus = 0;
             setMode.WriteData();
         }
@@ -137,7 +137,7 @@ public class ThemeManager : MonoBehaviour
             setMode.DataElements.settings.themeStatus = 1;
             setMode.WriteData();
         }
-       
+
     }
     private void SetItemColor(Color dark, Color light, Graphic items = null, Shadow myShadow = null)
     {
@@ -151,11 +151,9 @@ public class ThemeManager : MonoBehaviour
             {
                 myShadow.effectColor = dark;
             }
-
         }
         else
         {
-           
             if (items != null)
             {
                 items.color = light;
@@ -164,7 +162,7 @@ public class ThemeManager : MonoBehaviour
             {
                 myShadow.effectColor = light;
             }
-           
+
         }
         OnThemeChanged?.Invoke(themeToggle.isOn);
     }
@@ -188,11 +186,10 @@ public class ThemeManager : MonoBehaviour
         SeparatorList.Clear();
         ItemList.Clear();
         ShadowList.Clear();
-       // Debug.Log("Clicked Button");
         Graphic[] elements = new Graphic[700];
-        foreach (var item in parents)
+        for (int i = 0; i < parents.Length; i++)
         {
-            elements = item.GetComponentsInChildren<Graphic>(true);
+            elements = parents[i].GetComponentsInChildren<Graphic>(true);
             foreach (var elem in elements)
             {
                 if (elem.gameObject.tag == "Background")
@@ -212,7 +209,6 @@ public class ThemeManager : MonoBehaviour
                     ItemList.Add(elem);
                 }
             }
-            //Debug.Log(elements.Length);
         }
         foreach (GameObject separator in GameObject.FindGameObjectsWithTag("ItemBackground"))
         {

@@ -24,14 +24,6 @@ public class LocalizationManager : MonoBehaviour
     public void CustomStart()
     {
         Languages = ReadFromCSV();
-        foreach (var item in Languages)
-        {
-            foreach (var col in item.Texts)
-            {
-                //Debug.Log(col.Key + " ----- " + col.Value);
-            }
-           // Debug.Log("-----------------------------------");
-        }
     }
 
     public IEnumerable<LanguageScript> ReadFromCSV()
@@ -40,24 +32,26 @@ public class LocalizationManager : MonoBehaviour
         string[] fileContent = Read("TextFileCsv");
         List<string> tableHeader = fileContent.First().Split(fieldSeperator).Skip(1).ToList();
         List<string> tableContent = fileContent.Skip(1).ToList();
-        foreach (string language in tableHeader)
+        
+        for (int i = 0; i < tableHeader.Count; i++)
         {
             LanguageScript tempLanguage = new LanguageScript();
-            tempLanguage.Name = language;
+            tempLanguage.Name = tableHeader[i];
             Dictionary<string, string> tempTexts = new Dictionary<string, string>();
-            foreach (var line in tableContent)
+           
+            for (int j = 0; j < tableContent.Count; j++)
             {
 
-                List<string> columns = line.Split(fieldSeperator).ToList();
+                List<string> columns = tableContent[j].Split(fieldSeperator).ToList();
                 string key = columns.First();
                 columns = columns.Skip(1).ToList();
-                string value = columns.ElementAt(tableHeader.IndexOf(language));
+                string value = columns.ElementAt(tableHeader.IndexOf(tableHeader[i]));
                 tempTexts.Add(key, value);
             }
             tempLanguage.Texts = tempTexts;
             result.Add(tempLanguage);
         }
-        //Debug.Log(result.Count);
+
         Languages = result;
         return result;
     }

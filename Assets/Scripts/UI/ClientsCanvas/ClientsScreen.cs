@@ -111,14 +111,14 @@ public class ClientsScreen : MonoBehaviour
     {
         this.fromReservation = fromReservation;
         scrollRectComponent.ResetAll();
-        foreach (var clientButton in clientButtons)
+        
+        for (int i = 0; i < clientButtons.Count; i++)
         {
-            DestroyImmediate(clientButton);
+            DestroyImmediate(clientButtons[i]);
         }
-
-        foreach (var letterButton in letterButtons)
+        for (int i = 0; i < letterButtons.Count; i++)
         {
-            DestroyImmediate(letterButton);
+            DestroyImmediate(letterButtons[i]);
         }
         clientButtons.Clear();
         letterButtons.Clear();
@@ -128,7 +128,7 @@ public class ClientsScreen : MonoBehaviour
             GameObject clientLetters = Instantiate(clientprefabLetter, clientInfoContent);
             letterButtons.Add(clientLetters);
             SetTheme(clientLetters);
-            foreach (var client in item.Value)
+            foreach (Client client in item.Value)
             {
                 theme.SetShadow(clientPrefab);
                 GameObject clientButton = Instantiate(clientPrefab.gameObject, clientInfoContent);
@@ -200,8 +200,6 @@ public class ClientsScreen : MonoBehaviour
         saveButton.gameObject.SetActive(false);
         editButton.gameObject.SetActive(true);
         deleteButton.gameObject.SetActive(true);
-        //theme.SetColor(editButton);
-        //theme.SetColor(editButton.GetComponentInChildren<Text>().gameObject);
         clientEditScreenTransform.GetComponent<ClientsEditScreen>().SetCurrentClient(client);
         navigator.GoTo(clientEditScreenTransform.GetComponent<NavScreen>());
         ClearSearchField();
@@ -256,10 +254,11 @@ public class ClientsScreen : MonoBehaviour
     {
         if (!string.IsNullOrEmpty(searchField.text))
         {
-            foreach (var item in letterButtons)
+            for (int i = 0; i < letterButtons.Count; i++)
             {
-                item.SetActive(false);
+                letterButtons[i].SetActive(false);
             }
+       
             foreach (var client in clientButtons)
             {
 
@@ -277,13 +276,13 @@ public class ClientsScreen : MonoBehaviour
         }
         else
         {
-            foreach (var item in clientButtons)
+            for (int i = 0; i < clientButtons.Count; i++)
             {
-                item.SetActive(true);
+                clientButtons[i].SetActive(true);
             }
-            foreach (var item in letterButtons)
+            for (int i = 0; i < letterButtons.Count; i++)
             {
-                item.SetActive(true);
+                letterButtons[i].SetActive(true);
             }
         }
 

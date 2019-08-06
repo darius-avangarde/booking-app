@@ -31,8 +31,7 @@ public class ClientsEditScreen : MonoBehaviour
     private InfoBox infoDialog = null;
     [SerializeField]
     private ClientsScreen clientsScreen;
-    [SerializeField]
-    private List<GameObject> textList = new List<GameObject>();
+
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -48,16 +47,9 @@ public class ClientsEditScreen : MonoBehaviour
         clientName.text = currentClient.Name;
         clientPhone.text = currentClient.Number;
         clientAdress.text = currentClient.Adress;
-        clientEmail.text = currentClient.Email;
-        
+        clientEmail.text = currentClient.Email;  
     }
-    /*public void SetInpufieldsColor()
-    {
-        foreach (var item in textList)
-        {
-            theme.SetColor(item);
-        }
-    }*/
+
     private void SetClient(Client client)
     {
         client.Name = clientName.text;
@@ -153,7 +145,6 @@ public class ClientsEditScreen : MonoBehaviour
             if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
                 ClientDataManager.EditClient(currentClient.ID, client);
         }
-
         clientsScreen.InstantiateClients();
         navigator.GoBack();
     }
@@ -174,9 +165,7 @@ public class ClientsEditScreen : MonoBehaviour
                 ClientDataManager.AddClient(client);
                 navigator.GoBack();
             }
-
         }
-
         clientsScreen.InstantiateClients();
     }
 }
