@@ -249,11 +249,11 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "MessagePhone");
         }
     }
-    public string NameRequired
+    public string[] NameRequired
     {
         get
         {
-            return SetTextValue(option, "NameRequired");
+            return SetOptionsValues(option, "NameRequired");
         }
     }
 

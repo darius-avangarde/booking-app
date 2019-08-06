@@ -67,14 +67,14 @@ public class ClientsEditScreen : MonoBehaviour
         else
         {
             textError.gameObject.SetActive(true);
-            textError.text = Constants.Valid_Email;
+            textError.text = LocalizedText.Instance.NameRequired[1];
         }
     }
     public void ValidateClientName()
     {
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
         {
-            textNameRequired.text = LocalizedText.Instance.NameRequired;
+            textNameRequired.text = LocalizedText.Instance.NameRequired[0];
             textNameRequired.gameObject.SetActive(true);
         }
         else
@@ -100,7 +100,7 @@ public class ClientsEditScreen : MonoBehaviour
     public void SetTextRequired()
     {
         textNameRequired.gameObject.SetActive(true);
-        textNameRequired.text = LocalizedText.Instance.NameRequired;
+        textNameRequired.text = LocalizedText.Instance.NameRequired[0];
     }
 
     public void ShowInfo()
