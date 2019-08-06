@@ -166,15 +166,15 @@ public class RoomScreen : MonoBehaviour
         List<IReservation> orderedRoomReservationList = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID)
                                                     .OrderBy(res => res.Period.Start).ToList();
 
-        foreach (var reservationButton in reservationButtonList)
+        for (int i = 0; i < reservationButtonList.Count; i++)
         {
-            DestroyImmediate(reservationButton);
+            DestroyImmediate(reservationButtonList[i]);
         }
 
-        foreach (var reservation in orderedRoomReservationList)
+        for (int i = 0; i < orderedRoomReservationList.Count; i++)
         {
             GameObject reservationButton = Instantiate(reservationPrefabButton, reservationsContent);
-            reservationButton.GetComponent<ReservationButton>().Initialize(reservation, () => reservationScreen.OpenEditReservation(reservation, (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), false);
+            reservationButton.GetComponent<ReservationButton>().Initialize(orderedRoomReservationList[i], () => reservationScreen.OpenEditReservation(orderedRoomReservationList[i], (r) => UpdateRoomDetailsFields(PropertyDataManager.GetProperty(r.PropertyID).GetRoom(r.RoomID))), false);
             reservationButtonList.Add(reservationButton);
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(reservationsContent);

@@ -56,23 +56,24 @@ public class PropertiesScreen : MonoBehaviour
     public void Initialize()
     {
         //scrollRectComponent.ResetAll();
-        foreach (var propertyButton in propertyButtonList)
+        for (int i = 0; i < propertyButtonList.Count; i++)
         {
-            DestroyImmediate(propertyButton);
+            DestroyImmediate(propertyButtonList[i]);
         }
         propertyButtonList = new List<GameObject>();
-        foreach (var property in PropertyDataManager.GetProperties())
+        List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
+        for (int i = 0; i < properties.Count(); i++)
         {
             themeManager.SetShadow(propertyItemPrefab);
             GameObject propertyButton;
             propertyButton = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
-            if (property.HasRooms)
+            if (properties[i].HasRooms)
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyRoomScreen, themeManager);
+                propertyButton.GetComponent<PropertyButton>().Initialize(properties[i], OpenPropertyRoomScreen, themeManager);
             }
             else
             {
-                propertyButton.GetComponent<PropertyButton>().Initialize(property, OpenPropertyAdminScreen, themeManager);
+                propertyButton.GetComponent<PropertyButton>().Initialize(properties[i], OpenPropertyAdminScreen, themeManager);
             }
             propertyButtonList.Add(propertyButton);
         }

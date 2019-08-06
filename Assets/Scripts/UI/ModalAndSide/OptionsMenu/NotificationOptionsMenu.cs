@@ -27,13 +27,12 @@ public class NotificationOptionsMenu : MonoBehaviour
         {
             optionsDictionary.Add(LocalizedText.Instance.NotificationDropdown[i], (DropdownOptions)i);
         }
-        foreach (var image in dropdownIcons)
+        for (int i = 0; i < dropdownIcons.Count; i++)
         {
-            optionsPictures.Add(image.name.ToLower(), image);
+            optionsPictures.Add(dropdownIcons[i].name.ToLower(), dropdownIcons[i]);
         }
         Initialize();
         LocalizedText.Instance.OnLanguageChanged.AddListener(() => Initialize());
-        Debug.Log(LocalizedText.Instance.NotificationDropdown[0]);
     }
 
     private void Initialize()

@@ -59,9 +59,9 @@ public class NotificationDataManager : MonoBehaviour
     {
         List<INotification> notificationsList = new List<INotification>();
         List<Notification> notifications = Data.notification.FindAll(n => !n.Deleted);
-        foreach (Notification notification in notifications)
+        for (int i = 0; i < notifications.Count; i++)
         {
-            notificationsList.Add(notification);
+            notificationsList.Add(notifications[i]);
         }
         return notificationsList;
     }
@@ -70,9 +70,9 @@ public class NotificationDataManager : MonoBehaviour
     {
         List<INotification> notificationsList = new List<INotification>();
         List<Notification> notifications = Data.notification.FindAll(n => n.UnRead && !n.Deleted);
-        foreach (Notification notification in notifications)
+        for (int i = 0; i < notifications.Count; i++)
         {
-            notificationsList.Add(notification);
+            notificationsList.Add(notifications[i]);
         }
         return notificationsList;
     }

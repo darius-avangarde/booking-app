@@ -46,9 +46,9 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     private void SetDictionaries()
     {
         propertyIconsDictionary.Clear();
-        foreach (var icon in propertyTypeIcons)
+        for (int i = 0; i < propertyTypeIcons.Length; i++)
         {
-            propertyIconsDictionary.Add(icon.name.ToLower(), icon);
+            propertyIconsDictionary.Add(propertyTypeIcons[i].name.ToLower(), propertyTypeIcons[i]);
         }
         for (int i = 0; i <= (int)PropertyDataManager.PropertyType.cabin; i++)
         {
@@ -70,7 +70,7 @@ public class SetPropertyTypeDropdown : MonoBehaviour
             propertyTypeName[(PropertyDataManager.PropertyType)i] = LocalizedText.Instance.PropertyType[i];
             Dropdown.OptionData newOption = new Dropdown.OptionData();
             newOption.text = LocalizedText.Instance.PropertyType[i];
-            foreach (var icon in propertyIconsDictionary)
+            foreach (KeyValuePair<string, Sprite> icon in propertyIconsDictionary)
             {
                 if (icon.Key == ((PropertyDataManager.PropertyType)i).ToString())
                 {

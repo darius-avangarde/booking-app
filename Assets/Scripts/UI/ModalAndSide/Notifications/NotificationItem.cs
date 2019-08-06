@@ -60,11 +60,11 @@ public class NotificationItem : MonoBehaviour
         propertyName.text = currentProperty.Name;
         roomName.text = currentRoom.Name;
         addedDate.text = $" { LocalizedText.Instance.AddedDateText} {currentReservation.CreatedDateTime.Day}.{currentReservation.CreatedDateTime.Month}.{currentReservation.CreatedDateTime.Year}, {currentReservation.CreatedDateTime.Hour}:{currentReservation.CreatedDateTime.Minute}";
-        foreach (Sprite icon in roomTypeIcons)
+        for (int i = 0; i < roomTypeIcons.Length; i++)
         {
-            if (icon.name.ToLower() == currentRoom.RoomType.ToString().ToLower())
+            if (roomTypeIcons[i].name.ToLower() == currentRoom.RoomType.ToString().ToLower())
             {
-                roomTypeImage.sprite = icon;
+                roomTypeImage.sprite = roomTypeIcons[i];
             }
         }
         menuButton.onClick.AddListener(() => setReservation(reservation));
