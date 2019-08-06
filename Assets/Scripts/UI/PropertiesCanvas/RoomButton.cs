@@ -20,6 +20,11 @@ public class RoomButton : MonoBehaviour
 
     private IRoom currentRoom;
 
+    private void Start()
+    {
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetText());
+    }
+
     /// <summary>
     /// set current room name
     /// set room callback
@@ -28,11 +33,16 @@ public class RoomButton : MonoBehaviour
     /// <param name="roomCallback">callback to open room screen</param>
     public void Initialize(IRoom room, Action<IRoom> roomCallback, ThemeManager themeManager)
     {
-        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : room.Name;
+        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : $"{LocalizedText.Instance.RoomItem} {room.Name}";
         currentRoom = room;
         roomButton.onClick.AddListener(() => roomCallback(room));
 
         themeManager.SetColor(roomNameText);
         themeManager.SetColor(roomBackground);
+    }
+
+    private void SetText()
+    {
+        roomName.text = $"{LocalizedText.Instance.RoomItem}{currentRoom.Name}";
     }
 }

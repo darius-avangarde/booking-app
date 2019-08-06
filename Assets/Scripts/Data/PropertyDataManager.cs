@@ -112,6 +112,11 @@ public static class PropertyDataManager
         WritePropertyData();
     }
 
+    public static void SavePropertyData()
+    {
+        WritePropertyData();
+    }
+
     /// <summary>
     /// delete selected property
     /// </summary>
@@ -152,7 +157,6 @@ public static class PropertyDataManager
             set
             {
                 name = value;
-                WritePropertyData();
             }
         }
 
@@ -164,7 +168,6 @@ public static class PropertyDataManager
             set
             {
                 hasRooms = value;
-                WritePropertyData();
             }
         }
 
@@ -176,7 +179,6 @@ public static class PropertyDataManager
             set
             {
                 floors = value;
-                WritePropertyData();
             }
         }
 
@@ -188,7 +190,6 @@ public static class PropertyDataManager
             set
             {
                 floorRooms = value;
-                WritePropertyData();
             }
         }
 
@@ -200,7 +201,6 @@ public static class PropertyDataManager
             set
             {
                 propertyType = (int)value;
-                WritePropertyData();
             }
         }
 
@@ -212,7 +212,6 @@ public static class PropertyDataManager
             set
             {
                 deleted = value;
-                WritePropertyData();
             }
         }
 
@@ -234,7 +233,6 @@ public static class PropertyDataManager
             set
             {
                 getPropertyRoomID = value;
-                WritePropertyData();
             }
         }
 
@@ -267,6 +265,11 @@ public static class PropertyDataManager
         public void SaveRoom(IRoom room)
         {
             rooms.Add((Room)room);
+            WritePropertyData();
+        }
+
+        public void SaveRoomData()
+        {
             WritePropertyData();
         }
 
@@ -320,7 +323,6 @@ public static class PropertyDataManager
             set
             {
                 name = value;
-                WritePropertyData();
             }
         }
 
@@ -332,7 +334,6 @@ public static class PropertyDataManager
             set
             {
                 price = value;
-                WritePropertyData();
             }
         }
 
@@ -344,7 +345,6 @@ public static class PropertyDataManager
             set
             {
                 roomType = (int)value;
-                WritePropertyData();
             }
         }
 
@@ -356,7 +356,6 @@ public static class PropertyDataManager
             set
             {
                 deleted = value;
-                WritePropertyData();
             }
         }
 
@@ -368,7 +367,6 @@ public static class PropertyDataManager
             set
             {
                 multiple = value;
-                WritePropertyData();
             }
         }
 
@@ -380,7 +378,6 @@ public static class PropertyDataManager
             set
             {
                 floor = value;
-                WritePropertyData();
             }
         }
 
@@ -392,7 +389,6 @@ public static class PropertyDataManager
             set
             {
                 roomNumber = value;
-                WritePropertyData();
             }
         }
 
@@ -404,7 +400,6 @@ public static class PropertyDataManager
             set
             {
                 singleBeds = value;
-                WritePropertyData();
             }
         }
 
@@ -416,7 +411,6 @@ public static class PropertyDataManager
             set
             {
                 doubleBeds = value;
-                WritePropertyData();
             }
         }
 

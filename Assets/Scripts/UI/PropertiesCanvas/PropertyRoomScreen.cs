@@ -45,11 +45,6 @@ public class PropertyRoomScreen : MonoBehaviour
         editButton.onClick.AddListener(() => EditProperty());
     }
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
-
     /// <summary>
     /// set the position of the scroll rect to the top of the screen
     /// </summary>
@@ -66,6 +61,7 @@ public class PropertyRoomScreen : MonoBehaviour
     {
         currentProperty = property;
         navigator.GoTo(propertyRoomScreen);
+        Initialize();
     }
 
     /// <summary>

@@ -26,9 +26,9 @@ public class PropertyButton : MonoBehaviour
 
     private IProperty currentProperty;
 
-    private void OnDisable()
+    private void Start()
     {
-        propertyButtonItem.onClick.RemoveAllListeners();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetText());
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class PropertyButton : MonoBehaviour
     public void Initialize(IProperty property, Action<IProperty> PropertyCallback, ThemeManager themeManager)
     {
         currentProperty = property;
-        propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"Proprietatea{Environment.NewLine}{property.Name}";
+        propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
         for (int i = 0; i < propertyIcons.Length; i++)
         {
             if (propertyIcons[i].name == property.PropertyType.ToString())
@@ -55,5 +55,10 @@ public class PropertyButton : MonoBehaviour
         themeManager.SetColor(propertyNameText);
         themeManager.SetColor(propertyImage);
         themeManager.SetColor(propertyBackground);
+    }
+
+    private void SetText()
+    {
+        propertyName.text = $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
     }
 }
