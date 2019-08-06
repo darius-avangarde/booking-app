@@ -249,6 +249,20 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "MessagePhone");
         }
     }
+    public string PropertyItem
+    {
+        get
+        {
+            return SetTextValue(option, "PropertiesItem");
+        }
+    }
+    public string RoomItem
+    {
+        get
+        {
+            return SetTextValue(option, "RoomItem");
+        }
+    }
     public string[] NameRequired
     {
         get
