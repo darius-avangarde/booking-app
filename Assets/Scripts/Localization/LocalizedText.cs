@@ -26,8 +26,7 @@ public class LocalizedText : MonoBehaviour
     private static LocalizedText instance;
     private SettingsManager languageSet;
     private string option;
-    private string[] dropOptions = { "Română", "Engleză" };
-    private DateTime date;
+
     public static LocalizedText Instance
     {
         get
@@ -50,7 +49,7 @@ public class LocalizedText : MonoBehaviour
         SetLanguage(option);
         ChangeOptionsDropdown();
     }
-
+   
     private void DropdownValue()
     {
         if (option == "Ro")
@@ -139,6 +138,14 @@ public class LocalizedText : MonoBehaviour
         get
         {
             return SetOptionsValues(option, "Notifications");
+        }
+    }
+    
+         public string[] NotificationDropdown
+    {
+        get
+        {
+            return SetOptionsValues(option, "NotificationDropdown");
         }
     }
     public Dictionary<int, string> PreAlertDictFunction
@@ -340,8 +347,7 @@ public class LocalizedText : MonoBehaviour
     }
 
     private void SetLanguage(string language)
-    {
-        // myManager = LocalizationManager.Instance;
+    {  // myManager = LocalizationManager.Instance;
         // var lang = csvData.Where(x => x.Name == language).First();
         var lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         for (int i = 0; i < textList.Count; i++)
