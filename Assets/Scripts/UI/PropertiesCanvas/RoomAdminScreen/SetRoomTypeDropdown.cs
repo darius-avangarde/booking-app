@@ -16,6 +16,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
         set
         {
             roomTypeDropdown.value = (int)value;
+            roomTypeDropdown.RefreshShownValue();
         }
     }
 
@@ -23,10 +24,12 @@ public class SetRoomTypeDropdown : MonoBehaviour
     private Dictionary<string, Sprite> roomIcons = new Dictionary<string, Sprite>();
     private string[] roomTypeText = { "Cameră", "Apartament", "Vila", "Cabană", "Pat" };
 
-    private void Awake()
+    private void Start()
     {
         SetDictionaries();
         SetDropdownOptions();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDictionaries());
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
     }
 
     /// <summary>
@@ -36,13 +39,14 @@ public class SetRoomTypeDropdown : MonoBehaviour
     /// </summary>
     private void SetDictionaries()
     {
+        roomIcons.Clear();
         foreach (var icon in roomTypeIcons)
         {
             roomIcons.Add(icon.name.ToLower(), icon);
         }
         for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
-            roomTypeName[(PropertyDataManager.RoomType)i] = roomTypeText[i];
+            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];//roomTypeText[i];
         }
     }
 
@@ -55,9 +59,9 @@ public class SetRoomTypeDropdown : MonoBehaviour
         roomTypeDropdown.options.Clear();
         for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
-            roomTypeName[(PropertyDataManager.RoomType)i] = roomTypeText[i];
+            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];
             Dropdown.OptionData newOption = new Dropdown.OptionData();
-            newOption.text = roomTypeText[i];
+            newOption.text = LocalizedText.Instance.RoomType[i];
             foreach (var icon in roomIcons)
             {
                 if (icon.Key == ((PropertyDataManager.RoomType)i).ToString())

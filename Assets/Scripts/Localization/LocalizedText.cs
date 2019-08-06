@@ -49,7 +49,7 @@ public class LocalizedText : MonoBehaviour
         SetLanguage(option);
         ChangeOptionsDropdown();
     }
-   
+
     private void DropdownValue()
     {
         if (option == "Ro")
@@ -98,6 +98,13 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "ReservationEditHeaderText");
         }
     }
+    public string[] PropertyHeader
+    {
+        get
+        {
+            return SetOptionsValues(option, "PropertyEditHeaderText");
+        }
+    }
     public string[] DaysLong
     {
         get
@@ -126,11 +133,27 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Months_Short");
         }
     }
-    public string[] DropdownProperty
+    public string[] RoomType
     {
         get
         {
             return SetOptionsValues(option, "property_dropdown");
+        }
+    }
+
+    public string[] PropertyType
+    {
+        get
+        {
+            return SetOptionsValues(option, "propertyType");
+        }
+    }
+
+    public string[] FloorType
+    {
+        get
+        {
+            return SetOptionsValues(option, "NrRoomsText");
         }
     }
     public string[] Notifications
@@ -140,8 +163,8 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Notifications");
         }
     }
-    
-         public string[] NotificationDropdown
+
+    public string[] NotificationDropdown
     {
         get
         {
@@ -204,6 +227,7 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "MessageEmail");
         }
     }
+  
     public string PhoneRequired
     {
         get
@@ -218,6 +242,15 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "NameRequired");
         }
     }
+
+    public string AddedDateText
+    {
+        get
+        {
+            return SetTextValue(option, "AddedDate");
+        }
+    }
+
     public string[] HelpTextMainPage
     {
         get
@@ -335,7 +368,7 @@ public class LocalizedText : MonoBehaviour
         for (int i = 0; i < parents.Length; i++)
         {
             elements = parents[i].GetComponentsInChildren<Text>(true);
-         
+
             for (int j = 0; j < elements.Length; j++)
             {
                 if (language.ContainsKey(elements[j].name))

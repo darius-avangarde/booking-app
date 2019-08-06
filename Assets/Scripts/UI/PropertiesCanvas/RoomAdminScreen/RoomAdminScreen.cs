@@ -119,10 +119,10 @@ public class RoomAdminScreen : MonoBehaviour
         }
         else
         {
-            modalDialogOptions.Message = Constants.DELETE_PROPERTY;
+            modalDialogOptions.Message = LocalizedText.Instance.ConfirmDelete[2];
         }
-        modalDialogOptions.ConfirmText = Constants.DELETE_CONFIRM;
-        modalDialogOptions.CancelText = Constants.DELETE_CANCEL;
+        modalDialogOptions.ConfirmText = LocalizedText.Instance.ConfirmAction[0];
+        modalDialogOptions.CancelText = LocalizedText.Instance.ConfirmAction[1];
         modalDialogOptions.ConfirmCallback = () =>
         {
             if (currentProperty.HasRooms)

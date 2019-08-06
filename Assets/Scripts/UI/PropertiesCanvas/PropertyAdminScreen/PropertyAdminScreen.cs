@@ -110,7 +110,7 @@ public class PropertyAdminScreen : MonoBehaviour
         if (CurrentProperty != null)
         {
             propertyNameInputField.text = CurrentProperty.Name ?? "";
-            propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? Constants.NEW_PROPERTY : Constants.EDIT_PROPERTY;
+            propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? LocalizedText.Instance.PropertyHeader[0] : LocalizedText.Instance.PropertyHeader[1];
             if (!string.IsNullOrEmpty(CurrentProperty.Name))
             {
                 //SetRoomsToggle(CurrentProperty.HasRooms);
@@ -218,9 +218,9 @@ public class PropertyAdminScreen : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = Constants.DELETE_PROPERTY,
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
+            Message = LocalizedText.Instance.ConfirmDelete[1],
+            ConfirmText = LocalizedText.Instance.ConfirmAction[0],
+            CancelText = LocalizedText.Instance.ConfirmAction[1],
             ConfirmCallback = () =>
             {
                 bool hasRooms = CurrentProperty.HasRooms;

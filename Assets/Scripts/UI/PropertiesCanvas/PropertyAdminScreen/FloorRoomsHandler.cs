@@ -10,6 +10,8 @@ public class FloorRoomsHandler : MonoBehaviour
     [SerializeField]
     private ThemeManager themeManager = null;
     [SerializeField]
+    private Text floorFieldText = null;
+    [SerializeField]
     private Text floorRoomsFieldText = null;
     [SerializeField]
     private InputField floorRoomsField = null;
@@ -45,20 +47,27 @@ public class FloorRoomsHandler : MonoBehaviour
     private void Start()
     {
         themeManager.AddItems(floorText, roomsFloorText, dropdownText, dropdownPlaceholder, dropdownArrow, dropdownUnderline, dropdowntemplateOutline, dropdowntemplateBackground, dropdowntemplateItemBackground, dropdowntemplateItemLabel, dropdowntemplateItemUnderline);
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetText());
     }
 
     public void SetPropertyFloor(int floor)
     {
-        if (floor == 0)
+        currentFloor = floor;
+        SetText();
+        SetRoomInputField(multipleRoomsScript.multipleRoomsNumber[currentFloor].ToString());
+    }
+
+    private void SetText()
+    {
+        if(currentFloor == 0)
         {
-            floorRoomsFieldText.text = $"Etaj P:";
+            floorFieldText.text = $"{LocalizedText.Instance.FloorType[1]} P:";
         }
         else
         {
-            floorRoomsFieldText.text = $"Etaj P+{floor}:";
+            floorFieldText.text = $"{LocalizedText.Instance.FloorType[1]} P+{currentFloor}:";
         }
-        currentFloor = floor;
-        SetRoomInputField(multipleRoomsScript.multipleRoomsNumber[currentFloor].ToString());
+        floorRoomsFieldText.text = LocalizedText.Instance.FloorType[0];
     }
 
     public void SetRoomInputField(string value)
