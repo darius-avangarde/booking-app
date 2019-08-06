@@ -96,18 +96,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Load property with most rooms to initialize day columns/items;
         if(PropertyDataManager.GetProperties().Count() > 0)
         {
-            // int lastRoomCount = 0;
-            // string biggestPropertyID = string.Empty;
-            // foreach (IProperty p in PropertyDataManager.GetProperties())
-            // {
-            //     if(p.Rooms.Count() > lastRoomCount)
-            //     {
-            //         lastRoomCount = p.Rooms.Count();
-            //         biggestPropertyID = p.ID;
-            //     }
-            // }
             SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
-            //SelectProperty(PropertyDataManager.GetProperty(biggestPropertyID));
         }
         else
             InitializeWithNoProperty();
@@ -258,9 +247,10 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     public void InitializeWithNoProperty()
     {
+        roomColumn.UpdateRooms(new List<IRoom>());
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {
-            //dayColumn.UpdateRooms(currentRooms, NewReservationFromUnreservedDay);
+            dayColumn.UpdateRooms(new List<IRoom>());
             dayColumn.LinkedHeader.UpdateProperty(currentProperty);
         }
 

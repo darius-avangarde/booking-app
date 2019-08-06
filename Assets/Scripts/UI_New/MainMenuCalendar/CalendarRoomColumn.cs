@@ -82,7 +82,7 @@ public class CalendarRoomColumn : MonoBehaviour
 
     private void OnScroll(Vector2 pos)
     {
-        if(currentRooms.Count > roomPool.Count)
+        if(currentRooms != null && currentRooms.Count > roomPool.Count)
         {
             for (int i = 0; i < roomPool.Count; i++)
             {
