@@ -66,6 +66,10 @@ public class FloorRoomsHandler : MonoBehaviour
         if (!string.IsNullOrEmpty(value))
         {
             currenRoomValue = int.Parse(value);
+            if (currenRoomValue < 1)
+            {
+                currenRoomValue = 1;
+            }
         }
         else
         {

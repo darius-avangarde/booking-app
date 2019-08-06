@@ -26,7 +26,7 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     private Dictionary<string, Sprite> propertyIconsDictionary = new Dictionary<string, Sprite>();
     private string[] propertyTypeText = { "Hotel", "Pensiune", "Vilă", "Cabană" };
 
-    private void Awake()
+    private void Start()
     {
         SetDictionaries();
         SetDropdownOptions();

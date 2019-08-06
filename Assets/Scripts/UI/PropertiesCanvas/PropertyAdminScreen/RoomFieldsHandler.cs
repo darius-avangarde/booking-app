@@ -139,16 +139,12 @@ public class RoomFieldsHandler : MonoBehaviour
         if (!string.IsNullOrEmpty(value))
         {
             currenRoomValue = int.Parse(value);
+            for (int i = 0; i <= currentFloorValue; i++)
+            {
+                floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
+            }
+            allMultipleRoomsFields.text = currenRoomValue.ToString();
         }
-        else
-        {
-            currenRoomValue = 1;
-        }
-        for (int i = 0; i <= currentFloorValue; i++)
-        {
-            floorItemList[i].SetRoomInputField(currenRoomValue.ToString());
-        }
-        allMultipleRoomsFields.text = currenRoomValue.ToString();
     }
 
     public void SetRoomDropdownOption()
