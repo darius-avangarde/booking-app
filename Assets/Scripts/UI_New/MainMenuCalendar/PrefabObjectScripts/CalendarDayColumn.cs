@@ -40,7 +40,7 @@ public class CalendarDayColumn : MonoBehaviour
         {
             CalendarDayColumnObject dayObj = Instantiate(dayColumnObjectPrefab, transform).GetComponent<CalendarDayColumnObject>();
             dayPool.Add(dayObj);
-            dayObj.SetObjectAction(tapAction, roomObjects[i]);
+            dayObj.SetObjectAction(date, tapAction, roomObjects[i]);
             roomObjects[i].AddLinkedDayObject(dayObj);
             //dayObj.DayRectTransform.localPosition = - (Vector3.up * dayColumnObjectRect.rect.height) * (dayPool.Count);
         }

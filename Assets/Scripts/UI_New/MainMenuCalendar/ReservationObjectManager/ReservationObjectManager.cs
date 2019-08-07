@@ -108,7 +108,7 @@ public class ReservationObjectManager : MonoBehaviour
                 roomReservations.Remove(res);
             }
 
-            if(roomReservations.Exists(r => r.Period.End.Date == dayObjects[i].ObjDate.Date))
+            else if(roomReservations.Exists(r => r.Period.End.Date == dayObjects[i].ObjDate.Date))
             {
                 IReservation res = roomReservations.Find(r => r.Period.End.Date == dayObjects[i].ObjDate.Date);
 
@@ -121,9 +121,10 @@ public class ReservationObjectManager : MonoBehaviour
 
             if(roomReservations.Exists(r => r.Period.Start.Date < minDate && r.Period.End > maxDate))
             {
+                CalendarDayColumnObject firstDayObject = dayObjects.Find(d => d.DayRectTransform.parent.GetSiblingIndex() == 0);
                 IReservation res = roomReservations.Find(r => r.Period.Start.Date < minDate && r.Period.End > maxDate);
                 PointSize p = CalculatePositionSpan((int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                GetFreeReservationObject().PlaceUpdateObject(p, firstDayObject, res, reservationButtonAction);
                 roomReservations.Remove(res);
             }
         }

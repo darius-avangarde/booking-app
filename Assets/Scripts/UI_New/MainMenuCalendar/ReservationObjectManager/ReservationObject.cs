@@ -26,6 +26,7 @@ public class ReservationObject : MonoBehaviour
 
     private IReservation objReservation;
     UnityAction<IReservation> currentTapAction;
+    private bool doGuiPlace = false;
 
 
     public void PlaceUpdateObject(ReservationObjectManager.PointSize pointSize, CalendarDayColumnObject c, IReservation reservation, UnityAction<IReservation> tapAction, bool forceReposition = false)
@@ -48,23 +49,7 @@ public class ReservationObject : MonoBehaviour
 
         if(forceReposition)
         {
-            StartCoroutine(ForceReposition());
-        }
-    }
-
-    private IEnumerator ForceReposition()
-    {
-        yield return new WaitForEndOfFrame();
-        if(co != null)
-        {
-            if(transform.position != co.DayRectTransform.position)
-            {
-                transform.position = co.DayRectTransform.position;
-            }
-            else
-            {
-                co = null;
-            }
+            doGuiPlace = true;
         }
     }
 
@@ -76,5 +61,30 @@ public class ReservationObject : MonoBehaviour
     public void Disable()
     {
         gameObject.SetActive(false);
+    }
+
+    private void OnGUI()
+    {
+        if(doGuiPlace)
+        {
+            DoGuiPlace();
+        }
+    }
+
+    private void DoGuiPlace()
+    {
+        if(co != null)
+        {
+            doGuiPlace = true;
+            if(transform.position != co.DayRectTransform.position)
+            {
+                transform.position = co.DayRectTransform.position;
+            }
+            else
+            {
+                co = null;
+            }
+        }
+        doGuiPlace = false;
     }
 }

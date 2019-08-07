@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using System.Linq;
 
 public class CalendarRoomColumn : MonoBehaviour
 {
@@ -17,6 +16,8 @@ public class CalendarRoomColumn : MonoBehaviour
     private GameObject roomColumnObjectPrefab;
     [SerializeField]
     private ScrollRect roomColumnScrolrect;
+    [SerializeField]
+    private ScrollRect dayColumnScrolrect;
 
     [Space]
     [SerializeField]
@@ -60,6 +61,7 @@ public class CalendarRoomColumn : MonoBehaviour
         currentRooms = (rooms != null) ? rooms : new List<IRoom>();
         roomColumnScrolrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical ,rooms.Count * _recordOffsetY);
         roomColumnScrolrect.verticalNormalizedPosition = 1;
+        dayColumnScrolrect.verticalNormalizedPosition = 1;
 
         for (int i = 0; i < roomPool.Count - 1; i++)
         {

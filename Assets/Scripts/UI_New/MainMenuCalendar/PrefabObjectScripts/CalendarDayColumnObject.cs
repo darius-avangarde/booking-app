@@ -34,8 +34,9 @@ public class CalendarDayColumnObject : MonoBehaviour
         dayButton.onClick.RemoveAllListeners();
     }
 
-    public void SetObjectAction(UnityAction<DateTime, IRoom> tapAction, CalendarRoomColumnObject roomObject)
+    public void SetObjectAction(DateTime date, UnityAction<DateTime, IRoom> tapAction, CalendarRoomColumnObject roomObject)
     {
+        objDate = date.Date;
         linkedRoomObject = roomObject;
         dayButton.onClick.RemoveAllListeners();
         dayButton.onClick.AddListener(() => tapAction(objDate, ObjectRoom));
