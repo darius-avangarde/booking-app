@@ -141,7 +141,7 @@ public class ModalCalendar : MonoBehaviour, IClosable
     private void UpdateCurrentMonthText(DateTime date)
     {
          //currentMonthYearText.text = $"{Constants.MonthNamesDict[date.Month]} {date.Year}";
-         currentMonthYearText.text = $"{LocalizedText.Instance.Months[date.Month-1]} {date.Year}";
+         currentMonthYearText.text = $"{LocalizedText.Instance.Months[date.Month-1].TrimEnd()} {date.Year}";
     }
 
     private void UpdateSelectedDate(DateTime date, bool alsoSetSelected = true)
