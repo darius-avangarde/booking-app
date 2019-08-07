@@ -41,7 +41,7 @@ public class PropertiesScreen : MonoBehaviour
     }
     private void Start()
     {
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 10; i++)
         {
             InstantiatePropertyButton();
         }
@@ -59,7 +59,7 @@ public class PropertiesScreen : MonoBehaviour
     {
         scrollRectComponent.ResetAll();
         List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
-        
+
         if(properties.Count != propertyButtonList.Count)
         {
             //Create New Objects as needed
@@ -69,7 +69,7 @@ public class PropertiesScreen : MonoBehaviour
             }
         
             //Disable unused objects
-            for (int i = propertyButtonList.Count - 1; i > properties.Count; i--)
+            for (int i = propertyButtonList.Count - 1; i >= properties.Count; i--)
             {
                 propertyButtonList[i].gameObject.SetActive(false);
             }

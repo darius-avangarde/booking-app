@@ -50,7 +50,6 @@ public class PropertyButton : MonoBehaviour
     /// set button callback for property with or without rooms
     /// </summary>
     /// <param name="property">selected property</param>
-    /// <param name="PropertyRoomCallback">click callback for properties without rooms</param>
     /// <param name="PropertyCallback">callback for properties with rooms</param>
     public void Initialize(IProperty property, Action<IProperty> PropertyCallback)
     {
