@@ -23,8 +23,9 @@ public class LocalizedText : MonoBehaviour
     private Dropdown languageDropdown;
     [SerializeField]
     private List<Sprite> spriteList;
-    private static LocalizedText instance;
+    [SerializeField]
     private SettingsManager languageSet;
+    private static LocalizedText instance;
     private string option;
 
     public static LocalizedText Instance
@@ -40,9 +41,7 @@ public class LocalizedText : MonoBehaviour
     }
     private void Awake()
     {
-        myManager = new LocalizationManager();
         myManager.CustomStart();
-        languageSet = new SettingsManager();
         languageSet.ReadData();
         option = languageSet.DataElements.settings.language;
         DropdownValue();
