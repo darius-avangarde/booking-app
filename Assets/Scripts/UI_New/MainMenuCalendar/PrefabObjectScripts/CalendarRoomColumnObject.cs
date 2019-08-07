@@ -34,6 +34,7 @@ public class CalendarRoomColumnObject : MonoBehaviour
     private void Start()
     {
         ThemeManager.Instance.AddItems(roomName, roomButton.targetGraphic, singleBeds, doubleBeds, singleBedsImage, doubleBedsImage);
+        LocalizedText.Instance.OnLanguageChanged.AddListener(OnLanguageChanged);
     }
 
     private void OnDestroy()
@@ -60,7 +61,7 @@ public class CalendarRoomColumnObject : MonoBehaviour
 
         if(currentRoom !=null)
         {
-            roomName.text = room.Name;
+            roomName.text = $"{(PropertyDataManager.GetProperty(currentRoom.PropertyID).HasRooms ? LocalizedText.Instance.RoomItem : "")} {room.Name}";
             singleBeds.text = $"{room.SingleBeds}";
             doubleBeds.text = $"{room.DoubleBeds}";
         }
@@ -74,5 +75,13 @@ public class CalendarRoomColumnObject : MonoBehaviour
     public void DisableObject()
     {
         gameObject.SetActive(false);
+    }
+
+    private void OnLanguageChanged()
+    {
+        if(currentRoom !=null)
+        {
+            roomName.text = $"{LocalizedText.Instance.RoomItem} {currentRoom.Name}";
+        }
     }
 }

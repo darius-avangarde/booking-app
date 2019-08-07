@@ -83,7 +83,7 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private void Start()
     {
-        roomColumnObjects = roomColumn.InitializeRoomColumn((r) => roomEditScreen.OpenRoomAdminScreen(r));
+        roomColumnObjects = roomColumn.InitializeRoomColumn((r) => roomEditScreen.OpenRoomAdminScreen(r, () => SelectProperty(currentProperty)));
 
 
 
