@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -55,6 +56,18 @@ public class ThemeManager : MonoBehaviour
 
     public void SelectTheme()
     {
+        StartCoroutine(SelectThemeCo());
+    }
+
+    private IEnumerator SelectThemeCo()
+    {
+#if UNITY_IPHONE
+        Handheld.SetActivityIndicatorStyle(iOS.ActivityIndicatorStyle.Gray);
+#elif UNITY_ANDROID
+        Handheld.SetActivityIndicatorStyle(AndroidActivityIndicatorStyle.Large);
+#endif
+        Handheld.StartActivityIndicator();
+
         foreach (Graphic item in TextList)
         {
             SetItemColor(dataColor.textDark, dataColor.textLight, item);
@@ -75,9 +88,12 @@ public class ThemeManager : MonoBehaviour
         {
             SetItemColor(dataColor.separatorDark, dataColor.separatorLight, null, item);
         }
-
+        yield return new WaitForEndOfFrame();
         Verify();
+        yield return new WaitForEndOfFrame();
+        Handheld.StopActivityIndicator();
     }
+
 
     public void AddItems(params Graphic[] myObjects)
     {

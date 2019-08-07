@@ -156,8 +156,8 @@ public class ReservationFilterScreen : MonoBehaviour
             endDate = date.Date;
         }
 
-        startDateText.text = startDate.HasValue ? startDate.Value.ToString(Constants.DateTimePrintFormat) : "Din";
-        endDateText.text = endDate.HasValue ? endDate.Value.ToString(Constants.DateTimePrintFormat) : "Până în";
+        startDateText.text = startDate.HasValue ? startDate.Value.ToString(Constants.DateTimePrintFormat) : LocalizedText.Instance.Prepositions[0];
+        endDateText.text = endDate.HasValue ? endDate.Value.ToString(Constants.DateTimePrintFormat) : LocalizedText.Instance.Prepositions[1];
     }
 
     private void SetClientCallback(IClient selectedClient)
@@ -193,8 +193,8 @@ public class ReservationFilterScreen : MonoBehaviour
         else
         {
             if(alsoToggle) periodToggle.Toggle(false);
-            startDateText.text = "Din";
-            endDateText.text = "Până în";
+            startDateText.text = LocalizedText.Instance.Prepositions[0];
+            endDateText.text = LocalizedText.Instance.Prepositions[1];
         }
 
         if (roomType != null)

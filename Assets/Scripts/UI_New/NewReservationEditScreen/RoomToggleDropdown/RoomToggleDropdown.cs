@@ -41,7 +41,7 @@ public class RoomToggleDropdown : MonoBehaviour, IClosable
         {
             currentSelection = selectedRooms;
             isSelecting = selectedRooms.Count > 1;
-            selectedText.text = selectedRooms.Count > 1 ? $"{selectedRooms.Count} camere alese." : selectedRooms[0].Name;
+            selectedText.text = selectedRooms.Count > 1 ? $"{selectedRooms.Count} {LocalizedText.Instance.RoomNumbers}" : selectedRooms[0].Name;
 
         }
         else
