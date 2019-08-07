@@ -54,6 +54,7 @@ public class PropertyButton : MonoBehaviour
     /// <param name="PropertyCallback">callback for properties with rooms</param>
     public void Initialize(IProperty property, Action<IProperty> PropertyCallback)
     {
+        propertyButtonItem.onClick.RemoveAllListeners();
         currentProperty = property;
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
         for (int i = 0; i < propertyIcons.Length; i++)

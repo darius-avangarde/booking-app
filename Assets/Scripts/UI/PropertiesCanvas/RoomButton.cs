@@ -57,6 +57,7 @@ public class RoomButton : MonoBehaviour
     /// <param name="roomCallback">callback to open room screen</param>
     public void InitializeRoom(IRoom room, Action<IRoom> roomCallback)
     {
+        roomButton.onClick.RemoveAllListeners();
         floorNumberObject.SetActive(false);
         roomButtonObject.SetActive(true);
         transformComponent.sizeDelta = new Vector2(transformComponent.sizeDelta.x, 110);
