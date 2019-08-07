@@ -23,12 +23,14 @@ public class NotificationOptionsMenu : MonoBehaviour
 
     private void Start()
     {
-        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
         SetDropdownOptions();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
     }
 
     private void SetDropdownOptions()
     {
+        optionsDictionary.Clear();
+        optionsPictures.Clear();
         for (int i = 0; i <= (int)DropdownOptions.email; i++)
         {
             optionsDictionary.Add(LocalizedText.Instance.NotificationDropdown[i], (DropdownOptions)i);
