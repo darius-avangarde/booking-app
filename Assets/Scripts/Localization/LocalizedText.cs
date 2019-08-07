@@ -127,12 +127,28 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "PropertyErrorText");
         }
     }
-    
-        public string PropertyErrorRoom
+
+    public string PropertyErrorRoom
     {
         get
         {
             return SetTextValue(option, "PropertyErrorRoom");
+        }
+    }
+
+    public string ConfirmSelection
+    {
+        get
+        {
+            return SetTextValue(option, "ConfirmSelection");
+        }
+    }
+
+    public string RoomNumbers
+    {
+        get
+        {
+            return SetTextValue(option, "RoomNumbers");
         }
     }
     public string[] PropertyRoomsTitle
