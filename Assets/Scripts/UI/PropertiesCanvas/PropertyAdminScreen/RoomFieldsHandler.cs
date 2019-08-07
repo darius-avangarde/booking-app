@@ -47,6 +47,7 @@ public class RoomFieldsHandler : MonoBehaviour
         {
             floorItemList[i].gameObject.SetActive(false);
         }
+        allMultipleRoomsFields.text = string.Empty;
     }
 
     public void UpdateUILayout()
