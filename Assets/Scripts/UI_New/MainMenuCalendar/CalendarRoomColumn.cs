@@ -123,7 +123,7 @@ public class CalendarRoomColumn : MonoBehaviour
 
         if(c.Room != null)
         {
-            reservationsManager.DisableUnseenReservations();
+            //reservationsManager.DisableUnseenReservations();
             reservationsManager.CreateReservationsForRow(c.LinkedDayRow);
         }
     }

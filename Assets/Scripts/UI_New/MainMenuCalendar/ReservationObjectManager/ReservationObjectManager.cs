@@ -33,6 +33,7 @@ public class ReservationObjectManager : MonoBehaviour
     private float _treshold = 100f;
 
 
+    //TODO: Find better way to disable reservation objects based on distance from screen and keep reservation objects to prevent reinstantiations
     public void DisableUnseenReservations()
     {
         foreach (ReservationObject resObj in pool)
@@ -43,14 +44,14 @@ public class ReservationObjectManager : MonoBehaviour
                 resObj.Disable();
             }
 
-            if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y > CalendarRoomColumn.DisableMargin + _treshold)
+            else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y + 100 > CalendarRoomColumn.DisableMargin * 2 + _treshold)
             {
                 placedReservations.Remove(resObj.ObjReservation);
                 resObj.Disable();
             }
 
             //pulling scrolrect up
-            else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y < -CalendarRoomColumn.DisableMargin)
+            else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y - 100 < -CalendarRoomColumn.DisableMargin * 2)
             {
                 placedReservations.Remove(resObj.ObjReservation);
                 resObj.Disable();
@@ -88,6 +89,8 @@ public class ReservationObjectManager : MonoBehaviour
 
     public void CreateReservationsForRow(List<CalendarDayColumnObject> dayObjects)
     {
+        DisableUnseenReservations();
+
         List<CalendarDayColumn> columns = reservationsCalendarManager.OrderedDayColumns;
 
         DateTime minDate = columns[0].ObjectDate.Date;
@@ -101,31 +104,36 @@ public class ReservationObjectManager : MonoBehaviour
             if(roomReservations.Exists(r => r.Period.Start.Date == dayObjects[i].ObjDate.Date))
             {
                 IReservation res = roomReservations.Find(r => r.Period.Start.Date == dayObjects[i].ObjDate.Date);
-
-                PointSize p = CalculatePositionSpan(true, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
-
-                roomReservations.Remove(res);
+                if(!pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == res.ID && r.ObjRoomID == focalRoom.ID))
+                {
+                    PointSize p = CalculatePositionSpan(true, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
+                    GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                    roomReservations.Remove(res);
+                }
             }
 
             else if(roomReservations.Exists(r => r.Period.End.Date == dayObjects[i].ObjDate.Date))
             {
                 IReservation res = roomReservations.Find(r => r.Period.End.Date == dayObjects[i].ObjDate.Date);
-
-                PointSize p = CalculatePositionSpan(false, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
-
-                roomReservations.Remove(res);
+                if(!pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == res.ID && r.ObjRoomID == focalRoom.ID))
+                {
+                    PointSize p = CalculatePositionSpan(false, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
+                    GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                    roomReservations.Remove(res);
+                }
             }
 
 
-            if(roomReservations.Exists(r => r.Period.Start.Date < minDate && r.Period.End > maxDate))
+            else if(roomReservations.Exists(r => r.Period.Start.Date < minDate && r.Period.End > maxDate))
             {
                 CalendarDayColumnObject firstDayObject = dayObjects.Find(d => d.DayRectTransform.parent.GetSiblingIndex() == 0);
                 IReservation res = roomReservations.Find(r => r.Period.Start.Date < minDate && r.Period.End > maxDate);
-                PointSize p = CalculatePositionSpan((int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, firstDayObject, res, reservationButtonAction);
-                roomReservations.Remove(res);
+                if(!pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == res.ID && r.ObjRoomID == focalRoom.ID))
+                {
+                    PointSize p = CalculatePositionSpan((int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
+                    GetFreeReservationObject().PlaceUpdateObject(p, firstDayObject, res, reservationButtonAction);
+                    roomReservations.Remove(res);
+                }
             }
         }
     }
@@ -217,7 +225,9 @@ public class ReservationObjectManager : MonoBehaviour
         PointSize output = new PointSize();
         output.size.x = (daySpan) * dayRect.rect.width;
         output.size.y = dayColumnObjectPrefabRect.rect.height;
-        output.minPos = (Vector2)dayRect.position;
+
+        output.minPos.x = dayRect.parent.localPosition.x;
+        output.minPos.y = dayRect.localPosition.y;
 
         output.pivot = isStart ? Vector2.zero : Vector2.right;
 
@@ -229,7 +239,10 @@ public class ReservationObjectManager : MonoBehaviour
         PointSize output = new PointSize();
         output.size.x = (daySpan) * firstRect.rect.width;
         output.size.y = dayColumnObjectPrefabRect.rect.height;
-        output.minPos = (Vector2)firstRect.position;
+
+
+        output.minPos.x = firstRect.parent.localPosition.x;
+        output.minPos.y = firstRect.localPosition.y;
 
         output.minPos.x -= differenceFromFirstDate * firstRect.rect.width;
 

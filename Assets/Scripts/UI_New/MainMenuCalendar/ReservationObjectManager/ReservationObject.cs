@@ -9,6 +9,7 @@ public class ReservationObject : MonoBehaviour
 {
 
     public IReservation ObjReservation => objReservation;
+    public string ObjRoomID => objRoomID;
     public RectTransform ObjRectTransform => objectRectTransform;
 
     [SerializeField]
@@ -25,7 +26,9 @@ public class ReservationObject : MonoBehaviour
     private CalendarDayColumnObject co;
 
     private IReservation objReservation;
-    UnityAction<IReservation> currentTapAction;
+    private string objRoomID;
+
+    private UnityAction<IReservation> currentTapAction;
     private bool doGuiPlace = false;
 
 
@@ -38,12 +41,13 @@ public class ReservationObject : MonoBehaviour
         co = c;
 
         gameObject.SetActive(true);
-        objectRectTransform.position = pointSize.minPos;
+        objectRectTransform.localPosition = pointSize.minPos;
         objectRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,pointSize.size.x);
         objectRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,pointSize.size.y);
         objectRectTransform.pivot = pointSize.pivot;
 
         objReservation = reservation;
+        objRoomID = c.ObjectRoom.ID;
 
         clientNameText.text = reservation.CustomerName;
 

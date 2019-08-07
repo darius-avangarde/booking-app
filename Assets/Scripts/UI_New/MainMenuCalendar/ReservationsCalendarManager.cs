@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class ReservationsCalendarManager : MonoBehaviour
@@ -46,6 +45,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     [Space]
     [SerializeField]
     private ScrollRect dayColumnScrollrect;
+    [SerializeField]
+    private RectTransform reservationsContent;
     [SerializeField]
     private ScrollviewHandler scrollviewHandler;
     [SerializeField]
@@ -240,6 +241,7 @@ public class ReservationsCalendarManager : MonoBehaviour
 
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
+        reservationsContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
         reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
