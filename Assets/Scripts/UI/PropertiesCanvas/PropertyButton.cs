@@ -23,6 +23,8 @@ public class PropertyButton : MonoBehaviour
     private Graphic propertyImage = null;
     [SerializeField]
     private Graphic propertyBackground = null;
+    [SerializeField]
+    private Shadow shadowComponent = null;
 
     private IProperty currentProperty;
 
@@ -36,6 +38,12 @@ public class PropertyButton : MonoBehaviour
         propertyButtonItem.onClick.RemoveAllListeners();
     }
 
+    public void InitializeTheme(ThemeManager themeManager)
+    {
+        themeManager.AddItems(propertyNameText, propertyImage, propertyBackground);
+        themeManager.AddShadow(shadowComponent);
+    }
+
     /// <summary>
     /// set the current property
     /// set property name
@@ -44,8 +52,9 @@ public class PropertyButton : MonoBehaviour
     /// <param name="property">selected property</param>
     /// <param name="PropertyRoomCallback">click callback for properties without rooms</param>
     /// <param name="PropertyCallback">callback for properties with rooms</param>
-    public void Initialize(IProperty property, Action<IProperty> PropertyCallback, ThemeManager themeManager)
+    public void Initialize(IProperty property, Action<IProperty> PropertyCallback)
     {
+        propertyButtonItem.onClick.RemoveAllListeners();
         currentProperty = property;
         propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
         for (int i = 0; i < propertyIcons.Length; i++)
@@ -56,10 +65,6 @@ public class PropertyButton : MonoBehaviour
             }
         }
         propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
-
-        themeManager.SetColor(propertyNameText);
-        themeManager.SetColor(propertyImage);
-        themeManager.SetColor(propertyBackground);
     }
 
     private void SetText()

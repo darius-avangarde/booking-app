@@ -103,6 +103,12 @@ public class ThemeManager : MonoBehaviour
         }
     }
 
+    public void AddShadow(Shadow myShadow)
+    {
+        ShadowList.Add(myShadow);
+        SetShadow(myShadow);
+    }
+
     public void SetColor(Graphic items)
     {
         if (items.tag == "ItemBackground" && items != null)

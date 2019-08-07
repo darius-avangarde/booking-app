@@ -27,15 +27,13 @@ public class PropertyRoomScreen : MonoBehaviour
     [SerializeField]
     private RectTransform roomsContentScrollView = null;
     [SerializeField]
-    private Shadow roomItemPrefab = null;
-    [SerializeField]
-    private GameObject roomFloorNumberPrefab = null;
+    private GameObject roomItemPrefab = null;
     [SerializeField]
     private Button editButton = null;
     [SerializeField]
     private Button backButton = null;
 
-    private List<GameObject> roomButtons = new List<GameObject>();
+    private List<RoomButton> roomButtonsList = new List<RoomButton>();
     private IProperty currentProperty;
     private float scrollPosition = 1;
 
@@ -43,6 +41,14 @@ public class PropertyRoomScreen : MonoBehaviour
     {
         backButton.onClick.AddListener(() => navigator.GoBack());
         editButton.onClick.AddListener(() => EditProperty());
+    }
+
+    private void Start()
+    {
+        for (int i = 0; i < 50; i++)
+        {
+            InstantiateRoomButtonObject();
+        }
     }
 
     /// <summary>
@@ -71,41 +77,52 @@ public class PropertyRoomScreen : MonoBehaviour
     public void Initialize()
     {
         //scrollRectComponent.ResetAll();
-        for (int i = 0; i < roomButtons.Count; i++)
-        {
-            DestroyImmediate(roomButtons[i]);
-        }
-        roomButtons = new List<GameObject>();
         if (currentProperty != null)
         {
             propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
             List<IRoom> currentRooms = currentProperty.Rooms.OrderBy(r => r.RoomNumber).ThenBy(r => r.Name).ToList();
+            int neededObjects = currentRooms.Count + currentProperty.Floors;
+            if (neededObjects != roomButtonsList.Count)
+            {
+                //Create New Objects as needed
+                for (int i = roomButtonsList.Count - 1; i < neededObjects; i++)
+                {
+                    InstantiateRoomButtonObject();
+                }
+
+                //Disable unused objects
+                for (int i = roomButtonsList.Count - 1; i > neededObjects; i--)
+                {
+                    roomButtonsList[i].gameObject.SetActive(false);
+                }
+            }
+
             int currentFloor = 0;
             int lastFloor = -1;
             int maxFloors = currentProperty.Floors;
-            for (int i = 0; i < currentRooms.Count; i++)
+            int currentRoomsCounter = 0;
+            for (int i = 0; i <= neededObjects; i++)
             {
-                currentFloor = currentRooms[i].Floor;
+                currentFloor = currentRooms[currentRoomsCounter].Floor;
                 if (lastFloor != currentFloor )
                 {
-                    GameObject floorNumber = Instantiate(roomFloorNumberPrefab, roomsContentScrollView);
+                    RoomButton floorNumber = roomButtonsList[i];
+                    floorNumber.gameObject.SetActive(true);
                     if (currentFloor != 0)
                     {
-                        floorNumber.GetComponent<Text>().text = $"{LocalizedText.Instance.FloorType[1]} {currentFloor}";
+                        floorNumber.InitializeFloor($"{LocalizedText.Instance.FloorType[1]} {currentFloor}");
                     }
                     else
                     {
-                        floorNumber.GetComponent<Text>().text = $"{LocalizedText.Instance.FloorType[1]} P";
+                        floorNumber.InitializeFloor($"{LocalizedText.Instance.FloorType[1]} P");
                     }
-                    themeManager.SetColor(floorNumber.GetComponent<Graphic>());
-                    roomButtons.Add(floorNumber);
                     lastFloor = currentFloor;
+                    continue;
                 }
-                themeManager.SetShadow(roomItemPrefab);
-                GameObject roomButton = Instantiate(roomItemPrefab.gameObject, roomsContentScrollView);
-                RoomButton currentRoom = roomButton.GetComponent<RoomButton>();
-                currentRoom.Initialize(currentRooms[i], OpenRoomAdminScreen, themeManager);
-                roomButtons.Add(roomButton);
+                RoomButton currentRoom = roomButtonsList[i];
+                currentRoom.gameObject.SetActive(true);
+                currentRoom.InitializeRoom(currentRooms[currentRoomsCounter], OpenRoomAdminScreen);
+                currentRoomsCounter++;
             }
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(roomsContentScrollView);
@@ -115,6 +132,15 @@ public class PropertyRoomScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
+    }
+
+    public void InstantiateRoomButtonObject()
+    {
+        GameObject roomButtonObject = Instantiate(roomItemPrefab.gameObject, roomsContentScrollView);
+        roomButtonObject.SetActive(false);
+        RoomButton roomButton = roomButtonObject.GetComponent<RoomButton>();
+        roomButton.InitializeTheme(themeManager);
+        roomButtonsList.Add(roomButton);
     }
 
     /// <summary>

@@ -43,11 +43,7 @@ public class PropertiesScreen : MonoBehaviour
     {
         for (int i = 0; i < 20; i++)
         {
-            //themeManager.SetShadow(propertyItemPrefab);
-            GameObject propertyButtonObject = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
-            propertyButtonObject.SetActive(false);
-            PropertyButton propertyButton = propertyButtonObject.GetComponent<PropertyButton>();
-            propertyButtonList.Add(propertyButton);
+            InstantiatePropertyButton();
         }
     }
 
@@ -85,11 +81,11 @@ public class PropertiesScreen : MonoBehaviour
             PropertyButton propertyButton = propertyButtonList[i];
             if (properties[i].HasRooms)
             {
-                propertyButton.Initialize(properties[i], OpenPropertyRoomScreen, themeManager);
+                propertyButton.Initialize(properties[i], OpenPropertyRoomScreen);
             }
             else
             {
-                propertyButton.Initialize(properties[i], OpenPropertyAdminScreen, themeManager);
+                propertyButton.Initialize(properties[i], OpenPropertyAdminScreen);
             }
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(propertiesContainerContent);
@@ -103,10 +99,10 @@ public class PropertiesScreen : MonoBehaviour
 
     private void InstantiatePropertyButton()
     {
-        //themeManager.SetShadow(propertyItemPrefab);
         GameObject propertyButtonObject = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);
         propertyButtonObject.SetActive(false);
         PropertyButton propertyButton = propertyButtonObject.GetComponent<PropertyButton>();
+        propertyButton.InitializeTheme(themeManager);
         propertyButtonList.Add(propertyButton);
     }
 
