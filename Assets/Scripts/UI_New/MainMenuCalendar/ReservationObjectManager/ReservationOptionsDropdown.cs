@@ -70,7 +70,7 @@ public class ReservationOptionsDropdown : MonoBehaviour
     {
         CloseReservationMenu();
         confirmationDialogOptions.ConfirmCallback = DeleteReservationCallback;
-        confirmationDialogOptions.Message = $"Sunteți sigur că vreți să ștergeți rezervarea pentru {currentReservation.CustomerName}";
+        confirmationDialogOptions.Message = $"{LocalizedText.Instance.ReservationModified[2]} {currentReservation.CustomerName}";
         modalConfirmation.Show(confirmationDialogOptions);
     }
 
@@ -79,6 +79,6 @@ public class ReservationOptionsDropdown : MonoBehaviour
         notificatoinManager.DeleteNotification(currentReservation);
         ReservationDataManager.DeleteReservation(currentReservation.ID);
         calendarManager.JumpToDate(DateTime.Today.Date);
-        inputManager.Message("Rezervarea a fost ștearsă cu succes");
+        inputManager.Message(LocalizedText.Instance.ReservationModified[2]);
     }
 }

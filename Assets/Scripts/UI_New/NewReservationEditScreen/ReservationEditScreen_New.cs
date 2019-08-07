@@ -135,7 +135,7 @@ public class ReservationEditScreen_New : MonoBehaviour
                 );
                 navigator.GoBack();
                 confirmationCallback?.Invoke(currentReservation);
-                inputManager.Message(Constants.RESERVATION_MODIFIED);
+                inputManager.Message(LocalizedText.Instance.ReservationModified[0]);
             };
             confirmationDialog.Show(editConfirmation);
 
@@ -152,7 +152,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
             navigator.GoBack();
             confirmationCallback?.Invoke(newReservation);
-            inputManager.Message(Constants.RESERVATION_SAVED);
+            inputManager.Message(LocalizedText.Instance.ReservationModified[1]);
 
             notificationManager.RegisterNotification(newReservation, LocalizedText.Instance.PreAlertDictFunction.ElementAt(preAlertDropdown.value).Key);
         }
@@ -243,7 +243,7 @@ public class ReservationEditScreen_New : MonoBehaviour
         List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
         List<Dropdown.OptionData> optionList = new List<Dropdown.OptionData>();
         propertyOptions = new List<IProperty>();
-        optionList.Add(new Dropdown.OptionData(Constants.CHOOSE));
+        optionList.Add(new Dropdown.OptionData(LocalizedText.Instance.ErrorStateText[0]));
         propertyOptions.Add(null);
 
         int selected = 0;
@@ -299,44 +299,44 @@ public class ReservationEditScreen_New : MonoBehaviour
             }
             else
             {
-                SetErrorAnState(Constants.ERR_CLIENT);
+                SetErrorAnState(LocalizedText.Instance.ErrorStateText[1]);
                 return false;
             }
         }
 
         if(resStartDate == null)
         {
-            SetErrorAnState(Constants.ERR_DATES_START);
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[3]);
             return false;
         }
 
         if(resEndDate == null)
         {
-            SetErrorAnState(Constants.ERR_DATES_END);
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[2]);
             return false;
         }
 
         if(resProperty == null)
         {
-            SetErrorAnState(Constants.ERR_CLIENT);
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[1]);
             return false;
         }
 
         if(resRooms.Count == 0)
         {
-            SetErrorAnState(Constants.ERR_ROOM);
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[4]);
             return false;
         }
 
         if(startDateText == endDateText)
         {
-            SetErrorAnState(Constants.ERR_DATES);
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[5]);
             return false;
         }
 
         if (OverlapsOtherReservation(resStartDate.Value, resEndDate.Value))
         {
-            SetErrorAnState(Constants.ERR_PERIOD);
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[6]);
             return false;
         }
 
