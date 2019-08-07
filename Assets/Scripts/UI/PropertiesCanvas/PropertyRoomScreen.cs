@@ -91,7 +91,7 @@ public class PropertyRoomScreen : MonoBehaviour
                 }
 
                 //Disable unused objects
-                for (int i = roomButtonsList.Count - 1; i > neededObjects; i--)
+                for (int i = roomButtonsList.Count - 1; i >= neededObjects; i--)
                 {
                     roomButtonsList[i].gameObject.SetActive(false);
                 }

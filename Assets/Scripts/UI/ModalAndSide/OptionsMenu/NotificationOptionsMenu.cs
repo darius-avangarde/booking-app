@@ -13,7 +13,7 @@ public class NotificationOptionsMenu : MonoBehaviour
     [SerializeField]
     private List<Sprite> dropdownIcons;
 
-    private enum DropdownOptions { call_icon, msg, email}
+    private enum DropdownOptions { call_icon, msg, email }
     private string[] menuOptions = { "Apel", "Mesaj", "E-Mail" };
 
     private Dictionary<string, Sprite> optionsPictures = new Dictionary<string, Sprite>();
@@ -22,6 +22,12 @@ public class NotificationOptionsMenu : MonoBehaviour
     private IReservation currentReservation;
 
     private void Start()
+    {
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
+        SetDropdownOptions();
+    }
+
+    private void SetDropdownOptions()
     {
         for (int i = 0; i <= (int)DropdownOptions.email; i++)
         {
@@ -32,7 +38,6 @@ public class NotificationOptionsMenu : MonoBehaviour
             optionsPictures.Add(dropdownIcons[i].name.ToLower(), dropdownIcons[i]);
         }
         Initialize();
-        LocalizedText.Instance.OnLanguageChanged.AddListener(() => Initialize());
     }
 
     private void Initialize()
