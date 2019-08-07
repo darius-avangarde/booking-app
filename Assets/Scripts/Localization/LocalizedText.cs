@@ -189,9 +189,12 @@ public class LocalizedText : MonoBehaviour
         get
         {
             Dictionary<int, string> result = new Dictionary<int, string>();
-            for (int i = 0; i < Notifications.Length; i++)
+            result.Add(1,Notifications[0]);
+            result.Add(2, Notifications[1]);
+            result.Add(4, Notifications[2]);
+            for (int i = 1; i <= 7; i++)
             {
-                result.Add(i, Notifications[i]);
+                result.Add(i*24, Notifications[i +2]);
             }
             return result;
         }
