@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class SetRoomName : MonoBehaviour
 {
     [SerializeField]
+    private RoomAdminScreen roomAdminScreen = null;
+    [SerializeField]
     private InputField roomNameInputField = null;
     [SerializeField]
     private InputField roomPriceInputField = null;
@@ -38,7 +40,17 @@ public class SetRoomName : MonoBehaviour
 
     public void OnRoomNameValueChanged(string value)
     {
-        roomNameCache = string.IsNullOrEmpty(value) ? Constants.NEW_ROOM : value;
+        if (string.IsNullOrEmpty(value))
+        {
+            roomAdminScreen.CanSave = false;
+            roomNameCache = Constants.NEW_ROOM;
+        }
+        else
+        {
+            roomAdminScreen.CanSave = true;
+            roomNameCache = value;
+        }
+        
     }
 
     public void OnRoomPriceValueChanged(string value)

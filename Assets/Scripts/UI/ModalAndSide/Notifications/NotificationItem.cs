@@ -56,17 +56,27 @@ public class NotificationItem : MonoBehaviour
         startDate.text = $"{currentReservation.Period.Start.Day}.{currentReservation.Period.Start.Month}.{currentReservation.Period.Start.Year}";
         endDate.text = $"{currentReservation.Period.End.Day}.{currentReservation.Period.End.Month}.{currentReservation.Period.End.Year}";
         currentProperty = PropertyDataManager.GetProperty(currentReservation.PropertyID);
-        currentRoom = currentProperty.GetRoom(currentReservation.RoomID);
-        propertyName.text = currentProperty.Name;
-        roomName.text = currentRoom.Name;
-        addedDate.text = $" { LocalizedText.Instance.AddedDateText} {currentReservation.CreatedDateTime.Day}.{currentReservation.CreatedDateTime.Month}.{currentReservation.CreatedDateTime.Year}, {currentReservation.CreatedDateTime.Hour}:{currentReservation.CreatedDateTime.Minute}";
-        for (int i = 0; i < roomTypeIcons.Length; i++)
+        if(reservation.RoomIDs.Count > 1)
         {
-            if (roomTypeIcons[i].name.ToLower() == currentRoom.RoomType.ToString().ToLower())
+            currentRoom = null;
+            roomName.text = $"{reservation.RoomIDs.Count} {LocalizedText.Instance.RoomNumbers}";
+            roomTypeImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            currentRoom = currentProperty.GetRoom(currentReservation.RoomID);
+            roomName.text = $"{LocalizedText.Instance.RoomItem} {currentRoom.Name}";
+            for (int i = 0; i < roomTypeIcons.Length; i++)
             {
-                roomTypeImage.sprite = roomTypeIcons[i];
+                if (roomTypeIcons[i].name.ToLower() == currentRoom.RoomType.ToString().ToLower())
+                {
+                    roomTypeImage.sprite = roomTypeIcons[i];
+                }
             }
         }
+        propertyName.text = currentProperty.Name;
+        addedDate.text = $" { LocalizedText.Instance.AddedDateText} {currentReservation.CreatedDateTime.Day}.{currentReservation.CreatedDateTime.Month}.{currentReservation.CreatedDateTime.Year}, {currentReservation.CreatedDateTime.Hour}:{currentReservation.CreatedDateTime.Minute}";
+        
         menuButton.onClick.AddListener(() => setReservation(reservation));
         newNotificationMarker.SetActive(newNotification);
 

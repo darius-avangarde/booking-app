@@ -90,7 +90,6 @@ public class CreateMultipleRooms : MonoBehaviour
 
     private void ChangeRooms()
     {
-        Debug.Log(multipleFloorsNumber);
         int previousFloors = propertyAdminScreen.CurrentProperty.Floors;
         propertyAdminScreen.CurrentProperty.Floors = multipleFloorsNumber;
         propertyAdminScreen.CurrentProperty.FloorRooms = multipleRoomsNumber;
