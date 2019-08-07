@@ -90,10 +90,21 @@ public class CreateMultipleRooms : MonoBehaviour
 
     private void ChangeRooms()
     {
+        Debug.Log(multipleFloorsNumber);
+        int previousFloors = propertyAdminScreen.CurrentProperty.Floors;
         propertyAdminScreen.CurrentProperty.Floors = multipleFloorsNumber;
         propertyAdminScreen.CurrentProperty.FloorRooms = multipleRoomsNumber;
 
         roomsList = new List<IRoom>();
+
+        if (previousFloors > multipleFloorsNumber)
+        {
+            for (int i = previousFloors; i > multipleFloorsNumber; i--)
+            {
+                List<IRoom> roomsToDelete = propertyAdminScreen.CurrentProperty.Rooms.Where(r => r.Floor == i).ToList();
+                DeleteFloorRooms(roomsToDelete);
+            }
+        }
 
         for (int i = 0; i <= multipleFloorsNumber; i++)
         {
@@ -130,7 +141,12 @@ public class CreateMultipleRooms : MonoBehaviour
         }
         else
         {
-            for (int j = previousRooms[currentFloor] + 1; j <= multipleRoomsNumber[currentFloor]; j++)
+            int previousFloorRooms = 1;
+            if (previousRooms.Length - 1 >= currentFloor)
+            {
+                previousFloorRooms = previousRooms[currentFloor] + 1;
+            }
+            for (int j = previousFloorRooms; j <= multipleRoomsNumber[currentFloor]; j++)
             {
                 IRoom newRoom = propertyAdminScreen.CurrentProperty.AddRoom();
                 if (j < 10)
@@ -148,7 +164,7 @@ public class CreateMultipleRooms : MonoBehaviour
                 roomsList.Add(newRoom);
             }
 
-            for (int j = previousRooms[currentFloor] + 1; j > multipleRoomsNumber[currentFloor]; j--)
+            for (int j = previousFloorRooms; j > multipleRoomsNumber[currentFloor]; j--)
             {
                 int roomNumber = 0;
                 if (j < 10)
@@ -160,11 +176,16 @@ public class CreateMultipleRooms : MonoBehaviour
                     roomNumber = int.Parse($"{currentFloor}{j}");
                 }
                 List<IRoom> roomsToDelete = propertyAdminScreen.CurrentProperty.Rooms.Where(r => r.Floor == currentFloor && r.RoomNumber == roomNumber).ToList();
-                for (int i = 0; i < roomsToDelete.Count; i++)
-                {
-                    propertyAdminScreen.CurrentProperty.DeleteRoom(roomsToDelete[i].ID);
-                }
+                DeleteFloorRooms(roomsToDelete);
             }
+        }
+    }
+
+    private void DeleteFloorRooms(List<IRoom> roomsToDelete)
+    {
+        for (int i = 0; i < roomsToDelete.Count; i++)
+        {
+            propertyAdminScreen.CurrentProperty.DeleteRoom(roomsToDelete[i].ID);
         }
     }
 }
