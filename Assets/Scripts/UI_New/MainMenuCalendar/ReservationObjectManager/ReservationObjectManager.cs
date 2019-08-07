@@ -36,26 +36,31 @@ public class ReservationObjectManager : MonoBehaviour
     //TODO: Find better way to disable reservation objects based on distance from screen and keep reservation objects to prevent reinstantiations
     public void DisableUnseenReservations()
     {
-        foreach (ReservationObject resObj in pool)
+        for (int i = 0; i < pool.Count; i++)
         {
-            if(resObj.ObjRectTransform.position.x + resObj.ObjRectTransform.rect.xMax < -Screen.width * 2 || resObj.ObjRectTransform.position.x + resObj.ObjRectTransform.rect.xMin > Screen.width * 3)
+            if(pool[i].ObjRectTransform.position.x + pool[i].ObjRectTransform.rect.xMax < -Screen.width * 2 || pool[i].ObjRectTransform.position.x + pool[i].ObjRectTransform.rect.xMin > Screen.width * 3)
             {
-                placedReservations.Remove(resObj.ObjReservation);
-                resObj.Disable();
+                placedReservations.Remove(pool[i].ObjReservation);
+                pool[i].Disable();
             }
 
-            else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y + 100 > CalendarRoomColumn.DisableMargin * 2 + _treshold)
+            else if(pool[i].ObjRectTransform.position.y + pool[i].ObjRectTransform.rect.yMax < -Screen.height || pool[i].ObjRectTransform.position.y + pool[i].ObjRectTransform.rect.yMin > Screen.height * 2)
             {
-                placedReservations.Remove(resObj.ObjReservation);
-                resObj.Disable();
+                placedReservations.Remove(pool[i].ObjReservation);
+                pool[i].Disable();
             }
+            // else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y + 100 > CalendarRoomColumn.DisableMargin * 2 + _treshold)
+            // {
+            //     placedReservations.Remove(resObj.ObjReservation);
+            //     resObj.Disable();
+            // }
 
-            //pulling scrolrect up
-            else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y - 100 < -CalendarRoomColumn.DisableMargin * 2)
-            {
-                placedReservations.Remove(resObj.ObjReservation);
-                resObj.Disable();
-            }
+            // //pulling scrolrect up
+            // else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y - 100 < -CalendarRoomColumn.DisableMargin * 2)
+            // {
+            //     placedReservations.Remove(resObj.ObjReservation);
+            //     resObj.Disable();
+            // }
         }
     }
 
