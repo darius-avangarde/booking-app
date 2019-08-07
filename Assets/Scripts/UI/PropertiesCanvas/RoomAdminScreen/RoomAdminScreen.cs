@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class RoomAdminScreen : MonoBehaviour
 {
+    public bool CanSave { get; set; } = true;
     [SerializeField]
     private Navigator navigator = null;
     [SerializeField]
@@ -94,18 +95,25 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void SaveChanges()
     {
-        currentRoom.Name = setRoomName.GetCurrentName();
-        if (!currentProperty.HasRooms)
+        if (CanSave)
         {
-            currentProperty.Name = setRoomName.GetCurrentName();
+            currentRoom.Name = setRoomName.GetCurrentName();
+            if (!currentProperty.HasRooms)
+            {
+                currentProperty.Name = setRoomName.GetCurrentName();
+            }
+            currentRoom.RoomType = setRoomTypeDropdown.CurrentRoomType;
+            Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
+            currentRoom.SingleBeds = bedInfo.x;
+            currentRoom.DoubleBeds = bedInfo.y;
+            currentProperty.SaveRoomData();
+            navigator.GoBack();
+            returnCallback?.Invoke();
         }
-        currentRoom.RoomType = setRoomTypeDropdown.CurrentRoomType;
-        Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
-        currentRoom.SingleBeds = bedInfo.x;
-        currentRoom.DoubleBeds = bedInfo.y;
-        currentProperty.SaveRoomData();
-        navigator.GoBack();
-        returnCallback?.Invoke();
+        else
+        {
+            errorMessage.text = LocalizedText.Instance.PropertyErrorRoom;
+        }
     }
 
     public void DeleteRoom()
