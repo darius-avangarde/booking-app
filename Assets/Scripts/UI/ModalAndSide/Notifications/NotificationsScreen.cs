@@ -67,20 +67,27 @@ public class NotificationsScreen : MonoBehaviour
     {
         noNotificationsObject.SetActive(false);
         settingsManager.ReadData();
-        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + LocalizedText.Instance.PreAlertDictFunction.ElementAt(NotificationDataManager.GetNotification(r.NotificationID).PreAlertTime).Key)).OrderBy(r => r.Period.Start).ToList();
-        if (currentReservations != null)
+
+        List<INotification> notificationsList = NotificationDataManager.GetNotifications().Where(n => n.PreAlertTime != settingsManager.DataElements.settings.PreAlertTime).ToList();
+        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + LocalizedText.Instance.PreAlertDictFunction.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).ToList();
+
+        for (int i = 0; i < notificationsList.Count; i++)
         {
-            foreach (IReservation reservation in currentReservations)
+            List<IReservation> notificationReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notificationsList[i].NotificationID).ToList();
+            currentReservations.AddRange(notificationReservations);
+        }
+
+        currentReservations = currentReservations.OrderBy(r => r.Period.Start.Date).ToList();
+        for (int i = 0; i < currentReservations.Count; i++)
+        {
+            if (newReservations.Any(r => r.ID == currentReservations[i].ID))
             {
-                if (newReservations.Any(r => r.ID == reservation.ID))
-                {
-                    InitializeNotification(reservation, true);
-                    NotificationDataManager.GetNotification(reservation.NotificationID).UnRead = false;
-                }
-                else
-                {
-                    InitializeNotification(reservation, false);
-                }
+                InitializeNotification(currentReservations[i], true);
+                NotificationDataManager.GetNotification(currentReservations[i].NotificationID).UnRead = false;
+            }
+            else
+            {
+                InitializeNotification(currentReservations[i], false);
             }
         }
         newReservations = new List<IReservation>();
@@ -104,7 +111,7 @@ public class NotificationsScreen : MonoBehaviour
         {
             NotificationItem notificationItem = Instantiate(notificationItemPrefab, scrollViewContent).GetComponent<NotificationItem>();
             notificationItem.gameObject.SetActive(true);
-            notificationItem.Initialize(newNotification, themeManager,reservation, OpenItemMenu);
+            notificationItem.Initialize(newNotification, themeManager, reservation, OpenItemMenu);
             activeNotificationItems.Add(notificationItem);
         }
     }
