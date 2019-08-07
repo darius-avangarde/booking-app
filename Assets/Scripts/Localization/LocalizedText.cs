@@ -97,6 +97,22 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "ReservationEditHeaderText");
         }
     }
+
+
+    public string[] ErrorStateText
+    {
+        get
+        {
+            return SetOptionsValues(option, "ErrorStateText");
+        }
+    }
+    public string[] ReservationModified
+    {
+        get
+        {
+            return SetOptionsValues(option, "ReservationModified");
+        }
+    }
     public string[] PropertyHeader
     {
         get
@@ -189,12 +205,12 @@ public class LocalizedText : MonoBehaviour
         get
         {
             Dictionary<int, string> result = new Dictionary<int, string>();
-            result.Add(1,Notifications[0]);
+            result.Add(1, Notifications[0]);
             result.Add(2, Notifications[1]);
             result.Add(4, Notifications[2]);
             for (int i = 1; i <= 7; i++)
             {
-                result.Add(i*24, Notifications[i +2]);
+                result.Add(i * 24, Notifications[i + 2]);
             }
             return result;
         }
@@ -379,7 +395,7 @@ public class LocalizedText : MonoBehaviour
     {
         Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == lang).First().Texts;
         string result = string.Empty;
-        foreach (KeyValuePair<string,string> item in language)
+        foreach (KeyValuePair<string, string> item in language)
         {
             if (item.Key == myKey)
             {

@@ -33,4 +33,9 @@ public class MenuItem : MonoBehaviour
             itemButton.onClick.AddListener(() => Callback());
         }
     }
+
+    public void UpdateText(string label)
+    {
+        itemLabel.text = label;
+    }
 }

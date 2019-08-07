@@ -17,6 +17,8 @@ public class OptionsMenuDropdown : MonoBehaviour
     [SerializeField]
     private Button backgroundButton = null;
 
+    private List<MenuItem> optionsList = new List<MenuItem>();
+
     private void Start()
     {
         backgroundButton.onClick.AddListener(() => CloseMenu());
@@ -33,7 +35,14 @@ public class OptionsMenuDropdown : MonoBehaviour
             RectTransform itemRT = item.GetComponent<RectTransform>();
             itemRT.sizeDelta = new Vector2(itemRT.sizeDelta.x, height);
         }
-        item.GetComponent<MenuItem>().Initialize(title, icon, Callback);
+        MenuItem menuItem = item.GetComponent<MenuItem>();
+        menuItem.Initialize(title, icon, Callback);
+        optionsList.Add(menuItem);
+    }
+
+    public List<MenuItem> GetOptions()
+    {
+        return optionsList;
     }
 
     public void ShowMenu()
