@@ -68,6 +68,9 @@ public class PropertyButton : MonoBehaviour
 
     private void SetText()
     {
-        propertyName.text = $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
+        if (currentProperty != null)
+        {
+            propertyName.text = $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
+        }
     }
 }

@@ -28,8 +28,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
     {
         SetDictionaries();
         SetDropdownOptions();
-        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDictionaries());
-        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdateRoomTypeDropdown());
     }
 
     /// <summary>
@@ -39,7 +38,6 @@ public class SetRoomTypeDropdown : MonoBehaviour
     /// </summary>
     private void SetDictionaries()
     {
-        roomIcons.Clear();
         for (int i = 0; i < roomTypeIcons.Length; i++)
         {
             roomIcons.Add(roomTypeIcons[i].name.ToLower(), roomTypeIcons[i]);
@@ -48,6 +46,15 @@ public class SetRoomTypeDropdown : MonoBehaviour
         {
             roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];//roomTypeText[i];
         }
+    }
+
+    private void UpdateRoomTypeDropdown()
+    {
+        for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
+        {
+            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];//roomTypeText[i];
+        }
+        SetDropdownOptions();
     }
 
     /// <summary>

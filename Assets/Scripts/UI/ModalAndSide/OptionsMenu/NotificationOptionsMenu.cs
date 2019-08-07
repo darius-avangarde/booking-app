@@ -24,13 +24,11 @@ public class NotificationOptionsMenu : MonoBehaviour
     private void Start()
     {
         SetDropdownOptions();
-        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdateDropdownOptions());
     }
 
     private void SetDropdownOptions()
     {
-        optionsDictionary.Clear();
-        optionsPictures.Clear();
         for (int i = 0; i <= (int)DropdownOptions.email; i++)
         {
             optionsDictionary.Add(LocalizedText.Instance.NotificationDropdown[i], (DropdownOptions)i);
@@ -40,6 +38,15 @@ public class NotificationOptionsMenu : MonoBehaviour
             optionsPictures.Add(dropdownIcons[i].name.ToLower(), dropdownIcons[i]);
         }
         Initialize();
+    }
+
+    private void UpdateDropdownOptions()
+    {
+        List<MenuItem> dropdownOptions = notificationItemMenu.GetOptions();
+        for (int i = 0; i < LocalizedText.Instance.NotificationDropdown.Length; i++)
+        {
+            dropdownOptions[i].UpdateText(LocalizedText.Instance.NotificationDropdown[i]);
+        }
     }
 
     private void Initialize()

@@ -30,7 +30,7 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     private void Start()
     {
         SetDictionaries();
-        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDictionaries());
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdatePropertyTypeDictionary());
     }
 
     public void SetPropertyType(int value)
@@ -45,7 +45,6 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     /// </summary>
     private void SetDictionaries()
     {
-        propertyIconsDictionary.Clear();
         for (int i = 0; i < propertyTypeIcons.Length; i++)
         {
             propertyIconsDictionary.Add(propertyTypeIcons[i].name.ToLower(), propertyTypeIcons[i]);
@@ -53,6 +52,14 @@ public class SetPropertyTypeDropdown : MonoBehaviour
         for (int i = 0; i <= (int)PropertyDataManager.PropertyType.cabin; i++)
         {
             propertyTypeName[(PropertyDataManager.PropertyType)i] = LocalizedText.Instance.PropertyType[i];//propertyTypeText[i];
+        }
+    }
+
+    private void UpdatePropertyTypeDictionary()
+    {
+        for (int i = 0; i <= (int)PropertyDataManager.PropertyType.cabin; i++)
+        {
+            propertyTypeName[(PropertyDataManager.PropertyType)i] = LocalizedText.Instance.PropertyType[i];
         }
     }
 
