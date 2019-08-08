@@ -99,19 +99,19 @@ public class ThemeManager : MonoBehaviour
     {
         foreach (Graphic myObject in myObjects)
         {
-            if (myObject.tag == "ItemBackground" && myObject != null)
+            if (myObject.CompareTag("ItemBackground") && myObject != null)
             {
-                ItemList.Add(myObject); 
+                ItemList.Add(myObject);
             }
-            if (myObject.tag == "TextIcons" && myObject != null)
+            if (myObject.CompareTag("TextIcons") && myObject != null)
             {
                 TextList.Add(myObject);
             }
-            if (myObject.tag == "Separator" && myObject != null)
+            if (myObject.CompareTag("Separator") && myObject != null)
             {
                 SeparatorList.Add(myObject);
             }
-            if (myObject.tag == "Background" && myObject != null)
+            if (myObject.CompareTag("Background") && myObject != null)
             {
                 BackgroundList.Add(myObject);
             }
@@ -127,19 +127,19 @@ public class ThemeManager : MonoBehaviour
 
     public void SetColor(Graphic items)
     {
-        if (items.tag == "ItemBackground" && items != null)
+        if (items.CompareTag("ItemBackground") && items != null)
         {
             SetItemColor(dataColor.ItemDark, dataColor.ItemLight, items);
         }
-        if (items.tag == "TextIcons" && items != null)
+        if (items.CompareTag("TextIcons") && items != null)
         {
             SetItemColor(dataColor.textDark, dataColor.textLight, items);
         }
-        if (items.tag == "Separator" && items != null)
+        if (items.CompareTag("Separator") && items != null)
         {
             SetItemColor(dataColor.separatorDark, dataColor.separatorLight, items);
         }
-        if (items.tag == "Background" && items != null)
+        if (items.CompareTag("Background") && items != null)
         {
             SetItemColor(dataColor.darkBackground, dataColor.lightBackground, items);
         }
@@ -214,19 +214,19 @@ public class ThemeManager : MonoBehaviour
             elements = parents[i].GetComponentsInChildren<Graphic>(true);
             foreach (Graphic elem in elements)
             {
-                if (elem.gameObject.tag == "Background")
+                if (elem.gameObject.CompareTag("Background"))
                 {
                     BackgroundList.Add(elem);
                 }
-                if (elem.gameObject.tag == "TextIcons")
+                if (elem.gameObject.CompareTag("TextIcons"))
                 {
                     TextList.Add(elem);
                 }
-                if (elem.gameObject.tag == "Separator")
+                if (elem.gameObject.CompareTag("Separator"))
                 {
                     SeparatorList.Add(elem);
                 }
-                if (elem.gameObject.tag == "ItemBackground")
+                if (elem.gameObject.CompareTag("ItemBackground"))
                 {
                     ItemList.Add(elem);
                 }
