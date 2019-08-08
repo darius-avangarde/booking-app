@@ -24,6 +24,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationOptionsDropdown reservationOptions;
     [SerializeField]
     private RoomAdminScreen roomEditScreen;
+    [SerializeField]
+    private PropertyAdminScreen propertyEditScreen;
 
     [SerializeField]
     private ReservationEditScreen_New reservationEditScreen;
@@ -83,7 +85,7 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private void Start()
     {
-        roomColumnObjects = roomColumn.InitializeRoomColumn((r) => roomEditScreen.OpenRoomAdminScreen(r, () => SelectProperty(currentProperty)));
+        roomColumnObjects = roomColumn.InitializeRoomColumn(EditRoomFromColumn);
         propertyDropdown.OnSelectProperty = SelectProperty;
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
         CreateDayItems();
@@ -326,9 +328,12 @@ public class ReservationsCalendarManager : MonoBehaviour
             ShowNoFilterMatchText("Nu aveti nici o proprietate");
     }
 
-    private void NewReservationFromRoomColumn(IRoom room)
+    private void EditRoomFromColumn(IRoom room)
     {
-        reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room);
+        if(currentProperty.HasRooms)
+            roomEditScreen.OpenRoomAdminScreen(room, () => SelectProperty(currentProperty));
+        else
+            propertyEditScreen.OpenPropertyAdminScreen(currentProperty);
     }
 
     private void NewReservationFromUnreservedDay(DateTime date, IRoom room)
@@ -339,5 +344,4 @@ public class ReservationsCalendarManager : MonoBehaviour
             scrollviewHandler.InstantSnap();
         }
     }
-
 }
