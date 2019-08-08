@@ -108,7 +108,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
         ///Set room numbers if property is roomless
         if(CurrentProperty != null && !CurrentProperty.HasRooms)
-            setBedsNumber.SetCurrentBeds(new Vector2Int(CurrentProperty.GetPropertyRoom().SingleBeds, CurrentProperty.GetPropertyRoom().SingleBeds));
+            setBedsNumber.SetCurrentBeds(new Vector2Int(CurrentProperty.GetPropertyRoom().SingleBeds, CurrentProperty.GetPropertyRoom().DoubleBeds));
         else
             setBedsNumber.SetCurrentBeds(Vector2Int.zero);
 
