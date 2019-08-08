@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,12 +21,12 @@ public class SetRoomTypeDropdown : MonoBehaviour
 
     private Dictionary<PropertyDataManager.RoomType, string> roomTypeName = new Dictionary<PropertyDataManager.RoomType, string>();
     private Dictionary<string, Sprite> roomIcons = new Dictionary<string, Sprite>();
-    private string[] roomTypeText = { "Cameră", "Apartament", "Vila", "Cabană", "Pat" };
 
     private void Start()
     {
         SetDictionaries();
         SetDropdownOptions();
+        LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetDropdownOptions());
         LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdateRoomTypeDropdown());
     }
 
@@ -44,7 +43,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
         }
         for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
-            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];//roomTypeText[i];
+            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];
         }
     }
 
@@ -52,7 +51,7 @@ public class SetRoomTypeDropdown : MonoBehaviour
     {
         for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)
         {
-            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];//roomTypeText[i];
+            roomTypeName[(PropertyDataManager.RoomType)i] = LocalizedText.Instance.RoomType[i];
         }
         SetDropdownOptions();
     }
