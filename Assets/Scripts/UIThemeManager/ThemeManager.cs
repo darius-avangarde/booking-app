@@ -101,7 +101,7 @@ public class ThemeManager : MonoBehaviour
         {
             if (myObject.tag == "ItemBackground" && myObject != null)
             {
-                ItemList.Add(myObject); //SelectTheme();
+                ItemList.Add(myObject); 
             }
             if (myObject.tag == "TextIcons" && myObject != null)
             {

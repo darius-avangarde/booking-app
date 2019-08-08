@@ -140,13 +140,6 @@ public class ClientsScreen : MonoBehaviour
                 clientButtons.Add(clientButton);
             }
         }
-        /* LayoutRebuilder.ForceRebuildLayoutImmediate(clientInfoContent);
-         Canvas.ForceUpdateCanvases();
-         clientsScrollView.verticalNormalizedPosition = scrollPosition;
-         if (clientsScrollView.content.childCount > 0)
-         {
-             scrollRectComponent.Init();
-         }*/
     }
     public void SetTheme(GameObject myObj)
     {

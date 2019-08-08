@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,11 +7,8 @@ using UnityEngine.UI;
 public class LocalizedText : MonoBehaviour
 {
     public UnityEvent OnLanguageChanged;
-    //public List<LanguageScript> csvData; 
     [SerializeField]
     private GameObject[] parents;
-    [SerializeField]
-    private List<Text> texts;
     [SerializeField]
     private List<Text> textList;
     [SerializeField]
@@ -89,7 +85,6 @@ public class LocalizedText : MonoBehaviour
 
     }
 
-
     public string[] ReservationHeader
     {
         get
@@ -97,7 +92,6 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "ReservationEditHeaderText");
         }
     }
-
 
     public string[] ErrorStateText
     {
@@ -442,7 +436,6 @@ public class LocalizedText : MonoBehaviour
         textList = new List<Text>();
         Text[] elements = new Text[250];
         Dictionary<string, string> language = myManager.Languages.Where(x => x.Name.Trim() == "Ro").First().Texts;
-        Debug.Log("clicked");
         for (int i = 0; i < parents.Length; i++)
         {
             elements = parents[i].GetComponentsInChildren<Text>(true);
@@ -458,8 +451,7 @@ public class LocalizedText : MonoBehaviour
     }
 
     private void SetLanguage(string language)
-    {  // myManager = LocalizationManager.Instance;
-        // var lang = csvData.Where(x => x.Name == language).First();
+    { 
         LanguageScript lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         for (int i = 0; i < textList.Count; i++)
         {
