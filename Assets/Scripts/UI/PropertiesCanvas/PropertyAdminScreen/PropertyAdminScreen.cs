@@ -80,6 +80,10 @@ public class PropertyAdminScreen : MonoBehaviour
     /// <param name="property">selected property</param>
     public void OpenPropertyAdminScreen(IProperty property)
     {
+        Debug.Log("Openning propery " + property.Name);
+
+        setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
+
         CurrentProperty = property;
         if (CurrentProperty.Name != null)
         {
@@ -152,7 +156,7 @@ public class PropertyAdminScreen : MonoBehaviour
 
     private void SetPropertyType(PropertyDataManager.PropertyType propertyType)
     {
-        if (!CurrentProperty.HasRooms)
+        if (CurrentProperty != null && !CurrentProperty.HasRooms)
         {
             propertyType += 2;
         }
