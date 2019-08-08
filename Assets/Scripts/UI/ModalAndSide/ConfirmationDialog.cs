@@ -18,11 +18,6 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
     private GameObject confirmSecondButton = null;
     [SerializeField]
     private HorizontalLayoutGroup ButtonsLayoutGroup = null;
-
-    public string defaultMessage = "Sunteți sigur?";
-    public string defaultConfirmButtonText = "Confirmați";
-    public string defaultCancelButtonText = "Anulați";
-
     private Action ConfirmCallback;
     private Action ConfirmCallbackSecond;
     private Action CancelCallback;
@@ -58,9 +53,9 @@ public class ConfirmationDialog : MonoBehaviour, IClosable
         //     ButtonsLayoutGroup.spacing = 60;
         // }
 
-        messageText.text = options.Message ?? defaultMessage;
-        confirmButtonText.text = options.ConfirmText ?? defaultConfirmButtonText;
-        cancelButtonText.text = options.CancelText ?? defaultCancelButtonText;
+        messageText.text = options.Message ?? LocalizedText.Instance.EditMessage[0]; 
+        confirmButtonText.text = options.ConfirmText ?? LocalizedText.Instance.EditMessage[1]; 
+        cancelButtonText.text = options.CancelText ?? LocalizedText.Instance.EditMessage[2];
         ConfirmCallback = options.ConfirmCallback;
         CancelCallback = options.CancelCallback;
         modalFade.FadeIn();

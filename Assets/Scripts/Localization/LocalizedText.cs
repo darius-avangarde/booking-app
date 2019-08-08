@@ -269,6 +269,13 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "Language");
         }
     }
+    public string[] EditMessage
+    {
+        get
+        {
+            return SetOptionsValues(option, "EditMessage");
+        }
+    }
     public string[] HeaderClients
     {
         get
@@ -291,6 +298,7 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "MessagePhone");
         }
     }
+
     public string PropertyItem
     {
         get
