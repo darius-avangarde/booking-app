@@ -84,26 +84,18 @@ public class ReservationsCalendarManager : MonoBehaviour
     private void Start()
     {
         roomColumnObjects = roomColumn.InitializeRoomColumn((r) => roomEditScreen.OpenRoomAdminScreen(r, () => SelectProperty(currentProperty)));
-
-
-
         propertyDropdown.OnSelectProperty = SelectProperty;
-
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
         CreateDayItems();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
-
 
         //Load property with most rooms to initialize day columns/items;
         if(PropertyDataManager.GetProperties().Count() > 0)
-        {
             SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
-        }
         else
             InitializeWithNoProperty();
 
-
         //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
+        LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
         StartCoroutine(DelayInfiniteScrollrectInitialization());
     }
 
@@ -122,33 +114,16 @@ public class ReservationsCalendarManager : MonoBehaviour
         propertyToLoadOnEnable = property;
     }
 
-    private IEnumerator DelayInfiniteScrollrectInitialization()
+    public void OpenFilterScreen()
     {
-        yield return null;
-        dayHeaderInfScroll.Init();
-        dayColumnInfScroll.Init();
-
-        //Load first property to initialize day columns/items;
-        if(PropertyDataManager.GetProperties().Count() > 0)
-        {
-            SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
-        }
+        filterScreen.OpenFilterScreen(ApplyFilers, currentFilter);
     }
 
-    #region FilerActions
-        public void OpenFilterScreen()
-        {
-            filterScreen.OpenFilterScreen(ApplyFilers, currentFilter);
-        }
-
-        public void ApplyFilers(ReservationFilter filter)
-        {
-            currentFilter = filter;
-            SelectProperty(currentProperty);
-        }
-
-    #endregion
-
+    public void ApplyFilers(ReservationFilter filter)
+    {
+        currentFilter = filter;
+        SelectProperty(currentProperty);
+    }
 
 
     ///<summary>
@@ -260,6 +235,13 @@ public class ReservationsCalendarManager : MonoBehaviour
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+    }
+
+    private IEnumerator DelayInfiniteScrollrectInitialization()
+    {
+        yield return null;
+        dayHeaderInfScroll.Init();
+        dayColumnInfScroll.Init();
     }
 
     private void EditRoomCallback()

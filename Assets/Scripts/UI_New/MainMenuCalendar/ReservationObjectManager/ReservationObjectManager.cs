@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,8 +14,8 @@ public class ReservationObjectManager : MonoBehaviour
     [SerializeField]
     private GameObject reservationObjectPrefab;
     [SerializeField]
-    private RectTransform reservationObjectParent; //this will be a recttransform copy of the daycolumn sccrolrectContent
-                                                    //or a 0 by 0 rect in the clients contents rect (need to hadle hierarchy)
+    private RectTransform reservationObjectParent;
+
     [Space]
     [SerializeField]
     private RectTransform dayColumnObjectPrefabRect;
@@ -27,13 +26,16 @@ public class ReservationObjectManager : MonoBehaviour
     private List<ReservationObject> pool = new List<ReservationObject>();
     private List<IReservation> reservations = new List<IReservation>();
     private List<IReservation> placedReservations = new List<IReservation>();
-
     private UnityAction<IReservation> reservationButtonAction;
+    public struct PointSize
+    {
+        public Vector2 minPos;
+        public Vector2 size;
+        public Vector2 pivot;
+    }
 
-    private float _treshold = 100f;
 
 
-    //TODO: Find better way to disable reservation objects based on distance from screen and keep reservation objects to prevent reinstantiations
     public void DisableUnseenReservations()
     {
         for (int i = 0; i < pool.Count; i++)
@@ -49,32 +51,39 @@ public class ReservationObjectManager : MonoBehaviour
                 placedReservations.Remove(pool[i].ObjReservation);
                 pool[i].Disable();
             }
-            // else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y + 100 > CalendarRoomColumn.DisableMargin * 2 + _treshold)
-            // {
-            //     placedReservations.Remove(resObj.ObjReservation);
-            //     resObj.Disable();
-            // }
-
-            // //pulling scrolrect up
-            // else if (reservationsScrolrect.transform.InverseTransformPoint(resObj.ObjRectTransform.position).y - 100 < -CalendarRoomColumn.DisableMargin * 2)
-            // {
-            //     placedReservations.Remove(resObj.ObjReservation);
-            //     resObj.Disable();
-            // }
         }
     }
 
     public void SweepUpdateReservations(IProperty property, UnityAction<IReservation> tapAction)
     {
-        // StartCoroutine(DelaySweep(property,tapAction));
         reservationButtonAction = tapAction;
         DisableAllReservationObjects();
 
         if(property == null || ReservationDataManager.GetActivePropertyReservations(property.ID).Count() == 0)
             return;
 
-        //get ordered by hierarchy day columns
-        StartCoroutine(DelayDraw(property));
+        List<CalendarDayColumn> columns = reservationsCalendarManager.OrderedDayColumns;
+
+        DateTime minDate = columns[0].ObjectDate.Date;
+        DateTime maxDate = columns[columns.Count - 1].ObjectDate.Date;
+
+        reservations = ReservationDataManager.GetActivePropertyReservations(property.ID).ToList();
+
+        placedReservations = new List<IReservation>();
+
+        foreach (IReservation r in reservations)
+        {
+            if((r.Period.Start.Date >= minDate && r.Period.Start.Date <= maxDate) || (r.Period.End.Date >= minDate && r.Period.End.Date <= maxDate))
+            {
+                DrawColumnsReservation(r, columns);
+                placedReservations.Add(r);
+            }
+            else if(r.Period.Start.Date < minDate.Date && r.Period.End.Date > maxDate.Date)
+            {
+                DrawReservationOverlapped(r, columns);
+                placedReservations.Add(r);
+            }
+        }
     }
 
     public void CreateReservationsForColumn(CalendarDayColumn dayColumn, IProperty property, bool isStart)
@@ -86,7 +95,7 @@ public class ReservationObjectManager : MonoBehaviour
                 if(!placedReservations.Exists(r => r.ID == res.ID))
                 {
                     placedReservations.Add(res);
-                    StartCoroutine(DrawReservation(res, dayColumn, isStart));
+                    DrawReservation(res, dayColumn, isStart);
                 }
             }
         }
@@ -109,7 +118,7 @@ public class ReservationObjectManager : MonoBehaviour
             if(roomReservations.Exists(r => r.Period.Start.Date == dayObjects[i].ObjDate.Date))
             {
                 IReservation res = roomReservations.Find(r => r.Period.Start.Date == dayObjects[i].ObjDate.Date);
-                if(!pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == res.ID && r.ObjRoomID == focalRoom.ID))
+                if(!IsReservationPlacedForRoom(res, focalRoom))
                 {
                     PointSize p = CalculatePositionSpan(true, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
                     GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
@@ -120,7 +129,7 @@ public class ReservationObjectManager : MonoBehaviour
             else if(roomReservations.Exists(r => r.Period.End.Date == dayObjects[i].ObjDate.Date))
             {
                 IReservation res = roomReservations.Find(r => r.Period.End.Date == dayObjects[i].ObjDate.Date);
-                if(!pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == res.ID && r.ObjRoomID == focalRoom.ID))
+                if(!IsReservationPlacedForRoom(res, focalRoom))
                 {
                     PointSize p = CalculatePositionSpan(false, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
                     GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
@@ -133,7 +142,7 @@ public class ReservationObjectManager : MonoBehaviour
             {
                 CalendarDayColumnObject firstDayObject = dayObjects.Find(d => d.DayRectTransform.parent.GetSiblingIndex() == 0);
                 IReservation res = roomReservations.Find(r => r.Period.Start.Date < minDate && r.Period.End > maxDate);
-                if(!pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == res.ID && r.ObjRoomID == focalRoom.ID))
+                if(!IsReservationPlacedForRoom(res, focalRoom))
                 {
                     PointSize p = CalculatePositionSpan((int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
                     GetFreeReservationObject().PlaceUpdateObject(p, firstDayObject, res, reservationButtonAction);
@@ -143,39 +152,21 @@ public class ReservationObjectManager : MonoBehaviour
         }
     }
 
-    private IEnumerator DelayDraw(IProperty property)
+    private void DrawColumnsReservation(IReservation r, List<CalendarDayColumn> columns)
     {
-        yield return null;
-
-        List<CalendarDayColumn> columns = reservationsCalendarManager.OrderedDayColumns;
-
-        DateTime minDate = columns[0].ObjectDate.Date;
-        DateTime maxDate = columns[columns.Count - 1].ObjectDate.Date;
-
-        reservations = ReservationDataManager.GetActivePropertyReservations(property.ID).ToList();
-        //ManagePool(reservations);
-
-
-        placedReservations = new List<IReservation>();
-
-        foreach (IReservation r in reservations)
+        foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).ActiveDayColumnsObjects)
         {
-            if((r.Period.Start.Date >= minDate && r.Period.Start.Date <= maxDate) || (r.Period.End.Date >= minDate && r.Period.End.Date <= maxDate))
+            if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
-                DrawReservation(r, columns);
-                placedReservations.Add(r);
-            }
-            else if(r.Period.Start.Date < minDate.Date && r.Period.End.Date > maxDate.Date)
-            {
-                DrawReservationOverlapped(r, columns);
-                placedReservations.Add(r);
+                PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
+                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
             }
         }
     }
 
-    private void DrawReservation(IReservation r, List<CalendarDayColumn> columns)
+    private void DrawReservation(IReservation r, CalendarDayColumn column, bool isStart)
     {
-        foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).ActiveDayColumnsObjects)
+        foreach (CalendarDayColumnObject cdco in column.ActiveDayColumnsObjects)
         {
             if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
@@ -194,20 +185,6 @@ public class ReservationObjectManager : MonoBehaviour
                 PointSize p = CalculatePositionSpan((int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
                 GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
             }
-        }
-    }
-
-    private IEnumerator DrawReservation(IReservation r, CalendarDayColumn column, bool isStart)
-    {
-        yield return null;
-        foreach (CalendarDayColumnObject cdco in column.ActiveDayColumnsObjects)
-        {
-            if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
-            {
-                PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction, true);
-            }
-
         }
     }
 
@@ -256,31 +233,6 @@ public class ReservationObjectManager : MonoBehaviour
         return output;
     }
 
-    public struct PointSize
-    {
-        public Vector2 minPos;
-        public Vector2 size;
-        public Vector2 pivot;
-    }
-
-    private void ManagePool(List<IReservation> reservations)
-    {
-        if(pool.Count != reservations.Count)
-        {
-            //Create New Objects as needed
-            while(pool.Count < reservations.Count)
-            {
-                CreateReservationObject();
-            }
-
-            //Disable unused objects
-            for (int i = pool.Count - 1; i > reservations.Count; i--)
-            {
-                pool[i].gameObject.SetActive(false);
-            }
-        }
-    }
-
     private ReservationObject GetFreeReservationObject()
     {
         for (int i = 0; i < pool.Count; i++)
@@ -307,5 +259,10 @@ public class ReservationObjectManager : MonoBehaviour
     {
         pool.Add(Instantiate(reservationObjectPrefab, reservationObjectParent).GetComponent<ReservationObject>());
         pool[pool.Count -1].Disable();
+    }
+
+    private bool IsReservationPlacedForRoom(IReservation reservation, IRoom room)
+    {
+        return pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == reservation.ID && r.ObjRoomID == room.ID);
     }
 }
