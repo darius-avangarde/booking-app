@@ -82,8 +82,6 @@ public class PropertyAdminScreen : MonoBehaviour
     /// <param name="property">selected property</param>
     public void OpenPropertyAdminScreen(IProperty property)
     {
-        Debug.Log("Openning propery " + property.Name);
-
         setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
 
         CurrentProperty = property;
@@ -162,6 +160,7 @@ public class PropertyAdminScreen : MonoBehaviour
         {
             propertyType += 2;
         }
+
         switch (propertyType)
         {
             case PropertyDataManager.PropertyType.hotel:
