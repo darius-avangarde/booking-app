@@ -37,8 +37,8 @@ public class PropertyAdminScreen : MonoBehaviour
     private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
-    [SerializeField]
-    private GameObject roomsToggleField = null;
+    //[SerializeField]
+   // private GameObject roomsToggleField = null;
     [SerializeField]
     private GameObject multipleRoomsField = null;
     [SerializeField]
@@ -82,8 +82,6 @@ public class PropertyAdminScreen : MonoBehaviour
     /// <param name="property">selected property</param>
     public void OpenPropertyAdminScreen(IProperty property)
     {
-        Debug.Log("Openning propery " + property.Name);
-
         setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
 
         CurrentProperty = property;
