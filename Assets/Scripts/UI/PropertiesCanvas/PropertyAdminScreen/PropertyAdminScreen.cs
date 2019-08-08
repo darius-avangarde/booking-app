@@ -37,8 +37,8 @@ public class PropertyAdminScreen : MonoBehaviour
     private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
-    [SerializeField]
-    private GameObject roomsToggleField = null;
+    //[SerializeField]
+   // private GameObject roomsToggleField = null;
     [SerializeField]
     private GameObject multipleRoomsField = null;
     [SerializeField]
