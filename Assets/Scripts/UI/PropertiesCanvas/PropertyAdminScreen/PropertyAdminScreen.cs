@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
@@ -27,6 +25,12 @@ public class PropertyAdminScreen : MonoBehaviour
     private PropertyDropdownHandler propertyDropdownHandler = null;
     [SerializeField]
     private SetPropertyTypeDropdown setPropertyTypeDropdown = null;
+
+    ///
+    [SerializeField]
+    private SetBedsNumber setBedsNumber = null;
+    ///
+
     [SerializeField]
     private NavScreen propertyAdminScreen = null;
     [SerializeField]
@@ -97,6 +101,16 @@ public class PropertyAdminScreen : MonoBehaviour
             deleteButton.gameObject.SetActive(false);
             setPropertyTypeDropdown.SetDropdownOptions(0, 3);
         }
+
+        ///Set room numbers if property is roomless
+        if(CurrentProperty != null && !CurrentProperty.HasRooms)
+            setBedsNumber.SetCurrentBeds(new Vector2Int(CurrentProperty.GetPropertyRoom().SingleBeds, CurrentProperty.GetPropertyRoom().SingleBeds));
+        else
+            setBedsNumber.SetCurrentBeds(Vector2Int.zero);
+
+        setBedsNumber.gameObject.SetActive(!CurrentProperty.HasRooms);
+        ///
+
         SetPropertyFieldsText();
         navigator.GoTo(propertyAdminScreen);
     }
@@ -160,6 +174,7 @@ public class PropertyAdminScreen : MonoBehaviour
                 break;
         }
         multipleRoomsField.SetActive(withRooms);
+        setBedsNumber.gameObject.SetActive(!withRooms);
     }
 
     /// <summary>
@@ -196,6 +211,13 @@ public class PropertyAdminScreen : MonoBehaviour
                 {
                     CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType + 2;
                 }
+
+                ///
+                Vector2Int beds = setBedsNumber.GetCurrentBeds();
+                CurrentProperty.GetPropertyRoom().SingleBeds = beds.x;
+                CurrentProperty.GetPropertyRoom().DoubleBeds = beds.y;
+                ///
+
                 if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
                 {
                     PropertyDataManager.SaveProperty(CurrentProperty);
@@ -206,6 +228,7 @@ public class PropertyAdminScreen : MonoBehaviour
                     PropertyDataManager.SavePropertyData();
                 }
             }
+
             if (shouldGoBack)
             {
                 navigator.GoBack();
