@@ -51,6 +51,8 @@ public class PropertyAdminScreen : MonoBehaviour
     private Button calcelButton = null;
     [SerializeField]
     private Text errorMessage = null;
+    [SerializeField]
+    private RectTransform multipleRoomFieldsRect;
 
     private Dictionary<string, Dropdown.OptionData> FloorsOptions;
     private Dictionary<int, Dropdown.OptionData> roomsOptions;
@@ -179,6 +181,7 @@ public class PropertyAdminScreen : MonoBehaviour
         }
         multipleRoomsField.SetActive(withRooms);
         setBedsNumber.gameObject.SetActive(!withRooms);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(multipleRoomFieldsRect);
     }
 
     /// <summary>
