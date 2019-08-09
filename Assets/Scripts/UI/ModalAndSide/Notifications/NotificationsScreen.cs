@@ -59,8 +59,8 @@ public class NotificationsScreen : MonoBehaviour
         {
             this.newReservations.Add(reservation);
         }
-        int notificationsCount = newNotifications.Count();
-        notificationBadge.SetNotificationBadge(notificationsCount);
+        //int notificationsCount = newNotifications.Count();
+        //notificationBadge.SetNotificationBadge(notificationsCount);
     }
 
     public void Initialize()
@@ -68,14 +68,9 @@ public class NotificationsScreen : MonoBehaviour
         noNotificationsObject.SetActive(false);
         settingsManager.ReadData();
 
-        List<INotification> notificationsList = NotificationDataManager.GetNotifications().Where(n => n.PreAlertTime != settingsManager.DataElements.settings.PreAlertTime).ToList();
-        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + LocalizedText.Instance.PreAlertDictFunction.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key)).ToList();
-
-        for (int i = 0; i < notificationsList.Count; i++)
-        {
-            List<IReservation> notificationReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notificationsList[i].NotificationID).ToList();
-            currentReservations.AddRange(notificationReservations);
-        }
+        currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now 
+                && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + (NotificationDataManager.GetNotification(r.NotificationID) != null 
+                ? NotificationDataManager.GetNotification(r.NotificationID).PreAlertTime : LocalizedText.Instance.PreAlertDictFunction.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key))).ToList();
 
         currentReservations = currentReservations.OrderBy(r => r.Period.Start.Date).ToList();
         for (int i = 0; i < currentReservations.Count; i++)
@@ -91,7 +86,7 @@ public class NotificationsScreen : MonoBehaviour
             }
         }
         newReservations = new List<IReservation>();
-        notificationBadge.SetNotificationBadge(newReservations.Count);
+        DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
         if (activeNotificationItems.Count == 0)
         {
             noNotificationsObject.SetActive(true);
