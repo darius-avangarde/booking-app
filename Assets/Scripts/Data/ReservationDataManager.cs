@@ -207,6 +207,20 @@ public static class ReservationDataManager
         WriteReservationData();
     }
 
+    public static bool IsRoomFreeOn(IRoom room, DateTime from, DateTime to, string excludeResID = null)
+    {
+        return Data.reservations.Any(
+            r => !r.Deleted &&
+            r.ContainsRoom(room.ID) &&
+            r.ID != excludeResID &&
+            (
+                (r.Period.Start.Date >= from.Date && r.Period.Start.Date <= to.Date) ||    // start date in interval
+                (r.Period.End.Date >= from.Date && r.Period.End.Date <= to.Date) ||       // end date in interval
+                (r.Period.End.Date >= to.Date && r.Period.Start.Date <= from.Date)       // period overlaps interval
+            )
+            );
+    }
+
     [Serializable]
     private class ReservationData
     {

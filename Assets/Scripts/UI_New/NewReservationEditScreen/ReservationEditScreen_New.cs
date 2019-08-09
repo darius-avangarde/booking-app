@@ -46,9 +46,9 @@ public class ReservationEditScreen_New : MonoBehaviour
     [SerializeField]
     private Dropdown propertyDropdown;
     [SerializeField]
-    private RoomToggleDropdown roomDropdown;
+    private RoomPicker roomPicker;
     [SerializeField]
-    private GameObject roomDropdownParent;
+    private GameObject roomPickerParent;
     [SerializeField]
     private Dropdown preAlertDropdown;
     [SerializeField]
@@ -165,14 +165,14 @@ public class ReservationEditScreen_New : MonoBehaviour
         navigator.GoBack();
     }
 
+    public void BeginSelectRooms()
+    {
+        roomPicker.Open(resRooms, resStartDate, resEndDate, currentReservation);
+    }
+
     public void SetDate(bool isStart)
     {
         modalCalendar.OpenCallendar((d) => SetDatesCallback(d, isStart), (isStart) ? resStartDate :  (resEndDate == null && resStartDate != null) ? resStartDate.Value.AddDays(1) : resEndDate);
-    }
-
-    public void BeginSelectRooms()
-    {
-        roomDropdown.OpenRoomDropdown();
     }
 
     private void ClearData()
@@ -209,7 +209,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     private void SelectRooms(List<IRoom> rooms)
     {
-        resRooms = rooms;
+        resRooms = new List<IRoom>(rooms);
     }
 
     private void SelectPreAlert(int index)
@@ -265,13 +265,13 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     private void UpdateRoomDropdown()
     {
-        roomDropdownParent.SetActive(resProperty.HasRooms);
+        roomPickerParent.SetActive(resProperty.HasRooms);
 
         if(!resProperty.HasRooms)
             return;
 
         List<IRoom> allRooms = resProperty.Rooms.ToList();
-        roomDropdown.InitializeRoomDropdown(SelectRooms, allRooms, resRooms);
+        roomPicker.Initialize(allRooms, SelectRooms, resRooms);
     }
 
     private void UpdatePreAletDropdown()
