@@ -138,11 +138,11 @@ public class LocalizedText : MonoBehaviour
         }
     }
 
-    public string TextPickRoom
+    public string TextPickRooms
     {
         get
         {
-            return SetTextValue(option, "TextPickRoom");
+            return SetTextValue(option, "TextPickRooms");
         }
     }
     public string RoomNumbers
