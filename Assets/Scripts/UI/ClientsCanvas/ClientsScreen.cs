@@ -48,6 +48,8 @@ public class ClientsScreen : MonoBehaviour
     private ScrollRect clientsScrollView = null;
     [SerializeField]
     private Toggle clientToggle;
+    [SerializeField]
+    private NavScreen clientPanel = null;
     #endregion
     #region PrivateVariables
     private List<GameObject> clientButtons = new List<GameObject>();
@@ -70,6 +72,19 @@ public class ClientsScreen : MonoBehaviour
     {
         firstPosition = new Vector2(0, 0);
         firstPositionContainer = ClientContainer.offsetMax;
+    }
+
+    public void OpenClientsPanel()
+    {
+        navigator.GoTo(clientPanel);
+        StartCoroutine(OpenPanel());
+    }
+    IEnumerator OpenPanel()
+    {
+        Handheld.StartActivityIndicator();
+        InstantiateClients();
+        yield return new WaitForEndOfFrame();
+        Handheld.StopActivityIndicator();
     }
     #region AnimationSearch
     public void SearchAnimation()
