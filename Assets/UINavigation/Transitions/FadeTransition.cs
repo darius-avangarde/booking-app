@@ -46,6 +46,8 @@ public class FadeTransition : TransitionBase
 
     public override IEnumerator PlayReverse(NavScreen currentScreen, NavScreen previousScreen)
     {
+        Handheld.StartActivityIndicator();
+
         currentScreen.OnHiding();
         SetCanvasGroups(currentScreen.CanvasGroups, false, false);
 
@@ -76,6 +78,9 @@ public class FadeTransition : TransitionBase
             previousScreen.OnShown();
             SetCanvasGroups(previousScreen.CanvasGroups, true,true);
         }
+
+        yield return new WaitForEndOfFrame();
+        Handheld.StopActivityIndicator();
     }
 
     private void UpdateScreenFade(List<CanvasGroup> canvasGroups, float from, float to, float progress)
