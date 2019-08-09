@@ -90,6 +90,8 @@ public class ThemeManager : MonoBehaviour
         }
         yield return new WaitForEndOfFrame();
         Verify();
+
+        OnThemeChanged?.Invoke(themeToggle.isOn);
         yield return new WaitForEndOfFrame();
         Handheld.StopActivityIndicator();
     }
@@ -186,7 +188,6 @@ public class ThemeManager : MonoBehaviour
             }
 
         }
-        OnThemeChanged?.Invoke(themeToggle.isOn);
     }
 
     public void SetShadow(Shadow shadow)
