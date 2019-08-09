@@ -138,6 +138,13 @@ public class LocalizedText : MonoBehaviour
         }
     }
 
+    public string TextPickRoom
+    {
+        get
+        {
+            return SetTextValue(option, "TextPickRoom");
+        }
+    }
     public string RoomNumbers
     {
         get
@@ -451,7 +458,7 @@ public class LocalizedText : MonoBehaviour
     }
 
     private void SetLanguage(string language)
-    { 
+    {
         LanguageScript lang = myManager.Languages.Where(x => x.Name.Trim() == language).First();
         for (int i = 0; i < textList.Count; i++)
         {

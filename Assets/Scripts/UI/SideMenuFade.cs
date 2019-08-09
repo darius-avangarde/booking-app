@@ -15,9 +15,11 @@ public class SideMenuFade : MonoBehaviour, IClosable
     [SerializeField]
     private GameObject sideMenuPanel;
     [SerializeField]
-    private Button sideMenuButton;
+    private CanvasGroup sideMenuCanvasGroup;
     [SerializeField]
     private Image img;
+    private Color startColor = new Color(0, 0, 0, 0.5f);
+    private Color finalColor = new Color(0, 0, 0, 0f);
     bool isClosed = false;
 
     void Start()
@@ -26,60 +28,42 @@ public class SideMenuFade : MonoBehaviour, IClosable
     }
     public void FadeIn()
     {
-        sideMenuButton.interactable = true;
+        sideMenuCanvasGroup.interactable = true;
         StopAllCoroutines();
-        StartCoroutine(Move(sideMenu, new Vector2(0, 0)));
+        StartCoroutine(Move(sideMenu, new Vector2(0, 0),false));
         img.color = new Color(0, 0, 0, 0.5f);
     }
 
     public void FadeOut()
     {
+        sideMenuCanvasGroup.interactable = false;
         StopAllCoroutines();
-        StartCoroutine(Move(sideMenu, firstPosition));
+        StartCoroutine(Move(sideMenu, firstPosition, true));
         StartCoroutine(CloseMenu());
-        StartCoroutine(CanvasFade(true));
-        if (isClosed == true)
-        {
-            sideMenuButton.interactable = false;
-        }
+        
     }
-    IEnumerator Move(RectTransform rt, Vector2 targetPos)
+    IEnumerator Move(RectTransform rt, Vector2 targetPos, bool fadeAway)
     {
         float step = 0;
         while (step < 1)
         {
             rt.anchoredPosition = Vector2.Lerp(rt.anchoredPosition, targetPos, step += Time.deltaTime);
+            if (fadeAway)
+            {
+                img.color = finalColor;
+            }
+            else
+            {
+                img.color = startColor;
+            }
             yield return new WaitForEndOfFrame();
         }
     }
 
     IEnumerator CloseMenu()
     {
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.5f);
         sideMenuPanel.SetActive(false);
-    }
-
-    IEnumerator CanvasFade(bool fadeAway)
-    {
-        isClosed = true;
-        if (fadeAway)
-        {
-            for (float i = 0.5f; i >= 0; i -= Time.deltaTime)
-            {
-                img.color = new Color(0, 0, 0, i);
-                yield return null;
-                isClosed = false;
-            }
-        }
-        else
-        {
-            for (float i = 0.5f; i <= 1; i += Time.deltaTime)
-            {
-                img.color = new Color(0, 0, 0, i);
-                yield return null;
-            }
-        }
-       
     }
 
     public void ShowMenu()
