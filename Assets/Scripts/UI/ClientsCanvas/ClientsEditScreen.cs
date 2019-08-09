@@ -154,16 +154,17 @@ public class ClientsEditScreen : MonoBehaviour
         if (String.IsNullOrEmpty(clientName.text) || clientName.text.All(char.IsWhiteSpace))
         {
            SetTextRequired();
-            return;
         }
         else
         {
+           
             Client client = new Client();
             SetClient(client);
             if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
             {
                 ClientDataManager.AddClient(client);
                 navigator.GoBack();
+                textNameRequired.gameObject.SetActive(false);
             }
         }
         clientsScreen.InstantiateClients();
