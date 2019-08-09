@@ -45,7 +45,7 @@ public class RoomPickerObject : MonoBehaviour
         currentRoom = room;
         IsOn = isSelected;
 
-        SetColors(isOccupied ? Color.red : (ThemeManager.Instance.IsDarkTheme ? ThemeManager.Instance.ThemeColor.textDark : ThemeManager.Instance.ThemeColor.textDark));
+        SetColors(isOccupied ? Color.red : (ThemeManager.Instance.IsDarkTheme ? ThemeManager.Instance.ThemeColor.textDark : ThemeManager.Instance.ThemeColor.textLight));
 
         currentTapAction = tapAction;
         currentToggleAction = toggleAction;

@@ -243,8 +243,8 @@ public class ReservationEditScreen_New : MonoBehaviour
         List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
         List<Dropdown.OptionData> optionList = new List<Dropdown.OptionData>();
         propertyOptions = new List<IProperty>();
-        optionList.Add(new Dropdown.OptionData(LocalizedText.Instance.ErrorStateText[0]));
-        propertyOptions.Add(null);
+        // optionList.Add(new Dropdown.OptionData(LocalizedText.Instance.ErrorStateText[0]));
+        // propertyOptions.Add(null);
 
         int selected = 0;
         for (int i = 0; i < properties.Count; i++)
