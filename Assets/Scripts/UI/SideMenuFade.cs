@@ -1,14 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SideMenuFade : MonoBehaviour, IClosable
 {
-    [SerializeField]
-    private List<GameObject> items = new List<GameObject>();
-    [SerializeField]
-    private float fadeTime = 0.35f;
     [SerializeField]
     private RectTransform sideMenu;
     private Vector2 firstPosition;
@@ -20,7 +15,6 @@ public class SideMenuFade : MonoBehaviour, IClosable
     private Image img;
     private Color startColor = new Color(0, 0, 0, 0.5f);
     private Color finalColor = new Color(0, 0, 0, 0f);
-    bool isClosed = false;
 
     void Start()
     {
