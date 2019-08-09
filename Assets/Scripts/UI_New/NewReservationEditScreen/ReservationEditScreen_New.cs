@@ -316,6 +316,12 @@ public class ReservationEditScreen_New : MonoBehaviour
             return false;
         }
 
+        if(resStartDate.Value == resEndDate.Value)
+        {
+            SetErrorAnState(LocalizedText.Instance.ErrorStateText[7]);
+            return false;
+        }
+
         if(resProperty == null)
         {
             SetErrorAnState(LocalizedText.Instance.ErrorStateText[1]);
