@@ -57,6 +57,12 @@ public class PropertiesScreen : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
+        StartCoroutine(InitializeRoutine());
+    }
+
+    private IEnumerator InitializeRoutine()
+    {
+        Handheld.StartActivityIndicator();
         scrollRectComponent.ResetAll();
         List<IProperty> properties = PropertyDataManager.GetProperties().ToList();
 
@@ -67,14 +73,14 @@ public class PropertiesScreen : MonoBehaviour
             {
                 InstantiatePropertyButton();
             }
-        
+
             //Disable unused objects
             for (int i = propertyButtonList.Count - 1; i >= properties.Count; i--)
             {
                 propertyButtonList[i].gameObject.SetActive(false);
             }
         }
-        
+
         for (int i = 0; i < properties.Count(); i++)
         {
             propertyButtonList[i].gameObject.SetActive(true);
@@ -95,6 +101,8 @@ public class PropertiesScreen : MonoBehaviour
         {
             //scrollRectComponent.Init();
         }
+        yield return new WaitForEndOfFrame();
+        Handheld.StopActivityIndicator();
     }
 
     private void InstantiatePropertyButton()

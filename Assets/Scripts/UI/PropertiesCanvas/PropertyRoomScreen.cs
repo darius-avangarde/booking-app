@@ -65,9 +65,17 @@ public class PropertyRoomScreen : MonoBehaviour
     /// <param name="property">selected property</param>
     public void SetCurrentProperty(IProperty property)
     {
-        currentProperty = property;
         navigator.GoTo(propertyRoomScreen);
+        StartCoroutine(SetCurrentPropertyRoutine(property));
+    }
+
+    public IEnumerator SetCurrentPropertyRoutine(IProperty property)
+    {
+        Handheld.StartActivityIndicator();
+        currentProperty = property;
         Initialize();
+        yield return new WaitForEndOfFrame();
+        Handheld.StopActivityIndicator();
     }
 
     /// <summary>
