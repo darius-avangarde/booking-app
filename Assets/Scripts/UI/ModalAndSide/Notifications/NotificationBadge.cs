@@ -6,11 +6,9 @@ using UnityEngine.UI;
 public class NotificationBadge : MonoBehaviour
 {
     [SerializeField]
-    private GameObject notificationButton = null;
+    private Image notificationsBadgeIcon = null;
     [SerializeField]
-    private GameObject notificationsBadgeObject = null;
-    [SerializeField]
-    private Text notificationsBadgeText = null;
+    private Text notificationsBadgeNumber = null;
 
     private int badgeCount = 0;
 
@@ -18,36 +16,43 @@ public class NotificationBadge : MonoBehaviour
     {
         if (badgeCount > 0)
         {
-            notificationsBadgeObject.SetActive(true);
+            notificationsBadgeIcon.color = new Color(notificationsBadgeIcon.color.r, notificationsBadgeIcon.color.g, notificationsBadgeIcon.color.b, 255);
+            notificationsBadgeNumber.color = new Color(notificationsBadgeNumber.color.r, notificationsBadgeNumber.color.g, notificationsBadgeNumber.color.b, 255);
+        }
+        else
+        {
+            notificationsBadgeIcon.color = new Color(notificationsBadgeIcon.color.r, notificationsBadgeIcon.color.g, notificationsBadgeIcon.color.b, 0);
+            notificationsBadgeNumber.color = new Color(notificationsBadgeNumber.color.r, notificationsBadgeNumber.color.g, notificationsBadgeNumber.color.b, 0);
         }
     }
 
     private void OnDisable()
     {
-        notificationsBadgeObject.SetActive(false);
+        notificationsBadgeIcon.color = new Color(notificationsBadgeIcon.color.r, notificationsBadgeIcon.color.g, notificationsBadgeIcon.color.b, 0);
+        notificationsBadgeNumber.color = new Color(notificationsBadgeNumber.color.r, notificationsBadgeNumber.color.g, notificationsBadgeNumber.color.b, 0);
     }
 
-    public void SetNotificationBadge(int newNotifications)
+    public IEnumerator SetNotificationBadge(int newNotifications)
     {
         if (newNotifications > 0)
         {
             badgeCount = newNotifications;
-            notificationsBadgeText.text = badgeCount.ToString();
+            notificationsBadgeNumber.text = badgeCount.ToString();
         }
         else
         {
             badgeCount = 0;
         }
-        if (notificationButton.activeInHierarchy)
+        yield return new WaitForEndOfFrame();
+        if (badgeCount > 0)
         {
-            if (badgeCount > 0)
-            {
-                notificationsBadgeObject.SetActive(true);
-            }
-            else
-            {
-                notificationsBadgeObject.SetActive(false);
-            }
+            notificationsBadgeIcon.color = new Color(notificationsBadgeIcon.color.r, notificationsBadgeIcon.color.g, notificationsBadgeIcon.color.b, 255);
+            notificationsBadgeNumber.color = new Color(notificationsBadgeNumber.color.r, notificationsBadgeNumber.color.g, notificationsBadgeNumber.color.b, 255);
+        }
+        else
+        {
+            notificationsBadgeIcon.color = new Color(notificationsBadgeIcon.color.r, notificationsBadgeIcon.color.g, notificationsBadgeIcon.color.b, 0);
+            notificationsBadgeNumber.color = new Color(notificationsBadgeNumber.color.r, notificationsBadgeNumber.color.g, notificationsBadgeNumber.color.b, 0);
         }
     }
 }

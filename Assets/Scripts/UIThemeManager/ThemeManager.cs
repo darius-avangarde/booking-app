@@ -28,7 +28,6 @@ public class ThemeManager : MonoBehaviour
     private bool result = true;
     void Start()
     {
-        // themeToggle.onValueChanged.RemoveAllListeners();
         setMode.ReadData();
         statusColor = setMode.ReadData().settings.themeStatus;
         if (statusColor == 0)

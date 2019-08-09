@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UINavigation;
 using Unity.Notifications.Android;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Text;
 
 public class NotificationManager : MonoBehaviour
@@ -13,6 +14,8 @@ public class NotificationManager : MonoBehaviour
     private Navigator navigator = null;
     [SerializeField]
     private NotificationsScreen notificationsScreen = null;
+    [SerializeField]
+    private NotificationBadge notificationBadge = null;
 
     private AndroidNotificationChannel androidNotificationChannel;
     private const string channelId = "Default";
@@ -29,6 +32,7 @@ public class NotificationManager : MonoBehaviour
         {
             List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notificationIntentData.Id).ToList();
             notificationsScreen.AddNewReservations(newReservations);
+            DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
             navigator.GoTo(notificationsScreen.GetComponent<NavScreen>());
         }
         else
@@ -121,8 +125,11 @@ public class NotificationManager : MonoBehaviour
 
         if (otherReservation != null)
         {
-            notificationID = otherReservation.NotificationID;
-            notificationItem = NotificationDataManager.GetNotification(notificationID);
+            if (NotificationDataManager.GetNotification(otherReservation.NotificationID).PreAlertTime == preAlertTime)
+            {
+                notificationID = otherReservation.NotificationID;
+                notificationItem = NotificationDataManager.GetNotification(notificationID);
+            }
         }
 
         AndroidNotification notification = new AndroidNotification();
@@ -239,6 +246,7 @@ public class NotificationManager : MonoBehaviour
                 AndroidNotificationChannel notificationChannel = AndroidNotificationCenter.GetNotificationChannel(channelId);
                 List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].NotificationID).ToList();
                 notificationsScreen.AddNewReservations(newReservations);
+                DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
             }
         }
     }
@@ -251,6 +259,7 @@ public class NotificationManager : MonoBehaviour
                 AndroidNotificationCenter.CancelAllDisplayedNotifications();
                 List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == data.Id).ToList();
                 notificationsScreen.AddNewReservations(newReservations);
+                DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
             };
         AndroidNotificationCenter.OnNotificationReceived += receivedNotificationHandler;
     }
