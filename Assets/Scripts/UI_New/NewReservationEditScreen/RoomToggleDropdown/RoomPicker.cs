@@ -33,6 +33,7 @@ public class RoomPicker : MonoBehaviour
     private IProperty currentPropery;
 
     private bool isSelecting = false;
+    private bool isOpening = false;
     private Vector2 _newAnchoredPosition = Vector2.zero;
     private float _recordOffsetY = 0;
     private static float _disableMarginY = 0;
@@ -66,25 +67,28 @@ public class RoomPicker : MonoBehaviour
         selectedRooms = (selected != null) ? new List<IRoom>(selected) : new List<IRoom>();
         selectedItemsText.text = selectedRooms.Count > 1 ?
             $"{selectedRooms.Count} {LocalizedText.Instance.RoomNumbers}" :
-            (selectedRooms.Count > 0 ? selectedRooms[0].Name : "Alege camere");
+            (selectedRooms.Count > 0 ? selectedRooms[0].Name : LocalizedText.Instance.TextPickRooms);
         onConfirm = confirmSelectionCallback;
     }
 
     //TODO: Add datetime and check room availavility
     public void Open(List<IRoom> selected, DateTime? start, DateTime? end, IReservation res)
     {
-        fromDate = start;
-        toDate = end;
-        currentReservation = res;
+        if(!isOpening)
+        {
+            fromDate = start;
+            toDate = end;
+            currentReservation = res;
 
-        selectedRooms = (selected != null) ? new List<IRoom>(selected) : new List<IRoom>();
+            selectedRooms = (selected != null) ? new List<IRoom>(selected) : new List<IRoom>();
 
-        pickerParent.SetActive(true);
-        closeButton.SetActive(true);
-        StartCoroutine(OpenAnimation(Mathf.Min(currentRooms.Count, 7) *_recordOffsetY));
-        isSelecting = selectedRooms.Count > 0;
-        confirmationButton.SetActive(isSelecting);
-        UpdateVisible();
+            pickerParent.SetActive(true);
+            closeButton.SetActive(true);
+            StartCoroutine(OpenAnimation(Mathf.Min(currentRooms.Count, 7) *_recordOffsetY));
+            isSelecting = selectedRooms.Count > 0;
+            confirmationButton.SetActive(isSelecting);
+            UpdateVisible();
+        }
     }
 
     public void ConfirmSelection()
@@ -181,6 +185,7 @@ public class RoomPicker : MonoBehaviour
 
     private IEnumerator OpenAnimation(float openSize)
     {
+        isOpening = true;
         pickerParentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
 
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/0.25f){
@@ -188,6 +193,7 @@ public class RoomPicker : MonoBehaviour
             yield return null;
         }
         pickerParentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, openSize);
+        isOpening = false;
     }
 
     private bool IsRoomOccupied(IRoom room)
