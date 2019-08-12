@@ -22,15 +22,13 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private PropertyDropdownHandler propertyDropdownHandler = null;
     [SerializeField]
-    private SetPropertyTypeDropdown setPropertyTypeDropdown = null;
-
-    ///
-    [SerializeField]
-    private SetBedsNumber setBedsNumber = null;
-    ///
-
+    private NavScreen propertiesScreen = null;
     [SerializeField]
     private NavScreen propertyAdminScreen = null;
+    [SerializeField]
+    private SetPropertyTypeDropdown setPropertyTypeDropdown = null;
+    [SerializeField]
+    private SetBedsNumber setBedsNumber = null;
     [SerializeField]
     private Text propertyScreenTitle = null;
     [SerializeField]
@@ -78,12 +76,10 @@ public class PropertyAdminScreen : MonoBehaviour
             setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
             if (CurrentProperty.HasRooms)
             {
-                //roomsToggleField.SetActive(true);
                 setPropertyTypeDropdown.SetDropdownOptions(0, 1);
             }
             else
             {
-                //roomsToggleField.SetActive(false);
                 setPropertyTypeDropdown.SetDropdownOptions(2, 3);
             }
         }
@@ -246,12 +242,15 @@ public class PropertyAdminScreen : MonoBehaviour
                 PropertyDataManager.DeleteProperty(CurrentProperty.ID);
                 ReservationDataManager.DeleteReservationsForProperty(CurrentProperty.ID);
                 propertyDropdownHandler.UpdateDropdown();
-                navigator.GoBack();
+                reservationCallendar.SetPropertyToBeLoadedOnEnable(null);
                 if (hasRooms)
+                {
+                    navigator.GoBackTo(propertiesScreen);
+                }
+                else
                 {
                     navigator.GoBack();
                 }
-                reservationCallendar.SetPropertyToBeLoadedOnEnable(null);
             },
             CancelCallback = null
         });
