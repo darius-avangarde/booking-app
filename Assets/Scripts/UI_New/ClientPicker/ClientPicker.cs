@@ -73,8 +73,9 @@ public class ClientPicker : MonoBehaviour, IClosable
         searchFieldInput.onValueChanged.AddListener((s) => InitiateClientSearch());
     }
 
-    private void UpdateClientList(List<IClient> matches)
+    private void UpdateClientList()
     {
+        List<IClient> matches = GetMatchingClients(searchFieldInput.text.ToLower());
         while(matches.Count > clientObjects.Count)
         {
             clientObjects.Add(Instantiate(clientPickerObjectPrefab, searchResultsContent).GetComponent<ClientPickerObject>());
@@ -122,9 +123,9 @@ public class ClientPicker : MonoBehaviour, IClosable
         loadIndicator.gameObject.SetActive(false);
         loadIndicator.rotation = Quaternion.identity;
 
-        UpdateClientList(GetMatchingClients(searchFieldInput.text.ToLower()));
+        UpdateClientList();
         dropDownAnimation.ManualAnimationTrigger();
-        //LayoutRebuilder.ForceRebuildLayoutImmediate(searchResultsContent);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(searchResultsContent);
     }
 
     private List<IClient> GetMatchingClients(string inputString)
