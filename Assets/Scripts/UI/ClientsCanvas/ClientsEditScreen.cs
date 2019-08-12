@@ -30,7 +30,8 @@ public class ClientsEditScreen : MonoBehaviour
     private InfoBox infoDialog = null;
     [SerializeField]
     private ClientsScreen clientsScreen;
-
+    [SerializeField]
+    private ReservationsCalendarManager calendarManager;
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -119,6 +120,7 @@ public class ClientsEditScreen : MonoBehaviour
                 ClientDataManager.DeleteClient(currentClient.ID);
                 ReservationDataManager.DeleteReservationsForClient(currentClient.ID);
                 clientsScreen.InstantiateClients();
+                calendarManager.SetPropertyToBeLoadedOnEnable(calendarManager.CurrentProperty);
                 navigator.GoBack();
                 actionDelete?.Invoke();
             },
