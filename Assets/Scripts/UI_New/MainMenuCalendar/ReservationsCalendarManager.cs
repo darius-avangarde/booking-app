@@ -12,6 +12,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     ///</summary>
     public List<CalendarDayColumn> OrderedDayColumns => dayColumns.OrderBy(a => a.transform.GetSiblingIndex()).ToList();
 
+    public IProperty CurrentProperty => currentProperty;
+
     [SerializeField]
     private TopCalendar topCalendar;
     [SerializeField]
