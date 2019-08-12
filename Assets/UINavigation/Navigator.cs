@@ -145,13 +145,7 @@ namespace UINavigation
                 return;
             }
 
-            for (int i = screens.Count -1; i >= 0; i++)
-            {
-                if(screens[i] != previousScreen)
-                    screens.RemoveAt(i);
-                else
-                    break;
-            }
+
 
             if (transition == null)
             {
@@ -169,7 +163,13 @@ namespace UINavigation
                 StartCoroutine(transition.PlayReverse(CurrentScreen, previousScreen));
             }
 
-            screens.RemoveAt(screens.Count - 1);
+            for (int i = screens.Count -1; i >= 0; i--)
+            {
+                if(screens[i] != previousScreen)
+                    screens.RemoveAt(i);
+                else
+                    break;
+            }
         }
 
         /// <summary>
