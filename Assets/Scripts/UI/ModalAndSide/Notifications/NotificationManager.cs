@@ -71,7 +71,7 @@ public class NotificationManager : MonoBehaviour
         preAlertTime = preAlert;
         int notificationID = reservation.NotificationID;
         INotification notificationItem = NotificationDataManager.GetNotification(notificationID);
-        DateTime fireTime = reservation.Period.Start.Date.AddHours(12);
+        DateTime reservationStart = reservation.Period.Start.Date.AddHours(12);
         if (notificationID > 0)
         {
             //check for reservation with current notification ID
@@ -86,24 +86,27 @@ public class NotificationManager : MonoBehaviour
                     newNotification.Text += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
                     newNotification.IntentData += $"{previousReservations[i].ID}\n";
                 }
-                newNotification.FireTime = fireTime.AddHours(-preAlert);
+                newNotification.FireTime = reservationStart.AddHours(-preAlert);
                 newNotification.Style = NotificationStyle.BigTextStyle;
 
-                ReplaceNotification(notificationID, newNotification, channelId);
-                if (notificationItem != null)
+                if (reservationStart > DateTime.Now)
                 {
-                    notificationItem.UnRead = true;
-                    notificationItem.FireTime = newNotification.FireTime;
-                    notificationItem.SetReservationIDs(previousReservations);
-                }
-                else
-                {
-                    notificationItem = NotificationDataManager.AddNotification();
-                    notificationItem.NotificationID = notificationID;
-                    notificationItem.UnRead = true;
-                    notificationItem.PreAlertTime = preAlert;
-                    notificationItem.FireTime = newNotification.FireTime;
-                    notificationItem.SetReservationIDs(previousReservations);
+                    ReplaceNotification(notificationID, newNotification, channelId);
+                    if (notificationItem != null)
+                    {
+                        notificationItem.UnRead = true;
+                        notificationItem.FireTime = newNotification.FireTime;
+                        notificationItem.SetReservationIDs(previousReservations);
+                    }
+                    else
+                    {
+                        notificationItem = NotificationDataManager.AddNotification();
+                        notificationItem.NotificationID = notificationID;
+                        notificationItem.UnRead = true;
+                        notificationItem.PreAlertTime = preAlert;
+                        notificationItem.FireTime = newNotification.FireTime;
+                        notificationItem.SetReservationIDs(previousReservations);
+                    }
                 }
             }
             else
@@ -138,40 +141,47 @@ public class NotificationManager : MonoBehaviour
             notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
             notification.IntentData += $"{allReservations[i].ID} & \n";
         }
-        notification.FireTime = fireTime.AddHours(-preAlert);
+        notification.FireTime = reservationStart.AddHours(-preAlert);
         notification.Style = NotificationStyle.BigTextStyle;
 
         if (notificationID > 0)
         {
-            ReplaceNotification(notificationID, notification, channelId);
-            if (notificationItem != null)
+            if (reservationStart > DateTime.Now)
             {
-                notificationItem.UnRead = true;
-                notificationItem.FireTime = notification.FireTime;
-                notificationItem.SetReservationIDs(allReservations);
+                ReplaceNotification(notificationID, notification, channelId);
+                if (notificationItem != null)
+                {
+                    notificationItem.UnRead = true;
+                    notificationItem.FireTime = notification.FireTime;
+                    notificationItem.SetReservationIDs(allReservations);
+                }
+                else
+                {
+                    notificationItem = NotificationDataManager.AddNotification();
+                    notificationItem.NotificationID = notificationID;
+                    notificationItem.UnRead = true;
+                    notificationItem.PreAlertTime = preAlert;
+                    notificationItem.FireTime = notification.FireTime;
+                    notificationItem.SetReservationIDs(allReservations);
+                }
+                reservation.NotificationID = notificationID;
             }
-            else
+        }
+        else
+        {
+            if (reservationStart > DateTime.Now)
             {
+                notificationID = AndroidNotificationCenter.SendNotification(notification, channelId);
+
                 notificationItem = NotificationDataManager.AddNotification();
                 notificationItem.NotificationID = notificationID;
                 notificationItem.UnRead = true;
                 notificationItem.PreAlertTime = preAlert;
                 notificationItem.FireTime = notification.FireTime;
                 notificationItem.SetReservationIDs(allReservations);
+                reservation.NotificationID = notificationID;
             }
         }
-        else
-        {
-            notificationID = AndroidNotificationCenter.SendNotification(notification, channelId);
-
-            notificationItem = NotificationDataManager.AddNotification();
-            notificationItem.NotificationID = notificationID;
-            notificationItem.UnRead = true;
-            notificationItem.PreAlertTime = preAlert;
-            notificationItem.FireTime = notification.FireTime;
-            notificationItem.SetReservationIDs(allReservations);
-        }
-        reservation.NotificationID = notificationID;
     }
 
     private void ReplaceNotification(int ID, AndroidNotification notification, string channel)
