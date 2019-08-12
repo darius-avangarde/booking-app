@@ -303,6 +303,13 @@ public class ReservationEditScreen_New : MonoBehaviour
                 return false;
             }
         }
+        else if(!clientPicker.CurrentInputText.ToLower().Equals(resClient.Name.ToLower()))
+        {
+            ClientDataManager.Client c = new ClientDataManager.Client();
+            c.Name = clientPicker.CurrentInputText;
+            ClientDataManager.AddClient(c);
+            resClient = c;
+        }
 
         if(resStartDate == null)
         {
