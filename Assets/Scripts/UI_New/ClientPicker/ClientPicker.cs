@@ -137,7 +137,7 @@ public class ClientPicker : MonoBehaviour, IClosable
 
         List<IClient> allClients = ClientDataManager.GetClients().ToList();
 
-        if(allClients.Exists(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)))
+        if(allClients != null && allClients.Exists(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)))
         {
             return allClients.FindAll(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)).OrderBy(c => c.Name).ToList();
         }
