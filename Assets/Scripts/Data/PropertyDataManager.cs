@@ -76,9 +76,14 @@ public static class PropertyDataManager
     /// this function does not save the new property to json
     /// </summary>
     /// <returns>Property object</returns>
-    public static IProperty AddProperty()
+    public static IProperty AddProperty(string name, bool withRooms, PropertyType propertyType)
     {
         Property newProperty = new Property();
+        newProperty.Name = name;
+        newProperty.HasRooms = withRooms;
+        newProperty.PropertyType = propertyType;
+        Data.properties.Add(newProperty);
+        WritePropertyData();
         return newProperty;
     }
 
@@ -100,16 +105,6 @@ public static class PropertyDataManager
         }
         property.SaveRoom(newRoom);
         property.GetPropertyRoomID = newRoom.ID;
-    }
-
-    /// <summary>
-    /// save the current property to json file
-    /// </summary>
-    /// <param name="property">selected property</param>
-    public static void SaveProperty(IProperty property)
-    { 
-        Data.properties.Add((Property)property);
-        WritePropertyData();
     }
 
     public static void SavePropertyData()
@@ -265,11 +260,6 @@ public static class PropertyDataManager
         public void SaveRoom(IRoom room)
         {
             rooms.Add((Room)room);
-            WritePropertyData();
-        }
-
-        public void SaveRoomData()
-        {
             WritePropertyData();
         }
 

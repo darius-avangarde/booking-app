@@ -127,8 +127,7 @@ public class PropertiesScreen : MonoBehaviour
     /// </summary>
     private void AddPropertyItem()
     {
-        IProperty property = PropertyDataManager.AddProperty();
-        propertyAdminScreen.OpenPropertyAdminScreen(property);
+        propertyAdminScreen.OpenPropertyAdminScreen(null);
     }
 
     /// <summary>

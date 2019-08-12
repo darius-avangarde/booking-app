@@ -106,7 +106,7 @@ public class RoomAdminScreen : MonoBehaviour
             Vector2Int bedInfo = setBedsNumber.GetCurrentBeds();
             currentRoom.SingleBeds = bedInfo.x;
             currentRoom.DoubleBeds = bedInfo.y;
-            currentProperty.SaveRoomData();
+            PropertyDataManager.SavePropertyData();
             navigator.GoBack();
             returnCallback?.Invoke();
         }

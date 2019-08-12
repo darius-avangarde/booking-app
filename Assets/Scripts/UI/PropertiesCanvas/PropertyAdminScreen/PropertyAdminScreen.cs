@@ -8,8 +8,6 @@ public class PropertyAdminScreen : MonoBehaviour
 {
     public event Action<int, int[]> SetMultipleRoomsFields = delegate { };
     public event Action MultipleRooms = delegate { };
-    //public event Action<bool> SetRoomsToggle = delegate { };
-    //public event Action GetRoomsToggle = delegate { };
     public event Action CheckSave = delegate { };
     public IProperty CurrentProperty { get; set; }
     public bool CanSave { get; set; } = true;
@@ -37,8 +35,6 @@ public class PropertyAdminScreen : MonoBehaviour
     private Text propertyScreenTitle = null;
     [SerializeField]
     private InputField propertyNameInputField = null;
-    //[SerializeField]
-   // private GameObject roomsToggleField = null;
     [SerializeField]
     private GameObject multipleRoomsField = null;
     [SerializeField]
@@ -66,14 +62,6 @@ public class PropertyAdminScreen : MonoBehaviour
         deleteButton.onClick.AddListener(() => DeleteProperty());
         calcelButton.onClick.AddListener(() => navigator.GoBack());
         setPropertyTypeDropdown.ChangePropertyType += SetPropertyType;
-
-        //toggleDialogOptions.TitleMessage = Constants.ADD_MULTIPLE_ROOMS;
-        //toggleDialogOptions.ConfirmText = Constants.CONFIRM;
-        //toggleDialogOptions.CancelText = Constants.DELETE_CANCEL;
-        //toggleDialogOptions.SetOptions(
-        //    new ToggleOption(Constants.REPLACE_ROOMS, () => MultipleRooms(true, true)),
-        //    new ToggleOption(Constants.ADD_OVER_ROOMS, () => MultipleRooms(false, true))
-        //    );
     }
 
     /// <summary>
@@ -82,13 +70,12 @@ public class PropertyAdminScreen : MonoBehaviour
     /// <param name="property">selected property</param>
     public void OpenPropertyAdminScreen(IProperty property)
     {
-        setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
-
         CurrentProperty = property;
-        if (CurrentProperty.Name != null)
+        if (CurrentProperty != null)
         {
             deleteButton.gameObject.SetActive(true);
             multipleRoomsField.SetActive(CurrentProperty.HasRooms);
+            setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
             if (CurrentProperty.HasRooms)
             {
                 //roomsToggleField.SetActive(true);
@@ -103,17 +90,9 @@ public class PropertyAdminScreen : MonoBehaviour
         else
         {
             deleteButton.gameObject.SetActive(false);
+            setPropertyTypeDropdown.SetPropertyType(0);
             setPropertyTypeDropdown.SetDropdownOptions(0, 3);
         }
-
-        ///Set room numbers if property is roomless
-        if(CurrentProperty != null && !CurrentProperty.HasRooms)
-            setBedsNumber.SetCurrentBeds(new Vector2Int(CurrentProperty.GetPropertyRoom().SingleBeds, CurrentProperty.GetPropertyRoom().DoubleBeds));
-        else
-            setBedsNumber.SetCurrentBeds(Vector2Int.zero);
-
-        setBedsNumber.gameObject.SetActive(!CurrentProperty.HasRooms);
-        ///
 
         SetPropertyFieldsText();
         navigator.GoTo(propertyAdminScreen);
@@ -127,30 +106,32 @@ public class PropertyAdminScreen : MonoBehaviour
     {
         if (CurrentProperty != null)
         {
-            propertyNameInputField.text = CurrentProperty.Name ?? "";
+            propertyNameInputField.text = CurrentProperty.Name;
             propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? LocalizedText.Instance.PropertyHeader[0] : LocalizedText.Instance.PropertyHeader[1];
-            if (!string.IsNullOrEmpty(CurrentProperty.Name))
+
+            //SetRoomsToggle(CurrentProperty.HasRooms);
+            if (CurrentProperty.HasRooms)
             {
-                //SetRoomsToggle(CurrentProperty.HasRooms);
-                if (CurrentProperty.HasRooms)
+                setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
+                if (CurrentProperty.Floors >= 0)
                 {
-                    setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
-                    if (CurrentProperty.Floors >= 0)
-                    {
-                        SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
-                    }
+                    SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
                 }
-                else
-                {
-                    setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType - 2;
-                }
+                setBedsNumber.SetCurrentBeds(Vector2Int.zero);
             }
             else
             {
-                setPropertyTypeDropdown.CurrentPropertyType = 0;
-                setPropertyTypeDropdown.SetPropertyType(0);
-                SetMultipleRoomsFields?.Invoke(0, new int[1]);
+                setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType - 2;
+                setBedsNumber.SetCurrentBeds(new Vector2Int(CurrentProperty.GetPropertyRoom().SingleBeds, CurrentProperty.GetPropertyRoom().DoubleBeds));
             }
+            setBedsNumber.gameObject.SetActive(!CurrentProperty.HasRooms);
+        }
+        else
+        {
+            propertyNameInputField.text = "";
+            setPropertyTypeDropdown.CurrentPropertyType = 0;
+            setPropertyTypeDropdown.SetPropertyType(0);
+            SetMultipleRoomsFields?.Invoke(0, new int[1]);
         }
     }
 
@@ -191,15 +172,12 @@ public class PropertyAdminScreen : MonoBehaviour
         CheckSave();
         if (CanSave)
         {
-            CurrentProperty.Name = propertyNameInputField.text;
-            CurrentProperty.HasRooms = withRooms;
-            if (CurrentProperty.HasRooms)
+            if (withRooms)
             {
                 shouldGoBack = false;
-                CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
+                CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType);
                 if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
                 {
-                    PropertyDataManager.SaveProperty(CurrentProperty);
                     propertyDropdownHandler.UpdateDropdown();
                 }
                 MultipleRooms();
@@ -209,13 +187,13 @@ public class PropertyAdminScreen : MonoBehaviour
                 shouldGoBack = true;
                 if (CurrentProperty.GetPropertyRoom() == null)
                 {
-                    CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
+                    CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType);
                     PropertyDataManager.CreatePropertyRoom(CurrentProperty);
                     CurrentProperty.GetPropertyRoom().Name = CurrentProperty.Name;
                 }
                 else
                 {
-                    CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType + 2;
+                    CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType + 2);
                 }
 
                 ///
@@ -226,13 +204,9 @@ public class PropertyAdminScreen : MonoBehaviour
 
                 if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
                 {
-                    PropertyDataManager.SaveProperty(CurrentProperty);
                     propertyDropdownHandler.UpdateDropdown();
                 }
-                else
-                {
-                    PropertyDataManager.SavePropertyData();
-                }
+                PropertyDataManager.SavePropertyData();
             }
 
             if (shouldGoBack)
