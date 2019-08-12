@@ -133,6 +133,8 @@ public class ClientPicker : MonoBehaviour, IClosable
         {
             return ClientDataManager.GetClients().ToList();
         }
-        return ClientDataManager.GetClients().Where(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)).OrderBy(c => c.Name).ToList();
+
+        List<IClient> output = ClientDataManager.GetClients().Where(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)).OrderBy(c => c.Name).ToList();
+        return output == null ? new List<IClient>() : output;
     }
 }

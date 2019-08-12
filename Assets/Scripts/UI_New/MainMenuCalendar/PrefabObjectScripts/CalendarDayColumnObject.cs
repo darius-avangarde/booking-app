@@ -40,6 +40,7 @@ public class CalendarDayColumnObject : MonoBehaviour
         linkedRoomObject = roomObject;
         dayButton.onClick.RemoveAllListeners();
         dayButton.onClick.AddListener(() => tapAction(objDate, ObjectRoom));
+        UpdateColors(ThemeManager.Instance.IsDarkTheme);
     }
 
     public void SetPosition(bool alsoEnable = false)
