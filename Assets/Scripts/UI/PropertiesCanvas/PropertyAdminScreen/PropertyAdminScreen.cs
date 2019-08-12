@@ -117,7 +117,6 @@ public class PropertyAdminScreen : MonoBehaviour
                 {
                     SetMultipleRoomsFields?.Invoke(CurrentProperty.Floors, CurrentProperty.FloorRooms);
                 }
-                setBedsNumber.SetCurrentBeds(Vector2Int.zero);
             }
             else
             {
@@ -128,6 +127,7 @@ public class PropertyAdminScreen : MonoBehaviour
         }
         else
         {
+            setBedsNumber.SetCurrentBeds(Vector2Int.zero);
             propertyNameInputField.text = "";
             setPropertyTypeDropdown.CurrentPropertyType = 0;
             setPropertyTypeDropdown.SetPropertyType(0);
@@ -175,25 +175,40 @@ public class PropertyAdminScreen : MonoBehaviour
             if (withRooms)
             {
                 shouldGoBack = false;
-                CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType);
-                if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
+                if (CurrentProperty == null)
                 {
-                    propertyDropdownHandler.UpdateDropdown();
+                    CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType);
+                }
+                else
+                {
+                    CurrentProperty.Name = propertyNameInputField.text;
+                    CurrentProperty.HasRooms = withRooms;
+                    CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType;
                 }
                 MultipleRooms();
             }
             else
             {
                 shouldGoBack = true;
-                if (CurrentProperty.GetPropertyRoom() == null)
+                if (CurrentProperty == null)
                 {
                     CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType);
+                }
+                else
+                {
+                    CurrentProperty.Name = propertyNameInputField.text;
+                    CurrentProperty.HasRooms = withRooms;
+                }
+                if (CurrentProperty.GetPropertyRoom() == null)
+                {
                     PropertyDataManager.CreatePropertyRoom(CurrentProperty);
                     CurrentProperty.GetPropertyRoom().Name = CurrentProperty.Name;
                 }
                 else
                 {
-                    CurrentProperty = PropertyDataManager.AddProperty(propertyNameInputField.text, withRooms, setPropertyTypeDropdown.CurrentPropertyType + 2);
+
+                    CurrentProperty.PropertyType = setPropertyTypeDropdown.CurrentPropertyType + 2;
+
                 }
 
                 ///
@@ -202,18 +217,15 @@ public class PropertyAdminScreen : MonoBehaviour
                 CurrentProperty.GetPropertyRoom().DoubleBeds = beds.y;
                 ///
 
-                if (PropertyDataManager.GetProperty(CurrentProperty.ID) == null)
-                {
-                    propertyDropdownHandler.UpdateDropdown();
-                }
                 PropertyDataManager.SavePropertyData();
             }
 
+            propertyDropdownHandler.UpdateDropdown();
+            reservationCallendar.SetPropertyToBeLoadedOnEnable(CurrentProperty);
             if (shouldGoBack)
             {
                 navigator.GoBack();
             }
-            reservationCallendar.SetPropertyToBeLoadedOnEnable(CurrentProperty);
         }
     }
 
