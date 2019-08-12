@@ -233,8 +233,8 @@ public class ReservationEditScreen_New : MonoBehaviour
             resEndDate = date.Date;
         }
 
-        startDateText.text = resStartDate.HasValue ? resStartDate.Value.ToString(Constants.DateTimePrintFormat) : "Din";
-        endDateText.text = resEndDate.HasValue ? resEndDate.Value.ToString(Constants.DateTimePrintFormat) : "Până în";
+        startDateText.text = resStartDate.HasValue ? resStartDate.Value.ToString(Constants.DateTimePrintFormat) : LocalizedText.Instance.Prepositions[0];
+        endDateText.text = resEndDate.HasValue ? resEndDate.Value.ToString(Constants.DateTimePrintFormat) : LocalizedText.Instance.Prepositions[1];
     }
 
     private void UpdatePropertyDropdown()
