@@ -171,7 +171,7 @@ public class ReservationsCalendarManager : MonoBehaviour
                 }
 
                 currentRooms = filteredRooms.ToList();
-                ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
+                ShowNoFilterMatchText(currentRooms.Count == 0 ? LocalizedText.Instance.ReservationFiltersTexts[0] : null);
             }
             else
             {
@@ -182,14 +182,14 @@ public class ReservationsCalendarManager : MonoBehaviour
                 }
                 else
                 {
-                    ShowNoFilterMatchText("Clientul selectat nu are rezervari pe această proprietate");
+                    ShowNoFilterMatchText(LocalizedText.Instance.ReservationFiltersTexts[1]);
                 }
             }
         }
         else
         {
             currentRooms = currentProperty.Rooms.ToList();
-            ShowNoFilterMatchText(currentRooms.Count == 0 ? "Nu există camere care să îndeplinească filtrele aplicate" : null);
+            ShowNoFilterMatchText(currentRooms.Count == 0 ? LocalizedText.Instance.ReservationFiltersTexts[0] : null);
         }
 
         return currentRooms;

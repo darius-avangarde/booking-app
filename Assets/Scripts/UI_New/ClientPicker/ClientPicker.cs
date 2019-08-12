@@ -92,7 +92,7 @@ public class ClientPicker : MonoBehaviour, IClosable
         if(matches.Count == 0)
         {
             noMatchesText.gameObject.SetActive(true);
-            noMatchesText.text = "Nu s-a găsit niciun client";
+            noMatchesText.text = LocalizedText.Instance.PlaceHolderNoClientsFound;
         }
         else
         {
