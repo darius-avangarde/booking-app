@@ -125,6 +125,54 @@ namespace UINavigation
         }
 
         /// <summary>
+        /// Adds _targetScreen_ to the stack and uses the set transition (if there is one, otherwise simply raises the apropriate NavScreen events).
+        /// </summary>
+        /// <param name="targetScreen"></param>
+        public void GoBackTo(NavScreen previousScreen)
+        {
+            if (!initialized)
+            {
+                Initialize();
+            }
+
+            if (screens.Count == 0 || !screens.Contains(previousScreen))
+            {
+                return;
+            }
+
+            if (!emptyPathAllowed && screens.Count == 1)
+            {
+                return;
+            }
+
+
+
+            if (transition == null)
+            {
+                CurrentScreen.OnHiding();
+                CurrentScreen.OnHidden();
+                if (previousScreen != null)
+                {
+                    previousScreen.OnShowing();
+                    previousScreen.OnShown();
+                }
+            }
+            else
+            {
+                StopAllCoroutines();
+                StartCoroutine(transition.PlayReverse(CurrentScreen, previousScreen));
+            }
+
+            for (int i = screens.Count -1; i >= 0; i--)
+            {
+                if(screens[i] != previousScreen)
+                    screens.RemoveAt(i);
+                else
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Removes the NavScreen at the top of the stack using the set transition.
         /// </summary>
         public void GoBack()
