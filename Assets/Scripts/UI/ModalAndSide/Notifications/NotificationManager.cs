@@ -87,7 +87,6 @@ public class NotificationManager : MonoBehaviour
                     newNotification.IntentData += $"{previousReservations[i].ID}\n";
                 }
                 newNotification.FireTime = fireTime.AddHours(-preAlert);
-                //newNotification.FireTime = DateTime.Now.AddMinutes(1);
                 newNotification.Style = NotificationStyle.BigTextStyle;
 
                 ReplaceNotification(notificationID, newNotification, channelId);
@@ -123,7 +122,7 @@ public class NotificationManager : MonoBehaviour
         List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date).ToList();
         IReservation otherReservation = allReservations.Find(r => r.ID != reservation.ID);
 
-        if (otherReservation != null)
+        if (otherReservation != null && otherReservation.NotificationID > 0)
         {
             if (NotificationDataManager.GetNotification(otherReservation.NotificationID).PreAlertTime == preAlertTime)
             {
@@ -140,7 +139,6 @@ public class NotificationManager : MonoBehaviour
             notification.IntentData += $"{allReservations[i].ID} & \n";
         }
         notification.FireTime = fireTime.AddHours(-preAlert);
-        //notification.FireTime = DateTime.Now.AddMinutes(1);
         notification.Style = NotificationStyle.BigTextStyle;
 
         if (notificationID > 0)
