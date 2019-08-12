@@ -93,6 +93,21 @@ public class LocalizedText : MonoBehaviour
         }
     }
 
+    public string[] ReservationFiltersTexts
+    {
+        get
+        {
+            return SetOptionsValues(option, "ReservationFiltersTexts");
+        }
+    }
+
+    public string PlaceHolderNoClientsFound
+    {
+        get
+        {
+            return SetTextValue(option, "PlaceHolderNoClientsFound");
+        }
+    }
     public string[] ErrorStateText
     {
         get

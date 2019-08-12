@@ -92,7 +92,7 @@ public class ClientPicker : MonoBehaviour, IClosable
         if(matches.Count == 0)
         {
             noMatchesText.gameObject.SetActive(true);
-            noMatchesText.text = "Nu s-a găsit niciun client";
+            noMatchesText.text = LocalizedText.Instance.PlaceHolderNoClientsFound;
         }
         else
         {
@@ -135,9 +135,11 @@ public class ClientPicker : MonoBehaviour, IClosable
             return ClientDataManager.GetClients().ToList();
         }
 
-        if(ClientDataManager.GetClients().Any(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)))
+        List<IClient> allClients = ClientDataManager.GetClients().ToList();
+
+        if(allClients.Exists(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)))
         {
-            return ClientDataManager.GetClients().Where(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)).OrderBy(c => c.Name).ToList();
+            return allClients.FindAll(c => c.Name.ToLower().StartsWith(inputString) || c.Number.ToLower().Contains(inputString)).OrderBy(c => c.Name).ToList();
         }
         else
         {
