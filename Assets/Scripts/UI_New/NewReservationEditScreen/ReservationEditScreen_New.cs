@@ -196,7 +196,7 @@ public class ReservationEditScreen_New : MonoBehaviour
 
         preAlertDropdownParent.SetActive(settings.ReadData().settings.ReceiveNotifications);
         preAlertDropdown.value = settings.ReadData().settings.PreAlertTime;
-        SetErrorAnState(null);
+        SetErrorAndState(null);
     }
 
     private void SelectProperty(int index)
@@ -285,84 +285,74 @@ public class ReservationEditScreen_New : MonoBehaviour
 
     private bool InputIsValid()
     {
-        if(resClient == null)
+        if(string.IsNullOrEmpty(clientPicker.CurrentInputText))
         {
-            if(ClientDataManager.GetClients().Any(c => c.Name.Equals(clientPicker.CurrentInputText)))
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[1]);
+            return false;
+        }
+        else
+        {
+            if(ClientDataManager.GetClients().Any(c => c.Name.Equals(clientPicker.CurrentInputText)))//client with name existis
             {
                 resClient = ClientDataManager.GetClients().ToList().Find(c => c.Name == clientPicker.CurrentInputText);
             }
-            else if(!string.IsNullOrEmpty(clientPicker.CurrentInputText))
+            else //Create client with name
             {
                 ClientDataManager.Client c = new ClientDataManager.Client();
                 c.Name = clientPicker.CurrentInputText;
                 ClientDataManager.AddClient(c);
                 resClient = c;
             }
-            else
-            {
-                SetErrorAnState(LocalizedText.Instance.ErrorStateText[1]);
-                return false;
-            }
         }
-        else if(ClientDataManager.GetClients().Any(c => c.Name.Equals(clientPicker.CurrentInputText)))
-        {
-            resClient = ClientDataManager.GetClients().ToList().Find(c => c.Name == clientPicker.CurrentInputText);
-        }
-        else if(!clientPicker.CurrentInputText.ToLower().Equals(resClient.Name.ToLower()))
-        {
-            ClientDataManager.Client c = new ClientDataManager.Client();
-            c.Name = clientPicker.CurrentInputText;
-            ClientDataManager.AddClient(c);
-            resClient = c;
-        }
+
 
         if(resStartDate == null)
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[3]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[3]);
             return false;
         }
 
         if(resEndDate == null)
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[2]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[2]);
             return false;
         }
 
         if(resStartDate.Value == resEndDate.Value)
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[7]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[7]);
             return false;
         }
 
         if(resProperty == null)
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[1]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[1]);
             return false;
         }
 
         if(resRooms.Count == 0)
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[4]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[4]);
             return false;
         }
 
         if(startDateText == endDateText)
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[5]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[5]);
             return false;
         }
 
         if (OverlapsOtherReservation(resStartDate.Value, resEndDate.Value))
         {
-            SetErrorAnState(LocalizedText.Instance.ErrorStateText[6]);
+            SetErrorAndState(LocalizedText.Instance.ErrorStateText[6]);
             return false;
         }
 
-        SetErrorAnState(string.Empty);
+        SetErrorAndState(string.Empty);
         return true;
     }
 
-    private void SetErrorAnState(string message)
+    private void SetErrorAndState(string message)
     {
         errorText.text = message;
         errorText.gameObject.SetActive(!string.IsNullOrEmpty(message));
