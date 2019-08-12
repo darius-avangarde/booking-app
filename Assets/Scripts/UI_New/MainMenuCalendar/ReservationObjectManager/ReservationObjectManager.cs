@@ -152,6 +152,14 @@ public class ReservationObjectManager : MonoBehaviour
         }
     }
 
+    public void DisableAllReservationObjects()
+    {
+        foreach (ReservationObject r in pool)
+        {
+            r.Disable();
+        }
+    }
+
     private void DrawColumnsReservation(IReservation r, List<CalendarDayColumn> columns)
     {
         foreach (CalendarDayColumnObject cdco in GetDateColumn(r, columns, out bool isStart).ActiveDayColumnsObjects)
@@ -245,14 +253,6 @@ public class ReservationObjectManager : MonoBehaviour
 
         CreateReservationObject();
         return pool[pool.Count -1];
-    }
-
-    private void DisableAllReservationObjects()
-    {
-        foreach (ReservationObject r in pool)
-        {
-            r.Disable();
-        }
     }
 
     private void CreateReservationObject()

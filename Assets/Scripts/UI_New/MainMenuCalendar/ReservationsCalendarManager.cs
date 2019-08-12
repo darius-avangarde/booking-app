@@ -226,6 +226,8 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     public void InitializeWithNoProperty()
     {
+        reservationManager.DisableAllReservationObjects();
+        currentProperty = null;
         roomColumn.UpdateRooms(new List<IRoom>());
         foreach(CalendarDayColumn dayColumn in dayColumns)
         {

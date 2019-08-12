@@ -287,7 +287,11 @@ public class ReservationEditScreen_New : MonoBehaviour
     {
         if(resClient == null)
         {
-            if(!string.IsNullOrEmpty(clientPicker.CurrentInputText))
+            if(ClientDataManager.GetClients().Any(c => c.Name.Equals(clientPicker.CurrentInputText)))
+            {
+                resClient = ClientDataManager.GetClients().ToList().Find(c => c.Name == clientPicker.CurrentInputText);
+            }
+            else if(!string.IsNullOrEmpty(clientPicker.CurrentInputText))
             {
                 ClientDataManager.Client c = new ClientDataManager.Client();
                 c.Name = clientPicker.CurrentInputText;
@@ -299,6 +303,10 @@ public class ReservationEditScreen_New : MonoBehaviour
                 SetErrorAnState(LocalizedText.Instance.ErrorStateText[1]);
                 return false;
             }
+        }
+        else if(ClientDataManager.GetClients().Any(c => c.Name.Equals(clientPicker.CurrentInputText)))
+        {
+            resClient = ClientDataManager.GetClients().ToList().Find(c => c.Name == clientPicker.CurrentInputText);
         }
         else if(!clientPicker.CurrentInputText.ToLower().Equals(resClient.Name.ToLower()))
         {
