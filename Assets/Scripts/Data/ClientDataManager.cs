@@ -60,7 +60,10 @@ public class ClientDataManager
     {
         return Data.clients.Find(p => p.ID.Equals(ID));
     }
-
+    public static IClient GetClientByName(string  name)
+    {
+        return Data.clients.Find(p => p.Name.Equals(name));
+    }
     public static IClient AddClient(Client newClient)
     {
         Data.clients.Add(newClient);
