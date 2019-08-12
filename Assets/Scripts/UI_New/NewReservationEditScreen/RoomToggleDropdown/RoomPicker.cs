@@ -76,6 +76,7 @@ public class RoomPicker : MonoBehaviour
     {
         if(!isOpening)
         {
+            pickerScrolrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * _recordOffsetY);
             fromDate = start;
             toDate = end;
             currentReservation = res;
@@ -198,8 +199,17 @@ public class RoomPicker : MonoBehaviour
 
     private bool IsRoomOccupied(IRoom room)
     {
+        string currentResId = (currentReservation != null) ? currentReservation.ID : string.Empty;
+
         if(fromDate.HasValue && toDate.HasValue)
-            return ReservationDataManager.IsRoomFreeOn(room, fromDate.Value, toDate.Value, (currentReservation != null) ? currentReservation.ID : string.Empty);
+            return ReservationDataManager.GetReservations().Where(r => r.ContainsRoom(room.ID)
+                && r.ID != currentResId)  //get room reservation excluding current curent
+                .Any(r =>
+                ((fromDate.Value.Date > r.Period.Start.Date && fromDate.Value.Date < r.Period.End.Date)   //start in period
+                || (toDate.Value.Date > r.Period.Start.Date   && toDate.Value.Date < r.Period.End.Date)   //end in period
+                || (fromDate.Value.Date < r.Period.Start.Date && toDate.Value.Date > r.Period.End.Date)   //selection engulfs other reservation
+                || r.Period.Start.Date == fromDate.Value.Date || r.Period.End.Date == toDate.Value.Date   //start or end coincide
+                ));
         else
             return false;
     }

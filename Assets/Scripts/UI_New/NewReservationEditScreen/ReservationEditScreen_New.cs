@@ -268,8 +268,7 @@ public class ReservationEditScreen_New : MonoBehaviour
         if(!resProperty.HasRooms)
             return;
 
-        List<IRoom> allRooms = resProperty.Rooms.ToList();
-        roomPicker.Initialize(allRooms, SelectRooms, resRooms);
+        roomPicker.Initialize(resProperty.Rooms.ToList(), SelectRooms, resRooms);
     }
 
     private void UpdatePreAletDropdown()
