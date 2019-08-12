@@ -20,12 +20,15 @@ public class ReservationOptionsDropdown : MonoBehaviour
 
     [SerializeField]
     private GameObject[] futureOnlyOptions;
+    [SerializeField]
+    private UnityEngine.UI.Text clientNameText;
 
     private IReservation currentReservation;
     private ConfirmationDialogOptions confirmationDialogOptions = new ConfirmationDialogOptions();
 
     public void OpenReservationMenu(IReservation clickReservation)
     {
+        clientNameText.text = clickReservation.CustomerName;
         bool isPast = clickReservation.Period.End.Date <= DateTime.Today.Date;
         foreach(GameObject g in futureOnlyOptions)
         {

@@ -141,7 +141,7 @@ public class ReservationsCalendarManager : MonoBehaviour
             dayColumns[i].SetDate(offsetDate.AddDays(i));
         }
 
-        reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
+        reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
 
         topCalendar.CloseDropdownCalendar();
     }
@@ -219,7 +219,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
         reservationsContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
-        reservationManager.SweepUpdateReservations(currentProperty, reservationOptions.OpenReservationMenu);
+        reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
     }
@@ -271,9 +271,6 @@ public class ReservationsCalendarManager : MonoBehaviour
     //Create enough day headers and day columns to cover the screen in landscape mode
     private void CreateDayItems()
     {
-        // float maxScreen = Mathf.Max(Screen.width, Screen.height);
-        // totalItemCount = Mathf.RoundToInt((maxScreen * 1.3f)/dayHeaderPrefab.GetComponent<RectTransform>().rect.width);
-        // Debug.Log(totalItemCount);
         totalItemCount = 19;
 
         for (int d = 0; d < totalItemCount; d++)
@@ -343,5 +340,11 @@ public class ReservationsCalendarManager : MonoBehaviour
             reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), currentProperty, room, date);
             scrollviewHandler.InstantSnap();
         }
+    }
+
+    private void ReservationObjectTapAction(IReservation res)
+    {
+        scrollviewHandler.InstantSnap();
+        reservationOptions.OpenReservationMenu(res);
     }
 }
