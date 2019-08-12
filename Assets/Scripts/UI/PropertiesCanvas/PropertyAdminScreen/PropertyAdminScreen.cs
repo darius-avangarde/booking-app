@@ -72,8 +72,6 @@ public class PropertyAdminScreen : MonoBehaviour
         if (CurrentProperty != null)
         {
             deleteButton.gameObject.SetActive(true);
-            multipleRoomsField.SetActive(CurrentProperty.HasRooms);
-            setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
             if (CurrentProperty.HasRooms)
             {
                 setPropertyTypeDropdown.SetDropdownOptions(0, 1);
@@ -82,12 +80,13 @@ public class PropertyAdminScreen : MonoBehaviour
             {
                 setPropertyTypeDropdown.SetDropdownOptions(2, 3);
             }
+            setPropertyTypeDropdown.SetPropertyType((int)property.PropertyType);
         }
         else
         {
             deleteButton.gameObject.SetActive(false);
-            setPropertyTypeDropdown.SetPropertyType(0);
             setPropertyTypeDropdown.SetDropdownOptions(0, 3);
+            setPropertyTypeDropdown.SetPropertyType(0);
         }
 
         SetPropertyFieldsText();
@@ -105,7 +104,6 @@ public class PropertyAdminScreen : MonoBehaviour
             propertyNameInputField.text = CurrentProperty.Name;
             propertyScreenTitle.text = string.IsNullOrEmpty(CurrentProperty.Name) ? LocalizedText.Instance.PropertyHeader[0] : LocalizedText.Instance.PropertyHeader[1];
 
-            //SetRoomsToggle(CurrentProperty.HasRooms);
             if (CurrentProperty.HasRooms)
             {
                 setPropertyTypeDropdown.CurrentPropertyType = CurrentProperty.PropertyType;
@@ -153,6 +151,7 @@ public class PropertyAdminScreen : MonoBehaviour
                 withRooms = false;
                 break;
             default:
+                withRooms = false;
                 break;
         }
         multipleRoomsField.SetActive(withRooms);
