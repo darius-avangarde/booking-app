@@ -35,18 +35,17 @@ public class ReservationObjectManager : MonoBehaviour
     }
 
 
-
     public void DisableUnseenReservations()
     {
         for (int i = 0; i < pool.Count; i++)
         {
-            if(pool[i].ObjRectTransform.position.x + pool[i].ObjRectTransform.rect.xMax < -Screen.width * 2 || pool[i].ObjRectTransform.position.x + pool[i].ObjRectTransform.rect.xMin > Screen.width * 3)
+            if(pool[i].ObjRectTransform.TransformPoint(pool[i].ObjRectTransform.rect.max).x < -Screen.width * 2 || pool[i].ObjRectTransform.TransformPoint(pool[i].ObjRectTransform.rect.min).x > Screen.width * 3)
             {
                 placedReservations.Remove(pool[i].ObjReservation);
                 pool[i].Disable();
             }
 
-            else if(pool[i].ObjRectTransform.position.y + pool[i].ObjRectTransform.rect.yMax < -Screen.height || pool[i].ObjRectTransform.position.y + pool[i].ObjRectTransform.rect.yMin > Screen.height * 2)
+            else if(pool[i].ObjRectTransform.TransformPoint(pool[i].ObjRectTransform.rect.max).y < -Screen.height || pool[i].ObjRectTransform.TransformPoint(pool[i].ObjRectTransform.rect.min).y > Screen.height * 2)
             {
                 placedReservations.Remove(pool[i].ObjReservation);
                 pool[i].Disable();
