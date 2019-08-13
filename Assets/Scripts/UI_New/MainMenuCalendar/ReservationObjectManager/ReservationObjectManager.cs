@@ -34,6 +34,59 @@ public class ReservationObjectManager : MonoBehaviour
         public Vector2 pivot;
     }
 
+    private Vector2 viewportBounds = Vector2.zero;
+    private Vector2 vpBounds
+    {
+        get
+        {
+            if (viewportBounds == Vector2.zero)
+            {
+                viewportBounds.x = reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.min).x;
+                viewportBounds.y = reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.max).x;
+            }
+            return viewportBounds;
+        }
+    }
+
+    private void LateUpdate() {
+        for (int i = 0; i < pool.Count; i++)
+        {
+            if(pool[i].gameObject.activeSelf)
+                ClampTextOnScreen(pool[i]);
+        }
+    }
+
+    private void ClampTextOnScreen(ReservationObject resObj)
+    {
+        if(resObj.ObjRectTransform.rect.width < resObj.ObjTextTransform.rect.width * 3)
+            return;
+
+        Vector2 objBoundsX;
+        objBoundsX.x = resObj.ObjRectTransform.TransformPoint(resObj.ObjRectTransform.rect.min).x;
+        objBoundsX.y = resObj.ObjRectTransform.TransformPoint(resObj.ObjRectTransform.rect.max).x;
+
+        float clampMin = Mathf.Max(objBoundsX.x, vpBounds.x) + resObj.ObjTextTransform.rect.width/2 + 120;
+        float clampMax = Mathf.Min(objBoundsX.y, vpBounds.y) - resObj.ObjTextTransform.rect.width/2;
+
+        if(resObj.ObjTextTransform.position.x < clampMax - 60 && resObj.ObjTextTransform.position.x > clampMin + 60)
+        {
+            return;
+        }
+        else
+        {
+            float targetCenterX = reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.center).x;
+            // Vector3 finalPosition = new Vector3(Mathf.Lerp(resObj.ObjTextTransform.position.x, Mathf.Clamp(targetCenterX, clampMin, clampMax), Time.deltaTime * 10f) , resObj.ObjTextTransform.position.y, resObj.ObjTextTransform.position.z);
+            // resObj.ObjTextTransform.localPosition = resObj.ObjTextTransform.InverseTransformPoint(finalPosition);
+            resObj.ObjTextTransform.position = new Vector3(Mathf.Lerp(resObj.ObjTextTransform.position.x, Mathf.Clamp(targetCenterX, clampMin, clampMax), Time.deltaTime * 10f) , resObj.ObjTextTransform.position.y, resObj.ObjTextTransform.position.z);;
+        }
+
+    }
+
+
+
+
+
+
 
     public void DisableUnseenReservations()
     {
