@@ -35,6 +35,9 @@ public class ReservationsCalendarManager : MonoBehaviour
     private ReservationEditScreen_New reservationEditScreen;
 
     [SerializeField]
+    private RectTransform roomViewParentTransform;
+
+    [SerializeField]
     private Text noFilterMatchText;
     [SerializeField]
     private GameObject noFilterMatchTextParent;
@@ -89,6 +92,7 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private void Start()
     {
+        HandlePropertySelector();
         roomColumnObjects = roomColumn.InitializeRoomColumn(EditRoomFromColumn);
         propertyDropdown.OnSelectProperty = SelectProperty;
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
@@ -103,7 +107,6 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
         StartCoroutine(DelayInfiniteScrollrectInitialization());
-        HandlePropertySelector();
     }
 
     private void OnEnable()
@@ -200,6 +203,7 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     public void SelectProperty(IProperty property)
     {
+        HandlePropertySelector();
         if(property == null)
         {
             if(PropertyDataManager.GetProperties().Count() > 0)
@@ -227,7 +231,6 @@ public class ReservationsCalendarManager : MonoBehaviour
         reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
-        HandlePropertySelector();
     }
 
     public void InitializeWithNoProperty()
@@ -364,14 +367,17 @@ public class ReservationsCalendarManager : MonoBehaviour
             case 0:
                 propertyDropdown.gameObject.SetActive(false);
                 addNewPropertyButton.SetActive(true);
+                roomViewParentTransform.offsetMin = new Vector2(roomViewParentTransform.offsetMin.x, 140);
                 break;
             case 1:
                 propertyDropdown.gameObject.SetActive(false);
                 addNewPropertyButton.SetActive(false);
+                roomViewParentTransform.offsetMin = new Vector2(roomViewParentTransform.offsetMin.x, 0);
                 break;
             default:
                 propertyDropdown.gameObject.SetActive(true);
                 addNewPropertyButton.SetActive(false);
+                roomViewParentTransform.offsetMin = new Vector2(roomViewParentTransform.offsetMin.x, 140);
                 break;
         }
 
