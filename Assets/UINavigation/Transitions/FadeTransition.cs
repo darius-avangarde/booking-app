@@ -73,14 +73,15 @@ public class FadeTransition : TransitionBase
 
         currentScreen.OnHidden();
         currentScreen.gameObject.SetActive(false);
+
+        yield return new WaitForEndOfFrame();
+        Handheld.StopActivityIndicator();
+
         if (previousScreen != null)
         {
             previousScreen.OnShown();
             SetCanvasGroups(previousScreen.CanvasGroups, true,true);
         }
-
-        yield return new WaitForEndOfFrame();
-        Handheld.StopActivityIndicator();
     }
 
     private void UpdateScreenFade(List<CanvasGroup> canvasGroups, float from, float to, float progress)
