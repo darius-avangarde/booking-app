@@ -23,10 +23,13 @@ public class CalendarDayColumnObject : MonoBehaviour
     private DateTime objDate;
     private CalendarRoomColumnObject linkedRoomObject;
 
-    private void Start()
+    private bool handledThemeManager = false;
+
+    private void HandleThemeManager()
     {
         ThemeManager.Instance.AddItems(separatorImage);
         ThemeManager.Instance.OnThemeChanged += UpdateColors;
+        handledThemeManager = true;
     }
 
     private void OnDestroy()
@@ -36,6 +39,9 @@ public class CalendarDayColumnObject : MonoBehaviour
 
     public void SetObjectAction(DateTime date, UnityAction<DateTime, IRoom> tapAction, CalendarRoomColumnObject roomObject)
     {
+        if(!handledThemeManager)
+            HandleThemeManager();
+
         objDate = date.Date;
         linkedRoomObject = roomObject;
         dayButton.onClick.RemoveAllListeners();

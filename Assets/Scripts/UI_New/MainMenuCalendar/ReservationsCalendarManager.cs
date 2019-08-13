@@ -21,6 +21,8 @@ public class ReservationsCalendarManager : MonoBehaviour
     [SerializeField]
     private PropertyDropdownHandler propertyDropdown;
     [SerializeField]
+    private GameObject addNewPropertyButton;
+    [SerializeField]
     private ReservationFilterScreen filterScreen;
     [SerializeField]
     private ReservationOptionsDropdown reservationOptions;
@@ -101,6 +103,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
         StartCoroutine(DelayInfiniteScrollrectInitialization());
+        HandlePropertySelector();
     }
 
     private void OnEnable()
@@ -224,6 +227,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+        HandlePropertySelector();
     }
 
     public void InitializeWithNoProperty()
@@ -241,6 +245,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+        HandlePropertySelector();
     }
 
     private IEnumerator DelayInfiniteScrollrectInitialization()
@@ -350,5 +355,25 @@ public class ReservationsCalendarManager : MonoBehaviour
     {
         scrollviewHandler.InstantSnap();
         reservationOptions.OpenReservationMenu(res);
+    }
+
+    private void HandlePropertySelector()
+    {
+        switch (PropertyDataManager.GetProperties().Count())
+        {
+            case 0:
+                propertyDropdown.gameObject.SetActive(false);
+                addNewPropertyButton.SetActive(true);
+                break;
+            case 1:
+                propertyDropdown.gameObject.SetActive(false);
+                addNewPropertyButton.SetActive(false);
+                break;
+            default:
+                propertyDropdown.gameObject.SetActive(true);
+                addNewPropertyButton.SetActive(false);
+                break;
+        }
+
     }
 }

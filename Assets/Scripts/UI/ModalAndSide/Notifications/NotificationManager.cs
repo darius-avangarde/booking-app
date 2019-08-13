@@ -84,7 +84,7 @@ public class NotificationManager : MonoBehaviour
                 for (int i = 0; i < previousReservations.Count; i++)
                 {
                     newNotification.Text += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
-                    newNotification.IntentData += $"{previousReservations[i].ID}\n";
+                    newNotification.IntentData += $"{previousReservations[i].ID} & \n";
                 }
                 newNotification.FireTime = reservationStart.AddHours(-preAlert);
                 newNotification.Style = NotificationStyle.BigTextStyle;
