@@ -108,6 +108,14 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "PlaceHolderNoClientsFound");
         }
     }
+
+    public string EditPropertyRooms
+    {
+        get
+        {
+            return SetTextValue(option, "EditPropertyRooms");
+        }
+    }
     public string[] ErrorStateText
     {
         get
