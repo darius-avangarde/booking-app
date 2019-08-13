@@ -300,6 +300,21 @@ public class LocalizedText : MonoBehaviour
             return SetOptionsValues(option, "EditMessage");
         }
     }
+
+    public string[] DeleteRoom
+    {
+        get
+        {
+            return SetOptionsValues(option, "DeleteRoom");
+        }
+    }
+    public string[] RoomsReservationMessage
+    {
+        get
+        {
+            return SetOptionsValues(option, "RoomsReservationMessage");
+        }
+    }
     public string[] HeaderClients
     {
         get
