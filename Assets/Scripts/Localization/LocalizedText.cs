@@ -301,18 +301,18 @@ public class LocalizedText : MonoBehaviour
         }
     }
 
-    public string[] DeleteRoom
+    public string DeleteRoom
     {
         get
         {
-            return SetOptionsValues(option, "DeleteRoom");
+            return SetTextValue(option, "DeleteRoom");
         }
     }
-    public string[] RoomsReservationMessage
+    public string RoomsReservationMessage
     {
         get
         {
-            return SetOptionsValues(option, "RoomsReservationMessage");
+            return SetTextValue(option, "RoomsReservationMessage");
         }
     }
     public string[] HeaderClients
