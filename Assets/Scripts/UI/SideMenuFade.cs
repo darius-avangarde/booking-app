@@ -6,13 +6,13 @@ public class SideMenuFade : MonoBehaviour, IClosable
 {
     [SerializeField]
     private RectTransform sideMenu;
-    private Vector2 firstPosition;
     [SerializeField]
     private GameObject sideMenuPanel;
     [SerializeField]
     private CanvasGroup sideMenuCanvasGroup;
     [SerializeField]
     private Image img;
+    private Vector2 firstPosition;
     private Color startColor = new Color(0, 0, 0, 0.5f);
     private Color finalColor = new Color(0, 0, 0, 0f);
 

@@ -8,8 +8,6 @@ using static ClientDataManager;
 public class ClientsEditScreen : MonoBehaviour
 {
     [SerializeField]
-    private ThemeManager theme;
-    [SerializeField]
     private ConfirmationDialog confirmationDialog = null;
     [SerializeField]
     private Navigator navigator = null;
@@ -27,11 +25,10 @@ public class ClientsEditScreen : MonoBehaviour
     [SerializeField]
     private Text textNameRequired;
     [SerializeField]
-    private InfoBox infoDialog = null;
-    [SerializeField]
     private ClientsScreen clientsScreen;
     [SerializeField]
     private ReservationsCalendarManager calendarManager;
+
     public IClient GetCurrentClient()
     {
         return currentClient;
@@ -103,11 +100,6 @@ public class ClientsEditScreen : MonoBehaviour
         textNameRequired.text = LocalizedText.Instance.NameRequired[0];
     }
 
-    public void ShowInfo()
-    {
-        infoDialog.Show(  $"{Environment.NewLine}*Câmpurile marcate cu steluță sunt obligatorii.");
-    }
-
     private void DeleteClientButton(Action actionDelete = null)
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -158,7 +150,6 @@ public class ClientsEditScreen : MonoBehaviour
         }
         else
         {
-           
             Client client = new Client();
             SetClient(client);
             if ((String.IsNullOrEmpty(clientEmail.text) == false && RegexUtilities.IsValidEmail(clientEmail.text.ToString()) == true) || String.IsNullOrEmpty(clientEmail.text))
