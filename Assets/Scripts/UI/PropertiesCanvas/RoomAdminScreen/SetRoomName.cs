@@ -43,7 +43,7 @@ public class SetRoomName : MonoBehaviour
         if (string.IsNullOrEmpty(value))
         {
             roomAdminScreen.CanSave = false;
-            roomNameCache = Constants.NEW_ROOM;
+            roomNameCache = string.Empty;
         }
         else
         {

@@ -55,7 +55,7 @@ public class PropertyButton : MonoBehaviour
     {
         propertyButtonItem.onClick.RemoveAllListeners();
         currentProperty = property;
-        propertyName.text = string.IsNullOrEmpty(property.Name) ? Constants.NEW_PROPERTY : $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
+        propertyName.text = $"{LocalizedText.Instance.PropertyItem}{Environment.NewLine}{currentProperty.Name}";
         for (int i = 0; i < propertyIcons.Length; i++)
         {
             if (propertyIcons[i].name == property.PropertyType.ToString())

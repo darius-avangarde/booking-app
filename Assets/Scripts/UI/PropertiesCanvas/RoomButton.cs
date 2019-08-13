@@ -61,7 +61,7 @@ public class RoomButton : MonoBehaviour
         floorNumberObject.SetActive(false);
         roomButtonObject.SetActive(true);
         transformComponent.sizeDelta = new Vector2(transformComponent.sizeDelta.x, 110);
-        roomName.text = string.IsNullOrEmpty(room.Name) ? Constants.NEW_ROOM : $"{LocalizedText.Instance.RoomItem} {room.Name}";
+        roomName.text = $"{LocalizedText.Instance.RoomItem} {room.Name}";
         currentRoom = room;
         roomButton.onClick.AddListener(() => roomCallback(room));
     }

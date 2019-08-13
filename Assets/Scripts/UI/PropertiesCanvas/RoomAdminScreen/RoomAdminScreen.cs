@@ -120,7 +120,7 @@ public class RoomAdminScreen : MonoBehaviour
     {
         if (currentProperty.HasRooms)
         {
-            modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? Constants.DELETE_ROOM_RESERVATIONS : Constants.DELETE_ROOM;
+            modalDialogOptions.Message = ReservationDataManager.GetActiveRoomReservations(currentRoom.ID).Count() > 0 ? LocalizedText.Instance.RoomsReservationMessage : LocalizedText.Instance.DeleteRoom;
         }
         else
         {

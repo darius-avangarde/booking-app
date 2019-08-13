@@ -87,7 +87,7 @@ public class PropertyRoomScreen : MonoBehaviour
         //scrollRectComponent.ResetAll();
         if (currentProperty != null)
         {
-            propertyRoomScreenTitle.text = string.IsNullOrEmpty(currentProperty.Name) ? Constants.PROPERTY : currentProperty.Name;
+            propertyRoomScreenTitle.text = currentProperty.Name;
             List<IRoom> currentRooms = currentProperty.Rooms.OrderBy(r => r.RoomNumber).ThenBy(r => r.Name).ToList();
             int neededObjects = currentRooms.Count + currentProperty.Floors;
             if (neededObjects != roomButtonsList.Count)

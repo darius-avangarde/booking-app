@@ -77,9 +77,9 @@ public class CreateMultipleRooms : MonoBehaviour
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
         {
-            Message = "Urmeaza sa se stearga cateva camere, se vor sterge si rezervarile acestora.",
-            ConfirmText = Constants.DELETE_CONFIRM,
-            CancelText = Constants.DELETE_CANCEL,
+            Message = LocalizedText.Instance.EditPropertyRooms,
+            ConfirmText = LocalizedText.Instance.ConfirmAction[0],
+            CancelText = LocalizedText.Instance.ConfirmAction[1],
             ConfirmCallback = () =>
             {
                 ChangeRooms();
