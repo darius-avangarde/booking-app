@@ -108,7 +108,13 @@ public class LocalizedText : MonoBehaviour
             return SetTextValue(option, "PlaceHolderNoClientsFound");
         }
     }
-
+    public string UpcomingReservations
+    {
+        get
+        {
+            return SetTextValue(option, "NewReservations");
+        }
+    }
     public string EditPropertyRooms
     {
         get
