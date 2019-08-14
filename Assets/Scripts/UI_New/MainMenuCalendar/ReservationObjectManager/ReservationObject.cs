@@ -9,6 +9,7 @@ public class ReservationObject : MonoBehaviour
 
     public IReservation ObjReservation => objReservation;
     public RectTransform ObjRectTransform => objectRectTransform;
+    public RectTransform ObjTextTransform => textRectTransform;
     public string ObjRoomID => objRoomID;
 
     [SerializeField]
@@ -41,6 +42,10 @@ public class ReservationObject : MonoBehaviour
         objRoomID = c.ObjectRoom.ID;
 
         clientNameText.text = reservation.CustomerName;
+
+        //reset position and set text size
+        textRectTransform.localPosition = new Vector3(0, textRectTransform.localPosition.y, textRectTransform.localPosition.z);
+        textRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Min(objectRectTransform.rect.width - 20, clientNameText.preferredWidth + 20));
     }
 
     public void ButtonAction()

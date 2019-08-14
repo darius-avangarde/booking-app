@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System.Collections;
 
 public class ReservationObjectManager : MonoBehaviour
 {
@@ -34,6 +35,10 @@ public class ReservationObjectManager : MonoBehaviour
         public Vector2 pivot;
     }
 
+    private void Start()
+    {
+        reservationsScrolrect.onValueChanged.AddListener(ClampTextOnScreen);
+    }
 
     public void DisableUnseenReservations()
     {
@@ -83,6 +88,8 @@ public class ReservationObjectManager : MonoBehaviour
                 placedReservations.Add(r);
             }
         }
+
+        InstantCenterTextOnScreen();
     }
 
     public void CreateReservationsForColumn(CalendarDayColumn dayColumn, IProperty property, bool isStart)
@@ -263,5 +270,40 @@ public class ReservationObjectManager : MonoBehaviour
     private bool IsReservationPlacedForRoom(IReservation reservation, IRoom room)
     {
         return pool.Exists(r => r.gameObject.activeSelf && r.ObjReservation.ID == reservation.ID && r.ObjRoomID == room.ID);
+    }
+
+    private void ClampTextOnScreen(Vector2 v)
+    {
+        Vector3 localLimits = new Vector3();
+        for (int i = 0; i < pool.Count; i++)
+        {
+            if(pool[i].gameObject.activeSelf && pool[i].ObjRectTransform.rect.width > pool[i].ObjTextTransform.rect.width * 3)
+            {
+                //X is left max local position, Y is right max local position and Z is target center position
+                localLimits.x = - pool[i].ObjRectTransform.rect.width/2 + pool[i].ObjTextTransform.rect.width/2 + 10;
+                localLimits.y =  pool[i].ObjRectTransform.rect.width/2  - pool[i].ObjTextTransform.rect.width/2 - 10;
+                localLimits.z = pool[i].ObjTextTransform.parent.InverseTransformPoint(reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.center)).x;
+
+                pool[i].ObjTextTransform.localPosition = new Vector3(Mathf.Lerp(pool[i].ObjTextTransform.localPosition.x, Mathf.Clamp(localLimits.z, localLimits.x, localLimits.y), Time.deltaTime * 10f) , pool[i].ObjTextTransform.localPosition.y, pool[i].ObjTextTransform.localPosition.z);
+            }
+        }
+    }
+
+    private void InstantCenterTextOnScreen()
+    {
+        Vector3 localLimits = new Vector3();
+
+        for (int i = 0; i < pool.Count; i++)
+        {
+            if(pool[i].gameObject.activeSelf && pool[i].ObjRectTransform.rect.width > pool[i].ObjTextTransform.rect.width * 3)
+            {
+                //X is left max local position, Y is right max local position and Z is target center position
+                localLimits.x = - pool[i].ObjRectTransform.rect.width/2 + pool[i].ObjTextTransform.rect.width/2 + 10;
+                localLimits.y =  pool[i].ObjRectTransform.rect.width/2  - pool[i].ObjTextTransform.rect.width/2 - 10;
+                localLimits.z = pool[i].ObjTextTransform.parent.InverseTransformPoint(reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.center)).x;
+
+                pool[i].ObjTextTransform.localPosition = new Vector3(Mathf.Clamp(localLimits.z, localLimits.x, localLimits.y), pool[i].ObjTextTransform.localPosition.y, pool[i].ObjTextTransform.localPosition.z);
+            }
+        }
     }
 }
