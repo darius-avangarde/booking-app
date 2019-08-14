@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public interface INotification 
 {
-    int NotificationID { get; set; }
+    string NotificationID { get; set; }
     int PreAlertTime { get; set; }
     DateTime FireTime { get; set; }
     bool UnRead { get; set; }

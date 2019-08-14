@@ -59,8 +59,6 @@ public class NotificationsScreen : MonoBehaviour
         {
             this.newReservations.Add(reservation);
         }
-        //int notificationsCount = newNotifications.Count();
-        //notificationBadge.SetNotificationBadge(notificationsCount);
     }
 
     public void Initialize()
@@ -69,7 +67,7 @@ public class NotificationsScreen : MonoBehaviour
         settingsManager.ReadData();
 
         currentReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date.AddHours(12) > DateTime.Now 
-                && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + (NotificationDataManager.GetNotification(r.NotificationID) != null 
+                && r.Period.Start.Date.AddHours(12) <= DateTime.Today.Date.AddHours(12 + (NotificationDataManager.GetNotification(r.NotificationID) != null
                 ? NotificationDataManager.GetNotification(r.NotificationID).PreAlertTime : LocalizedText.Instance.PreAlertDictFunction.ElementAt(settingsManager.DataElements.settings.PreAlertTime).Key))).ToList();
 
         currentReservations = currentReservations.OrderBy(r => r.Period.Start.Date).ToList();

@@ -50,7 +50,7 @@ public class NotificationDataManager : MonoBehaviour
         return newNotification;
     }
 
-    public static INotification GetNotification(int ID)
+    public static INotification GetNotification(string ID)
     {
         return Data.notification.Find(n => n.NotificationID == ID);
     }
@@ -87,7 +87,7 @@ public class NotificationDataManager : MonoBehaviour
     /// delete selected notification
     /// </summary>
     /// <param name="ID">notification id</param>
-    public static void DeleteNotification(int ID)
+    public static void DeleteNotification(string ID)
     {
         Notification notification = Data.notification.Find(n => n.NotificationID.Equals(ID));
         if (notification != null)
@@ -111,8 +111,8 @@ public class NotificationDataManager : MonoBehaviour
     private class Notification : INotification
     {
         [SerializeField]
-        private int notificationID = -1;
-        public int NotificationID
+        private string notificationID = null;
+        public string NotificationID
         {
             get => notificationID;
             set
