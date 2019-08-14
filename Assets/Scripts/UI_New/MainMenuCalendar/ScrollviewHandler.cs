@@ -9,9 +9,12 @@ using UnityEngine.UI;
 public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IPointerUpHandler
 {
     [SerializeField]
-    private ScrollRect RoomsColumnScrollrect;
+    private bool doVerticalSnap = false;
+
     [SerializeField]
-    private ScrollRect DayHeaderScrollrect;
+    private ScrollviewNoManualScroll RoomsColumnScrollrect;
+    [SerializeField]
+    private ScrollviewNoManualScroll DayHeaderScrollrect;
     [SerializeField]
     private ScrollRect DayColumnScrollrect;
     [SerializeField]
@@ -20,6 +23,8 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     [Space]
     [SerializeField]
     private RectTransform DayColumnPrefabRectTransform;
+    [SerializeField]
+    private RectTransform roomObjectPrefabTransform;
 
     [Space]
     [SerializeField]
@@ -29,14 +34,15 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
 
     private Vector2 startPos;
     private bool isSnaping = false;
-    private bool isScrolling = false;
+    //private bool isScrolling = false;
 
 
     private void Start()
     {
         DayColumnScrollrect.onValueChanged.AddListener(MatchPositionMain);
-        RoomsColumnScrollrect.onValueChanged.AddListener(MatchPositionRooms);
-        DayHeaderScrollrect.onValueChanged.AddListener(MatchPositionDayHeader);
+        DayHeaderScrollrect.SetControllingRect(DayColumnScrollrect,BeginSnap, false);
+        RoomsColumnScrollrect.SetControllingRect(DayColumnScrollrect, BeginSnap, true);
+
 
         //Set listeners for changing the content rect sizes (layout groups and content size fitters are disables for infinite scroll)
         ResolutionChangeManager.AddListener(MatchSize);
@@ -52,33 +58,32 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
     {
         CancelSnap();
         startPos = eventData.position;
-        isScrolling = true;
+        //isScrolling = true;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        CancelSnap();
+        if(isSnaping)
+            CancelSnap();
+
         LockDirection(Mathf.Abs(startPos.x - eventData.position.x) < Mathf.Abs(startPos.y - eventData.position.y));
-        isScrolling = true;
+        //isScrolling = true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        BeginSnap(DayColumnScrollrect);
+        BeginSnap();
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        BeginSnap(DayColumnScrollrect);
+        BeginSnap();
     }
 
-    public void BeginSnap(ScrollRect scrollRect)
+    public void BeginSnap()
     {
         if(!isSnaping)
-        {
-            StopAllCoroutines();
-            StartCoroutine(Snap(scrollRect));
-        }
+            StartCoroutine(Snap());
     }
 
     public void KillMainVelocity()
@@ -90,9 +95,13 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
 
     public void InstantSnap()
     {
-        float snapTo = NearestSnapPointX(DayColumnScrollrect);
-        DayColumnScrollrect.horizontalNormalizedPosition = snapTo;
-        DayHeaderScrollrect.horizontalNormalizedPosition = snapTo;
+        float snapToX = NearestSnapPointX();
+        DayColumnScrollrect.horizontalNormalizedPosition = snapToX;
+        DayHeaderScrollrect.horizontalNormalizedPosition = snapToX;
+
+        float snapToY = NearestSnapPointY();
+        DayColumnScrollrect.verticalNormalizedPosition = snapToY;
+        RoomsColumnScrollrect.verticalNormalizedPosition = snapToY;
     }
 
     public void CancelSnap(bool cancelIsScrolling = false)
@@ -100,8 +109,8 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         StopAllCoroutines();
         isSnaping = false;
 
-        if(cancelIsScrolling)
-            isScrolling = false;
+        //if(cancelIsScrolling)
+        //    isScrolling = false;
     }
 
     public void ForceMatchVerticalPosition()
@@ -111,29 +120,9 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
 
     private void MatchPositionMain(Vector2 position)
     {
-        if(isScrolling)
-        {
-            DayHeaderScrollrect.horizontalNormalizedPosition = position.x;
-        }
-
+        DayHeaderScrollrect.horizontalNormalizedPosition = position.x;
         RoomsColumnScrollrect.verticalNormalizedPosition = position.y;
         ReservationsColumnRect.position = DayColumnScrollrect.content.position;
-    }
-
-    private void MatchPositionDayHeader(Vector2 position)
-    {
-        if (!isScrolling)
-        {
-            DayColumnScrollrect.horizontalNormalizedPosition = position.x;
-        }
-    }
-
-    private void MatchPositionRooms(Vector2 position)
-    {
-        if (!isScrolling)
-        {
-            DayColumnScrollrect.verticalNormalizedPosition = position.y;
-        }
     }
 
     private void MatchSize()
@@ -148,35 +137,58 @@ public class ScrollviewHandler : MonoBehaviour, IInitializePotentialDragHandler,
         DayColumnScrollrect.horizontal = !isVertical;
     }
 
-    private IEnumerator Snap(ScrollRect scrollRect)
+    private IEnumerator Snap()
     {
         isSnaping = true;
         //presnap delay
         yield return new WaitForSeconds(0.5f);
 
-        float current = scrollRect.horizontalNormalizedPosition;
-        float target = NearestSnapPointX(scrollRect);
+        float currentX = DayColumnScrollrect.horizontalNormalizedPosition;
+        float targetX = NearestSnapPointX();
+
+        float currentY = DayColumnScrollrect.verticalNormalizedPosition;
+        float targetY = NearestSnapPointY();
 
         for (float t = 0.0f; t < 1.0f; t += Time.deltaTime/snapTime)
         {
-            scrollRect.horizontalNormalizedPosition = Mathf.Lerp(current, target, snapCurve.Evaluate(t));
+            DayColumnScrollrect.horizontalNormalizedPosition = Mathf.Lerp(currentX, targetX, snapCurve.Evaluate(t));
+            if(doVerticalSnap) DayColumnScrollrect.verticalNormalizedPosition = Mathf.Lerp(currentY, targetY, snapCurve.Evaluate(t));
             yield return null;
         }
-        scrollRect.horizontalNormalizedPosition = target;
+        DayColumnScrollrect.horizontalNormalizedPosition = targetX;
+        if(doVerticalSnap) DayColumnScrollrect.verticalNormalizedPosition = targetY;
         isSnaping = false;
-        isScrolling = false;
+        //isScrolling = false;
 
         System.GC.Collect();
     }
 
-    private float NearestSnapPointX(ScrollRect scrollRect)
+    private float NearestSnapPointX()
     {
-        float snapPos = scrollRect.horizontalNormalizedPosition;
+        float snapPosX = 1 - DayColumnScrollrect.horizontalNormalizedPosition;
 
-        float normalizedWidth = scrollRect.viewport.rect.width / (scrollRect.content.rect.width - scrollRect.viewport.rect.width) + 1;
-        float snapSize = normalizedWidth/scrollRect.content.childCount;
-        snapPos = Mathf.RoundToInt(scrollRect.horizontalNormalizedPosition/snapSize) * snapSize;
+        float normalizedWidth = DayColumnScrollrect.viewport.rect.width / (DayColumnScrollrect.content.rect.width - DayColumnScrollrect.viewport.rect.width) + 1;
+        float snapSizeX = normalizedWidth/DayColumnScrollrect.content.childCount;
+        snapPosX = Mathf.RoundToInt(DayColumnScrollrect.horizontalNormalizedPosition/snapSizeX) * snapSizeX;
 
-        return snapPos;
+        return snapPosX;
+    }
+
+    private float NearestSnapPointY()
+    {
+        float snapPosY = DayColumnScrollrect.verticalNormalizedPosition;
+
+        float normalizedHeight = DayColumnScrollrect.viewport.rect.height / (DayColumnScrollrect.content.rect.height - DayColumnScrollrect.viewport.rect.height) + 1;
+
+        float snapSizeY = normalizedHeight/(RoomsColumnScrollrect.content.rect.height/roomObjectPrefabTransform.rect.height);
+
+        float normalizedRemainder = 1 % snapSizeY; //The bit left at the top after placing objects to cover the viewport
+
+        snapPosY = Mathf.RoundToInt(DayColumnScrollrect.verticalNormalizedPosition/snapSizeY) * snapSizeY + normalizedRemainder;
+
+        if(snapPosY < snapSizeY ) //if the snap point is near/would be the last > snap to end
+            return 0;
+
+        return snapPosY;
     }
 }

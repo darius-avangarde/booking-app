@@ -44,7 +44,7 @@ public class ReservationObject : MonoBehaviour
         clientNameText.text = reservation.CustomerName;
 
         //reset position and set text size
-        textRectTransform.localPosition = new Vector3(0, textRectTransform.localPosition.y, textRectTransform.localPosition.z);
+        //textRectTransform.localPosition = new Vector3(0, textRectTransform.localPosition.y, textRectTransform.localPosition.z);
         textRectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Min(objectRectTransform.rect.width - 20, clientNameText.preferredWidth + 20));
     }
 
