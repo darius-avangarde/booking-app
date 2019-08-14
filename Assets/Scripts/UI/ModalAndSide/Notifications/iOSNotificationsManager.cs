@@ -8,16 +8,28 @@ using UINavigation;
 
 public class iOSNotificationsManager : MonoBehaviour
 {
-    private const string channelId = "Default";
-    private string reservationsTitle = "Rezervări apropiate:";
     private int preAlertTime = 0;
 
-    public void Initialize()
+    public void Initialize(Navigator navigator, NotificationsScreen notificationsScreen, NotificationBadge notificationBadge, string channelId)
     {
+        iOSNotification notification = iOSNotificationCenter.GetLastRespondedNotification();
+        if (notification != null)
+        {
+            List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.Identifier).ToList();
+            notificationsScreen.AddNewReservations(newReservations);
+            DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
+            navigator.GoTo(notificationsScreen.GetComponent<NavScreen>());
+        }
+        else
+        {
+            CheckDeliveredNotifications(notificationsScreen, notificationBadge);
+        }
+        iOSNotificationCenter.RemoveAllDeliveredNotifications();
         StartCoroutine(RequestAuthorization());
+        NotificationReceivedEvent(notificationsScreen, notificationBadge);
     }
 
-    public void RegisterNotification(IReservation reservation, int preAlert)
+    public void RegisterNotification(IReservation reservation, int preAlert, string title, string channelId)
     {
         preAlertTime = preAlert;
         string notificationID = reservation.NotificationID;
@@ -46,21 +58,21 @@ public class iOSNotificationsManager : MonoBehaviour
             if (previousReservations.Count() > 0)
             {
                 iOSNotification newNotification = new iOSNotification();
-                newNotification.Title = reservationsTitle;
+                newNotification.Title = title;
                 for (int i = 0; i < previousReservations.Count; i++)
                 {
                     newNotification.Body += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
                 }
                 newNotification.ShowInForeground = true;
-                newNotification.ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound);
+                newNotification.ForegroundPresentationOption = (PresentationOption.Alert & PresentationOption.Badge & PresentationOption.Sound);
+                newNotification.Badge = previousReservations.Count;
+                newNotification.CategoryIdentifier = "Reservations";
                 newNotification.ThreadIdentifier = channelId;
                 newNotification.Trigger = timeTrigger;
 
                 if (reservationStart > DateTime.Now)
                 {
-
-                    //replace notification
-
+                    ReplaceNotification(notificationID, newNotification);
                     if (notificationItem != null)
                     {
                         notificationItem.UnRead = true;
@@ -80,7 +92,8 @@ public class iOSNotificationsManager : MonoBehaviour
             }
             else
             {
-                //Cancel notification
+                iOSNotificationCenter.RemoveScheduledNotification(notificationID);
+                iOSNotificationCenter.RemoveDeliveredNotification(notificationID);
 
                 if (notificationItem != null)
                 {
@@ -104,13 +117,15 @@ public class iOSNotificationsManager : MonoBehaviour
             }
         }
         iOSNotification notification = new iOSNotification();
-        notification.Title = reservationsTitle;
+        notification.Title = title;
         for (int i = 0; i < allReservations.Count; i++)
         {
             notification.Body += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
         }
         notification.ShowInForeground = true;
-        notification.ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound);
+        notification.ForegroundPresentationOption = (PresentationOption.Alert & PresentationOption.Badge & PresentationOption.Sound);
+        notification.Badge = allReservations.Count;
+        notification.CategoryIdentifier = "Reservations";
         notification.ThreadIdentifier = channelId;
         notification.Trigger = timeTrigger;
 
@@ -118,9 +133,7 @@ public class iOSNotificationsManager : MonoBehaviour
         {
             if (reservationStart > DateTime.Now)
             {
-
-                //replace notification
-
+                ReplaceNotification(notificationID, notification);
                 if (notificationItem != null)
                 {
                     notificationItem.UnRead = true;
@@ -157,7 +170,7 @@ public class iOSNotificationsManager : MonoBehaviour
         }
     }
 
-    public void DeleteNotification(IReservation reservation)
+    public void DeleteNotification(IReservation reservation, string title, string channelId)
     {
         string notificationID = reservation.NotificationID;
         if (!string.IsNullOrEmpty(notificationID))
@@ -192,23 +205,35 @@ public class iOSNotificationsManager : MonoBehaviour
                 Repeats = false
             };
             iOSNotification notification = new iOSNotification();
-            notification.Title = reservationsTitle;
+            notification.Title = title;
             for (int i = 0; i < allReservations.Count; i++)
             {
                 notification.Body += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
             }
             notification.ShowInForeground = true;
-            notification.ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound);
+            notification.ForegroundPresentationOption = (PresentationOption.Alert & PresentationOption.Badge & PresentationOption.Sound);
+            notification.Badge = allReservations.Count;
+            notification.CategoryIdentifier = "Reservations";
             notification.ThreadIdentifier = channelId;
             notification.Trigger = timeTrigger;
+
+            ReplaceNotification(notificationID, notification);
             notificationItem.UnRead = true;
             notificationItem.SetReservationIDs(allReservations);
         }
     }
 
+    private void ReplaceNotification(string ID, iOSNotification notification)
+    {
+        iOSNotificationCenter.RemoveScheduledNotification(ID);
+        iOSNotificationCenter.RemoveDeliveredNotification(ID);
+        notification.Identifier = ID;
+        iOSNotificationCenter.ScheduleNotification(notification);
+    }
+
     private IEnumerator RequestAuthorization()
     {
-        using (AuthorizationRequest req = new AuthorizationRequest(AuthorizationOption.Alert | AuthorizationOption.Badge, true))
+        using (AuthorizationRequest req = new AuthorizationRequest(AuthorizationOption.Alert & AuthorizationOption.Badge & AuthorizationOption.Sound, false))
         {
             while (!req.IsFinished)
             {
@@ -222,5 +247,30 @@ public class iOSNotificationsManager : MonoBehaviour
             res += "\n deviceToken:  " + req.DeviceToken;
             Debug.Log(res);
         }
+    }
+
+    private void CheckDeliveredNotifications(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge)
+    {
+        iOSNotification[] notifications = iOSNotificationCenter.GetDeliveredNotifications();
+        for (int i = 0; i < notifications.Length; i++)
+        {
+            if (NotificationDataManager.GetNotification(notifications[i].Identifier).UnRead)
+            {
+                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].Identifier).ToList();
+                notificationsScreen.AddNewReservations(newReservations);
+                DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
+            }
+        }
+    }
+
+    private void NotificationReceivedEvent(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge)
+    {
+        iOSNotificationCenter.OnNotificationReceived += notification =>
+        {
+            iOSNotificationCenter.RemoveAllDeliveredNotifications();
+            List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.Identifier).ToList();
+            notificationsScreen.AddNewReservations(newReservations);
+            DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
+        };
     }
 }

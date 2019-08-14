@@ -16,29 +16,41 @@ public class NotificationManager : MonoBehaviour
     [SerializeField]
     private NotificationBadge notificationBadge = null;
     [SerializeField]
+    private SettingsManager settingsManager = null;
+    [SerializeField]
     private AndroidNotificationsManager androidNotificationsManager = null;
     [SerializeField]
     private iOSNotificationsManager iOSNotificationsManager = null;
 
     private const string channelId = "Default";
-    private string reservationsTitle = "Rezervări apropiate:";
-    private int preAlertTime = 0;
+    private string reservationsTitle = LocalizedText.Instance.UpcomingReservations;
 
     private void Start()
     {
-      //#if !UNITY_EDITOR && UNITY_ANDROID
+        LocalizedText.Instance.OnLanguageChanged.AddListener(UpdateAllNotifications);
+#if !UNITY_EDITOR && UNITY_ANDROID
         androidNotificationsManager.Initialize(navigator, notificationsScreen, notificationBadge, channelId);
-      //#endif
-      //#if !UNITY_EDITOR && UNITY_IOS
-        iOSNotificationsManager.Initialize();
-      //#endif
+#endif
+#if !UNITY_EDITOR && UNITY_IOS
+        iOSNotificationsManager.Initialize(navigator, notificationsScreen, notificationBadge, channelId);
+#endif
+    }
+
+    private void UpdateAllNotifications()
+    {
+        settingsManager.ReadData();
+        List<IReservation> allReservations = ReservationDataManager.GetReservations().ToList();
+        for (int i = 0; i < allReservations.Count; i++)
+        {
+            RegisterNotification(allReservations[i], settingsManager.DataElements.settings.PreAlertTime);
+        }
     }
 
     /// <summary>
     /// when the time before a notification is set in the set-up menu, 
     /// this function should be called to update all current notifications according to new setting
     /// </summary>
-    public void UpdateAllNotifications(int previousPreAlert, int newPreAlert)
+    public void UpdateDefaultNotifications(int previousPreAlert, int newPreAlert)
     {
         List<IReservation> previousReservations = ReservationDataManager.GetReservations().ToList();
         for (int i = 0; i < previousReservations.Count; i++)
@@ -58,21 +70,21 @@ public class NotificationManager : MonoBehaviour
     /// <param name="enumValue">value for period before a notification fires</param>
     public void RegisterNotification(IReservation reservation, int preAlert)
     {
-      //#if !UNITY_EDITOR && UNITY_ANDROID
+#if !UNITY_EDITOR && UNITY_ANDROID
         androidNotificationsManager.RegisterNotification(reservation, preAlert, reservationsTitle, channelId);
-      //#endif
-      //#if !UNITY_EDITOR && UNITY_IOS
-        iOSNotificationsManager.RegisterNotification(reservation, preAlert);
-      //#endif
+#endif
+#if !UNITY_EDITOR && UNITY_IOS
+        iOSNotificationsManager.RegisterNotification(reservation, preAlert, reservationsTitle, channelId);
+#endif
     }
 
     public void DeleteNotification(IReservation reservation)
     {
-      //#if !UNITY_EDITOR && UNITY_ANDROID
-        androidNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
-      //#endif
-      //#if !UNITY_EDITOR && UNITY_IOS
-        iOSNotificationsManager.DeleteNotification(reservation);
-      //#endif
+#if !UNITY_EDITOR && UNITY_ANDROID
+      androidNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
+#endif
+#if !UNITY_EDITOR && UNITY_IOS
+      iOSNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
+#endif
     }
 }

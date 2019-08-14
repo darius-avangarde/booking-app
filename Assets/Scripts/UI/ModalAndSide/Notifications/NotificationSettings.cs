@@ -40,7 +40,7 @@ public class NotificationSettings : MonoBehaviour
         previousSelectedOption = selectedOption;
         selectedOption = value;
         settingsManager.DataElements.settings.PreAlertTime = selectedOption;
-        notificatoinManager.UpdateAllNotifications(previousSelectedOption, LocalizedText.Instance.PreAlertDictFunction.ElementAt(selectedOption).Key);
+        notificatoinManager.UpdateDefaultNotifications(previousSelectedOption, LocalizedText.Instance.PreAlertDictFunction.ElementAt(selectedOption).Key);
         settingsManager.WriteData();
     }
 
