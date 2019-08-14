@@ -94,19 +94,20 @@ public class ReservationsCalendarManager : MonoBehaviour
     {
         HandlePropertySelector();
         roomColumnObjects = roomColumn.InitializeRoomColumn(EditRoomFromColumn);
-        propertyDropdown.OnSelectProperty = SelectProperty;
+        propertyDropdown.OnSelectProperty = (p) => SelectProperty(p);
         dayColumnInfScroll.onMoveItem = UpdateDayColumnDate;
         CreateDayItems();
 
+        dayHeaderInfScroll.Init();
+        dayColumnInfScroll.Init();
+
         //Load property with most rooms to initialize day columns/items;
         if(PropertyDataManager.GetProperties().Count() > 0)
-            SelectProperty(PropertyDataManager.GetProperties().ToList()[0]);
+            SelectProperty(PropertyDataManager.GetProperties().ToList()[0], true);
         else
             InitializeWithNoProperty();
 
-        //Infinite scrollrects need to initialize after the day column items/ day header items are spawned
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
-        StartCoroutine(DelayInfiniteScrollrectInitialization());
     }
 
     private void OnEnable()
@@ -201,7 +202,7 @@ public class ReservationsCalendarManager : MonoBehaviour
         return currentRooms;
     }
 
-    public void SelectProperty(IProperty property)
+    public void SelectProperty(IProperty property, bool delayReservationPlacement = false)
     {
         HandlePropertySelector();
         if(property == null)
@@ -228,9 +229,13 @@ public class ReservationsCalendarManager : MonoBehaviour
         //Resize the day column content rect size to fit the number of rooms
         dayColumnScrollrect.content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
         reservationsContent.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currentRooms.Count * dayColumnObjectTransform.rect.height);
-        reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(dayColumnScrollrect.content);
+
+        if(delayReservationPlacement)
+            StartCoroutine(DelayUpdateReservations());
+        else
+            reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
     }
 
     public void InitializeWithNoProperty()
@@ -251,11 +256,10 @@ public class ReservationsCalendarManager : MonoBehaviour
         HandlePropertySelector();
     }
 
-    private IEnumerator DelayInfiniteScrollrectInitialization()
+    private IEnumerator DelayUpdateReservations()
     {
-        yield return null;
-        dayHeaderInfScroll.Init();
-        dayColumnInfScroll.Init();
+        yield return new WaitForEndOfFrame();
+        reservationManager.SweepUpdateReservations(currentProperty, ReservationObjectTapAction);
     }
 
     private void EditRoomCallback()
@@ -356,6 +360,13 @@ public class ReservationsCalendarManager : MonoBehaviour
 
     private void ReservationObjectTapAction(IReservation res)
     {
+#if UNITY_EDITOR
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            reservationEditScreen.OpenEditScreen((r) => JumpToDate(r.Period.Start.Date), res);
+            return;
+        }
+#endif
         scrollviewHandler.InstantSnap();
         reservationOptions.OpenReservationMenu(res);
     }
