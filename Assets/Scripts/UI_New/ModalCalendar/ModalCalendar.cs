@@ -117,10 +117,13 @@ public class ModalCalendar : MonoBehaviour, IClosable
 
     public void ChangeMonth(int monthOffset)
     {
-        focusDateTime = focusDateTime.AddMonths(monthOffset).Date;
-        StopAllCoroutines();
-        isSliding = false;
-        StartCoroutine(Swipe(monthOffset < 0));
+        if(!isSliding)
+        {
+            focusDateTime = focusDateTime.AddMonths(monthOffset).Date;
+            StopAllCoroutines();
+            isSliding = false;
+            StartCoroutine(Swipe(monthOffset < 0));
+        }
     }
 
     // Update is called once per frame

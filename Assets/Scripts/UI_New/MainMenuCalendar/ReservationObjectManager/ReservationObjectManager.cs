@@ -127,7 +127,9 @@ public class ReservationObjectManager : MonoBehaviour
                 if(!IsReservationPlacedForRoom(res, focalRoom))
                 {
                     PointSize p = CalculatePositionSpan(true, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                    GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                    ReservationObject g = GetFreeReservationObject();
+                    g.PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                    g.ObjTextTransform.localPosition = ScreenCenteredLocalPosition(g);
                     roomReservations.Remove(res);
                 }
             }
@@ -138,7 +140,9 @@ public class ReservationObjectManager : MonoBehaviour
                 if(!IsReservationPlacedForRoom(res, focalRoom))
                 {
                     PointSize p = CalculatePositionSpan(false, (int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                    GetFreeReservationObject().PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                    ReservationObject g = GetFreeReservationObject();
+                    g.PlaceUpdateObject(p, dayObjects[i], res, reservationButtonAction);
+                    g.ObjTextTransform.localPosition = ScreenCenteredLocalPosition(g);
                     roomReservations.Remove(res);
                 }
             }
@@ -151,7 +155,9 @@ public class ReservationObjectManager : MonoBehaviour
                 if(!IsReservationPlacedForRoom(res, focalRoom))
                 {
                     PointSize p = CalculatePositionSpan((int)(res.Period.End.Date - res.Period.Start.Date).TotalDays, (int)(columns[0].ObjectDate.Date - res.Period.Start.Date).TotalDays, dayObjects[i].DayRectTransform);
-                    GetFreeReservationObject().PlaceUpdateObject(p, firstDayObject, res, reservationButtonAction);
+                    ReservationObject g = GetFreeReservationObject();
+                    g.PlaceUpdateObject(p, firstDayObject, res, reservationButtonAction);
+                    g.ObjTextTransform.localPosition = ScreenCenteredLocalPosition(g);
                     roomReservations.Remove(res);
                 }
             }
@@ -173,7 +179,9 @@ public class ReservationObjectManager : MonoBehaviour
             if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
+                ReservationObject g = GetFreeReservationObject();
+                g.PlaceUpdateObject(p, cdco, r, reservationButtonAction);
+                g.ObjTextTransform.localPosition = ScreenCenteredLocalPosition(g);
             }
         }
     }
@@ -185,7 +193,9 @@ public class ReservationObjectManager : MonoBehaviour
             if(cdco.ObjectRoom != null && r.ContainsRoom(cdco.ObjectRoom.ID))
             {
                 PointSize p = CalculatePositionSpan(isStart, (int)(r.Period.End.Date - r.Period.Start.Date).TotalDays, cdco.DayRectTransform);
-                GetFreeReservationObject().PlaceUpdateObject(p, cdco, r, reservationButtonAction);
+                ReservationObject g = GetFreeReservationObject();
+                g.PlaceUpdateObject(p, cdco, r, reservationButtonAction);
+                g.ObjTextTransform.localPosition = ScreenCenteredLocalPosition(g);
             }
         }
     }
@@ -274,36 +284,39 @@ public class ReservationObjectManager : MonoBehaviour
 
     private void ClampTextOnScreen(Vector2 v)
     {
-        Vector3 localLimits = new Vector3();
         for (int i = 0; i < pool.Count; i++)
         {
             if(pool[i].gameObject.activeSelf && pool[i].ObjRectTransform.rect.width > pool[i].ObjTextTransform.rect.width * 3)
             {
-                //X is left max local position, Y is right max local position and Z is target center position
-                localLimits.x = - pool[i].ObjRectTransform.rect.width/2 + pool[i].ObjTextTransform.rect.width/2 + 10;
-                localLimits.y =  pool[i].ObjRectTransform.rect.width/2  - pool[i].ObjTextTransform.rect.width/2 - 10;
-                localLimits.z = pool[i].ObjTextTransform.parent.InverseTransformPoint(reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.center)).x;
-
-                pool[i].ObjTextTransform.localPosition = new Vector3(Mathf.Lerp(pool[i].ObjTextTransform.localPosition.x, Mathf.Clamp(localLimits.z, localLimits.x, localLimits.y), Time.deltaTime * 10f) , pool[i].ObjTextTransform.localPosition.y, pool[i].ObjTextTransform.localPosition.z);
+                pool[i].ObjTextTransform.localPosition = Vector3.Lerp(pool[i].ObjTextTransform.localPosition, ScreenCenteredLocalPosition(pool[i]), Time.deltaTime * 7.5f);
             }
         }
     }
 
     private void InstantCenterTextOnScreen()
     {
-        Vector3 localLimits = new Vector3();
-
         for (int i = 0; i < pool.Count; i++)
         {
-            if(pool[i].gameObject.activeSelf && pool[i].ObjRectTransform.rect.width > pool[i].ObjTextTransform.rect.width * 3)
-            {
-                //X is left max local position, Y is right max local position and Z is target center position
-                localLimits.x = - pool[i].ObjRectTransform.rect.width/2 + pool[i].ObjTextTransform.rect.width/2 + 10;
-                localLimits.y =  pool[i].ObjRectTransform.rect.width/2  - pool[i].ObjTextTransform.rect.width/2 - 10;
-                localLimits.z = pool[i].ObjTextTransform.parent.InverseTransformPoint(reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.center)).x;
+            pool[i].ObjTextTransform.localPosition = ScreenCenteredLocalPosition(pool[i]);
+        }
+    }
 
-                pool[i].ObjTextTransform.localPosition = new Vector3(Mathf.Clamp(localLimits.z, localLimits.x, localLimits.y), pool[i].ObjTextTransform.localPosition.y, pool[i].ObjTextTransform.localPosition.z);
-            }
+    private Vector3 ScreenCenteredLocalPosition(ReservationObject resOj)
+    {
+        Vector3 localLimits = new Vector3();
+
+        if(resOj.gameObject.activeSelf && resOj.ObjRectTransform.rect.width > resOj.ObjTextTransform.rect.width * 3)
+        {
+            //X is left max local position, Y is right max local position and Z is target center position
+            localLimits.x = - resOj.ObjRectTransform.rect.width/2 + resOj.ObjTextTransform.rect.width/2 + 20;
+            localLimits.y =  resOj.ObjRectTransform.rect.width/2  - resOj.ObjTextTransform.rect.width/2 - 20;
+            localLimits.z = resOj.ObjTextTransform.parent.InverseTransformPoint(reservationsScrolrect.viewport.TransformPoint(reservationsScrolrect.viewport.rect.center)).x;
+
+            return new Vector3(Mathf.Clamp(localLimits.z, localLimits.x, localLimits.y), resOj.ObjTextTransform.localPosition.y, resOj.ObjTextTransform.localPosition.z);
+        }
+        else
+        {
+            return Vector3.zero;
         }
     }
 }
