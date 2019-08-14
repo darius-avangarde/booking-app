@@ -43,10 +43,6 @@ public class RoomFieldsHandler : MonoBehaviour
 
     private void OnDisable()
     {
-        for (int i = 0; i < floorItemList.Count; i++)
-        {
-            floorItemList[i].gameObject.SetActive(false);
-        }
         allMultipleRoomsFields.text = string.Empty;
     }
 
