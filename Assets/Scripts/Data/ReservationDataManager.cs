@@ -294,8 +294,8 @@ public static class ReservationDataManager
         private long createdTicks;
         public DateTime CreatedDateTime => new DateTime(createdTicks);
 
-        private int notitficationID;
-        public int NotificationID
+        private string notitficationID;
+        public string NotificationID
         {
             get => notitficationID;
             set
@@ -307,7 +307,7 @@ public static class ReservationDataManager
 
         }
 
-        public Reservation(List<IRoom> rooms, string customerID, DateTime start, DateTime end, int notitficationID = -1)
+        public Reservation(List<IRoom> rooms, string customerID, DateTime start, DateTime end, string notitficationID = null)
         {
             this.id = Guid.NewGuid().ToString();
             this.propertyID = rooms[0].PropertyID;
@@ -337,9 +337,9 @@ public static class ReservationDataManager
             WriteReservationData();
         }
 
-        public void UpdateReservationNotificationID(int notitficationID)
+        public void UpdateReservationNotificationID(string newNotitficationID)
         {
-            this.notitficationID = notitficationID;
+            notitficationID = newNotitficationID;
             WriteReservationData();
         }
 
