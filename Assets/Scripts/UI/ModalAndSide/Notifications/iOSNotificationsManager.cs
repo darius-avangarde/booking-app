@@ -28,6 +28,7 @@ public class iOSNotificationsManager : MonoBehaviour
             CheckDeliveredNotifications(notificationsScreen, notificationBadge);
         }
         iOSNotificationCenter.RemoveAllDeliveredNotifications();
+        iOSNotificationCenter.ApplicationBadge = 0;
         StartCoroutine(RequestAuthorization());
         NotificationReceivedEvent(notificationsScreen, notificationBadge);
     }
@@ -39,15 +40,12 @@ public class iOSNotificationsManager : MonoBehaviour
         INotification notificationItem = NotificationDataManager.GetNotification(notificationID);
         DateTime reservationStart = reservation.Period.Start.Date.AddHours(12);
         DateTime fireTime = reservationStart.AddHours(-preAlert);
-        TimeSpan notificationTime = new TimeSpan();
+        TimeSpan notificationTime = new TimeSpan(0, 0, 1);
         if (fireTime >= DateTime.Now)
         {
             notificationTime = fireTime - DateTime.Now;
         }
-        else
-        {
-            notificationTime = DateTime.Now - fireTime;
-        }
+
         iOSNotificationTimeIntervalTrigger timeTrigger = new iOSNotificationTimeIntervalTrigger()
         {
             TimeInterval = notificationTime,
@@ -193,15 +191,12 @@ public class iOSNotificationsManager : MonoBehaviour
         {
             List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date && r.NotificationID == notificationID && r.ID != reservation.ID).ToList();
 
-            TimeSpan notificationTime = new TimeSpan();
+            TimeSpan notificationTime = new TimeSpan(0, 0, 1);
             if (notificationItem.FireTime >= DateTime.Now)
             {
                 notificationTime = notificationItem.FireTime - DateTime.Now;
             }
-            else
-            {
-                notificationTime = DateTime.Now - notificationItem.FireTime;
-            }
+
             iOSNotificationTimeIntervalTrigger timeTrigger = new iOSNotificationTimeIntervalTrigger()
             {
                 TimeInterval = notificationTime,
@@ -273,6 +268,7 @@ public class iOSNotificationsManager : MonoBehaviour
                 List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].NotificationID).ToList();
                 notificationsScreen.AddNewReservations(newReservations);
                 DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
+                Debug.Log($"new notification: {notifications[i].NotificationID}");
             }
         }
     }
@@ -285,6 +281,7 @@ public class iOSNotificationsManager : MonoBehaviour
             List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.Identifier).ToList();
             notificationsScreen.AddNewReservations(newReservations);
             DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
+            Debug.Log($"notification received event: {notification.Identifier}");
         };
     }
 #endif
