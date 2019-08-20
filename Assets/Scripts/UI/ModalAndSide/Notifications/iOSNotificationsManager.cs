@@ -243,7 +243,6 @@ public class iOSNotificationsManager : MonoBehaviour
             res += "\n granted :  " + req.Granted;
             res += "\n error:  " + req.Error;
             res += "\n deviceToken:  " + req.DeviceToken;
-            Debug.Log(res);
         }
     }
 

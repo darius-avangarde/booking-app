@@ -222,15 +222,8 @@ public class ClientsScreen : MonoBehaviour
         }
         else
         {
-            string subject = MyEscapeURL("Custom application development");
-            Application.OpenURL("mailto:" + currentClient.Email + "?subject=" + subject);
+            Application.OpenURL("mailto:" + currentClient.Email);
         }
-    }
-
-    string MyEscapeURL(string url)
-    {
-
-        return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
     }
 
     public void phoneUS(IClient currentClient = null)
