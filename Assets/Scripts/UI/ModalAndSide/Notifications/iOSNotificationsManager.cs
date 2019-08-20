@@ -268,7 +268,6 @@ public class iOSNotificationsManager : MonoBehaviour
                 List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].NotificationID).ToList();
                 notificationsScreen.AddNewReservations(newReservations);
                 DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
-                Debug.Log($"new notification: {notifications[i].NotificationID}");
             }
         }
     }
@@ -281,7 +280,6 @@ public class iOSNotificationsManager : MonoBehaviour
             List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notification.Identifier).ToList();
             notificationsScreen.AddNewReservations(newReservations);
             DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
-            Debug.Log($"notification received event: {notification.Identifier}");
         };
     }
 #endif
