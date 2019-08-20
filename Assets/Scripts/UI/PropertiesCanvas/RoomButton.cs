@@ -78,7 +78,7 @@ public class RoomButton : MonoBehaviour
     {
         if (currentRoom != null)
         {
-            roomName.text = $"{LocalizedText.Instance.RoomItem}{currentRoom.Name}";
+            roomName.text = $"{LocalizedText.Instance.RoomItem} {currentRoom.Name}";
         }
     }
 }

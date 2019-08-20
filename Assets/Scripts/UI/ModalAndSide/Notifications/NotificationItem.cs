@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UINavigation;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.Notifications.Android;
 
 public class NotificationItem : MonoBehaviour
 {

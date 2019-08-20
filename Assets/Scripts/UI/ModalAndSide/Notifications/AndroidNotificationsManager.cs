@@ -2,12 +2,15 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Notifications.Android;
 using UnityEngine;
 using UINavigation;
+#if UNITY_ANDROID
+using Unity.Notifications.Android;
+#endif
 
 public class AndroidNotificationsManager : MonoBehaviour
 {
+#if UNITY_ANDROID
     private AndroidNotificationChannel androidNotificationChannel;
     private int preAlertTime = 0;
 
@@ -47,7 +50,7 @@ public class AndroidNotificationsManager : MonoBehaviour
                 newNotification.Title = title;
                 for (int i = 0; i < previousReservations.Count; i++)
                 {
-                    newNotification.Text += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
+                    newNotification.Text += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {LocalizedText.Instance.RoomItem} {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
                     newNotification.IntentData += $"{previousReservations[i].ID} & \n";
                 }
                 newNotification.FireTime = reservationStart.AddHours(-preAlert);
@@ -102,7 +105,7 @@ public class AndroidNotificationsManager : MonoBehaviour
         notification.Title = title;
         for (int i = 0; i < allReservations.Count; i++)
         {
-            notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
+            notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).Name}, {LocalizedText.Instance.RoomItem} {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
             notification.IntentData += $"{allReservations[i].ID} & \n";
         }
         notification.FireTime = reservationStart.AddHours(-preAlert);
@@ -171,7 +174,7 @@ public class AndroidNotificationsManager : MonoBehaviour
             notification.Title = title;
             for (int i = 0; i < allReservations.Count; i++)
             {
-                notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
+                notification.Text += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).Name}, {LocalizedText.Instance.RoomItem} {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
                 notification.IntentData += $"{allReservations[i].ID} & \n";
             }
             notification.FireTime = notificationItem.FireTime;
@@ -233,4 +236,5 @@ public class AndroidNotificationsManager : MonoBehaviour
             };
         AndroidNotificationCenter.OnNotificationReceived += receivedNotificationHandler;
     }
+#endif
 }

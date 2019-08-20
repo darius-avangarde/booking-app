@@ -23,10 +23,11 @@ public class NotificationManager : MonoBehaviour
     private iOSNotificationsManager iOSNotificationsManager = null;
 
     private const string channelId = "Default";
-    private string reservationsTitle = LocalizedText.Instance.UpcomingReservations;
+    private string reservationsTitle;
 
     private void Start()
     {
+        reservationsTitle = LocalizedText.Instance.UpcomingReservations;
         LocalizedText.Instance.OnLanguageChanged.AddListener(UpdateAllNotifications);
 #if !UNITY_EDITOR && UNITY_ANDROID
         androidNotificationsManager.Initialize(navigator, notificationsScreen, notificationBadge, channelId);

@@ -2,12 +2,15 @@
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Notifications.iOS;
 using UnityEngine;
 using UINavigation;
+#if UNITY_IOS
+using Unity.Notifications.iOS;
+#endif
 
 public class iOSNotificationsManager : MonoBehaviour
 {
+#if UNITY_IOS
     private int preAlertTime = 0;
 
     public void Initialize(Navigator navigator, NotificationsScreen notificationsScreen, NotificationBadge notificationBadge, string channelId)
@@ -61,7 +64,7 @@ public class iOSNotificationsManager : MonoBehaviour
                 newNotification.Title = title;
                 for (int i = 0; i < previousReservations.Count; i++)
                 {
-                    newNotification.Body += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
+                    newNotification.Body += $"{previousReservations[i].CustomerName} - {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).Name}, {LocalizedText.Instance.RoomItem} {PropertyDataManager.GetProperty(previousReservations[i].PropertyID).GetRoom(previousReservations[i].RoomID).Name} in {previousReservations[i].Period.Start.Day}/{previousReservations[i].Period.Start.Month}/{previousReservations[i].Period.Start.Year}.\n";
                 }
                 newNotification.ShowInForeground = true;
                 newNotification.ForegroundPresentationOption = (PresentationOption.Alert & PresentationOption.Badge & PresentationOption.Sound);
@@ -120,7 +123,7 @@ public class iOSNotificationsManager : MonoBehaviour
         notification.Title = title;
         for (int i = 0; i < allReservations.Count; i++)
         {
-            notification.Body += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
+            notification.Body += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).Name}, {LocalizedText.Instance.RoomItem} {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
         }
         notification.ShowInForeground = true;
         notification.ForegroundPresentationOption = (PresentationOption.Alert & PresentationOption.Badge & PresentationOption.Sound);
@@ -208,7 +211,7 @@ public class iOSNotificationsManager : MonoBehaviour
             notification.Title = title;
             for (int i = 0; i < allReservations.Count; i++)
             {
-                notification.Body += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
+                notification.Body += $"{allReservations[i].CustomerName} - {PropertyDataManager.GetProperty(allReservations[i].PropertyID).Name}, {LocalizedText.Instance.RoomItem} {PropertyDataManager.GetProperty(allReservations[i].PropertyID).GetRoom(allReservations[i].RoomID).Name} in {allReservations[i].Period.Start.Day}/{allReservations[i].Period.Start.Month}/{allReservations[i].Period.Start.Year}.\n";
             }
             notification.ShowInForeground = true;
             notification.ForegroundPresentationOption = (PresentationOption.Alert & PresentationOption.Badge & PresentationOption.Sound);
@@ -251,12 +254,23 @@ public class iOSNotificationsManager : MonoBehaviour
 
     private void CheckDeliveredNotifications(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge)
     {
-        iOSNotification[] notifications = iOSNotificationCenter.GetDeliveredNotifications();
-        for (int i = 0; i < notifications.Length; i++)
+        //iOSNotification[] notifications = iOSNotificationCenter.GetDeliveredNotifications();
+        //for (int i = 0; i < notifications.Length; i++)
+        //{
+        //    if (NotificationDataManager.GetNotification(notifications[i].Identifier).UnRead)
+        //    {
+        //        List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].Identifier).ToList();
+        //        notificationsScreen.AddNewReservations(newReservations);
+        //        DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
+        //    }
+        //}
+
+        List<INotification> notifications = NotificationDataManager.GetNewNotifications();
+        for (int i = 0; i < notifications.Count; i++)
         {
-            if (NotificationDataManager.GetNotification(notifications[i].Identifier).UnRead)
+            if (notifications[i].FireTime < DateTime.Now)
             {
-                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].Identifier).ToList();
+                List<IReservation> newReservations = ReservationDataManager.GetReservations().Where(r => r.NotificationID == notifications[i].NotificationID).ToList();
                 notificationsScreen.AddNewReservations(newReservations);
                 DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
             }
@@ -273,4 +287,5 @@ public class iOSNotificationsManager : MonoBehaviour
             DoOnMainThread.ExecuteOnMainThread.Enqueue(() => { StartCoroutine(notificationBadge.SetNotificationBadge(newReservations.Count)); });
         };
     }
+#endif
 }
