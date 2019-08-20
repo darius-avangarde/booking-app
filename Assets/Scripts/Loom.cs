@@ -25,8 +25,6 @@ public class Loom : MonoBehaviour
 	{
 		_current = this;
 		initialized = true;
-        //RunAsync(() => ImageDataManager.LoadAllPropertyImages());
-        ImageDataManager.LoadAllPropertyImages();
 	}
 	
 	static bool initialized;
