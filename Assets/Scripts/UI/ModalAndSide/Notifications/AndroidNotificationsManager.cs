@@ -161,7 +161,6 @@ public class AndroidNotificationsManager : MonoBehaviour
         INotification notificationItem = NotificationDataManager.GetNotification(notificationID);
         IReservation otherReservation = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date).ToList().Find(r => r.ID != reservation.ID);
 
-
         if (otherReservation == null)
         {
             AndroidNotificationCenter.CancelNotification(int.Parse(reservation.NotificationID));

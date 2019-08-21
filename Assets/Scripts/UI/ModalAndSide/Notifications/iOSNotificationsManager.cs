@@ -173,6 +173,7 @@ public class iOSNotificationsManager : MonoBehaviour
 
     public void DeleteNotification(IReservation reservation, string title, string channelId)
     {
+
         string notificationID = reservation.NotificationID;
         if (!string.IsNullOrEmpty(notificationID))
         {
@@ -181,22 +182,22 @@ public class iOSNotificationsManager : MonoBehaviour
         INotification notificationItem = NotificationDataManager.GetNotification(notificationID);
         IReservation otherReservation = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date).ToList().Find(r => r.ID != reservation.ID);
 
-
         if (otherReservation == null)
         {
-            iOSNotificationCenter.RemoveScheduledNotification(reservation.NotificationID);
+            if (iOSNotificationCenter.GetScheduledNotifications().Any(n => n.Identifier == reservation.NotificationID))
+            {
+                iOSNotificationCenter.RemoveScheduledNotification(reservation.NotificationID);
+            }
             NotificationDataManager.DeleteNotification(reservation.NotificationID);
         }
         else
         {
             List<IReservation> allReservations = ReservationDataManager.GetReservations().Where(r => r.Period.Start.Date == reservation.Period.Start.Date && r.NotificationID == notificationID && r.ID != reservation.ID).ToList();
-
             TimeSpan notificationTime = new TimeSpan(0, 0, 1);
             if (notificationItem.FireTime >= DateTime.Now)
             {
                 notificationTime = notificationItem.FireTime - DateTime.Now;
             }
-
             iOSNotificationTimeIntervalTrigger timeTrigger = new iOSNotificationTimeIntervalTrigger()
             {
                 TimeInterval = notificationTime,
@@ -223,8 +224,10 @@ public class iOSNotificationsManager : MonoBehaviour
 
     private void ReplaceNotification(string ID, iOSNotification notification)
     {
-        iOSNotificationCenter.RemoveScheduledNotification(ID);
-        iOSNotificationCenter.RemoveDeliveredNotification(ID);
+        if (iOSNotificationCenter.GetScheduledNotifications().Any(n => n.Identifier == ID))
+        {
+            iOSNotificationCenter.RemoveScheduledNotification(ID);
+        }
         notification.Identifier = ID;
         iOSNotificationCenter.ScheduleNotification(notification);
     }

@@ -82,10 +82,10 @@ public class NotificationManager : MonoBehaviour
     public void DeleteNotification(IReservation reservation)
     {
 #if !UNITY_EDITOR && UNITY_ANDROID
-      androidNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
+        androidNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
 #endif
 #if !UNITY_EDITOR && UNITY_IOS
-      iOSNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
+        iOSNotificationsManager.DeleteNotification(reservation, reservationsTitle, channelId);
 #endif
     }
 }
