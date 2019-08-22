@@ -73,7 +73,7 @@ public class ReservationOptionsDropdown : MonoBehaviour
     {
         CloseReservationMenu();
         confirmationDialogOptions.ConfirmCallback = DeleteReservationCallback;
-        confirmationDialogOptions.Message = $"{LocalizedText.Instance.ReservationModified[2]} {currentReservation.CustomerName}";
+        confirmationDialogOptions.Message = $"{LocalizedText.Instance.ReservationModified[3]} {currentReservation.CustomerName}";
         modalConfirmation.Show(confirmationDialogOptions);
     }
 
