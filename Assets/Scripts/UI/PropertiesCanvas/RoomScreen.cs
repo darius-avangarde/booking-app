@@ -116,17 +116,6 @@ public class RoomScreen : MonoBehaviour
         {
             disponibilityMarker.color = Constants.availableItemColor;
         }
-        if (ImageDataManager.PropertyPhotos.ContainsKey(currentProperty.ID))
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[currentProperty.ID];
-            backgroundImage.sprite = (Sprite)ImageDataManager.BlurPropertyPhotos[currentProperty.ID];
-            backgroundImage.gameObject.SetActive(true);
-        }
-        else
-        {
-            propertyImage.sprite = (Sprite)ImageDataManager.PropertyPhotos[Constants.defaultPropertyPicture];
-            backgroundImage.gameObject.SetActive(false);
-        }
         propertyImageAspectFitter.aspectRatio = backgroundImageAspectFitter.aspectRatio = (float)backgroundImage.sprite.texture.width/backgroundImage.sprite.texture.height;
 
         //roomDetails.text = Constants.SingleBed + room.SingleBeds.ToString() + Constants.AndDelimiter + Constants.DoubleBed + room.DoubleBeds.ToString();

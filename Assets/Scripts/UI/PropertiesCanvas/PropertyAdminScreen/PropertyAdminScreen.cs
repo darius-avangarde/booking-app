@@ -44,8 +44,6 @@ public class PropertyAdminScreen : MonoBehaviour
     [SerializeField]
     private Button calcelButton = null;
     [SerializeField]
-    private Text errorMessage = null;
-    [SerializeField]
     private RectTransform multipleRoomFieldsRect;
 
     private Dictionary<string, Dropdown.OptionData> FloorsOptions;

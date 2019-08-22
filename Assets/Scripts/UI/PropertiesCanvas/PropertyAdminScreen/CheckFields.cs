@@ -10,7 +10,7 @@ public class CheckFields : MonoBehaviour
     [SerializeField]
     private InputField propertyNameField= null;
     [SerializeField]
-    private Text errorMessage = null;
+    private InputManager inputManager = null;
 
     private void Start()
     {
@@ -29,13 +29,12 @@ public class CheckFields : MonoBehaviour
     {
         if (string.IsNullOrEmpty(propertyNameField.text))
         {
-            errorMessage.text = LocalizedText.Instance.PropertyErrorText;
+            inputManager.Message(LocalizedText.Instance.PropertyErrorText);
             propertyAdminScreenComponent.CanSave = false;
             return;
         }
         else
         {
-            errorMessage.text = string.Empty;
             propertyAdminScreenComponent.CanSave = true;
         }
     }
@@ -46,6 +45,5 @@ public class CheckFields : MonoBehaviour
     public void ResetError()
     {
         propertyAdminScreenComponent.CanSave = true;
-        errorMessage.text = string.Empty;
     }
 }

@@ -16,6 +16,8 @@ public class RoomAdminScreen : MonoBehaviour
     [SerializeField]
     private PropertyDropdownHandler propertyDropdownHandler = null;
     [SerializeField]
+    private InputManager inputManager = null;
+    [SerializeField]
     private NavScreen roomAdminScreen = null;
     [SerializeField]
     private SetRoomName setRoomName = null;
@@ -33,8 +35,6 @@ public class RoomAdminScreen : MonoBehaviour
     private Button backButton = null;
     [SerializeField]
     private Button calcelButton = null;
-    [SerializeField]
-    private Text errorMessage = null;
 
     private ConfirmationDialogOptions modalDialogOptions = new ConfirmationDialogOptions();
     private Action returnCallback = null;
@@ -112,7 +112,7 @@ public class RoomAdminScreen : MonoBehaviour
         }
         else
         {
-            errorMessage.text = LocalizedText.Instance.PropertyErrorRoom;
+            inputManager.Message(LocalizedText.Instance.PropertyErrorRoom);
         }
     }
 
@@ -150,15 +150,8 @@ public class RoomAdminScreen : MonoBehaviour
 
     public void DefaultValues()
     {
-        errorMessage.text = string.Empty;
         currentProperty = null;
         currentRoom = null;
-        canSave = true;
-    }
-
-    public void ResetError()
-    {
-        errorMessage.text = string.Empty;
         canSave = true;
     }
 }
