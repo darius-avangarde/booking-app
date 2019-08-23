@@ -46,18 +46,29 @@ public class RoomFieldsHandler : MonoBehaviour
         allMultipleRoomsFields.text = string.Empty;
     }
 
+    /// <summary>
+    /// function to update layout elements from this room admin screen
+    /// </summary>
     public void UpdateUILayout()
     {
         LayoutRebuilder.ForceRebuildLayoutImmediate(floorRoomsParent);
         LayoutRebuilder.ForceRebuildLayoutImmediate(screenContent);
     }
 
+    /// <summary>
+    /// function for floors input field
+    /// </summary>
     public void StartInput()
     {
         multipleFloorsField.text = string.Empty;
         multipleFloorsField.characterValidation = InputField.CharacterValidation.Integer;
     }
 
+    /// <summary>
+    /// set property floors and rooms
+    /// </summary>
+    /// <param name="floors">property floors</param>
+    /// <param name="floorRooms">property rooms</param>
     private void SetFields(int floors, int[] floorRooms)
     {
         multipleRoomsScript.multipleFloorsNumber = floors;
@@ -65,6 +76,11 @@ public class RoomFieldsHandler : MonoBehaviour
         SetFloorInputField(floors.ToString());
     }
 
+    /// <summary>
+    /// function for floors input field
+    /// set floors number from input field
+    /// </summary>
+    /// <param name="value">value from the input field</param>
     public void SetFloorInputField(string value)
     {
         if (!string.IsNullOrEmpty(value))
@@ -106,6 +122,10 @@ public class RoomFieldsHandler : MonoBehaviour
         InitializeFloorRooms(currentFloorValue);
     }
 
+    /// <summary>
+    /// function for floor dropdown
+    /// set number of floors from the dropdown
+    /// </summary>
     public void SetFloorDropdownOption()
     {
         currentFloorValue = multipleFloorDropdown.value;
@@ -131,6 +151,11 @@ public class RoomFieldsHandler : MonoBehaviour
         InitializeFloorRooms(currentFloorValue);
     }
 
+    /// <summary>
+    /// function for edit all roms rooms input field
+    /// set number of rooms from the input field
+    /// </summary>
+    /// <param name="value">input field value</param>
     public void SetRoomInputField(string value)
     {
         if (!string.IsNullOrEmpty(value))
@@ -144,6 +169,10 @@ public class RoomFieldsHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function for edit all roms dropdown
+    /// set number of rooms from the dropdown
+    /// </summary>
     public void SetRoomDropdownOption()
     {
         currenRoomValue = allMultipleRoomsDropdown.value + 1;
@@ -154,6 +183,10 @@ public class RoomFieldsHandler : MonoBehaviour
         allMultipleRoomsFields.text = currenRoomValue.ToString();
     }
 
+    /// <summary>
+    /// function to set number of floors and rooms
+    /// </summary>
+    /// <param name="floors"></param>
     private void InitializeFloorRooms(int floors)
     {
         if (floorItemList.Count != floors)
@@ -187,6 +220,9 @@ public class RoomFieldsHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to instantiate objects to edit rooms for every floor
+    /// </summary>
     private void InstantiateFloors()
     {
         GameObject floorRooms = Instantiate(floorRoomsObject, floorRoomsParent);

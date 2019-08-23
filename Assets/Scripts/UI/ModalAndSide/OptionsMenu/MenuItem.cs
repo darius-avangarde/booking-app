@@ -13,6 +13,12 @@ public class MenuItem : MonoBehaviour
     [SerializeField]
     private Button itemButton;
 
+    /// <summary>
+    /// initialize dropdown menu item
+    /// </summary>
+    /// <param name="label">name for the option</param>
+    /// <param name="icon">icon of the object</param>
+    /// <param name="Callback">callback to set on click</param>
     public void Initialize(string label, Sprite icon, Action Callback)
     {
         itemLabel.text = label;
@@ -34,6 +40,10 @@ public class MenuItem : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// update option text (for language change)
+    /// </summary>
+    /// <param name="label"></param>
     public void UpdateText(string label)
     {
         itemLabel.text = label;

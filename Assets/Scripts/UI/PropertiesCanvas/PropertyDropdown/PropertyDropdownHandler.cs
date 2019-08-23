@@ -26,6 +26,12 @@ public class PropertyDropdownHandler : MonoBehaviour
         OnSelectProperty = null;
     }
 
+    /// <summary>
+    /// function set to property dropdown
+    /// select a property from the list and invoke callback for selecting if skipInvoke is false
+    /// </summary>
+    /// <param name="value">dropdown value</param>
+    /// <param name="skipInvoke">bool to skip invoking the property callback</param>
     private void SelectDropdown(int value, bool skipInvoke = false)
     {
         if (selectedProperty == null || !selectedProperty.Name.Equals(dropdownComponent.options[value].text))
@@ -38,6 +44,9 @@ public class PropertyDropdownHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// update dropdown properties list
+    /// </summary>
     public void UpdateDropdown()
     {
         propertyOptions = new Dictionary<Dropdown.OptionData, string>();
@@ -52,6 +61,11 @@ public class PropertyDropdownHandler : MonoBehaviour
         dropdownComponent.RefreshShownValue();
     }
 
+    /// <summary>
+    /// function to manually select a property from the dropdown
+    /// </summary>
+    /// <param name="property">property to select</param>
+    /// <param name="skipInvoke">bool to skip invoking the property callback</param>
     public void SelectDropdownProperty(IProperty property, bool skipInvoke = true)
     {
         dropdownComponent.onValueChanged.RemoveAllListeners();

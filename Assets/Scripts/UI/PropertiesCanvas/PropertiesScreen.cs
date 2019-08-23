@@ -60,6 +60,10 @@ public class PropertiesScreen : MonoBehaviour
         StartCoroutine(InitializeRoutine());
     }
 
+    /// <summary>
+    /// coroutine for initialization
+    /// it is showing a loading marker if initialization takes too long
+    /// </summary>
     private IEnumerator InitializeRoutine()
     {
         Handheld.StartActivityIndicator();
@@ -105,6 +109,9 @@ public class PropertiesScreen : MonoBehaviour
         Handheld.StopActivityIndicator();
     }
 
+    /// <summary>
+    /// function to instantiate a new property for pool
+    /// </summary>
     private void InstantiatePropertyButton()
     {
         GameObject propertyButtonObject = Instantiate(propertyItemPrefab.gameObject, propertiesContainerContent);

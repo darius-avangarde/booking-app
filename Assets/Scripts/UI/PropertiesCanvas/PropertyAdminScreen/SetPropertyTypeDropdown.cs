@@ -13,6 +13,9 @@ public class SetPropertyTypeDropdown : MonoBehaviour
     [SerializeField]
     private Sprite[] propertyTypeIcons;
 
+    /// <summary>
+    /// property value is set from property type dropdown
+    /// </summary>
     public PropertyDataManager.PropertyType CurrentPropertyType
     {
         get => (PropertyDataManager.PropertyType)propertyTypeDropdown.value;
@@ -33,6 +36,11 @@ public class SetPropertyTypeDropdown : MonoBehaviour
         LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdatePropertyTypeDictionary());
     }
 
+    /// <summary>
+    /// this function is set to property type dropdown
+    /// function to set property type
+    /// </summary>
+    /// <param name="value">dropdown value</param>
     public void SetPropertyType(int value)
     {
         ChangePropertyType?.Invoke((PropertyDataManager.PropertyType)value);
@@ -55,6 +63,9 @@ public class SetPropertyTypeDropdown : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to update property type dictionary when the language is changed
+    /// </summary>
     private void UpdatePropertyTypeDictionary()
     {
         for (int i = 0; i <= (int)PropertyDataManager.PropertyType.cabin; i++)

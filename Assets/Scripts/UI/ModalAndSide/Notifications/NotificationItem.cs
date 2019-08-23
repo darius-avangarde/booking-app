@@ -48,6 +48,14 @@ public class NotificationItem : MonoBehaviour
         menuButton.onClick.RemoveAllListeners();
     }
 
+    /// <summary>
+    /// initialize notification item with reservation data
+    /// initialize theme for all graphic elements
+    /// </summary>
+    /// <param name="newNotification">new notification marker</param>
+    /// <param name="themeManagerComponent">theme manager</param>
+    /// <param name="reservation">reservatino to initialize data</param>
+    /// <param name="setReservation">callback for click action</param>
     public void Initialize(bool newNotification, ThemeManager themeManagerComponent,  IReservation reservation, Action<IReservation> setReservation)
     {
         currentReservation = reservation;

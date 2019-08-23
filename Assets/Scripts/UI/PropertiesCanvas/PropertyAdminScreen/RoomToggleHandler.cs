@@ -18,12 +18,6 @@ public class RoomToggleHandler : MonoBehaviour
 
     private bool currentHasRooms = true;
 
-    private void Awake()
-    {
-        //propertyAdminScreenComponent.SetRoomsToggle += SetToggle;
-        //propertyAdminScreenComponent.GetRoomsToggle += GetCurrentToggles;
-    }
-
     private void OnEnable()
     {
         withRoomsToggle.isOn = false;

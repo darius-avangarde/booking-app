@@ -142,6 +142,9 @@ public class PropertyRoomScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to instantiate new room object for pool
+    /// </summary>
     public void InstantiateRoomButtonObject()
     {
         GameObject roomButtonObject = Instantiate(roomItemPrefab.gameObject, roomsContentScrollView);

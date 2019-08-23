@@ -32,6 +32,10 @@ public class NotificationBadge : MonoBehaviour
         notificationsBadgeNumber.color = new Color(notificationsBadgeNumber.color.r, notificationsBadgeNumber.color.g, notificationsBadgeNumber.color.b, 0);
     }
 
+    /// <summary>
+    /// coroutine to set notification badge on main screen
+    /// </summary>
+    /// <param name="newNotifications">new notifications number</param>
     public IEnumerator SetNotificationBadge(int newNotifications)
     {
         if (newNotifications > 0)

@@ -21,6 +21,10 @@ public class HelpMainScreen : MonoBehaviour
         helpInfoNavScreen = helpInfoScreen.GetComponent<NavScreen>();
     }
 
+    /// <summary>
+    /// function to open the selected info page
+    /// </summary>
+    /// <param name="buttonText">name of the info page to open</param>
     public void OpenInfo(string buttonText)
     {
         navigator.GoTo(helpInfoNavScreen);

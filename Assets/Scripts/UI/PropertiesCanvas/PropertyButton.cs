@@ -38,6 +38,10 @@ public class PropertyButton : MonoBehaviour
         propertyButtonItem.onClick.RemoveAllListeners();
     }
 
+    /// <summary>
+    /// initialize theme for property object
+    /// </summary>
+    /// <param name="themeManager"></param>
     public void InitializeTheme(ThemeManager themeManager)
     {
         themeManager.AddItems(propertyNameText, propertyImage, propertyBackground);
@@ -66,6 +70,9 @@ public class PropertyButton : MonoBehaviour
         propertyButtonItem.onClick.AddListener(() => PropertyCallback(property));
     }
 
+    /// <summary>
+    /// update text for language change
+    /// </summary>
     private void SetText()
     {
         if (currentProperty != null)

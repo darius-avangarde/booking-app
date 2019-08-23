@@ -13,6 +13,14 @@ public class iOSNotificationsManager : MonoBehaviour
 #if UNITY_IOS
     private int preAlertTime = 0;
 
+    /// <summary>
+    /// initialize iOS notification data
+    /// open notification screen if the app is opened from a notification
+    /// </summary>
+    /// <param name="navigator">navigator refference</param>
+    /// <param name="notificationsScreen">notifications screeen  refference</param>
+    /// <param name="notificationBadge">notification badge refference</param>
+    /// <param name="channelId">channel ID name</param>
     public void Initialize(Navigator navigator, NotificationsScreen notificationsScreen, NotificationBadge notificationBadge, string channelId)
     {
         iOSNotification notification = iOSNotificationCenter.GetLastRespondedNotification();
@@ -33,6 +41,16 @@ public class iOSNotificationsManager : MonoBehaviour
         NotificationReceivedEvent(notificationsScreen, notificationBadge);
     }
 
+    /// <summary>
+    /// regiser an iOS notification
+    /// set timespan for notification fire time
+    /// set notification text
+    /// update or create a new notification
+    /// </summary>
+    /// <param name="reservation"></param>
+    /// <param name="preAlert"></param>
+    /// <param name="title"></param>
+    /// <param name="channelId"></param>
     public void RegisterNotification(IReservation reservation, int preAlert, string title, string channelId)
     {
         preAlertTime = preAlert;
@@ -171,6 +189,12 @@ public class iOSNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// delete notification function for a specific reservation
+    /// </summary>
+    /// <param name="reservation">reservation for notification to delete</param>
+    /// <param name="title">notification title string</param>
+    /// <param name="channelId">notification channel ID name</param>
     public void DeleteNotification(IReservation reservation, string title, string channelId)
     {
 
@@ -222,6 +246,11 @@ public class iOSNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to delete a previous reservation and replace it with a new updated one
+    /// </summary>
+    /// <param name="ID">notification ID</param>
+    /// <param name="notification">new notification data</param>
     private void ReplaceNotification(string ID, iOSNotification notification)
     {
         if (iOSNotificationCenter.GetScheduledNotifications().Any(n => n.Identifier == ID))
@@ -232,6 +261,10 @@ public class iOSNotificationsManager : MonoBehaviour
         iOSNotificationCenter.ScheduleNotification(notification);
     }
 
+    /// <summary>
+    /// function to request notification authorization from the OS
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator RequestAuthorization()
     {
         using (AuthorizationRequest req = new AuthorizationRequest(AuthorizationOption.Alert & AuthorizationOption.Badge & AuthorizationOption.Sound, false))
@@ -249,6 +282,12 @@ public class iOSNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// check previous delivered notifications
+    /// update notification badge
+    /// </summary>
+    /// <param name="notificationsScreen">notification screen component</param>
+    /// <param name="notificationBadge">notification badge component</param>
     private void CheckDeliveredNotifications(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge)
     {
         //iOSNotification[] notifications = iOSNotificationCenter.GetDeliveredNotifications();
@@ -274,6 +313,12 @@ public class iOSNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// event for a notification received with the app opened
+    /// set the notification badge from the main screen
+    /// </summary>
+    /// <param name="notificationsScreen"></param>
+    /// <param name="notificationBadge"></param>
     private void NotificationReceivedEvent(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge)
     {
         iOSNotificationCenter.OnNotificationReceived += notification =>

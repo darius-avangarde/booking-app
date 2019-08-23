@@ -30,11 +30,19 @@ public class NotificationSettings : MonoBehaviour
         SetDropdownInteractable(sendNotitifationsToggle.isOn);
     }
 
+    /// <summary>
+    /// set pre alert dropdown interactable
+    /// </summary>
+    /// <param name="value">interactable value</param>
     public void SetDropdownInteractable(bool value)
     {
         preAlertDropdown.interactable = value;
     }
 
+    /// <summary>
+    /// set dropdown value
+    /// </summary>
+    /// <param name="value">dropdown value</param>
     public void SelectDropdownValue(int value)
     {
         previousSelectedOption = selectedOption;
@@ -44,12 +52,19 @@ public class NotificationSettings : MonoBehaviour
         settingsManager.WriteData();
     }
 
+    /// <summary>
+    /// set toggle for enabling notifications
+    /// </summary>
+    /// <param name="value">toggle value</param>
     private void SetNotificationToggle(bool value)
     {
         settingsManager.DataElements.settings.ReceiveNotifications = value;
         settingsManager.WriteData();
     }
 
+    /// <summary>
+    /// update pre alert dropdown options list
+    /// </summary>
     private void SetDropdownOptions()
     {
         List<Dropdown.OptionData> dropdownOptionsList = new List<Dropdown.OptionData>();

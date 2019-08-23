@@ -11,6 +11,10 @@ public class HelpInfoScreen : MonoBehaviour
     [SerializeField]
     private RectTransform contentTransform = null;
 
+    /// <summary>
+    /// initialize info page according to name clicked
+    /// </summary>
+    /// <param name="title">title of the info page to be opened</param>
     public void Initialize(string title)
     {
         switch (title)

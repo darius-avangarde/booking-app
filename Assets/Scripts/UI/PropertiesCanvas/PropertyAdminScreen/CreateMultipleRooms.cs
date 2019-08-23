@@ -15,7 +15,6 @@ public class CreateMultipleRooms : MonoBehaviour
     private ConfirmationDialog confirmationDialog = null;
 
     private List<IRoom> roomsList = new List<IRoom>();
-
     private int previousFloors = 0;
     private int[] previousRooms = new int[1];
     private bool changeRooms = true;
@@ -25,6 +24,9 @@ public class CreateMultipleRooms : MonoBehaviour
         propertyAdminScreen.MultipleRooms += SaveMultipleRooms;
     }
 
+    /// <summary>
+    /// function to save all rooms from input fields
+    /// </summary>
     private void SaveMultipleRooms()
     {
         if (propertyAdminScreen.CurrentProperty.Floors > 0)
@@ -44,6 +46,10 @@ public class CreateMultipleRooms : MonoBehaviour
         CheckRoomChanges();
     }
 
+    /// <summary>
+    /// function to check if the rooms edited are fewer than the rooms before edit
+    /// if yes, the modal dialog is opened
+    /// </summary>
     private void CheckRoomChanges()
     {
         if (multipleFloorsNumber < propertyAdminScreen.CurrentProperty.Floors)
@@ -73,6 +79,9 @@ public class CreateMultipleRooms : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to delete unused rooms
+    /// </summary>
     private void DeleteRooms()
     {
         confirmationDialog.Show(new ConfirmationDialogOptions
@@ -88,6 +97,9 @@ public class CreateMultipleRooms : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// function to change rooms values for a property
+    /// </summary>
     private void ChangeRooms()
     {
         int previousFloors = propertyAdminScreen.CurrentProperty.Floors;
@@ -114,6 +126,10 @@ public class CreateMultipleRooms : MonoBehaviour
         propertyAdminScreen.navigator.GoBack();
     }
 
+    /// <summary>
+    /// create rooms for a specific floor
+    /// </summary>
+    /// <param name="currentFloor">floor number</param>
     private void CreateFloorRooms(int currentFloor)
     {
         propertyAdminScreen.CurrentProperty.FloorRooms[currentFloor] = multipleRoomsNumber[currentFloor];
@@ -180,6 +196,10 @@ public class CreateMultipleRooms : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// delete a list of rooms
+    /// </summary>
+    /// <param name="roomsToDelete">list of rooms</param>
     private void DeleteFloorRooms(List<IRoom> roomsToDelete)
     {
         for (int i = 0; i < roomsToDelete.Count; i++)

@@ -93,6 +93,10 @@ public class RoomAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function added to save button
+    /// apply all changes for this screen
+    /// </summary>
     public void SaveChanges()
     {
         if (CanSave)
@@ -116,6 +120,10 @@ public class RoomAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// this function is deprecated because you can no longer delete rooms
+    /// function added to delete room button
+    /// </summary>
     public void DeleteRoom()
     {
         if (currentProperty.HasRooms)
@@ -148,6 +156,9 @@ public class RoomAdminScreen : MonoBehaviour
         confirmationDialog.Show(modalDialogOptions);
     }
 
+    /// <summary>
+    /// set default values for this screen data
+    /// </summary>
     public void DefaultValues()
     {
         currentProperty = null;

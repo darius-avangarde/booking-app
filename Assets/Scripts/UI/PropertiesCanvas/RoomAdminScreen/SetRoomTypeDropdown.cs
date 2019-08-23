@@ -9,6 +9,9 @@ public class SetRoomTypeDropdown : MonoBehaviour
     [SerializeField]
     private Sprite[] roomTypeIcons;
 
+    /// <summary>
+    /// this property takes it's value from room type dropdown
+    /// </summary>
     public PropertyDataManager.RoomType CurrentRoomType
     {
         get => (PropertyDataManager.RoomType)roomTypeDropdown.value;
@@ -47,6 +50,9 @@ public class SetRoomTypeDropdown : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// update room type dropdown text on language change
+    /// </summary>
     private void UpdateRoomTypeDropdown()
     {
         for (int i = 0; i <= (int)PropertyDataManager.RoomType.apartment; i++)

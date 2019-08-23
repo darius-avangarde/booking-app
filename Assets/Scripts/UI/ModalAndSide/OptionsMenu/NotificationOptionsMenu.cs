@@ -27,6 +27,9 @@ public class NotificationOptionsMenu : MonoBehaviour
         LocalizedText.Instance.OnLanguageChanged.AddListener(() => UpdateDropdownOptions());
     }
 
+    /// <summary>
+    /// set dropdown options list from dictionaries
+    /// </summary>
     private void SetDropdownOptions()
     {
         for (int i = 0; i <= (int)DropdownOptions.email; i++)
@@ -40,6 +43,9 @@ public class NotificationOptionsMenu : MonoBehaviour
         Initialize();
     }
 
+    /// <summary>
+    /// update dropdown options (for language change)
+    /// </summary>
     private void UpdateDropdownOptions()
     {
         List<MenuItem> dropdownOptions = notificationItemMenu.GetOptions();
@@ -49,6 +55,9 @@ public class NotificationOptionsMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// initialize dropdown options
+    /// </summary>
     private void Initialize()
     {
         for (int i = 0; i < LocalizedText.Instance.NotificationDropdown.Length; i++)
@@ -76,22 +85,35 @@ public class NotificationOptionsMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to open dropdown menu with data for selected reservation
+    /// </summary>
+    /// <param name="reservation">selected reservation</param>
     public void OpenMenu(IReservation reservation)
     {
         currentReservation = reservation;
         notificationItemMenu.ShowMenu();
     }
 
+    /// <summary>
+    /// function to call reservation client
+    /// </summary>
     private void CallClient()
     {
         clientsScreen.phoneUS(ClientDataManager.GetClient(currentReservation.CustomerID));
     }
 
+    /// <summary>
+    /// function to send an SMS to reservation client
+    /// </summary>
     private void SendSMS()
     {
         clientsScreen.SmsUs(ClientDataManager.GetClient(currentReservation.CustomerID));
     }
 
+    /// <summary>
+    /// function to send an e-mail to reservation client
+    /// </summary>
     private void SendEmail()
     {
         clientsScreen.EmailUs(ClientDataManager.GetClient(currentReservation.CustomerID));

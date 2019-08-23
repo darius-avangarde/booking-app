@@ -27,17 +27,29 @@ public class SetRoomName : MonoBehaviour
         roomPriceCache = string.Empty;
     }
 
+    /// <summary>
+    /// set current room name
+    /// </summary>
+    /// <param name="value">current name value</param>
     public void SetCurrentName(string value)
     {
         roomNameCache = value;
         roomNameInputField.text = roomNameCache;
     }
 
+    /// <summary>
+    /// get current room name
+    /// </summary>
+    /// <returns>return name</returns>
     public string GetCurrentName()
     {
         return roomNameCache;
     }
 
+    /// <summary>
+    /// chack if the room name is changed and if the save can be pressed
+    /// </summary>
+    /// <param name="value">room name string</param>
     public void OnRoomNameValueChanged(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -53,6 +65,11 @@ public class SetRoomName : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// deprecated function because the price is not a feature for the app
+    /// check room price
+    /// </summary>
+    /// <param name="value"></param>
     public void OnRoomPriceValueChanged(string value)
     {
         roomPriceCache = string.IsNullOrEmpty(value) ? "Free" : value;

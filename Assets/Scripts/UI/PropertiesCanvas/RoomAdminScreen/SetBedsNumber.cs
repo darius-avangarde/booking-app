@@ -35,6 +35,10 @@ public class SetBedsNumber : MonoBehaviour
         return bedsInfo;
     }
 
+    /// <summary>
+    /// function for single beds input field on value changed
+    /// </summary>
+    /// <param name="value"></param>
     public void OnSingleBedsChanged(string value)
     {
         if (value == "-")
@@ -44,7 +48,11 @@ public class SetBedsNumber : MonoBehaviour
         }
         SingleBedsNr = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
-
+    
+    /// <summary>
+    /// function for double beds input field on value changed
+    /// </summary>
+    /// <param name="value"></param>
     public void OnDoubleBedsChanged(string value)
     {
         if (value == "-")
@@ -55,11 +63,17 @@ public class SetBedsNumber : MonoBehaviour
         DoubleBedsNr = string.IsNullOrEmpty(value) ? 0 : int.Parse(value);
     }
 
+    /// <summary>
+    /// function for + button for single beds
+    /// </summary>
     public void IncrementSingleBedQuantity()
     {
         roomSingleBedQuantityInputField.text = (++SingleBedsNr).ToString();
     }
 
+    /// <summary>
+    /// function for - button for single beds
+    /// </summary>
     public void DecrementSingleBedQuantity()
     {
         if (roomSingleBedQuantityInputField.text != "0")
@@ -68,11 +82,17 @@ public class SetBedsNumber : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function for + button for double beds
+    /// </summary>
     public void IncrementDoubleBedQuantity()
     {
         roomDoubleBedQuantityInputField.text = (++DoubleBedsNr).ToString();
     }
 
+    /// <summary>
+    /// function for - button for double beds
+    /// </summary>
     public void DecrementDoubleBedQuantity()
     {
         if (roomDoubleBedQuantityInputField.text != "0")

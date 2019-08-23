@@ -50,6 +50,10 @@ public class FloorRoomsHandler : MonoBehaviour
         LocalizedText.Instance.OnLanguageChanged.AddListener(() => SetText());
     }
 
+    /// <summary>
+    /// set the current floor number for this object
+    /// </summary>
+    /// <param name="floor">floor value</param>
     public void SetPropertyFloor(int floor)
     {
         currentFloor = floor;
@@ -57,6 +61,9 @@ public class FloorRoomsHandler : MonoBehaviour
         SetRoomInputField(multipleRoomsScript.multipleRoomsNumber[currentFloor].ToString());
     }
 
+    /// <summary>
+    /// set current floor text
+    /// </summary>
     private void SetText()
     {
         if(currentFloor == 0)
@@ -70,6 +77,11 @@ public class FloorRoomsHandler : MonoBehaviour
         floorRoomsFieldText.text = LocalizedText.Instance.FloorType[0];
     }
 
+    /// <summary>
+    /// function set to room number input field
+    /// set number of rooms for this floor
+    /// </summary>
+    /// <param name="value">room number from input field</param>
     public void SetRoomInputField(string value)
     {
         if (!string.IsNullOrEmpty(value))
@@ -88,6 +100,10 @@ public class FloorRoomsHandler : MonoBehaviour
         floorRoomsField.text = currenRoomValue.ToString();
     }
 
+    /// <summary>
+    /// function set to room bumber dropdown
+    /// set the number of rooms according to dropdown
+    /// </summary>
     public void SetRoomDropdownOption()
     {
         currenRoomValue = floorRoomsDropdown.value + 1;

@@ -53,6 +53,10 @@ public class NotificationsScreen : MonoBehaviour
         noNotificationsObject.SetActive(false);
     }
 
+    /// <summary>
+    /// function to add new reservations to a list
+    /// </summary>
+    /// <param name="newNotifications">list of new notifications</param>
     public void AddNewReservations(List<IReservation> newNotifications)
     {
         foreach (IReservation reservation in newNotifications)
@@ -61,6 +65,10 @@ public class NotificationsScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// initialize notifications screen with upcomming reservations
+    /// set badge for new notifications
+    /// </summary>
     public void Initialize()
     {
         noNotificationsObject.SetActive(false);
@@ -91,6 +99,11 @@ public class NotificationsScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// initialize notification item
+    /// </summary>
+    /// <param name="reservation">reservation to initialize</param>
+    /// <param name="newNotification">new notification marker</param>
     private void InitializeNotification(IReservation reservation, bool newNotification)
     {
         try
@@ -109,6 +122,10 @@ public class NotificationsScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function callback for opening dropdown menu
+    /// </summary>
+    /// <param name="reservation">current reservation</param>
     private void OpenItemMenu(IReservation reservation)
     {
         notificationDropdown.OpenMenu(reservation);

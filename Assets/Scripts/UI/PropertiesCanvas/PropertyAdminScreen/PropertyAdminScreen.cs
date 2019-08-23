@@ -127,6 +127,10 @@ public class PropertyAdminScreen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function to set current property type
+    /// </summary>
+    /// <param name="propertyType">property type value</param>
     private void SetPropertyType(PropertyDataManager.PropertyType propertyType)
     {
         if (CurrentProperty != null && !CurrentProperty.HasRooms)
@@ -158,6 +162,7 @@ public class PropertyAdminScreen : MonoBehaviour
     }
 
     /// <summary>
+    /// function set to save button
     /// save information for current property
     /// </summary>
     public void SaveProperty()

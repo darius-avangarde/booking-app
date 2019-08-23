@@ -14,6 +14,14 @@ public class AndroidNotificationsManager : MonoBehaviour
     private AndroidNotificationChannel androidNotificationChannel;
     private int preAlertTime = 0;
 
+    /// <summary>
+    /// initialize android notifications
+    /// open notification screen if the app is opened from a notification
+    /// </summary>
+    /// <param name="navigator"></param>
+    /// <param name="notificationsScreen"></param>
+    /// <param name="notificationBadge"></param>
+    /// <param name="channelId"></param>
     public void Initialize(Navigator navigator, NotificationsScreen notificationsScreen, NotificationBadge notificationBadge, string channelId)
     {
         AndroidNotificationIntentData notificationIntentData = AndroidNotificationCenter.GetLastNotificationIntent();
@@ -33,6 +41,15 @@ public class AndroidNotificationsManager : MonoBehaviour
         NotificationReceivedEvent(notificationsScreen, notificationBadge);
     }
 
+    /// <summary>
+    /// register a new notification or update a previous one
+    /// set the pre alert time for the notification
+    /// check for previous notifications to update if necessary
+    /// </summary>
+    /// <param name="reservation">reservation to register a notification for</param>
+    /// <param name="preAlert">pre alert time</param>
+    /// <param name="title">title of notification</param>
+    /// <param name="channelId">notification channel ID</param>
     public void RegisterNotification(IReservation reservation, int preAlert, string title, string channelId)
     {
         preAlertTime = preAlert;
@@ -151,6 +168,12 @@ public class AndroidNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// delete a notification, or update it if it has multiple reservations
+    /// </summary>
+    /// <param name="reservation">reservation to remove notification for</param>
+    /// <param name="title">title of notification</param>
+    /// <param name="channelId">notification Channel ID</param>
     public void DeleteNotification(IReservation reservation, string title, string channelId)
     {
         string notificationID = reservation.NotificationID;
@@ -185,6 +208,12 @@ public class AndroidNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// delete an old notification, and replace it with a new one
+    /// </summary>
+    /// <param name="ID">id of notification</param>
+    /// <param name="notification">new notification data</param>
+    /// <param name="channel">channel id</param>
     private void ReplaceNotification(string ID, AndroidNotification notification, string channel)
     {
         int id = int.Parse(ID);
@@ -192,6 +221,10 @@ public class AndroidNotificationsManager : MonoBehaviour
         AndroidNotificationCenter.SendNotificationWithExplicitID(notification, channel, id);
     }
 
+    /// <summary>
+    /// create a notification channel for android
+    /// </summary>
+    /// <param name="channelId">channel id</param>
     private void CreateNotificationChannel(string channelId)
     {
         androidNotificationChannel = new AndroidNotificationChannel
@@ -208,6 +241,12 @@ public class AndroidNotificationsManager : MonoBehaviour
         AndroidNotificationCenter.RegisterNotificationChannel(androidNotificationChannel);
     }
 
+    /// <summary>
+    /// check for previous delivered notifications
+    /// </summary>
+    /// <param name="notificationsScreen">notifications screen refference</param>
+    /// <param name="notificationBadge">notification badge refference</param>
+    /// <param name="channelId">notification channel ID</param>
     private void CheckDeliveredNotification(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge, string channelId)
     {
         List<INotification> notifications = NotificationDataManager.GetNewNotifications();
@@ -223,6 +262,12 @@ public class AndroidNotificationsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// event for received notifications if the app is opened
+    /// update notifications badge for new notifications
+    /// </summary>
+    /// <param name="notificationsScreen">notifications screen refference</param>
+    /// <param name="notificationBadge">notification badge refference</param>
     private void NotificationReceivedEvent(NotificationsScreen notificationsScreen, NotificationBadge notificationBadge)
     {
         AndroidNotificationCenter.NotificationReceivedCallback receivedNotificationHandler =

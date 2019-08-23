@@ -37,6 +37,9 @@ public class NotificationManager : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// function to update all sent notifications notifications
+    /// </summary>
     private void UpdateAllNotifications()
     {
         settingsManager.ReadData();
@@ -79,6 +82,10 @@ public class NotificationManager : MonoBehaviour
 #endif
     }
 
+    /// <summary>
+    /// function to delete a notification for a specific reservation
+    /// </summary>
+    /// <param name="reservation">reservation for wich to delete the notification</param>
     public void DeleteNotification(IReservation reservation)
     {
 #if !UNITY_EDITOR && UNITY_ANDROID
